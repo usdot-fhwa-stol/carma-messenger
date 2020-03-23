@@ -28,7 +28,7 @@ services:
     command: roscore
 
   messenger:
-    image: usdotfhwastol/carma-messenger:1.0.0
+    image: usdotfhwastoldev/carma-messenger:develop
     network_mode: host
     container_name: messenger
     volumes_from:
