@@ -75,7 +75,7 @@ jobs:
             source /opt/carma/devel/setup.bash
             pwd
             ls src
-            cd src/carma-messenger/carmajava/
+            cd src/carma-messenger/message/
             ./gradlew jacocoCombinedReport --info
             ./gradlew testReport --info
       - run:
@@ -84,7 +84,7 @@ jobs:
             source ${INIT_ENV}
             mkdir -p ~/junit/ 
             sudo mkdir -p /reports/tests
-            sudo mv src/carma-messenger/carmajava/build/reports/allTests/* /reports/tests/
+            sudo mv src/carma-messenger/message/build/reports/allTests/* /reports/tests/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
           when: always
       # Run SonarCloud analysis
