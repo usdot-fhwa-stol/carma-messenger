@@ -70,10 +70,11 @@ jobs:
       - run:
           name: Run Java Tests
           command: |
+            set -x
             source ${INIT_ENV}
             source /opt/carma/devel/setup.bash
             pwd
-            ls
+            ls src
             cd src/carma-messenger/carmajava/
             ./gradlew jacocoCombinedReport --info
             ./gradlew testReport --info
