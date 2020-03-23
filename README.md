@@ -1,3 +1,7 @@
+| CicleCI Build Status | Sonar Code Quality |
+|----------------------|---------------------|
+[![CircleCI](https://circleci.com/gh/usdot-fhwa-stol/carma-messenger.svg?style=svg)](https://circleci.com/gh/usdot-fhwa-stol/carma-messenger) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-fhwa-stol_carma-messenger&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot-fhwa-stol_carma-messenger) |
+
 # carma-messenger
 
 CARMA Messenger is a standalone research platform which is aimed to deploy on non-automated entities who participate in the transportation system, including first responders, transit vehicles, law enforcement vehicles, and pedestrians. It helps other vehicles or travelers communicate with CARMA Platform vehicles, sharing information and performing cooperative operations to improve transportation efficiency and safety. 
