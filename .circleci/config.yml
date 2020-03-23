@@ -72,6 +72,8 @@ jobs:
           command: |
             source ${INIT_ENV}
             source /opt/carma/devel/setup.bash
+            pwd
+            ls
             cd src/carma-messenger/carmajava/
             ./gradlew jacocoCombinedReport --info
             ./gradlew testReport --info
