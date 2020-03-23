@@ -52,7 +52,7 @@ jobs:
           name: Pull Deps
           command: |
             source ${INIT_ENV}
-            ./src/carma-messenger/docker/checkout.sh ${PWD}
+            ./src/carma-messenger/docker/checkout.sh -r ${PWD}
             cd ${PWD}
             sudo apt-get update
       - run:
