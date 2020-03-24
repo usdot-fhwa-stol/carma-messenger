@@ -24,7 +24,8 @@ curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/develop/
 curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/develop/engineering_tools/__carma_autocomplete >> /etc/bash_completion.d/__carma_autocomplete
 ```
 <br>
-Hardware configurations are managed in the config directory of this repo. For local development the [config/development](config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser. 
+
+Hardware configurations are managed in the config directory of this repo. For local development the [development config](config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser. 
 
 ### Example Setup
 
