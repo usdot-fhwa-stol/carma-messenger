@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #  Copyright (C) 2018-2020 LEIDOS.
 # 
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -12,16 +14,4 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-# Docker Compose Spec Version
-version: '2'
-
-services:
-  web-ui:
-    image: usdotfhwastol/carma-messenger-web-ui:test
-    network_mode: host
-    container_name: web-ui
-    volumes_from: 
-      - container:carma-config:ro
-    volumes: 
-      - /var/run/docker.sock:/var/run/docker.sock 
-    restart: always
+basename -s .git `git config --get remote.origin.url`

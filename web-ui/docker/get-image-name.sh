@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #  Copyright (C) 2018-2020 LEIDOS.
 # 
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -12,16 +14,12 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-# Docker Compose Spec Version
-version: '2'
+cd "$(dirname "$0")"
+IMAGE_BASE_NAME="$(./get-repo-name.sh)-web-ui"
 
-services:
-  web-ui:
-    image: usdotfhwastol/carma-messenger-web-ui:test
-    network_mode: host
-    container_name: web-ui
-    volumes_from: 
-      - container:carma-config:ro
-    volumes: 
-      - /var/run/docker.sock:/var/run/docker.sock 
-    restart: always
+# This sed command based on Stack Overflow answer: https://stackoverflow.com/questions/28795479/awk-sed-script-to-convert-a-file-from-camelcase-to-underscores
+# Asked by Corentin Peuvrel: https://stackoverflow.com/users/4608146/corentin-peuvrel
+# Answered by pachopepe: https://stackoverflow.com/users/641896/pachopepe
+# Credited in accordance with Stack Overflow's CC-BY license
+echo $IMAGE_BASE_NAME | sed -r 's/CARMA/carma/' | sed -r 's/([A-Z])/-\L\1/g' | sed 's/^_//'
+

@@ -25,22 +25,33 @@ curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/develop/
 ```
 <br>
 
-Hardware configurations are managed in the config directory of this repo. For local development the [development config](config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser. 
+Hardware configurations are managed in the config directory of this repo. For local development the [development config](config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser.
 
 ### Example Setup
 
 ```
+# Clone repo
 mkdir carma-messenger-ws
 cd carma-messenger-ws
 mkdir src
 cd src
 git clone https://github.com/usdot-fhwa-stol/carma-messenger.git
+
+# Build development config
 cd carma-messenger/config/development
 ./build-image.sh
 docker image ls # Look for the newest carma-messenger-config image
 carma config set usdotfhwastol/carma-messenger-config:<commit-hash>-development
-cd ../../docker
+
+# Build messenger-core
+cd ../../messenger-core/docker
 ./build-image.sh -d # Build from develop branch of dependencies
+
+# Build web-ui
+cd ../../web-ui/docker
+./build-image.sh -v test # Tag development image with test
+
+# Launch CARMA Messenger
 carma start all
 ```
 
