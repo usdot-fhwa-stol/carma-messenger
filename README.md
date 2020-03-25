@@ -17,30 +17,41 @@ As shown in the diagram, any given piece of functionality may require client nod
 
 ## System Configuration and Installation
 
-The carma-messenger system is meant to be run using docker. The configuration of carma-messanger is similar, though not identical, to configuring the CARMA Platform following the process described in the document [CARMA Platform Detailed Design - Parameter and Launch Standards for Different Vehicle Configurations.docx](https://usdot-carma.atlassian.net/wiki/spaces/CAR/pages/216006666/CARMA3+Developer+Guides). At the moment, the user does not need to configure any folders on the host vehicle except ensuring that the logging directories ```/opt/carma/logs``` and ```/opt/carma/.ros``` exist and are writeable. In addition, the user should utilize the [carma script](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/develop/engineering_tools/carma) and [__carma_autocomplete file](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/develop/engineering_tools/__carma_autocomplete) to launch and manage the system. The carma script can be placed under ```/usr/bin``` and the autocomplete file under ```/etc/bash_completion.d/``` (Ubuntu 16.04). 
+The carma-messenger system is meant to be run using docker. The configuration of carma-messanger is similar, though not identical, to configuring the CARMA Platform following the process described in the document [CARMA Platform Detailed Design - Parameter and Launch Standards for Different Vehicle Configurations.docx](https://usdot-carma.atlassian.net/wiki/spaces/CAR/pages/216006666/CARMA3+Developer+Guides). At the moment, the user does not need to configure any folders on the host vehicle except ensuring that the logging directories ```/opt/carma/logs``` and ```/opt/carma/.ros``` exist and are writeable. In addition, the user should utilize the [carma script](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/master/engineering_tools/carma) and [__carma_autocomplete file](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/master/engineering_tools/__carma_autocomplete) to launch and manage the system. The carma script can be placed under ```/usr/bin``` and the autocomplete file under ```/etc/bash_completion.d/``` (Ubuntu 16.04). 
 
 ```
-curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/develop/engineering_tools/carma >> /usr/bin/carma
-curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/develop/engineering_tools/__carma_autocomplete >> /etc/bash_completion.d/__carma_autocomplete
+curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/carma >> /usr/bin/carma
+curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/__carma_autocomplete >> /etc/bash_completion.d/__carma_autocomplete
 ```
 <br>
 
-Hardware configurations are managed in the config directory of this repo. For local development the [development config](config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser. 
+Hardware configurations are managed in the config directory of this repo. For local development the [development config](carma-messenger-config/development) folder may be used. The user can build this configuration image by calling ```./build-image.sh``` from inside that directory. This will create a carma-messenger-config image. The user can then set this as the target image using ```carma config set```. To start and stop the system, the user can call ```carma start all``` and ```carma stop all```. The UI should then be accessable from localhost in a browser.
 
 ### Example Setup
 
 ```
+# Clone repo
 mkdir carma-messenger-ws
 cd carma-messenger-ws
 mkdir src
 cd src
 git clone https://github.com/usdot-fhwa-stol/carma-messenger.git
-cd carma-messenger/config/development
+
+# Build development config
+cd carma-messenger/carma-messenger-config/development
 ./build-image.sh
 docker image ls # Look for the newest carma-messenger-config image
 carma config set usdotfhwastol/carma-messenger-config:<commit-hash>-development
-cd ../../docker
+
+# Build carma-messenger-core
+cd ../../carma-messenger-core/docker
 ./build-image.sh -d # Build from develop branch of dependencies
+
+# Build carma-messenger-ui
+cd ../../carma-messenger-ui/docker
+./build-image.sh -v test # Tag development image with test
+
+# Launch CARMA Messenger
 carma start all
 ```
 
