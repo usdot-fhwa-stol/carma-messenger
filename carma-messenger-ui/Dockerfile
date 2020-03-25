@@ -28,7 +28,7 @@ ARG VERSION="NULL"
 ARG VCS_REF="NULL"
 
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name="carma-messenger-web-ui"
+LABEL org.label-schema.name="carma-messenger-ui"
 LABEL org.label-schema.description="Web user interface for the CARMA Messenger"
 LABEL org.label-schema.vendor="Leidos"
 LABEL org.label-schema.version=${VERSION}

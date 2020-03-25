@@ -52,7 +52,7 @@ jobs:
           name: Pull Deps
           command: |
             source ${INIT_ENV}
-            ./src/carma-messenger/messenger-core/docker/checkout.sh -r ${PWD}
+            ./src/carma-messenger/carma-messenger-core/docker/checkout.sh -r ${PWD}
             cd ${PWD}
             sudo apt-get update
       - run:
@@ -73,7 +73,7 @@ jobs:
             set -x
             source ${INIT_ENV}
             source /opt/carma/devel/setup.bash
-            cd src/carma-messenger/messenger-core/message/
+            cd src/carma-messenger/carma-messenger-core/message/
             ./gradlew jacocoCombinedReport --info
             ./gradlew testReport --info
       - run:
@@ -82,7 +82,7 @@ jobs:
             source ${INIT_ENV}
             mkdir -p ~/junit/ 
             sudo mkdir -p /reports/tests
-            sudo mv src/carma-messenger/messenger-core/message/build/reports/allTests/* /reports/tests/
+            sudo mv src/carma-messenger/carma-messenger-core/message/build/reports/allTests/* /reports/tests/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
           when: always
       # Run SonarCloud analysis

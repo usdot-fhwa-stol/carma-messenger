@@ -16,10 +16,12 @@
 version: '2'
 
 services:
-  web-ui:
-    image: usdotfhwastol/carma-messenger-web-ui:test
+  carma-messenger-ui:
+    image: usdotfhwastol/carma-messenger-ui:3.1.0
     network_mode: host
-    container_name: web-ui
+    container_name: carma-messenger-ui
+    environment:
+      - ROS_IP=192.168.0.100
     volumes_from: 
       - container:carma-config:ro
     volumes: 
