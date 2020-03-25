@@ -38,7 +38,7 @@ cd src
 git clone https://github.com/usdot-fhwa-stol/carma-messenger.git
 
 # Build development config
-cd carma-messenger/config/development
+cd carma-messenger/carma-messenger-config/development
 ./build-image.sh
 docker image ls # Look for the newest carma-messenger-config image
 carma config set usdotfhwastol/carma-messenger-config:<commit-hash>-development
