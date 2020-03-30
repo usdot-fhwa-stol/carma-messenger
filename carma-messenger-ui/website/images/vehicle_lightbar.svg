@@ -1,0 +1,204 @@
+<svg id="svgLayerLightBar" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810px" height="40px" viewBox="33.59375 35.9375 696.09375 34.375" preserveAspectRatio="xMidYMid meet" >
+  <rect id="svgEditorBackground" x="0" y="0" width="800" height="100" style="fill: none; stroke: none;"/>
+  <defs id="svgEditorDefs">
+    <polygon id="svgEditorShapeDefs" style="fill:khaki;stroke:black;vector-effect:non-scaling-stroke;stroke-width:1px;"/>
+    <linearGradient gradientUnits="objectBoundingBox" id="lrgd2-e1-50-reflect" spreadMethod="reflect" x1="0%" x2="50%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="lightblue"/>
+      <stop offset="100%" stop-color="#ef5b2b"/>
+    </linearGradient>
+    <linearGradient gradientUnits="objectBoundingBox" id="lrgd2-e1" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="lightblue"/>
+      <stop offset="100%" stop-color="#ef5b2b"/>
+    </linearGradient>
+    <linearGradient gradientUnits="objectBoundingBox" id="lgrd2-black-white" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="black"/>
+      <stop offset="100%" stop-color="white"/>
+    </linearGradient>
+    <linearGradient id="lgrd3-fr-v" x1="0" x2="0" y1="0" y2="100%">
+      <stop offset="0%" stop-color="blue"/>
+      <stop offset="50%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="red"/>
+    </linearGradient>
+    <radialGradient fx="30%" fy="30%" gradientUnits="objectBoundingBox" id="rgrd11-a">
+      <stop offset="0" stop-color="#f9caaa"/>
+      <stop offset="20%" stop-color="#f9caaa"/>
+      <stop offset="20%" stop-color="#f9ae7a"/>
+      <stop offset="40%" stop-color="#f9ae7a"/>
+      <stop offset="40%" stop-color="#f79959"/>
+      <stop offset="60%" stop-color="#f79959"/>
+      <stop offset="60%" stop-color="#fc9149"/>
+      <stop offset="80%" stop-color="#fc9149"/>
+      <stop offset="80%" stop-color="#f79959"/>
+      <stop offset="90%" stop-color="#f97821"/>
+      <stop offset="100%" stop-color="#f97821"/>
+    </radialGradient>
+    <radialGradient cy="60%" fx="45%" fy="45%" gradientUnits="objectBoundingBox" id="rgrd11-b" r="2">
+      <stop offset="0%" stop-color="#48afc1"/>
+      <stop offset="10%" stop-color="#b4c63b"/>
+      <stop offset="20%" stop-color="#ef5b2b"/>
+      <stop offset="30%" stop-color="#503969"/>
+      <stop offset="40%" stop-color="#ab6294"/>
+      <stop offset="50%" stop-color="#1cb98f"/>
+      <stop offset="60%" stop-color="#48afc1"/>
+      <stop offset="70%" stop-color="#b4c63b"/>
+      <stop offset="80%" stop-color="#ef5b2b"/>
+      <stop offset="90%" stop-color="#503969"/>
+      <stop offset="100%" stop-color="#ab6294"/>
+    </radialGradient>
+
+    <!-- Regular Gray gradients -->
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center" r="55%">
+      <stop id="rgrd-center-stop1" offset="0%" style="stop-color:gray;stop-opacity:0.3"/>
+      <stop id="rgrd-center-stop2" offset="100%" style="stop-color:black;stop-opacity:1"/>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle" r="50%">
+      <stop offset="0%" style="stop-color:gray;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:black;stop-opacity:1"/>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-edge" r="45%">
+      <stop offset="0%" style="stop-color:gray;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:black;stop-opacity:1"/>
+    </radialGradient>
+
+    <!-- Regular non-gray gradients -->
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center-green" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:green;stop-opacity:1"/>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle-gold" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1"/>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-edge-gold" r="45%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1"/>
+    </radialGradient>
+
+    <!-- Blinking Green gradients -->
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center-green-blink" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:green;stop-opacity:1">
+        <animate attributeName="stop-color" values="green; gray; green;" dur=".8s" repeatCount="indefinite"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center-green-blink-alt" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:green;stop-opacity:1">
+        <animate attributeName="stop-color" values="gray; green; gray;" dur=".8s" repeatCount="indefinite" animation-delay="2s"></animate>
+      </stop>
+    </radialGradient>
+
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle-green-blink" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:green;stop-opacity:1">
+        <animate attributeName="stop-color" values="green; gray; green;" dur="1s" repeatCount="indefinite"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle-green-blink-alt" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:green;stop-opacity:1">
+        <animate attributeName="stop-color" values="green; gray; green;" dur="1s" repeatCount="indefinite" animation-delay="4s"></animate>
+      </stop>
+    </radialGradient>
+
+    <!-- Blinking Gold gradients -->
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center-gold-blink" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; orange; #FFA500; gray;" dur=".8s" repeatCount="indefinite"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-center-gold-blink-alt" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="gray; orange; #FFA500; orange; #FFA500;" dur=".8s" repeatCount="indefinite" animation-delay="2s"></animate>
+      </stop>
+    </radialGradient>
+
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle-gold-blink" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray;" dur="1s" repeatCount="indefinite"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-middle-gold-blink-alt" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="gray;orange; #FFA500;" dur="1s" repeatCount="indefinite" animation-delay="4s"></animate>
+      </stop>
+    </radialGradient>
+
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-edge-gold-blink" r="45%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray;" dur="1s" repeatCount="indefinite"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-edge-gold-blink-alt" r="45%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="gray;orange; #FFA500;" dur="1s" repeatCount="indefinite" animation-delay="4s"></animate>
+      </stop>
+    </radialGradient>
+
+    <!-- Lights for Left/Right Turns -->
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-1a" r="45%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black"  repeatCount="indefinite"  dur="2.5s"  fill="freeze" begin=".1s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-2a" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black" repeatCount="indefinite"  dur="2.5s" fill="freeze" begin=".2s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-3a" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black"  repeatCount="indefinite" dur="2.5s" fill="freeze" begin=".3s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-4a" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black"  repeatCount="indefinite" dur="2.5s"  fill="freeze" begin=".4s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-5a" r="55%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black" repeatCount="indefinite"  dur="2.5s"  fill="freeze" begin=".5s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-6a" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black" repeatCount="indefinite" dur="2.5s"  fill="freeze" begin=".6s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-7a" r="50%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black " repeatCount="indefinite" dur="2.5s"  fill="freeze" begin=".7s"></animate>
+      </stop>
+    </radialGradient>
+    <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" id="rgrd-gold-blink-8a" r="45%">
+      <stop offset="0%" style="stop-color:gold;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1">
+        <animate attributeName="stop-color" values="orange; #FFA500; gray; black; orange; #FFA500; gray; black" repeatCount="indefinite" dur="2.5s"  fill="freeze" begin=".7s"></animate>
+      </stop>
+    </radialGradient>
+  </defs>
+  <g id="e_group" style="fill:url(#lrgd2-e1-50-reflect);" transform="matrix(1 0 0 1 -13 -330)">
+    <path d="M3.8028500198485062,63.70775146859947v-1.5a2,2,0,0,0,-2.000000000000001,-2h-4a2,2,0,0,0,-2.000000000000001,2v3a2,2,0,0,0,2.000000000000001,2h3.759398496240605a2,2,0,0,0,2.240601503759396,-2Z" style="fill:url(#rgrd-edge); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e1_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M11.997023697548581,63.66240873719033v-1.5a2,2,0,0,0,-1.9999999999999964,-2h-4.000000000000004a2,2,0,0,0,-1.9999999999999964,2v3a2,2,0,0,0,1.9999999999999964,2h3.759398496240606a2,2,0,0,0,2.240601503759395,-2Z" style="fill:url(#rgrd-middle); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e2_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M20.191197469224356,63.617066005781226v-1.5a2,2,0,0,0,-2,-2h-4.0000000000000036a2,2,0,0,0,-2,2v3a2,2,0,0,0,2,2h3.7593984962406033a2,2,0,0,0,2.2406015037594003,-2Z" style="fill:url(#rgrd-middle); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e3_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M28.38537124090014,63.571723274372104v-1.5a2,2,0,0,0,-2,-2h-4a2,2,0,0,0,-2,2v3a2,2,0,0,0,2,2h3.759398496240607a2,2,0,0,0,2.240601503759393,-2Z" style="fill:url(#rgrd-center); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e4_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M36.59285258678835,63.361360339930194v-1.5a2,2,0,0,0,-2,-2h-4a2,2,0,0,0,-2,2v3.000000000000007a2,2,0,0,0,2,1.9999999999999858h3.759398496240607a2,2,0,0,0,2.240601503759393,-2Z" style="fill:url(#rgrd-center); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e5_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M44.787026264488425,63.31601760852105v-1.5a2,2,0,0,0,-2,-2h-4a2,2,0,0,0,-2,2v3a2,2,0,0,0,2,2h3.759398496240607a2,2,0,0,0,2.240601503759393,-2Z" style="fill:url(#rgrd-middle); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e6_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M52.98120003616419,63.270674877111944v-1.5a2,2,0,0,0,-2,-2h-4a2,2,0,0,0,-2,2v3a2,2,0,0,0,2,2h3.759398496240607a2,2,0,0,0,2.240601503759393,-2Z" style="fill:url(#rgrd-middle); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e7_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+    <path d="M61.17537380783997,63.22533214570282v-1.5a2,2,0,0,0,-2,-2h-3.999999999999986a2,2,0,0,0,-2,2v3a2,2,0,0,0,2,2h3.7593984962405926a2,2,0,0,0,2.240601503759393,-2Z" style="fill:url(#rgrd-edge); stroke:black; vector-effect:non-scaling-stroke;stroke-width:1px;" id="e8_shape" transform="matrix(10.5215 0 0 2.88691 94.8909 199.653)"/>
+  </g>
+</svg>

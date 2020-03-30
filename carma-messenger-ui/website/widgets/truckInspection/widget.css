@@ -1,0 +1,480 @@
+.leftDivCSS{
+    width: calc(65% - 5px);
+    display: inline-block;
+    position: relative;
+    float: left;
+    margin-left: 5px;
+}
+
+.rightDivCSS{
+    width: 35%;    
+    display: inline-block;
+    position: relative;
+    float: left;
+}
+
+/* VIN */
+.VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+.InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
+.ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
+    display: block;
+    padding: 10px;
+    position: relative;
+    background-color: #DCDDE1;
+    /* background-color:  #666666; */
+    min-width: 26pt;
+}
+
+.smallTextDiv{
+    position: absolute;
+    top:5px;
+    left: 5px;
+    font-size: 15pt;
+    color:#363636;
+    text-transform: uppercase;
+    font-weight: bold;
+    /* color:white; */
+}
+/****column 1 ***/
+/* VIN */
+.VINFrame {
+    width: 50%;
+    display: inline-block;
+    position: relative;
+    float: left;
+}
+/* CarrierName */
+.CarrierNameFrame {
+    width: 50%;
+    display: inline-block;
+    float: left;
+    margin-top:5px;
+}
+/* Inspection */
+.InspectionFrame {
+    width: 50%;
+    display: inline-block;
+    float: left;   
+    margin-top:5px;
+}
+
+/* Calibration */
+.CalibrationFrame {
+    width: 50%;
+    position: relative;
+    display: inline-block;
+    float: left;
+    margin-top:5px;
+}
+
+
+/****column 2 ***/
+/* License */
+.LicenseFrame {    
+    width: calc(25% - 5px); 
+    margin-left:5px;
+    position: relative;
+    display: inline-block;
+    float: left;
+}
+
+
+
+/* Weight */
+.WeightFrame {
+    width: calc(25% - 5px); 
+    margin-left:5px;
+    position: relative;
+    display: inline-block;
+    float: left;
+}
+
+/* Carrier */
+.CarrierFrame {
+    position: relative;
+    width: calc(25% - 5px);
+    margin-left:5px;
+    display: inline-block;
+    float: left;
+    margin-top:5px;
+}
+
+
+/* Permit */
+.PermitFrame {   
+    width: calc(25% - 5px); 
+    margin-left:5px;
+    position: relative;
+    display: inline-block;
+    float: left;
+    margin-top:5px;
+}
+
+/* ISS */
+.ISSFrame {
+    width: calc(10% - 5px);       
+    position: relative;
+    display: inline-block;
+    float: left;
+    margin-left:5px;
+    margin-top:5px;
+}
+
+/* PreADSHealthCheckText */
+.PreADSHealthCheckFrame {   
+    width: calc(20% - 5px); 
+    position: relative;    
+    display: inline-block;
+    float: left;
+    margin-left:5px;
+    margin-top:5px;
+}
+
+/* ADSHealthCheckText */
+.ADSHealthStatusFrame {   
+    width: calc(20% - 5px); 
+    margin-left:5px;
+    position: relative;
+    display: inline-block;
+    float: left;
+    margin-top:5px;
+}
+
+
+/* ADSSoftwareVersion */
+.ADSSoftwareVersionFrame {
+    width: calc(50% - 5px); 
+    margin-left:5px;
+    position: relative;
+    display: inline-block;
+    float: left;    
+    margin-top:5px;
+}
+
+
+/**truckImgFrame*/
+.truckImgFrame{
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    float: left;
+}
+.truckImgPanel{
+    display: block;
+}
+
+/**ace Icon at detail page*/
+.aceIconFrame_detailPg{
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    float: left;
+    margin-top: 5px;
+}
+.aceIconPanel_detailPg{
+    display: block;
+}
+
+
+.VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+.LicenseText,.CalibrationText,
+.ADSSoftwareVersionText,.ISSText{
+    font-family: Roboto;
+    font-style: normal;
+    text-align: center;
+    /* color:#FFF; */
+     color:#000;
+    word-wrap: break-word; /* identical to box height */
+    padding: 26pt 0px;
+    font-size: 120%; /**Compare to body font size**/
+    
+}
+
+.ISSText{
+    color: limegreen !important;
+    font-weight: bolder;
+    font-size: 150%;
+}
+
+.ADSHealthStatusText,.PreADSHealthCheckText{
+    padding: 18pt;
+    border-radius: 18pt;
+    width: 36pt;
+    text-align: center;
+   /*** margin:26pt auto;***/
+    margin-top:48pt;
+    margin-bottom: 4pt;
+    margin-left: auto;
+    margin-right: auto;
+    /* box-shadow: 1px 3px #a4fc00 ; */
+    background-color:  limegreen !important;
+}
+.truckImg{
+    position: relative;
+    float: left;
+    max-width: calc(100% - 5px);
+    width: auto;
+    z-index: 1;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    /**height: calc(26pt * 7) ;  (7*26pt) ***/
+    height: auto;
+}
+.logSpan_detailPg{
+    position: relative;
+    margin: 5px auto;
+    font-size:250%;
+    font-weight: bolder;
+    color:#666666;
+}
+.aceIcon_detailPg{
+    position: relative;
+    margin: 5px auto;   
+    max-width: calc(100% - 5px);
+    width: auto;
+}
+
+/***Log list START**/
+label {
+    display: block;
+    float: left;
+    position: relative;
+    padding: 15px 15px 15px 15px;
+    color: grey;
+    border-radius: 5px;
+    background-color: gold;
+    white-space: nowrap;
+    text-align: left;
+    user-select: none;
+    transition: background-color .2s, box-shadow .2s;
+    font-size: 120%;
+    font-weight: bold;
+    width: 70%;
+    z-index: 1;
+}
+
+input[type=button] {
+    float: left;
+    display: block;
+    position: relative;
+    padding: 15px 15px 15px 15px;
+    color: white;
+    border-radius: 10px;
+    background-color:darkblue;
+    border:0;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 120%;
+    font-weight: bold;
+    width: calc(30% - 15px);
+    margin-left: 5px;
+    z-index: 1;
+}
+input[type=button]:hover,
+input[type=button]:active
+{
+    background-color:#005bb6;
+}
+
+div[class^='divBtnLabelUnit']{
+    margin: 5px 0px;
+    float: left;
+    display: block;
+    position: relative;
+    width: 100%;
+}
+/**Log list END**/
+
+
+/*** safty Log Details*****/
+@media only screen and (min-width: 992px) and (max-width: 1200px) {      
+    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+    .LicenseText,.CalibrationText,
+    .ADSSoftwareVersionText,.ISSText{
+        padding: 28pt 0pt;
+    }
+    .ADSSoftwareVersionFrame,.WeightFrame,.PermitFrame,.LicenseFrame,.CarrierFrame,
+    .InspectionFrame,.CarrierNameFrame,.CalibrationFrame,
+    .ADSHealthStatusFrame,.PreADSHealthCheckFrame,.ISSFrame,.VINFrame,.leftDivCSS,.rightDivCSS{
+        max-height: 95pt;
+    }
+
+    .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+    .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
+    .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
+        max-height: 90pt;
+    }
+    .ADSHealthStatusText,.PreADSHealthCheckText{
+      padding: 12.96pt;
+      border-radius: 12.96pt;
+      width: 25.92pt;
+      text-align: center;
+      margin-top:48pt;
+      margin-bottom: 4pt;
+      margin-left: auto;
+      margin-right: auto;
+      }
+    
+  }  
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+  .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+  .LicenseText,.CalibrationText,
+  .ADSHealthStatusText,.PreADSHealthCheckText,.ADSSoftwareVersionText,.ISSText{
+  /* identical to box height */
+      padding: 28pt 0pt;
+      /* font-size: 14pt; */
+  }
+ 
+
+    .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+    .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
+    .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
+        max-height: 90pt;
+    }
+  /* .smallTextDiv{
+      font-size: 11pt;
+  } */
+  .ADSHealthStatusText,.PreADSHealthCheckText{
+    padding: 12.96pt;
+    border-radius: 12.96pt;
+    width: 25.92pt;
+    text-align: center;    
+    margin-top:48pt;
+    margin-bottom: 4pt;
+    margin-left: auto;
+    margin-right: auto;
+  
+    }
+
+  
+}
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  
+  .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+  .LicenseText,.CalibrationText,
+  .ADSHealthStatusText,.PreADSHealthCheckText,.ADSSoftwareVersionText,.ISSText{
+      padding: 28pt 0pt;
+      font-size: 100%;
+  }
+ 
+
+    .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+    .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
+    .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
+        max-height: 85pt;
+    }
+
+  .smallTextDiv{
+      font-size: 80%;
+      
+  }
+  .ADSHealthStatusText,.PreADSHealthCheckText{
+    padding: 9.2pt;
+    border-radius: 9.2pt;
+    width: 18.4pt; /**The size of line height : 1.2 * font-size**/
+    text-align: center; 
+    margin-top:46pt;
+    margin-bottom: 4pt;
+    margin-left: auto;
+    margin-right: auto;
+  
+    }
+
+}
+ 
+  
+@media  only screen and (min-width: 600px) and (max-width: 767px) {    
+    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+    .LicenseText,.CalibrationText,
+    .ADSSoftwareVersionText,.ISSText{
+    /* identical to box height */
+        padding: 28pt 0px;
+        font-size: 100%;
+    }
+
+    .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+    .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
+    .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
+        max-height: 75pt;
+    }
+    .smallTextDiv{
+        font-size: 80%;
+    }
+    .ADSHealthStatusText,.PreADSHealthCheckText{
+      padding: 8.4pt;
+      border-radius: 8.4pt;
+      width: 16.8pt;
+      text-align: center;
+      margin-top:40pt;
+      margin-bottom: 4pt;
+      margin-left: auto;
+      margin-right: auto;
+      }
+    .truckImg,.aceIcon_detailPg,.logSpan_detailPg{
+        margin-left: 0px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }    
+}
+
+  
+  @media only screen and (max-width: 599px) {    
+    .ADSSoftwareVersionFrame,.WeightFrame,.PermitFrame,.LicenseFrame,.CarrierFrame,
+    .InspectionFrame,.CarrierNameFrame,.CalibrationFrame,
+    .ADSHealthStatusFrame,.PreADSHealthCheckFrame,.ISSFrame,.VINFrame,.leftDivCSS,.rightDivCSS{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .LicenseFrame,.WeightFrame{
+        margin-top: 5px;
+    }
+    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+    .LicenseText,.CalibrationText,
+    .ADSSoftwareVersionText,.ISSText{
+    /* identical to box height */
+        padding: 18pt 0px;
+        font-size: 120%; /**Compare to body font size**/
+    }
+    .smallTextDiv{
+        font-size: 100%; /**Compare to body font size**/
+    }
+    .ADSHealthStatusText,.PreADSHealthCheckText{
+      padding: 10.8pt;
+      border-radius: 10.8pt;
+      width: 21.6pt;
+      text-align: center;
+      margin:18pt auto;
+      }
+    .truckImg,.aceIcon_detailPg,.logSpan_detailPg{
+        margin-left: 0px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }    
+}
+
+
+
+/*** safty Log list*****/
+
+@media  only screen and (min-width: 600px) and (max-width: 920px) {
+    input[type=button] ,label{
+        font-size: 100%;  
+        min-width: 200px;
+    }           
+    label{
+        max-width: calc(100% - 210px);
+    }   
+}
+
+@media  (max-width: 599px) {
+    label{
+        width: 100%;
+        margin-left: 0px;
+    }  
+    input[type=button] {
+        width: fit-content;
+    }     
+}
