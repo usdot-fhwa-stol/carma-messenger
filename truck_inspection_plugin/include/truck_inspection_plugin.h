@@ -16,10 +16,15 @@
  * the License.
  */
 
+#include <sstream>
+
 #include <ros/ros.h>
+#include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
 #include <std_srvs/Trigger.h>
 #include <carma_utils/CARMAUtils.h>
 #include <cav_msgs/MobilityRequest.h>
+#include <cav_msgs/MobilityOperation.h>
 
 namespace truck_inspection_plugin
 {
@@ -42,6 +47,13 @@ namespace truck_inspection_plugin
         // publisher for generated Mobility Request messages
         ros::Publisher  mr_pub_;
 
+        // publisher for passing relevent data to UI
+        ros::Publisher content_pub_;
+        ros::Publisher cav_detection_pub_;
+
+        // subscriber for incoming mobility operation messages
+        ros::Subscriber mo_sub_;
+
         // service server for sending inspection request
         ros::ServiceServer inspection_request_service_server_;
 
@@ -49,7 +61,15 @@ namespace truck_inspection_plugin
         void initialize();
 
         // callbacks for the subscriber
+        void mobilityOperationCallback(const cav_msgs::MobilityOperationConstPtr& msg);
+
+        // callbacks for the service
         bool inspectionRequestCallback(std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& resp);
+
+        // helper function to verify safety log
+        bool isSafetyLogValid(const std::string& log);
+
+        int number_of_entries;
 
     };
 

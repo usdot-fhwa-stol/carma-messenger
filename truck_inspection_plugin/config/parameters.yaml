@@ -1,1 +1,2 @@
-# Add possible parameters here
+# Number of Key-Value entries in safety log
+num_of_entries: 12
