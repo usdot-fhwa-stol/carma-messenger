@@ -44,6 +44,7 @@ namespace truck_inspection_plugin
         cav_msgs::MobilityRequest msg;
         msg.strategy = TruckInspectionPlugin::INSPECTION_STRATEGY;
         mr_pub_.publish(msg);
+        resp.success = true;
     }
 
     void TruckInspectionPlugin::mobilityOperationCallback(const cav_msgs::MobilityOperationConstPtr& msg)
