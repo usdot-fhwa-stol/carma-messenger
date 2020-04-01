@@ -19,7 +19,6 @@
 #include <sstream>
 
 #include <ros/ros.h>
-#include <std_msgs/Bool.h>
 #include <std_msgs/String.h>
 #include <std_srvs/Trigger.h>
 #include <carma_utils/CARMAUtils.h>
@@ -70,6 +69,8 @@ namespace truck_inspection_plugin
         bool isSafetyLogValid(const std::string& log);
 
         int number_of_entries;
+
+        std::string safety_log_;
 
     };
 

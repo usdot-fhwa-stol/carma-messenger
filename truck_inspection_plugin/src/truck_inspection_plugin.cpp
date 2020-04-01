@@ -26,10 +26,19 @@ namespace truck_inspection_plugin
         pnh_.reset(new ros::CARMANodeHandle("~"));
         pnh_->getParam("num_of_entries", number_of_entries);
         mr_pub_ = nh_->advertise<cav_msgs::MobilityRequest>("mobility_request_outbound", 5);
-        cav_detection_pub_ = nh_->advertise<std_msgs::Bool>("cav_truck_identified", 5);
+        cav_detection_pub_ = nh_->advertise<std_msgs::String>("cav_truck_identified", 5);
         content_pub_ = nh_->advertise<std_msgs::String>("truck_safety_info", 5);
         mo_sub_ = nh_->subscribe("mobility_operation_inbound", 5, &TruckInspectionPlugin::mobilityOperationCallback, this);
         inspection_request_service_server_ = nh_->advertiseService("send_inspection_request", &TruckInspectionPlugin::inspectionRequestCallback, this);
+        ros::CARMANodeHandle::setSpinCallback([this]() -> bool {
+            if(!this->safety_log_.empty()) {
+                std_msgs::String msg_content;
+                msg_content.data = safety_log_;
+                content_pub_.publish(msg_content);
+                return true;
+            }
+        });
+        ros::CARMANodeHandle::setSpinRate(1.0);
         ROS_INFO_STREAM("Truck inspection plugin is initialized...");
     }
 
@@ -44,6 +53,8 @@ namespace truck_inspection_plugin
         cav_msgs::MobilityRequest msg;
         msg.strategy = TruckInspectionPlugin::INSPECTION_STRATEGY;
         mr_pub_.publish(msg);
+        // reset safety log
+        this->safety_log_ = "";
         resp.success = true;
     }
 
@@ -52,18 +63,17 @@ namespace truck_inspection_plugin
         // if there is a truck around running CARMA
         if(msg->strategy == TruckInspectionPlugin::INSPECTION_STRATEGY)
         {
-            std_msgs::Bool msg_out;
-            msg_out.data = true;
-            // publish message to show there is a cav truck in the radio range of the ego-vehicle
-            cav_detection_pub_.publish(msg_out);
-            // if the incoming message contains a safety log
-            if(!msg->strategy_params.empty())
+            // if the incoming message contains a valid safety log
+            if(isSafetyLogValid(msg->strategy_params))
             {
-                std::string content = msg->strategy_params;
-                std_msgs::String msg_content;
-                msg_content.data = content;
-                // forward to UI for display
-                content_pub_.publish(msg_content);
+                safety_log_ = msg->strategy_params;
+            } else {
+                std_msgs::String msg_out;
+                std::string k_v_pair = msg->strategy_params;
+                // get only VIN number
+                msg_out.data = k_v_pair.substr(k_v_pair.find(':') + 1);
+                // publish message to show there is a cav truck in the radio range of the ego-vehicle
+                cav_detection_pub_.publish(msg_out);
             }
         }
     }
