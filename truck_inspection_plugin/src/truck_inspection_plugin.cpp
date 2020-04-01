@@ -38,7 +38,6 @@ namespace truck_inspection_plugin
             }
             return true;
         });
-        ros::CARMANodeHandle::setSpinRate(1.0);
         ROS_INFO_STREAM("Truck inspection plugin is initialized...");
     }
 
