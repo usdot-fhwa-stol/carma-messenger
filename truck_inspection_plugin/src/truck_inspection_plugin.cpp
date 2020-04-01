@@ -35,8 +35,8 @@ namespace truck_inspection_plugin
                 std_msgs::String msg_content;
                 msg_content.data = safety_log_;
                 content_pub_.publish(msg_content);
-                return true;
             }
+            return true;
         });
         ros::CARMANodeHandle::setSpinRate(1.0);
         ROS_INFO_STREAM("Truck inspection plugin is initialized...");
