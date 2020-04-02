@@ -135,8 +135,8 @@ CarmaJS.WidgetFramework = (function () {
            // console.log('listWidgetOptionsFlag: ' + value);
 
             //Save the options everytime.
-            widgetName=value;
-            loadWidgets(widgetName,param);
+           // widgetName=value;
+           // loadWidgets(widgetName,param);
            
            /**  if (value == true )
                 showWidgetOptions();

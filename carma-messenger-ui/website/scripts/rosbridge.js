@@ -273,7 +273,7 @@ function connectToROS() {
             //After connecting on first load or refresh, evaluate at what step the user is at.
             //evaluateNextStep();
             CarmaJS.WidgetFramework.closeWidgets();
-            CarmaJS.WidgetFramework.listWidgetOptions('list');
+            CarmaJS.WidgetFramework.loadWidgets();
         });
 
         ros.on('close', function () {
@@ -1888,52 +1888,6 @@ function getCARMAVersion()
 function showCARMAVersion(response) {
 	var elemSystemVersion = document.getElementsByClassName('systemversion');
 	//elemSystemVersion[0].innerHTML = response;
-}
-
-function sendTruckInspectionReq(btn)
-{    
-    console.log("send truck inspection request");
-    var sendTruckInspection = new ROSLIB.Service({
-        ros: ros,
-        name: '/send_inspection_request',
-        serviceType: 'std_srvs/Trigger'
-    });
-    /***var request = new ROSLIB.ServiceRequest({
-        success (bool): true,
-        message (string) : VIN
-    });****/
-    
-    var request = new ROSLIB.ServiceRequest({});
-    try{       
-        sendTruckInspection.callService(request, function(result) {
-            console.log("send truck inspection request . Result messageg is: "+result.success);
-            
-           // SubscribeToSafetyLog();              
-           
-            if(!result.success){
-                         
-                alert("Log is not available, please try again in 5 seconds");
-                setTimeout(() => {  
-                    if(btn != "undefined" && btn.style != "undefined"){
-                     btn.disabled=false;  
-                     btn.style.color='white';  
-                     btn.value="Request Safety Log";
-                    }                
-             }, 5000);
-            }else{
-            //    CarmaJS.WidgetFramework.listWidgetOptions('subscribe');  
-                 var arrow = document.getElementById("Messenger_back_arrow");
-                arrow.style.display='inline-block'; 
-               CarmaJS.WidgetFramework.closeWidgets();
-              CarmaJS.WidgetFramework.listWidgetOptions('detail');  
-            }
-            
-        }); 
-    }catch(ex){
-        alert("Log is not available, please try again in 10 seconds");
-        console.error("send truck inspection request error: " + ex.message);
-    }
-    
 }
 
 /*

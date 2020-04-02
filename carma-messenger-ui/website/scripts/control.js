@@ -174,16 +174,7 @@ function createBtnWithLabelElement(container, btnId, btnValue,afterClickBtnValue
     var newInput = document.createElement('input');
     newInput.type = 'button';
     newInput.name = btnName;
-    newInput.id = 'btn' + btnId;
-   // newInput.onclick = function () { eval(funcName) (newInput.id) }; //e.g. function () { activatePlugin(newInput.id) };
-    newInput.onclick = function () { 
-       // this.style.color='red'; 
-        this.disabled=true;
-        this.value=afterClickBtnValue;
-        
-       sendTruckInspectionReq(this);     
-        
-    };
+    newInput.id = btnId;
     newInput.setAttribute('title', btnValue);
     newInput.value=btnValue;   
 
