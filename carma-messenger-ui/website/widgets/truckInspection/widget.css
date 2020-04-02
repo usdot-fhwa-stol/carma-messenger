@@ -11,18 +11,19 @@
     display: inline-block;
     position: relative;
     float: left;
+    max-height: 601.63px; /**match the left div height**/
 }
-
 /* VIN */
 .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
 .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
 .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
     display: block;
-    padding: 10px;
+    padding: 10px 5px 10px 15px;
     position: relative;
     background-color: #DCDDE1;
     /* background-color:  #666666; */
     min-width: 26pt;
+    max-height: 110pt;
 }
 
 .smallTextDiv{
@@ -32,7 +33,7 @@
     font-size: 15pt;
     color:#363636;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: bolder;
     /* color:white; */
 }
 /****column 1 ***/
@@ -117,7 +118,7 @@
     display: inline-block;
     float: left;
     margin-left:5px;
-    margin-top:5px;
+    margin-top:5px;   
 }
 
 /* PreADSHealthCheckText */
@@ -169,7 +170,7 @@
     width: 100%;
     display: inline-block;
     float: left;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 .aceIconPanel_detailPg{
     display: block;
@@ -181,34 +182,39 @@
 .ADSSoftwareVersionText,.ISSText{
     font-family: Roboto;
     font-style: normal;
-    text-align: center;
+    text-align: left;
     /* color:#FFF; */
      color:#000;
     word-wrap: break-word; /* identical to box height */
-    padding: 26pt 0px;
-    font-size: 120%; /**Compare to body font size**/
+    padding: 30pt 0px;
+    font-size: 150%; /**Compare to body font size**/
     
 }
 
 .ISSText{
     color: limegreen !important;
     font-weight: bolder;
-    font-size: 150%;
+    font-size: 200%;
+    min-width: 54px; 
 }
 
 .ADSHealthStatusText,.PreADSHealthCheckText{
-    padding: 18pt;
-    border-radius: 18pt;
-    width: 36pt;
+    padding: 25pt;
+    border-radius: 25pt;
+    width: 50pt;
     text-align: center;
-   /*** margin:26pt auto;***/
-    margin-top:48pt;
-    margin-bottom: 4pt;
+    margin-top:30pt;
+    margin-bottom: 15pt;
     margin-left: auto;
-    margin-right: auto;
-    /* box-shadow: 1px 3px #a4fc00 ; */
-    background-color:  limegreen !important;
+    margin-right: auto;   
 }
+.GreenBkColor{
+    background-color:  limegreen !important; 
+}
+.RedBkColor{
+    background-color:  red !important;
+}
+
 .truckImg{
     position: relative;
     float: left;
@@ -216,20 +222,21 @@
     width: auto;
     z-index: 1;
     margin-bottom: 5px;
-    margin-left: 5px;
-    /**height: calc(26pt * 7) ;  (7*26pt) ***/
+    margin-left: 5px;    
+    max-height: 395.63px;/**match leftDiv height**/
     height: auto;
 }
 .logSpan_detailPg{
     position: relative;
     margin: 5px auto;
-    font-size:250%;
+    font-size:100%;
+    text-transform:uppercase ;
     font-weight: bolder;
     color:#666666;
 }
 .aceIcon_detailPg{
     position: relative;
-    margin: 5px auto;   
+    margin: auto;   
     max-width: calc(100% - 5px);
     width: auto;
 }
@@ -239,17 +246,18 @@ label {
     display: block;
     float: left;
     position: relative;
-    padding: 15px 15px 15px 15px;
+    padding: 15px 10px;
     color: grey;
     border-radius: 5px;
     background-color: gold;
     white-space: nowrap;
-    text-align: left;
+    text-align: center;
     user-select: none;
     transition: background-color .2s, box-shadow .2s;
-    font-size: 120%;
+    font-size: 100%;
     font-weight: bold;
-    width: 70%;
+    width: calc(70% - 15px);
+    margin-left: 15px;
     z-index: 1;
 }
 
@@ -257,7 +265,7 @@ input[type=button] {
     float: left;
     display: block;
     position: relative;
-    padding: 15px 15px 15px 15px;
+    padding: 15px 2px;
     color: white;
     border-radius: 10px;
     background-color:darkblue;
@@ -266,10 +274,11 @@ input[type=button] {
     text-align: center;
     cursor: pointer;
     user-select: none;
-    font-size: 120%;
+    font-size: 100%;
     font-weight: bold;
-    width: calc(30% - 15px);
-    margin-left: 5px;
+    width: calc(30% - 30px);
+    margin-left: 10px;
+    margin-right: 15px;
     z-index: 1;
 }
 input[type=button]:hover,
@@ -290,128 +299,137 @@ div[class^='divBtnLabelUnit']{
 
 /*** safty Log Details*****/
 @media only screen and (min-width: 992px) and (max-width: 1200px) {      
-    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
-    .LicenseText,.CalibrationText,
-    .ADSSoftwareVersionText,.ISSText{
-        padding: 28pt 0pt;
-    }
-    .ADSSoftwareVersionFrame,.WeightFrame,.PermitFrame,.LicenseFrame,.CarrierFrame,
-    .InspectionFrame,.CarrierNameFrame,.CalibrationFrame,
-    .ADSHealthStatusFrame,.PreADSHealthCheckFrame,.ISSFrame,.VINFrame,.leftDivCSS,.rightDivCSS{
-        max-height: 95pt;
-    }
-
+    
+    
     .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
     .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
     .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
-        max-height: 90pt;
+        max-height: 110pt;
     }
+    .ISSFrame{
+        width: calc(10% + 10px);
+    }
+    .InspectionFrame{
+       width: calc(50% - 15px); 
+    }
+    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+    .LicenseText,.CalibrationText,
+    .ADSSoftwareVersionText,.ISSText{
+        padding: 30pt 0pt;
+    }
+
     .ADSHealthStatusText,.PreADSHealthCheckText{
-      padding: 12.96pt;
-      border-radius: 12.96pt;
-      width: 25.92pt;
-      text-align: center;
-      margin-top:48pt;
-      margin-bottom: 4pt;
-      margin-left: auto;
-      margin-right: auto;
+        padding: 22pt;
+        border-radius: 22pt;
+        width: 44pt;
+        text-align: center;
+        margin-top:45pt;
+        margin-bottom: 15pt;
+        margin-left: auto;
+        margin-right: auto;
       }
     
   }  
 
-@media only screen and (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+@media only screen and (min-width: 993px) and (max-width: 1200px) and (orientation: landscape) {
   .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
   .LicenseText,.CalibrationText,
-  .ADSHealthStatusText,.PreADSHealthCheckText,.ADSSoftwareVersionText,.ISSText{
-  /* identical to box height */
-      padding: 28pt 0pt;
-      /* font-size: 14pt; */
+  .ADSSoftwareVersionText,.ISSText{
+      padding: 35pt 0pt;
   }
- 
-
-    .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
+  .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
     .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
     .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
-        max-height: 90pt;
+        max-height: 12  0pt;
     }
-  /* .smallTextDiv{
-      font-size: 11pt;
-  } */
   .ADSHealthStatusText,.PreADSHealthCheckText{
-    padding: 12.96pt;
-    border-radius: 12.96pt;
-    width: 25.92pt;
-    text-align: center;    
-    margin-top:48pt;
-    margin-bottom: 4pt;
-    margin-left: auto;
-    margin-right: auto;
-  
+        padding: 22pt;
+        border-radius: 22pt;
+        width: 44pt;
+        text-align: center;    
+        margin-top:45pt;
+        margin-bottom: 15pt;
+        margin-left: auto;
+        margin-right: auto;
     }
 
   
 }
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-  
-  .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
-  .LicenseText,.CalibrationText,
-  .ADSHealthStatusText,.PreADSHealthCheckText,.ADSSoftwareVersionText,.ISSText{
-      padding: 28pt 0pt;
-      font-size: 100%;
-  }
- 
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+    .WeightFrame,.LicenseFrame,.PermitFrame,.CarrierFrame,
+    .CalibrationFrame,
+    .ADSHealthStatusFrame,.PreADSHealthCheckFrame,.ISSFrame,.leftDivCSS,.rightDivCSS{
+        width: calc(50% - 5px);
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .VINFrame,.CarrierNameFrame,.ADSSoftwareVersionFrame,.InspectionFrame{
+        width: calc(100% - 5px);
+        margin-left: 5px;
+        margin-top: 5px;
+    }
 
     .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
     .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
     .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
-        max-height: 85pt;
+        max-height: 100pt;
     }
-
-  .smallTextDiv{
-      font-size: 80%;
-      
-  }
-  .ADSHealthStatusText,.PreADSHealthCheckText{
-    padding: 9.2pt;
-    border-radius: 9.2pt;
-    width: 18.4pt; /**The size of line height : 1.2 * font-size**/
-    text-align: center; 
-    margin-top:46pt;
-    margin-bottom: 4pt;
-    margin-left: auto;
-    margin-right: auto;
-  
-    }
-
-}
- 
-  
-@media  only screen and (min-width: 600px) and (max-width: 767px) {    
     .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
     .LicenseText,.CalibrationText,
     .ADSSoftwareVersionText,.ISSText{
-    /* identical to box height */
-        padding: 28pt 0px;
-        font-size: 100%;
+        padding: 30pt 0pt;
+    }
+    .ADSHealthStatusText,.PreADSHealthCheckText{
+        padding: 22pt;
+        border-radius: 22pt;
+        width: 44pt;
+        text-align: center;    
+        margin-top:40pt;
+        margin-bottom: 15pt;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    .truckImg,.aceIcon_detailPg,.logSpan_detailPg{
+        margin-left: 0px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }  
+}
+ 
+  
+@media  only screen and (min-width: 600px) and (max-width: 768px) {    
+    .WeightFrame,.LicenseFrame,.PermitFrame,.CarrierFrame,
+    .CalibrationFrame,
+    .ADSHealthStatusFrame,.PreADSHealthCheckFrame,.ISSFrame,.leftDivCSS,.rightDivCSS{
+        width: calc(50% - 5px);
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .VINFrame,.CarrierNameFrame,.ADSSoftwareVersionFrame,.InspectionFrame{
+        width: calc(100% - 5px);
+        margin-left: 5px;
+        margin-top: 5px;
     }
 
     .VINPanel, .CarrierNamePanel, .PermitPanel,.WeightPanel,.WeightPanel,.CarrierPanel,
     .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
     .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
-        max-height: 75pt;
+        max-height: 100pt;
     }
-    .smallTextDiv{
-        font-size: 80%;
+    .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
+    .LicenseText,.CalibrationText,
+    .ADSSoftwareVersionText,.ISSText{
+        padding: 30pt 0pt;
     }
     .ADSHealthStatusText,.PreADSHealthCheckText{
-      padding: 8.4pt;
-      border-radius: 8.4pt;
-      width: 16.8pt;
-      text-align: center;
-      margin-top:40pt;
-      margin-bottom: 4pt;
-      margin-left: auto;
-      margin-right: auto;
+        padding: 18pt;
+        border-radius: 18pt;
+        width: 36pt;
+        text-align: center;    
+        margin-top:38pt;
+        margin-bottom: 16pt;
+        margin-left: auto;
+        margin-right: auto;
       }
     .truckImg,.aceIcon_detailPg,.logSpan_detailPg{
         margin-left: 0px;
@@ -434,19 +452,14 @@ div[class^='divBtnLabelUnit']{
     .VINText,.CarrierText,.CarrierNameText,.InspectionText,.WeightText,.PermitText,
     .LicenseText,.CalibrationText,
     .ADSSoftwareVersionText,.ISSText{
-    /* identical to box height */
         padding: 18pt 0px;
-        font-size: 120%; /**Compare to body font size**/
-    }
-    .smallTextDiv{
-        font-size: 100%; /**Compare to body font size**/
     }
     .ADSHealthStatusText,.PreADSHealthCheckText{
-      padding: 10.8pt;
-      border-radius: 10.8pt;
-      width: 21.6pt;
-      text-align: center;
-      margin:18pt auto;
+        padding: 18pt;
+        border-radius: 18pt;
+        width: 36pt;
+        text-align: center;    
+        margin: 18pt auto;
       }
     .truckImg,.aceIcon_detailPg,.logSpan_detailPg{
         margin-left: 0px;
@@ -459,13 +472,13 @@ div[class^='divBtnLabelUnit']{
 
 /*** safty Log list*****/
 
-@media  only screen and (min-width: 600px) and (max-width: 920px) {
+@media  only screen and (min-width: 600px) and (max-width: 1100px) {
     input[type=button] ,label{
         font-size: 100%;  
-        min-width: 200px;
+        min-width: 240px;
     }           
     label{
-        max-width: calc(100% - 210px);
+        max-width: calc(100% - 250px);
     }   
 }
 

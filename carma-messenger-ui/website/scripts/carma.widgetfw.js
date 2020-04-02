@@ -129,14 +129,14 @@ CarmaJS.WidgetFramework = (function () {
            Sets the session variable;
            if value = false, means selection is made , reload widgets since it's been loaded once already.
         */
-        var listWidgetOptions = function (value) {
+        var listWidgetOptions = function (value, param) {
             //Save the selection.
            // sessionStorage.setItem('listWidgetOptionsFlag', value);
            // console.log('listWidgetOptionsFlag: ' + value);
 
             //Save the options everytime.
             widgetName=value;
-            loadWidgets(widgetName);
+            loadWidgets(widgetName,param);
            
            /**  if (value == true )
                 showWidgetOptions();

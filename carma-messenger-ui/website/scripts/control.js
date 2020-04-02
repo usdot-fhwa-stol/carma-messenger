@@ -162,7 +162,7 @@ function createCheckboxElement(container, checkboxId, checkboxTitle, itemCount, 
 /*
 * Adds a new checkbox onto the container.
 */
-function createBtnWithLabelElement(container, btnId, btnValue,afterClickBtnValue,  btnName,labelTitle,  funcName) {
+function createBtnWithLabelElement(container, btnId, btnValue,afterClickBtnValue,  btnName,labelTitle,IsHide,  btnClickfunc) {
 
     var alreadyExists = document.getElementById(btnId);
 
@@ -177,24 +177,29 @@ function createBtnWithLabelElement(container, btnId, btnValue,afterClickBtnValue
     newInput.id = 'btn' + btnId;
    // newInput.onclick = function () { eval(funcName) (newInput.id) }; //e.g. function () { activatePlugin(newInput.id) };
     newInput.onclick = function () { 
-        this.style.color='red'; 
-        this.disabled=true;this.value=afterClickBtnValue
-        var arrow = document.getElementById("Messenger_back_arrow");
-        document.getElementById("SystemDateTime").style.display="";
-        arrow.style.display='inline-block';  
-        CarmaJS.WidgetFramework.closeWidgets();
-        CarmaJS.WidgetFramework.listWidgetOptions('detail');
+       // this.style.color='red'; 
+        this.disabled=true;
+        this.value=afterClickBtnValue;
+        
+       sendTruckInspectionReq(this);     
+        
     };
     newInput.setAttribute('title', btnValue);
-    newInput.value=btnValue;
+    newInput.value=btnValue;   
 
     var newLabel = document.createElement('label');
     newLabel.id = 'lbl' + btnId;
     newLabel.htmlFor = newInput.id;    
     newLabel.innerHTML += labelTitle;
-
+    
+    //hide it during the first creation
+    if(IsHide){
+        newLabel.style.display='none';
+        newInput.style.display='none';
+    }
     divBtnLabelUnit.appendChild(newLabel);
     divBtnLabelUnit.appendChild(newInput);
+   
 
     //container.appendChild(divBtnLabelUnit);
     return divBtnLabelUnit;
@@ -209,7 +214,7 @@ function createBtnWithLabelElement(container, btnId, btnValue,afterClickBtnValue
  *                      </div>
  *                  </div> tags  
  * */
-function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,smallTitle,divTextId,divTextCSS)
+function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,smallTitle,divTextId,divTextCSS,divTextValue)
 {
     var alreadyExists = document.getElementById(divFrameId);
 
@@ -234,6 +239,10 @@ function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,s
     var divText = document.createElement('div');
     divText.className=divTextCSS;
     divText.id=divTextId;
+    if(divTextValue!=null && divTextValue!="undefined" && divTextValue.length > 0)
+    {
+        divText.innerText=divTextValue;
+    }
 
     divPanel.appendChild(smalllDiv);
     divPanel.appendChild(divText);
@@ -244,7 +253,7 @@ function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,s
 }
 
 /**** create a html <div></div> tag  */
-function createDiv(divId,divCSS)
+function createDiv(divId,divCSS,divText)
 {
     var alreadyExists = document.getElementById(divId);
 
@@ -254,6 +263,10 @@ function createDiv(divId,divCSS)
     var divFrame=document.createElement('div');
     divFrame.className=divCSS;
     divFrame.id=divId;
+    if(divText!=null && divText!="undefined" && divText.length > 0)
+    {
+        divFrame.innerText=divText;
+    }
 
     return divFrame;
   

@@ -29,10 +29,10 @@
     <!--END: Jquery Widget -->
 
     <!--START: Widget Framework and custom scripts-->
+    <script src="scripts/rosbridge.js" defer></script>
     <script src="scripts/carma.config.js"></script>
     <script src="scripts/carma.widgetfw.js"></script>
     <script src="scripts/control.js" defer></script>
-    <script src="scripts/rosbridge.js" defer></script>
     <!--END:  Widget Framework and custom scripts--->
 
     <!--START: Thirdparty-->
@@ -96,17 +96,7 @@
                 </div>
             </div>
             <div id="divWidgetArea">
-                <div style=" margin-top: 6%;font-weight: bolder;">
-                    No messages available
-                    <button id="removeMe"
-                        onclick="CarmaJS.WidgetFramework.closeWidgets();CarmaJS.WidgetFramework.listWidgetOptions('list');">
-                        demo</button>
-                </div>
-                <div class="aceIconFrame">
-                    <div class="aceIconPanel">
-                        <img class="aceIcon" src="images/ace_icon.png" alt="ace icon Not Available">
-                    </div>
-                </div>
+                
             </div>
 
         </div>
@@ -151,7 +141,11 @@
         </audio>
 
         <div class="footerPanel">
-            <div class="SystemDateTime" style="display: none;" id="SystemDateTime">2020-03-11 13:44:52</div>
+            <div class="SystemDateTime" >
+                <span style="display: none;" id="SystemDateTimeSpan">
+                    
+                </span>
+            </div>
             <div class="systemVersion">CarmaMessenger version X.Y.Z-something</div>
             <div class="copyright"></div>
         </div>

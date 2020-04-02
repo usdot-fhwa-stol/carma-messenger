@@ -271,7 +271,9 @@ function connectToROS() {
             document.getElementById('connected').style.display = 'inline';
 
             //After connecting on first load or refresh, evaluate at what step the user is at.
-            evaluateNextStep();
+            //evaluateNextStep();
+            CarmaJS.WidgetFramework.closeWidgets();
+            CarmaJS.WidgetFramework.listWidgetOptions('list');
         });
 
         ros.on('close', function () {
@@ -283,7 +285,7 @@ function connectToROS() {
 
             //Show modal popup for when ROS connection has been abruptly closed.
             var messageTypeFullDescription = 'ROS Connection Closed.';
-            messageTypeFullDescription += '<br/><br/>PLEASE TAKE MANUAL CONTROL OF THE VEHICLE.';
+            messageTypeFullDescription += '<br/><br/>PLEASE CHECK YOUR ROS CONNECTION.';
             showModal(true, messageTypeFullDescription, false);
 
         });
@@ -1888,6 +1890,52 @@ function showCARMAVersion(response) {
 	//elemSystemVersion[0].innerHTML = response;
 }
 
+function sendTruckInspectionReq(btn)
+{    
+    console.log("send truck inspection request");
+    var sendTruckInspection = new ROSLIB.Service({
+        ros: ros,
+        name: '/send_inspection_request',
+        serviceType: 'std_srvs/Trigger'
+    });
+    /***var request = new ROSLIB.ServiceRequest({
+        success (bool): true,
+        message (string) : VIN
+    });****/
+    
+    var request = new ROSLIB.ServiceRequest({});
+    try{       
+        sendTruckInspection.callService(request, function(result) {
+            console.log("send truck inspection request . Result messageg is: "+result.success);
+            
+           // SubscribeToSafetyLog();              
+           
+            if(!result.success){
+                         
+                alert("Log is not available, please try again in 5 seconds");
+                setTimeout(() => {  
+                    if(btn != "undefined" && btn.style != "undefined"){
+                     btn.disabled=false;  
+                     btn.style.color='white';  
+                     btn.value="Request Safety Log";
+                    }                
+             }, 5000);
+            }else{
+            //    CarmaJS.WidgetFramework.listWidgetOptions('subscribe');  
+                 var arrow = document.getElementById("Messenger_back_arrow");
+                arrow.style.display='inline-block'; 
+               CarmaJS.WidgetFramework.closeWidgets();
+              CarmaJS.WidgetFramework.listWidgetOptions('detail');  
+            }
+            
+        }); 
+    }catch(ex){
+        alert("Log is not available, please try again in 10 seconds");
+        console.error("send truck inspection request error: " + ex.message);
+    }
+    
+}
+
 /*
     Onload function that gets called when first loading the page and on page refresh.
 */
@@ -1910,7 +1958,7 @@ window.onload = function () {
         getCARMAVersion();
 
         //Refresh requires connection to ROS.
-        //connectToROS();
+        connectToROS();
 
         //TODO: Figure out how to focus to the top when div innerhtml changes. This doesn't seem to work.
         //divCapabilitiesMessage.addListener('change', function (){divCapabilitiesMessage.focus();}, false);

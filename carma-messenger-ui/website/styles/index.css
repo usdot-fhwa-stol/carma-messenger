@@ -175,7 +175,7 @@ div.tab {
     position: relative;
     padding: 2vh 0vw;
     border: 1px solid #ccc;
-    height:  calc(100% - 200px);
+    height:  calc(100% - 220px);
     background-color:  #F8F9FA;
     margin: 0 auto;
     display:flex;
@@ -259,6 +259,10 @@ div.tab {
     width: auto;
 }
  
+.NoMsgAvailable{
+    margin-top: 6%;
+    font-weight: bolder;
+}
   /* 
     ##Device = Tablets, Ipads (landscape)
     ##Screen = B/w 768px to 1024px
@@ -770,7 +774,7 @@ footer {
     color: #000000;
     width: 30vw;
     float: left;
-    font-size: 60%;
+    font-size: 80%;
 }
 
 /* CarmaMessenger version X.Y.Z-something */
@@ -783,7 +787,7 @@ footer {
     color: #000000;
     width: 30vw;
     float: left;
-    font-size: 60%;
+    font-size: 80%;
 }
 
 /* Copyright © Leidos, 2020 */
@@ -797,26 +801,26 @@ footer {
     text-align: right;
     display: block;
     color: #000000;
-    font-size: 60%;
+    font-size: 80%;
 }
 
 /*** safty Log list*****/
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     body{
-            font-size: 18pt;
+            font-size: 20pt;
         }     
 }
-@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+@media (min-width: 993px) and (max-width: 1200px) and (orientation: landscape) {
     body{
-            font-size: 18pt;
+            font-size: 20pt;
         }     
 }
-@media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 769px) and (max-width: 992px) {
     body{
-            font-size: 16pt;
+            font-size: 18pt;
         }         
 }
-@media (min-width: 600px) and (max-width: 767px) {
+@media (min-width: 600px) and (max-width: 768px) {
     body{
             font-size: 14pt;
         }           
