@@ -22,7 +22,8 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
         try{
                 console.log("/cav_truck_identified topic called");
                 listenerSaftyLogList.subscribe(function (message) {
-                    console.log("/cav_truck_identified message.data: "+ message.data);
+                    console.log("/cav_truck_identified message.data: "+ message.data);                 
+                
                     if (message.data != null && message.data != 'undefined' && message.data.length > 0){
                         var button = document.getElementById('LogbtnId');
                         var label =document.getElementById('lblLogbtnId');
@@ -37,6 +38,14 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                         
                         if(document.getElementById('NoMsgAvailableId') != null)               
                             document.getElementById('NoMsgAvailableId').style.display='none'; 
+                        
+                        //refresh the log list information every 10 seconds
+                        setTimeout(() => {  
+                            document.getElementById('LogbtnId').style.display='none';
+                            document.getElementById('lblLogbtnId').style.display='none';        
+                            document.getElementById('NoMsgAvailableId').style.display='';
+                            console.log("log list is hide after "+CarmaJS.Config.getRefreshInterval()+" seconds");
+                        }, CarmaJS.Config.getRefreshInterval()*1000);
                     }
             });
         }catch(ex){
@@ -59,9 +68,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
         });
     }
 
-    var ShowSafetyLogPerVIN = function (messageData) {
-        // CarmaJS.WidgetFramework.closeWidgets();
-        // CarmaJS.WidgetFramework.listWidgetOptions('detail');       
+    var ShowSafetyLogPerVIN = function (messageData) {    
         $('#divWidgetArea').empty();
         //enable back button
         var arrow = document.getElementById("Messenger_back_arrow");
@@ -97,9 +104,11 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                 document.getElementById('CarrierNameTextId')!=null ? document.getElementById('CarrierNameTextId').innerHTML=value:"";
             }
             if(key=="DATE_OF_LAST_STATE_INSPECTION"){
+                value=value.replace(/\./g,'-');
                 document.getElementById('InspectionTextId')!=null ? document.getElementById('InspectionTextId').innerHTML=value:"";
             }
             if(key=="DATE_OF_LAST_ADS_CALIBRATION"){
+                value=value.replace(/\./g,'-');
                 document.getElementById('CalibrationTextId')!=null ? document.getElementById('CalibrationTextId').innerHTML=value:"";
             }
             if(key=="LICENSE_PLATE"){
@@ -157,8 +166,6 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                 else
                 { 
                     SubscribeToSafetyLog();
-                    //CarmaJS.WidgetFramework.closeWidgets();
-                    //CarmaJS.WidgetFramework.listWidgetOptions('detail');  
                 }
                 
             }); 
