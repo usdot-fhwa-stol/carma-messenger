@@ -759,7 +759,7 @@ footer {
     margin: 0px 10px;
 }
 .footerPanel{
-    width: 90vw;
+    width: 100%;
     clear: both;
     display: block;
 }
@@ -770,9 +770,9 @@ footer {
     font-family: Roboto;
     font-weight: normal;
     display: block;
-    text-align: center;
-    color: #000000;
-    width: 30vw;
+    text-align: left;
+    color: #000000;    
+    width: calc(35% - 10px);
     float: left;
     font-size: 80%;
 }
@@ -785,7 +785,7 @@ footer {
     display: block;
     text-align: center;
     color: #000000;
-    width: 30vw;
+    width: calc(30% - 10px);
     float: left;
     font-size: 80%;
 }
@@ -794,7 +794,7 @@ footer {
 .copyright{
     padding: 10px;
     float: left;
-    width: 30vw;
+    width: calc(35% - 10px);
     font-family: Roboto;
     font-style: normal;
     font-weight: normal;
