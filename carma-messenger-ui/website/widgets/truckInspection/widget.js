@@ -176,18 +176,18 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
     }
 
     var CreateTruckInspectionSafetyLogPerVINWidget = function(container){
-            var VINFrameStr = createDivFramePanelText('VINFrameId', 'VINFrame', 'VINPanelId', 'VINPanel', 'VIN', 'VINTextId', 'VINText','no data');
-            var CarrierNameFrame = createDivFramePanelText('CarrierNameFrameId', 'CarrierNameFrame', 'CarrierNamePanelId', 'CarrierNamePanel', 'Carrier Name', 'CarrierNameTextId', 'CarrierNameText','no data');
-            var InspectionFrame = createDivFramePanelText('InspectionFrameId', 'InspectionFrame', 'InspectionPanelId', 'InspectionPanel', 'Last State Inspection', 'InspectionTextId', 'InspectionText','no data');
-            var CalibrationFrame = createDivFramePanelText('CalibrationFrameId', 'CalibrationFrame', 'CalibrationPanelId', 'CalibrationPanel', 'Last ADS Calibration', 'CalibrationTextId', 'CalibrationText','no data');
-            var LicenseFrame = createDivFramePanelText('LicenseFrameId', 'LicenseFrame', 'LicensePanelId', 'LicensePanel', 'License', 'LicenseTextId', 'LicenseText','no data');
-            var WeightFrame = createDivFramePanelText('WeightFrameId', 'WeightFrame', 'WeightPanelId', 'WeightPanel', 'Weight(lbs.)', 'WeightTextId', 'WeightText','no data');
-            var CarrierFrame = createDivFramePanelText('CarrierFrameId', 'CarrierFrame', 'CarrierPanelId', 'CarrierPanel', 'Carrier ID', 'CarrierTextId', 'CarrierText','no data');
-            var PermitFrame = createDivFramePanelText('PermitFrameId', 'PermitFrame', 'PermitPanelId', 'PermitPanel', 'Permit Required', 'PermitTextId', 'PermitText','no data');
+            var VINFrameStr = createDivFramePanelText('VINFrameId', 'VINFrame', 'VINPanelId', 'VINPanel', 'VIN', 'VINTextId', 'VINText','--');
+            var CarrierNameFrame = createDivFramePanelText('CarrierNameFrameId', 'CarrierNameFrame', 'CarrierNamePanelId', 'CarrierNamePanel', 'Carrier Name', 'CarrierNameTextId', 'CarrierNameText','--');
+            var InspectionFrame = createDivFramePanelText('InspectionFrameId', 'InspectionFrame', 'InspectionPanelId', 'InspectionPanel', 'Last State Inspection', 'InspectionTextId', 'InspectionText','--');
+            var CalibrationFrame = createDivFramePanelText('CalibrationFrameId', 'CalibrationFrame', 'CalibrationPanelId', 'CalibrationPanel', 'Last ADS Calibration', 'CalibrationTextId', 'CalibrationText','--');
+            var LicenseFrame = createDivFramePanelText('LicenseFrameId', 'LicenseFrame', 'LicensePanelId', 'LicensePanel', 'License', 'LicenseTextId', 'LicenseText','--');
+            var WeightFrame = createDivFramePanelText('WeightFrameId', 'WeightFrame', 'WeightPanelId', 'WeightPanel', 'Weight(lbs.)', 'WeightTextId', 'WeightText','--');
+            var CarrierFrame = createDivFramePanelText('CarrierFrameId', 'CarrierFrame', 'CarrierPanelId', 'CarrierPanel', 'Carrier ID', 'CarrierTextId', 'CarrierText','--');
+            var PermitFrame = createDivFramePanelText('PermitFrameId', 'PermitFrame', 'PermitPanelId', 'PermitPanel', 'Permit Required', 'PermitTextId', 'PermitText','--');
             var ISSFrame = createDivFramePanelText('ISSFrameId', 'ISSFrame', 'ISSPanelId', 'ISSPanel', 'ISS', 'ISSTextId', 'ISSText','--');
             var PreADSHealthCheckFrame = createDivFramePanelText('PreADSHealthCheckFrameId', 'PreADSHealthCheckFrame', 'PreADSHealthCheckPanelId', 'PreADSHealthCheckPanel', 'ADS Pre-Trip Check', 'PreADSHealthCheckTextId', 'PreADSHealthCheckText RedBkColor');
             var ADSHealthStatusFrame = createDivFramePanelText('ADSHealthStatusFrameId', 'ADSHealthStatusFrame', 'ADSHealthStatusPanelId', 'ADSHealthStatusPanel', 'ADS Health Status', 'ADSHealthStatusTextId', 'ADSHealthStatusText RedBkColor');
-            var ADSSoftwareVersionFrame = createDivFramePanelText('ADSSoftwareVersionFrameId', 'ADSSoftwareVersionFrame', 'ADSSoftwareVersionPanelId', 'ADSSoftwareVersionPanel', 'ADS Software Version', 'ADSSoftwareVersionTextId', 'ADSSoftwareVersionText','no data');
+            var ADSSoftwareVersionFrame = createDivFramePanelText('ADSSoftwareVersionFrameId', 'ADSSoftwareVersionFrame', 'ADSSoftwareVersionPanelId', 'ADSSoftwareVersionPanel', 'ADS Software Version', 'ADSSoftwareVersionTextId', 'ADSSoftwareVersionText','--');
             var truckImage = createImgFramePanelText('truckImgFrameId', 'truckImgFrame', 'truckImgPanelId', 'truckImgPanel', 'truckImgId', 'truckImg', '../../images/truck_unavailable.jpg', 'Truck Image is unavailable');
             var aceIcon = createImgFramePanelText('aceIconFrameId_detailPg', 'aceIconFrame_detailPg', 'taceIconPanelId_detailPg', 'aceIconPanel_detailPg', 'aceIconTextId_detailPg', 'aceIcon_detailPg', '../../images/ace_icon.png', 'Image is unavailable');
             var logSpan = createSpan('LogSpanId_detailPg', 'logSpan_detailPg', 'Safety Log');
@@ -242,7 +242,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
               //create request VIN label
               var newLabel = document.createElement('label');
               newLabel.id = 'lblLogbtnId';  
-              newLabel.innerHTML += 'No data';
+              newLabel.innerHTML += '--';
               newLabel.style.display='none';
               newInput.style.display='none';
               divBtnLabelUnit.appendChild(newLabel);

@@ -21,18 +21,18 @@ services:
     network_mode: host
     container_name: roscore
     volumes_from:
-      - container:carma-messenger-config:ro
+      - container:carma-config:ro
     volumes:
       - /opt/carma/.ros:/opt/carma/.ros
     restart: always
     command: roscore
 
   messenger:
-    image: usdotfhwastol/carma-messenger:latest
+    image: usdotfhwastoldev/carma-messenger:develop
     network_mode: host
     container_name: messenger
     volumes_from:
-      - container:carma-messenger-config:ro
+      - container:carma-config:ro
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
@@ -43,7 +43,7 @@ services:
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
-      - container:carma-messenger-config:ro
+      - container:carma-config:ro
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros

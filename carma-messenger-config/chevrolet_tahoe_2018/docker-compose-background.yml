@@ -23,7 +23,7 @@ services:
     environment:
       - ROS_IP=192.168.0.100
     volumes_from: 
-      - container:carma-messenger-config:ro
+      - container:carma-config:ro
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock 
     restart: always
