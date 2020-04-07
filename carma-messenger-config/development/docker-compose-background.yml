@@ -17,11 +17,11 @@ version: '2'
 
 services:
   carma-messenger-ui:
-    image: usdotfhwastol/carma-messenger-ui:test
+    image: usdotfhwastol/carma-messenger-ui:latest
     network_mode: host
     container_name: carma-messenger-ui
     volumes_from: 
-      - container:carma-config:ro
+      - container:carma-messenger-config:ro
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock 
     restart: always

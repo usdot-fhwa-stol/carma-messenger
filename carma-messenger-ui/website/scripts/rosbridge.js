@@ -68,6 +68,8 @@ function connectToROS() {
             document.getElementById('error').style.display = 'none';
             document.getElementById('closed').style.display = 'none';
             document.getElementById('connected').style.display = 'inline';
+
+            //load widget
             CarmaJS.WidgetFramework.closeWidgets();
             CarmaJS.WidgetFramework.loadWidgets();
         });

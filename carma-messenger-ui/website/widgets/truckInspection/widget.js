@@ -86,7 +86,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             var key = rawElement[0].trim().toUpperCase();
             var value=rawElement[1].trim();
             if(value==null || value.length==0 || value== ""){
-                value="no data";
+                value="--";
             }
             if(key=="TIMESTAMP"){
                 var logTimetamp = new Date(parseInt(value, 10));
