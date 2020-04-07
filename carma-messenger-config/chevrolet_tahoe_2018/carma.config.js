@@ -42,7 +42,7 @@ CarmaJS.registerNamespace("CarmaJS.Config");
 CarmaJS.Config = (function () {
         //Private variables
         var ip = '192.168.0.100';
-        var refresh_interval = 10; //10 seconds
+        var refresh_interval = 30; //30 seconds
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {
