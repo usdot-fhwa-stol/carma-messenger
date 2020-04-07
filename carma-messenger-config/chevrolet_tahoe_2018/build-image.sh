@@ -28,6 +28,18 @@ cd "$(dirname "$0")"
 DIR_NAME=${PWD##*/}
 CONFIG_NAME=`echo $DIR_NAME | sed 's/_/-/g'`
 
+
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case $arg in
+        -d|--develop)
+            USERNAME=usdotfhwastoldev
+            TAG=develop
+            shift
+            ;;
+    esac
+done
+
 echo ""
 echo "##### CARMA $CONFIG_NAME Configuration Docker Image Build Script #####"
 echo ""
