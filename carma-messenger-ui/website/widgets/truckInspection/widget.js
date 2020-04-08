@@ -11,6 +11,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
     //Currently the URL path from document or window are pointing to the page, not the actual folder location.
     //Therefore this needs to be hardcoded.
     var installfoldername = 'widgets/truckInspection/';
+    var isTimeoutSet = false;
 
     var SafetyLogListNotify = function () {
 
@@ -39,13 +40,20 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                         if(document.getElementById('NoMsgAvailableId') != null)               
                             document.getElementById('NoMsgAvailableId').style.display='none'; 
                         
-                        //refresh the log list information every 10 seconds
-                        setTimeout(() => {  
-                            document.getElementById('LogbtnId').style.display='none';
-                            document.getElementById('lblLogbtnId').style.display='none';        
-                            document.getElementById('NoMsgAvailableId').style.display='';
-                            console.log("log list is hide after "+CarmaJS.Config.getRefreshInterval()+" seconds");
-                        }, CarmaJS.Config.getRefreshInterval()*1000);
+                        //refresh the log list information once and only once  every 30 seconds
+                        if(!isTimeoutSet){
+                            isTimeoutSet=true;
+                            console.log("isTimeoutSet: "+isTimeoutSet);
+                            setTimeout(() => {                                
+                                document.getElementById('LogbtnId').style.display='none';
+                                document.getElementById('lblLogbtnId').style.display='none';        
+                                document.getElementById('NoMsgAvailableId').style.display='';
+                                //once timeout is called, reset isTimeout
+                                isTimeoutSet=false;
+                                console.log("log list is hide after "+CarmaJS.Config.getRefreshInterval()+" seconds." );
+                            }, CarmaJS.Config.getRefreshInterval()*1000);
+                        }
+                       
                     }
             });
         }catch(ex){
@@ -79,10 +87,10 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
         //Display log detail info on the detail widget
         var rawStr = messageData;
         var rawArr = rawStr.split(",");
-        console.log("Current Millseconds: "+new Date().getTime());
+        //console.log("Current Millseconds: "+new Date().getTime());
         rawArr.forEach(element => {
             var rawElement = element.split(":");
-            console.log(rawElement[0]+" : "+ rawElement[1]);
+          //  console.log(rawElement[0]+" : "+ rawElement[1]);
             var key = rawElement[0].trim().toUpperCase();
             var value=rawElement[1].trim();
             if(value==null || value.length==0 || value== ""){
@@ -127,7 +135,21 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                 document.getElementById('PermitTextId')!=null ? document.getElementById('PermitTextId').innerHTML=value:"";
             }
             if(key=="ISS_SCORE"){
+                value = parseInt(value,10);
+                let color="";
+
+                if(value>0 && value<50)
+                    color="limegreen";
+                else if(value>=50 && value<75)
+                    color="orange";
+                else if(value>=75 && value <=100)
+                    color="red";
+                else{
+                    //Do Nothing
+                }
+                console.log("color:" +color);
                 document.getElementById('ISSTextId')!=null ? document.getElementById('ISSTextId').innerHTML=value:"";
+                document.getElementById('ISSTextId')!=null ? document.getElementById('ISSTextId').style.color=color:"";
             }
             if(key=="ADS_SOFTWARE_VERSION"){
                 document.getElementById('ADSSoftwareVersionTextId')!=null ? document.getElementById('ADSSoftwareVersionTextId').innerHTML=value:"";

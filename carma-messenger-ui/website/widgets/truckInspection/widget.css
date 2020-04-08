@@ -18,7 +18,7 @@
 .InspectionPanel,.CarrierNamePanel,.ADSHealthStatusPanel,.PreADSHealthCheckPanel,
 .ADSSoftwareVersionPanel,.ISSPanel,.CalibrationPanel,.LicensePanel{
     display: block;
-    padding: 10px 5px 10px 15px;
+    padding: 10px 15px 10px 15px;
     position: relative;
     background-color: #DCDDE1;
     /* background-color:  #666666; */
@@ -192,10 +192,10 @@
 }
 
 .ISSText{
-    color: limegreen !important;
     font-weight: bolder;
     font-size: 200%;
     min-width: 54px; 
+    text-align: center;
 }
 
 .ADSHealthStatusText,.PreADSHealthCheckText{
