@@ -1,0 +1,830 @@
+﻿.regular-checkbox {
+    display:none;
+}
+    .regular-checkbox + label {
+        background-color: #fafafa;
+        border: 1px solid #cacece;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+        padding: 9px;
+        border-radius: 3px;
+        display: inline-block;
+        position: relative;
+    }
+
+        .regular-checkbox + label:active, .regular-checkbox:checked + label:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+        }
+
+    .regular-checkbox:checked + label {
+        background-color: #e9ecee;
+        border: 1px solid #adb8c0;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+        color: #99a1a7;
+    }
+
+        .regular-checkbox:checked + label:after {
+            content: '\2714';
+            font-size: 14px;
+            position: absolute;
+            top: 0px;
+            left: 3px;
+            color: #4CAF50; 
+        }
+
+
+.big-checkbox + label {
+    padding: 18px;
+}
+
+.big-checkbox:checked + label:after {
+    font-size: 28px;
+    left: 6px;
+}
+
+#btnOk {
+    height: 80px;
+    width: 220px;
+    background-color: #336699;
+    color: white;
+    font-size: 25px;
+    position: relative;
+    left: 0px;
+    text-align: center;
+}
+
+#lblCheckBox {
+    font-size: 25px;
+    color: cornflowerblue;
+}
+
+/*
+ * Copyright (C) 2018-2020 LEIDOS.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+ * {
+    box-sizing: border-box
+}
+
+body {
+    font-family: "Segoe UI",Arial,sans-serif;
+    height: 100vh;
+    width: 100vw;
+    padding: 2vh 0vw 0vh 0vw;
+    font-size: 20pt;
+    line-height: 1.2; /***1.2 of font size**/
+    overflow: hidden;
+}
+
+
+/*** Left Navigation Style ***/
+/* Style the tab */
+
+div.tabindicators {
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 6%;
+    height: 675px;
+    padding: 5px 5px 5px 5px;
+    text-align: center;
+}
+    div.tabindicators button {
+        display: block;
+        border: none;
+        background-color: inherit;
+        color: black;
+        padding: 10px 10px;
+        width: 95%;
+        border-bottom: 1px solid #ccc;
+        outline: none;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+       /*** overflow: hidden;***/
+    }
+
+        /* Change background color of buttons on hover */
+        div.tabindicators button:hover {
+            background-color: #ddd;
+        }
+
+div.tab {
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 12%;
+    height: 675px;
+}
+
+    /* Style the buttons inside the tab */
+    div.tab button {
+        display: block;
+        background-color: inherit;
+        color: black;
+        padding: 20px 10px;
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+        outline: none;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 27px;
+        font-weight: bold;
+        font-family: "Segoe UI";
+        /* overflow: auto; */
+    }
+
+        /* Change background color of buttons on hover */
+        div.tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current "tab button" class */
+        div.tab button.active {
+            background-color: #00ace6;
+        }
+
+
+/* Style the tab header */
+.tabheader {
+    padding: 0px 12px;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    width: 82%;
+    height: 100px;
+}
+#messenger-main-div {
+    text-align: center;
+    background-color:#FFF; 
+    height: 100vh;
+}
+
+/* Style the tab content */
+.tabcontent {
+    position: relative;
+    padding: 2vh 0vw;
+    border: 1px solid #ccc;
+    height:  calc(100% - 220px);
+    background-color:  #F8F9FA;
+    margin: 0 auto;
+    display:flex;
+    min-height: 240px;
+    overflow: auto;
+}
+#divWidgetArea{
+    width: 100%;
+}
+/* MessageTitle */
+.MessengerTitleFrame {
+    height: 120px;
+    text-align: center;
+    overflow: hidden;
+    margin: 0 auto;
+    padding: 5px 0px 10px 0px;
+}
+/* Rectangle 12 */
+.MessengerTitleRec{   
+    height: 100px;
+    display: inline-block;
+    margin: auto;
+    text-align: center;
+}
+
+/* Messenger_back_arrow  */
+.Messenger_back_arrow{
+    max-width: 100%;
+    display: none;
+    cursor: pointer;  
+    height: 100%; 
+}
+.Messenger_back_Div{
+    height: 100%; 
+    float: left;
+    display: inline-block; 
+    width:8%;
+    position: relative;
+}
+/****logo1**/
+.logo1{
+    height: 95%; 
+    float: left;
+    display: inline-block;
+    width:6%
+}
+
+/* logo 2 */
+
+.logo2{
+    height: 95%;  
+    float: left;
+    display: inline-block;
+    width:34%;
+}
+
+/* Messenger */
+.Messenger {
+    font-family: Roboto;
+    font-size: 80px;
+    height: 95%;
+    font-weight: bolder;
+    display: inline-block;
+    float: left;
+    vertical-align: text-top;
+    text-align: left;
+    color: #53F11B;
+    width: 42%;
+}
+
+.aceIconPanel{
+    position: absolute;
+    display: block;
+    margin: auto;
+    text-align: center;
+    bottom: 10px;
+    left: calc(50% - 110px);/***110px is half size of the image***/
+}
+.aceIcon{
+    height: auto;
+    width: auto;
+}
+ 
+.NoMsgAvailable{
+    margin-top: 6%;
+    font-weight: bolder;
+}
+  /* 
+    ##Device = Tablets, Ipads (landscape)
+    ##Screen = B/w 768px to 1024px
+  */
+  
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .Messenger{
+        font-size: 80px;
+    }
+    .MessengerTitleRec,.MessengerTitleFrame{   
+        height: 90px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1024px) {      
+
+    .Messenger{
+        font-size: 70px;
+    }
+    .MessengerTitleRec,.MessengerTitleFrame{   
+        height: 80px;
+    }
+  } 
+  /* 
+    ##Device = Low Resolution Tablets, Mobiles (Landscape)
+    ##Screen = B/w 481px to 767px
+  */
+  
+  @media (min-width: 700px) and (max-width: 767px) {
+    .MessengerTitleRec,.MessengerTitleFrame{   
+        height: 60px;
+    }
+    .Messenger{
+        font-size: 30pt;
+    }
+   
+    
+  }
+
+  /* 
+    ##Device = Low Resolution Tablets, Mobiles (Landscape)
+    ##Screen = B/w 481px to 767px
+  */
+  
+  @media (min-width: 26px) and (max-width: 699px)  {
+   
+    .MessengerTitleRec,.MessengerTitleFrame{   
+        height: 60px;
+    }
+    .Messenger{
+        font-size: 20pt;
+    }
+    
+}
+
+
+/*** scrollbar ***/
+::-webkit-scrollbar {
+    width: 1.5em;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  outline: 3px solid slategrey;
+}
+
+
+/*** Checkbox and Radiobutton Style ****/
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.container {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+#btnOk
+{
+    height: 80px;
+    width: 220px;
+    background-color:#336699;
+    color: white;
+    font-size: 18pt;
+    position: relative;
+    left: 0px;
+}
+
+
+/*** Message Box ***/
+div.message_box {
+    display: block;
+    position: relative;
+    align: center;
+    vertical-align: middle;
+    text-align: center;
+    margin: 10px;
+    padding: 15px 35px 15px 30px;
+    height: 50px;
+    color: #404040;
+    background-color: #ffffb3;/*  #e6e600; Yellow; */
+    font-size: 14pt;
+    font-weight: bold;
+  /**  overflow: auto;**/
+}
+
+/*** Button ***/
+.button_cav {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 40px;
+    font-bold: true;
+    margin: 4px 2px;
+    cursor: pointer;
+    width: 100%;
+    height: 75px;
+    border-radius: 100px;
+    transition: background-color .2s;
+    border-radius: 100px;
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, .2);
+}
+
+.button_disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.button_enabled {
+    background-color: cornflowerblue; /* Blue */
+}
+
+.button_engaged {
+    background-color: #4CAF50; /* Green */
+}
+
+.button_disengaged {
+    background-color: #b32400; /* Red */
+}
+
+.button_active {
+    background-color: #8600b3; /* Purple */
+}
+
+.button_inactive {
+    background-color: #ff6600; /* Orange */
+}
+
+/*** UI Instructions ***/
+#modalUIInstructions {
+    display: none; /*Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+   /* overflow: auto;  Enable scroll if needed */
+    background-color: rgba(0,0,0,0); /* Fully transparent */
+    text-align: center;
+    vertical-align:middle;
+}
+
+#modalUIInstructionsContent {
+    position: relative;
+    background-color: #fefefe;
+    background-color: rgba(0,0,0,0); /* Fully transparent */
+    margin: auto;
+    padding: 0;
+    width: 50%;
+    font-size: 550px;
+    color: #ff6600; /*orange*/
+}
+
+
+/*** MODAL ***/
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+   /* overflow: auto;  Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    text-align: center;
+}
+
+/* Modal Popup */
+.modal-header {
+    padding: 2px 16px;
+    background-color: #ffcc00; /* yellow */
+    color: black;
+    text-align: middle;
+}
+
+.modal-content { /* header text */
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 2px 20px;
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.modal-footer {
+    padding: 10px 16px 10px 10px;
+    background-color: #ffcc00;
+    color: black;
+}
+
+/* Modal Button */
+.btnModal{
+    height: 50px;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color:#336699;
+    color: white;
+    border-radius: 15px;
+    font-size: 20px;
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+/* System Status Table */
+.table-style1 {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.col-style1 {
+    vertical-align: top;
+    width: 30%;
+    max-width: 200px;
+  /**  overflow-wrap: normal;**/
+}
+
+.section1 {
+    color: #FFFFFF;
+    background-color: #999999;
+    vertical-align: top;
+}
+
+.col-title {
+    width: 15%;
+    font-weight: bold;
+    background-color: #DCDCDC;
+}
+
+.col-style2a {
+    width: 15%;
+    font-weight: bold;
+}
+
+.col-style2b {
+    width: 15%;
+}
+
+.hyphenate {
+ -ms-word-break: break-all;
+     word-break: break-all;
+
+     /* Non standard for webkit*/
+     word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+        hyphens: auto;
+}
+/* Map *
+ * Always set the map height explicitly to define the size of the div
+ * element that contains the map.
+ */
+#map {
+    height: 550px;
+}
+
+/* Bottom left text */
+ .bottom-left {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+}
+
+/* Top left text */
+.top-left {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+}
+
+/* Top right text */
+.top-right {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
+
+/* Bottom right text */
+ .bottom-right {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+}
+
+/* Centered text */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Remaining Distance to Next Speed Limit */
+#divDistRemaining{
+ position: relative;
+ top: 42%;
+ color: black;
+ font-size: 25px;
+ font-weight: bold;
+ text-align: center;
+}
+
+/* Lane */
+#divLaneTracking {
+    position: relative;
+    top: 44%;
+    width: 100%;
+    height: 200px;
+    /*border: 5px solid blue; */
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+}
+
+
+#divSpeedLimit {
+    position: absolute;
+    top: 23%;
+    left: 75%;
+}
+
+
+/* Speedometer */
+.divSpeedometer {
+    width: 400px;
+    height: 200px;
+    position: absolute;
+    top: 38%;
+    left: 55%;
+   /*** overflow: hidden;****/
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.gauge-a {
+    z-index: 1;
+    position: absolute;
+    background-color: rgba(136, 185, 195, .2);
+    width: 400px;
+    height: 200px;
+    top: 0%;
+    border-radius: 250px 250px 0px 0px;
+}
+
+.gauge-b {
+    z-index: 3;
+    position: absolute;
+    background-color: #1858cd;
+    width: 250px;
+    height: 125px;
+    top: 75px;
+    margin-left: 75px;
+    margin-right: auto;
+    border-radius: 250px 250px 0px 0px;
+}
+
+.gauge-c {
+    z-index: 2;
+    position: absolute;
+    background-color: cornflowerblue;
+    width: 400px;
+    height: 200px;
+    top: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0px 0px 200px 200px;
+    transform-origin: center top;
+    transition: all 1.3s ease-in-out;
+}
+
+.gauge-data {
+    z-index: 4;
+    color: white;
+    font-size: 35px;
+    line-height: 25px;
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    top: 90px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 1s ease-out;
+}
+
+/*** Log Text Box content Style ****/
+.logStatus {
+    height: 400px;
+    width: 98%;
+   /** overflow: auto;***/
+    background-color: #336699;
+    color: white;
+    font-family: sans-serif;
+    padding: 10px;
+}
+
+
+footer {
+    color: black;
+    background-color: white;
+    clear: both;
+    height: 50px;
+    width:90vw;
+    margin: 0px 10px;
+}
+.footerPanel{
+    width: 100%;
+    clear: both;
+    display: block;
+}
+
+/***2020-03-11 13:44:52***/
+.SystemDateTime{
+    padding: 10px;
+    font-family: Roboto;
+    font-weight: normal;
+    display: block;
+    text-align: left;
+    color: #000000;    
+    width: calc(35% - 10px);
+    float: left;
+    font-size: 80%;
+}
+
+/* CarmaMessenger version X.Y.Z-something */
+.systemversion{
+    padding: 10px;
+    font-family: Roboto;
+    font-weight: normal;
+    display: block;
+    text-align: center;
+    color: #000000;
+    width: calc(30% - 10px);
+    float: left;
+    font-size: 80%;
+}
+
+/* Copyright © Leidos, 2020 */
+.copyright{
+    padding: 10px;
+    float: left;
+    width: calc(35% - 10px);
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    text-align: right;
+    display: block;
+    color: #000000;
+    font-size: 80%;
+}
+
+/*** safty Log list*****/
+@media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
+    body{
+            font-size: 20pt;
+        }     
+}
+@media (min-width: 993px) and (max-width: 1200px) and (orientation: landscape) {
+    body{
+            font-size: 20pt;
+        }     
+}
+@media (min-width: 769px) and (max-width: 992px) {
+    body{
+            font-size: 18pt;
+        }         
+}
+@media (min-width: 600px) and (max-width: 768px) {
+    body{
+            font-size: 14pt;
+        }           
+}
+@media  (max-width: 599px) {
+           
+}

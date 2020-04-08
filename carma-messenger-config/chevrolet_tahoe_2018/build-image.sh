@@ -28,6 +28,18 @@ cd "$(dirname "$0")"
 DIR_NAME=${PWD##*/}
 CONFIG_NAME=`echo $DIR_NAME | sed 's/_/-/g'`
 
+
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case $arg in
+        -d|--develop)
+            USERNAME=usdotfhwastoldev
+            TAG=develop
+            shift
+            ;;
+    esac
+done
+
 echo ""
 echo "##### CARMA $CONFIG_NAME Configuration Docker Image Build Script #####"
 echo ""
@@ -45,7 +57,7 @@ echo "Final image name: $USERNAME/$IMAGE:$TAG"
 docker build --no-cache -t $USERNAME/$IMAGE:$TAG \
     --build-arg VERSION="$TAG" \
     --build-arg VCS_REF=`git rev-parse --short HEAD` \
-    --build-arg CONFIG_NAME="carma-config:$CONFIG_NAME" \
+    --build-arg CONFIG_NAME="$IMAGE:$CONFIG_NAME" \
     --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` .
 
 echo ""
