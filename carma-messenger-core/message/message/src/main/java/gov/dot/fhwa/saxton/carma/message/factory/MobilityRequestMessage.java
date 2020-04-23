@@ -110,7 +110,7 @@ public class MobilityRequestMessage implements IMessage<MobilityRequestMessage>{
         byte[] timestamp = new byte[19];
         byte[] strategy = new byte[50];
         byte[] locationTime = new byte[19];
-        byte[] strategyParams = new byte[100];
+        byte[] strategyParams = new byte[1000];
         byte[] trajectoryStartTime = new byte[19];
         int[][] offsets = new int[3][60];
         byte[] expiration = new byte[19];

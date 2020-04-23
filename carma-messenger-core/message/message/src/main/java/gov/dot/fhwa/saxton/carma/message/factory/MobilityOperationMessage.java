@@ -38,7 +38,7 @@ import gov.dot.fhwa.saxton.carma.rosjava_utils.SaxtonLogger;
 public class MobilityOperationMessage implements IMessage<MobilityOperation> {
 
     protected static final int STRATEGY_MAX_LENGTH = 50;
-    protected static final int STRATEGY_PARAMS_MAX_LENGTH = 100;
+    protected static final int STRATEGY_PARAMS_MAX_LENGTH = 1000;
     
     private MessageFactory factory;
     private SaxtonLogger   log;
