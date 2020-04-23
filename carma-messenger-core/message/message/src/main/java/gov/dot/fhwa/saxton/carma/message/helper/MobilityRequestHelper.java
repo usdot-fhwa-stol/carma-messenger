@@ -27,7 +27,7 @@ public class MobilityRequestHelper {
     protected static final int STRATEGY_MAX_LENGTH = 50;
     protected static final int URGENCY_MIN = 0;
     protected static final int URGENCY_MAX = 1000;
-    protected static final int STRATEGY_PARAMS_MAX_LENGTH = 100;
+    protected static final int STRATEGY_PARAMS_MAX_LENGTH = 1000;
 
     private MobilityHeaderHelper headerHelper;
     private byte[] strategy;
