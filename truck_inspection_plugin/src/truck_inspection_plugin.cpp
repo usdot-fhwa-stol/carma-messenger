@@ -70,8 +70,8 @@ namespace truck_inspection_plugin
             } else {
                 std_msgs::String msg_out;
                 std::string k_v_pair = msg->strategy_params;
-                // get only VIN number
-                msg_out.data = k_v_pair.substr(k_v_pair.find(':') + 1);
+                // get only VIN number, state and license plate
+                msg_out.data = k_v_pair;
                 // publish message to show there is a cav truck in the radio range of the ego-vehicle
                 cav_detection_pub_.publish(msg_out);
             }

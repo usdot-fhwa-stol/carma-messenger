@@ -81,3 +81,21 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY launch config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+
+
+#############
+## Testing ##
+#############
+
+catkin_add_gmock(${PROJECT_NAME}-test 
+                  test/test_launch.test 
+                  test/test_truck_inspection_plugin.cpp)
+target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES})
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest_gtest(truck_inspection_plugin_test test/test_launch.test test/test_truck_inspection_plugin.cpp)
+  target_link_libraries(truck_inspection_plugin_test ${catkin_LIBRARIES})
+
+endif()
