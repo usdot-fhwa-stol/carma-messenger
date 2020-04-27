@@ -68,6 +68,9 @@ namespace truck_inspection_plugin
         // helper function to verify safety log
         bool isSafetyLogValid(const std::string& log);
 
+        // helper function to check ads_auto_status
+        bool isADSAutoEngaged(const std::string& log);
+
         int number_of_entries;
 
         std::string safety_log_;

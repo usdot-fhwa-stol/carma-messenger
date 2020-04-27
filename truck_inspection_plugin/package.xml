@@ -28,4 +28,5 @@
   <depend>std_msgs</depend>
   <depend>cav_msgs</depend>
   <depend>carma_utils</depend>
+  <depend>rosunit</depend>
 </package>
