@@ -3,5 +3,5 @@
       <rosparam command="load" file="$(find truck_inspection_plugin)/config/parameters.yaml"/>
     </node>
 
-    <test test-name="truck_inspection_plugin_node_test_1" pkg="truck_inspection_plugin" type="truck_inspection_plugin_node_test" />
+    <test test-name="truck_inspection_plugin_node_test_1" pkg="truck_inspection_plugin" type="truck_inspection_plugin_test" />
 </launch>
