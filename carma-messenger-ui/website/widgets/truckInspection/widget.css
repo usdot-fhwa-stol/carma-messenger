@@ -526,3 +526,16 @@ div[class^='divBtnLabelUnit']{
         float: right;
     }     
 }
+
+/***2020-03-11 13:44:52***/
+.SystemDateTimeSpan{
+    padding: 5px;
+    font-family: Roboto;
+    font-weight: normal;
+    display: block;
+    text-align: left;
+    color: #000000;    
+    width: 100%;
+    float: left;
+    font-size: 80%;
+}

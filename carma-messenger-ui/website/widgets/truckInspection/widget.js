@@ -145,13 +145,13 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             }
             if(key=="TIMESTAMP"){
                 let logTimetamp = new Date(parseInt(value, 10));
-                if(document.getElementById('SystemDateTimeSpan')!=null)
+                if(document.getElementById('SystemDateTimeSpanId')!=null)
                 {
-                    document.getElementById('SystemDateTimeSpan').innerText = logTimetamp.getFullYear() 
+                    document.getElementById('SystemDateTimeSpanId').innerText = logTimetamp.getFullYear() 
                                                                             + "-" + ((logTimetamp.getMonth() + 1)<=9?"0"+(logTimetamp.getMonth() + 1):(logTimetamp.getMonth() + 1)) 
                                                                             + "-" + (logTimetamp.getDate()<=9?"0"+logTimetamp.getDate():logTimetamp.getDate()) + " " 
                                                                             + (logTimetamp.getHours()+3) + ":" + (logTimetamp.getMinutes()<=9?"0"+logTimetamp.getMinutes():logTimetamp.getMinutes()) + ":" + logTimetamp.getSeconds();
-                    document.getElementById('SystemDateTimeSpan').style.display="";
+                    document.getElementById('SystemDateTimeSpanId').style.display="";
                 }
             }
             if(key=="VIN_NUMBER"){
@@ -303,6 +303,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             var truckImage = createImgFramePanelText('truckImgFrameId', 'truckImgFrame', 'truckImgPanelId', 'truckImgPanel', 'truckImgId', 'truckImg', '../../images/truck_unavailable.jpg', 'Truck Image is unavailable');
             var aceIcon = createImgFramePanelText('aceIconFrameId_detailPg', 'aceIconFrame_detailPg', 'taceIconPanelId_detailPg', 'aceIconPanel_detailPg', 'aceIconTextId_detailPg', 'aceIcon_detailPg', '../../images/Ace_Color_Tagline.png', 'Image is unavailable');
             var logSpan = createSpan('LogSpanId_detailPg', 'logSpan_detailPg', 'Safety Log');
+            var SystemDateTimeSpan = createSpan('SystemDateTimeSpanId', 'SystemDateTimeSpan', '');
             var leftDiv = createDiv('leftDivId', 'leftDivCSS');
             var rightDiv = createDiv('rightDivId', 'rightDivCSS');
             leftDiv.append(VINFrameStr);
@@ -327,6 +328,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             rightDiv.appendChild(aceIcon);
 
             $(container).append(rightDiv);
+            $(container).append(SystemDateTimeSpan);
 
             console.log("truckInspectionSafetyLogPerVIN element is created");
     }
