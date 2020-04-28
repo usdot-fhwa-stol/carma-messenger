@@ -145,11 +145,14 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             }
             if(key=="TIMESTAMP"){
                 let logTimetamp = new Date(parseInt(value, 10));
-                document.getElementById('SystemDateTimeSpan').innerText = logTimetamp.getFullYear() 
-                                                                        + "-" + ((logTimetamp.getMonth() + 1)<=9?"0"+(logTimetamp.getMonth() + 1):(logTimetamp.getMonth() + 1)) 
-                                                                        + "-" + (logTimetamp.getDate()<=9?"0"+logTimetamp.getDate():logTimetamp.getDate()) + " " 
-                                                                        + (logTimetamp.getHours()+3) + ":" + (logTimetamp.getMinutes()<=9?"0"+logTimetamp.getMinutes():logTimetamp.getMinutes()) + ":" + logTimetamp.getSeconds();
-                document.getElementById('SystemDateTimeSpan').style.display="";
+                if(document.getElementById('SystemDateTimeSpan')!=null)
+                {
+                    document.getElementById('SystemDateTimeSpan').innerText = logTimetamp.getFullYear() 
+                                                                            + "-" + ((logTimetamp.getMonth() + 1)<=9?"0"+(logTimetamp.getMonth() + 1):(logTimetamp.getMonth() + 1)) 
+                                                                            + "-" + (logTimetamp.getDate()<=9?"0"+logTimetamp.getDate():logTimetamp.getDate()) + " " 
+                                                                            + (logTimetamp.getHours()+3) + ":" + (logTimetamp.getMinutes()<=9?"0"+logTimetamp.getMinutes():logTimetamp.getMinutes()) + ":" + logTimetamp.getSeconds();
+                    document.getElementById('SystemDateTimeSpan').style.display="";
+                }
             }
             if(key=="VIN_NUMBER"){
                 document.getElementById('VINTextId')!=null ? document.getElementById('VINTextId').innerHTML=value:"";

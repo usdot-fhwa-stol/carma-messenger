@@ -32,82 +32,6 @@ body {
 }
 
 
-/*** Left Navigation Style ***/
-/* Style the tab */
-
-div.tabindicators {
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    width: 6%;
-    height: 675px;
-    padding: 5px 5px 5px 5px;
-    text-align: center;
-}
-    div.tabindicators button {
-        display: block;
-        border: none;
-        background-color: inherit;
-        color: black;
-        padding: 10px 10px;
-        width: 95%;
-        border-bottom: 1px solid #ccc;
-        outline: none;
-        text-align: center;
-        cursor: pointer;
-        transition: 0.3s;
-       /*** overflow: hidden;***/
-    }
-
-        /* Change background color of buttons on hover */
-        div.tabindicators button:hover {
-            background-color: #ddd;
-        }
-
-div.tab {
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    width: 12%;
-    height: 675px;
-}
-
-    /* Style the buttons inside the tab */
-    div.tab button {
-        display: block;
-        background-color: inherit;
-        color: black;
-        padding: 20px 10px;
-        width: 100%;
-        border-bottom: 1px solid #ccc;
-        outline: none;
-        text-align: left;
-        cursor: pointer;
-        transition: 0.3s;
-        font-size: 27px;
-        font-weight: bold;
-        font-family: "Segoe UI";
-        /* overflow: auto; */
-    }
-
-        /* Change background color of buttons on hover */
-        div.tab button:hover {
-            background-color: #ddd;
-        }
-
-        /* Create an active/current "tab button" class */
-        div.tab button.active {
-            background-color: #00ace6;
-        }
-
-
-/* Style the tab header */
-.tabheader {
-    padding: 0px 12px;
-    border-top: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    width: 82%;
-    height: 100px;
-}
 #messenger-main-div {
     text-align: center;
     background-color:#FFF; 
@@ -119,7 +43,7 @@ div.tab {
     position: relative;
     padding: 5px 0vw;
     border: 1px solid #ccc;
-    height:  calc(100% - 220px);
+    height:  calc(100% - 240px);
     background-color:  #F8F9FA;
     margin: 0 auto;
     display:flex;
@@ -131,7 +55,7 @@ div.tab {
 }
 /* MessageTitle */
 .MessengerTitleFrame {
-    height: 210px;
+    height: 190px;
     text-align: center;
     overflow: hidden;
     width: 100%;
@@ -141,7 +65,7 @@ div.tab {
 }
 /* Rectangle 12 */
 .MessengerTitleRec{   
-    height: 200px;
+    height: 190px;
     display: inline-block;
     margin: auto;
     width: 100%;
@@ -604,7 +528,7 @@ footer {
 
 /***2020-03-11 13:44:52***/
 .SystemDateTime{
-    padding: 10px;
+    padding: 0px 10px;
     font-family: Roboto;
     font-weight: normal;
     display: block;
@@ -613,6 +537,9 @@ footer {
     width: calc(35% - 10px);
     float: left;
     font-size: 80%;
+}
+.FHWALogo{
+    height:40px;
 }
 
 /* CarmaMessenger version X.Y.Z-something */

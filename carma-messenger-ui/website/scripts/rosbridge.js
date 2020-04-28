@@ -136,7 +136,7 @@ window.onload = function () {
 
         // Adding Copyright based on current year
         var elemCopyright = document.getElementsByClassName('copyright');
-        elemCopyright[0].innerHTML = '&copy LEIDOS ' + new Date().getFullYear();
+        elemCopyright[0].innerHTML = 'Copyright &copy LEIDOS ' + new Date().getFullYear();
 
         // Adding CARMA Version based on the carma-config docker container version
         getCARMAVersion();
