@@ -203,6 +203,9 @@
     font-size: 150%; /**Compare to body font size**/
     
 }
+.CarrierText{
+    text-align: center;
+}
 .ADSAutoStatusText{
     text-align: center;
 }

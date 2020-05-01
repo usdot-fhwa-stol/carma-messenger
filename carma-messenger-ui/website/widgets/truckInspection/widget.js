@@ -112,26 +112,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
         CreateTruckInspectionSafetyLogPerVINWidget($("#divWidgetArea"));
         //Display log detail info on the detail widget
         let rawStr = messageData;
-        let rawArr = rawStr.split(",");
-        let isEngaged = false;
-        //Check if Auto status is engaged or not engaged
-        rawArr.forEach(element => {
-            let rawElement = element.split(":");
-            let key = rawElement[0].trim().toUpperCase();
-            let value=rawElement[1].trim().toUpperCase();
-            if(key == "ADS_AUTO_STATUS" && value == "ENGAGED"){
-                isEngaged=true;
-            }                
-        });
-
-        //remove all "ADS Health Status" color css
-        $("#ADSHealthStatusTextId").removeClass("BlackBkColor RedBkColor GreenBkColor OrangeBkColor GreyBkColor GreenBkColor");
-        if(isEngaged){
-            $('#ADSHealthStatusTextId').addClass("GreyBkColor"); //NOT-READY: Grey Color
-        }
-        else{                   
-           $('#ADSHealthStatusTextId').addClass("BlackBkColor"); //SHUTDOWN : Black Color
-        }
+        let rawArr = rawStr.split(",");        
 
         //Set DOM element data
         let state="";
@@ -150,7 +131,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                     document.getElementById('SystemDateTimeSpanId').innerText = logTimetamp.getFullYear() 
                                                                             + "-" + ((logTimetamp.getMonth() + 1)<=9?"0"+(logTimetamp.getMonth() + 1):(logTimetamp.getMonth() + 1)) 
                                                                             + "-" + (logTimetamp.getDate()<=9?"0"+logTimetamp.getDate():logTimetamp.getDate()) + " " 
-                                                                            + (logTimetamp.getHours()+3) + ":" + (logTimetamp.getMinutes()<=9?"0"+logTimetamp.getMinutes():logTimetamp.getMinutes()) + ":" + logTimetamp.getSeconds();
+                                                                            + ((logTimetamp.getHours() + 3)<=9?"0"+(logTimetamp.getHours() + 3):(logTimetamp.getHours() + 3)) + ":" + (logTimetamp.getMinutes()<=9?"0"+logTimetamp.getMinutes():logTimetamp.getMinutes()) + ":" + (logTimetamp.getSeconds()<=9?"0"+logTimetamp.getSeconds():logTimetamp.getSeconds());
                     document.getElementById('SystemDateTimeSpanId').style.display="";
                 }
             }
@@ -219,7 +200,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                     document.getElementById('ADSAutoStatusTextIdImg')!=null ? document.getElementById('ADSAutoStatusTextIdImg').src="../../images/ads_auto_status_wheel_grey.png":"";
                 }                
             }
-            if(key=="ADS_HEALTH_STATUS" && isEngaged && document.getElementById('ADSHealthStatusTextId') != null){
+            if(key=="ADS_HEALTH_STATUS" && document.getElementById('ADSHealthStatusTextId') != null){
                 console.log("ADS_HEALTH: "+value);
                 //remove all "ADS Health Status" color css
                 $("#ADSHealthStatusTextId").removeClass("BlackBkColor RedBkColor GreenBkColor OrangeBkColor GreyBkColor GreenBkColor");
@@ -368,7 +349,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
               var aceIcon = createImgFramePanelText('aceIconFrameId', 'aceIconFrame', 'taceIconPanelId', 'aceIconPanel', 'aceIconTextId', 'aceIcon', '../../images/Ace_Color_Tagline.png', 'Image is unavailable');      
               
               //Create Unavailable message
-              var NoMsgAvailable=createDiv("NoMsgAvailableId","NoMsgAvailable","No vehicles in range");
+              var NoMsgAvailable=createDiv("NoMsgAvailableId","NoMsgAvailable","No vehicles in range.");
             $(this.element).append(NoMsgAvailable);
             $(this.element).append(divBtnLabelUnit);
             $(this.element).append(aceIcon);
