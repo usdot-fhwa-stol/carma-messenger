@@ -157,7 +157,7 @@ function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,s
             var img = document.createElement('img');
             //image path
             img.src=divTextValue; 
-            img.alt="Image is not availabe";
+            img.alt="Image is not available";
             img.id=divTextId+"Img";
             divText.appendChild(img);
         }else{                    
