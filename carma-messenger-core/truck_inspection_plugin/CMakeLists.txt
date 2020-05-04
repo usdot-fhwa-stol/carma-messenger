@@ -88,7 +88,6 @@ install(DIRECTORY launch config
 ## Testing ##
 #############
 
-
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest_gtest(truck_inspection_plugin_test test/test_launch.test test/test_truck_inspection_plugin.cpp)
