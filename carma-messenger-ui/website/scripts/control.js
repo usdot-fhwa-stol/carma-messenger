@@ -149,11 +149,21 @@ function createDivFramePanelText(divFrameId,divFrameCss,divPanelId,divPanelCss,s
     smalllDiv.appendChild(smallSpan);
 
     var divText = document.createElement('div');
+    divText.id=divTextId;    
     divText.className=divTextCSS;
-    divText.id=divTextId;
     if(divTextValue!=null && divTextValue!="undefined" && divTextValue.length > 0)
-    {
-        divText.innerText=divTextValue;
+    { 
+        if(divTextValue.includes("../../images/")){
+            var img = document.createElement('img');
+            //image path
+            img.src=divTextValue; 
+            img.alt="Image is not availabe";
+            img.id=divTextId+"Img";
+            divText.appendChild(img);
+        }else{                    
+            divText.innerText=divTextValue;    
+        }
+      
     }
 
     divPanel.appendChild(smalllDiv);
