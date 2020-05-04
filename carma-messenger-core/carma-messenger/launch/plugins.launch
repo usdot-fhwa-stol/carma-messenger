@@ -19,6 +19,5 @@
 -->
 <launch>  
   <!-- Truck Inspection Plugin -->
-    <rosparam command="load" file="$(find truck_inspection_plugin)/config/parameters.yaml"/>
     <include file="$(find truck_inspection_plugin)/launch/truck_inspection_plugin.launch"></include>
 </launch>
