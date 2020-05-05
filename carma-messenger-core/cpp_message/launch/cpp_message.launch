@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="cpp_message" type="cpp_message_node" name="cpp_message_node" output="screen">
+        </node>
+</launch>
