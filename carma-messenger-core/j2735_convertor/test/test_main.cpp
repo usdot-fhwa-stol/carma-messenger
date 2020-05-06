@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2020 LEIDOS.
+ * Copyright (C) 2020 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,14 +14,13 @@
  * the License.
  */
 
-#include "j2735_convertor.h"
+#include <gtest/gtest.h>
+#include <ros/ros.h>
 
-/**
- * Entry Function for Execution
- */
-int main(int argc, char**argv)
+// Run all the tests
+int main(int argc, char** argv)
 {
-    j2735_convertor::J2735Convertor node(argc,argv);
-
-    return node.run();
+  testing::InitGoogleTest(&argc, argv);
+  ros::Time::init();
+  return RUN_ALL_TESTS();
 }
