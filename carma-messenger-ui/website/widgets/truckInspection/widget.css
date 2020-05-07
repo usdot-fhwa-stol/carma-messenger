@@ -47,7 +47,7 @@
 }
 /* License */
 .LicenseFrame {    
-    width: calc(38% - 10px); 
+    width: calc(38% - 5px); 
     margin-left:5px;
     position: relative;
     display: inline-block;
