@@ -123,6 +123,7 @@ file(GLOB_RECURSE headers */*.hpp */*.h)
 include_directories(
   ${catkin_INCLUDE_DIRS}
   include
+  include/generated
 )
 
 ## Add cmake target dependencies of the library
