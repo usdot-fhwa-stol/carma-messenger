@@ -133,7 +133,7 @@ TEST(ControlMessage, convertScheduleToCAV)
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
 
   // Evaluate Schedule Fields
-  //ASSERT_EQ(out_msg.start.sec, 10);
+  ASSERT_EQ(out_msg.start.sec, 10);
   ASSERT_EQ(out_msg.start.nsec, 1000000);
   ASSERT_EQ(out_msg.end.sec, 40);
   ASSERT_EQ(out_msg.end.nsec, 2000000);
