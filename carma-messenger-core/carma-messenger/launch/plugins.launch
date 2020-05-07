@@ -17,6 +17,7 @@
 <!--
 	Launch file for launching the use case specific nodes being used in carma-messenger
 -->
-<launch>
-  
+<launch>  
+  <!-- Truck Inspection Plugin -->
+    <include file="$(find truck_inspection_plugin)/launch/truck_inspection_plugin.launch"></include>
 </launch>

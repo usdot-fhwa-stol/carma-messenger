@@ -17,7 +17,7 @@
 # CARMA packages checkout script
 # Optional argument to set the root checkout directory with no ending '/' default is '~'
 
-set -ex
+set -exo pipefail
 
 dir=~
 while [[ $# -gt 0 ]]; do
@@ -36,9 +36,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$BRANCH" = "develop" ]]; then
-      git clone https://github.com/usdot-fhwa-stol/CARMAMsgs.git ~/src/CARMAMsgs --branch $BRANCH --depth 1
-      git clone https://github.com/usdot-fhwa-stol/CARMAUtils.git ~/src/CARMAUtils --branch $BRANCH --depth 1
+      git clone https://github.com/usdot-fhwa-stol/carma-msgs.git ~/src/CARMAMsgs --branch $BRANCH --depth 1
+      git clone https://github.com/usdot-fhwa-stol/carma-utils.git ~/src/CARMAUtils --branch $BRANCH --depth 1
 else
-      git clone https://github.com/usdot-fhwa-stol/CARMAMsgs.git ${dir}/src/CARMAMsgs --branch develop --depth 1
-      git clone https://github.com/usdot-fhwa-stol/CARMAUtils.git ${dir}/src/CARMAUtils --branch develop --depth 1
+      git clone https://github.com/usdot-fhwa-stol/carma-msgs.git ${dir}/src/CARMAMsgs --branch develop --depth 1
+      git clone https://github.com/usdot-fhwa-stol/carma-utils.git ${dir}/src/CARMAUtils --branch develop --depth 1
 fi
