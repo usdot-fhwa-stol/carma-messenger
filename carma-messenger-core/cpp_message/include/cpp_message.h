@@ -21,6 +21,7 @@ extern "C"
 }
 
 #include <vector>
+#include <boost/optional.hpp>
 #include <ros/ros.h>
 #include <carma_utils/CARMAUtils.h>
 #include <cav_msgs/ByteArray.h>
@@ -63,6 +64,10 @@ public:
      * @brief Execution function which will start the ROS subscriptions and publications.
      */
     int run();
+
+    // helper functions for message decode/encode
+    boost::optional<j2735_msgs::ControlRequest> decode_geofence_request(std::vector<uint8_t>& binary_array);
+    boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::ControlRequest request_msg);
 
 };
 }
