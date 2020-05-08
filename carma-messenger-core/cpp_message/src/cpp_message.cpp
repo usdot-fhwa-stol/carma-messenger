@@ -85,6 +85,7 @@ namespace cpp_message
         for(auto i = 0; i < len; i++) {
             buf[i] = binary_array[i];
         }
+        
         // use asn1c lib to decode
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
 
@@ -101,25 +102,26 @@ namespace cpp_message
             // copy scale field
             output.scale = message->value.choice.TestMessage04.body.scale;
             // copy bounds
-            auto bounds_count = message->value.choice.TestMessage04.body.bounds.list.size;
+            auto bounds_count = message->value.choice.TestMessage04.body.bounds.list.count;
             for(auto i = 0; i < bounds_count; i++) {
-                j2735_msgs::ControlBounds bounds;
+                j2735_msgs::ControlBounds bound;
                 // copy lat/lon
-                bounds.latitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lat;
-                bounds.longitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lon;
+                bound.latitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lat;
+                bound.longitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lon;
                 // copy offset array to boost vector
-                auto count = message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.size;
-                for(auto j = 0; j < count; j++) {
-                    bounds.offsets[j] = *message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.array[j];
+                auto count = message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.count;
+                for(auto j = 0; j < 3; j++) {
+                    bound.offsets[j] = *message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.array[j];
                 }
                 // recover a long value from 8-bit array
                 uint64_t long_bits = 0;
-                for(auto j = 0; j < 8; j++) {
+                auto bits_array_size = message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.size;
+                for(auto j = 0; j < bits_array_size; j++) {
                     long_bits |= message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.buf[j];
                     long_bits = long_bits << 8;
                 }
-                bounds.oldest = long_bits;
-                output.bounds.push_back(bounds);
+                bound.oldest = long_bits;
+                output.bounds.push_back(bound);
             }
             return boost::optional<j2735_msgs::ControlRequest>(output);
         }
@@ -158,6 +160,8 @@ namespace cpp_message
         message->value.choice.TestMessage04.body.scale = request_msg.scale;
         // copy bounds
         auto count = request_msg.bounds.size();
+        ControlRequest::ControlRequest__bounds* bounds_list;
+        bounds_list = (ControlRequest::ControlRequest__bounds*)calloc(1, sizeof(ControlRequest::ControlRequest__bounds));
         for(auto i = 0; i < count; i++) {
             // construct control bounds
             ControlBounds_t* bounds_p;
@@ -165,14 +169,15 @@ namespace cpp_message
             bounds_p->lat = request_msg.bounds[i].latitude;
             bounds_p->lon = request_msg.bounds[i].longitude;
             // copy offsets from array to C list struct
+            ControlBounds::ControlBounds__offsets* offsets;
+            offsets = (ControlBounds::ControlBounds__offsets*)calloc(1, sizeof(ControlBounds::ControlBounds__offsets));
             auto offset_count = request_msg.bounds[i].offsets.size();
-            if(offset_count > 0) {
-                for(auto j = 0; j < offset_count; j++) {
-                    int16_t temp = request_msg.bounds[i].offsets[j];
-                    asn_sequence_add(&bounds_p->offsets.list, &temp);
-                }
+            for(auto j = 0; j < 3; j++) {
+                int16_t temp = request_msg.bounds[i].offsets[j];
+                asn_sequence_add(&offsets->list, &temp);
             }
-            // convert a long value to an 8-bit array of length 8
+            bounds_p->offsets = *offsets;
+            //convert a long value to an 8-bit array of length 8
             uint8_t oldest_val[8];
             for(auto k = 7; k >= 0; k--) {
                 // TODO this line needs to be tested
@@ -180,8 +185,9 @@ namespace cpp_message
             }
             bounds_p->oldest.size = 8;
             bounds_p->oldest.buf = oldest_val;
-            asn_sequence_add(&message->value.choice.TestMessage04.body.bounds.list, bounds_p);   
+            asn_sequence_add(&bounds_list->list, bounds_p);
         }
+        message->value.choice.TestMessage04.body.bounds = *bounds_list;
 
 	    // encode message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);

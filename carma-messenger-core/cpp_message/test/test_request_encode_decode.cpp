@@ -36,7 +36,11 @@ TEST(CppMessageTest, testEncodeRequestMsg)
     request.version = "012345678901234567890123456789012345";
     auto res = worker.encode_geofence_request(request);
     if(res) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
+    else
+    {
+        //std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
 }
 
 // Run all the tests
