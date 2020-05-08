@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2020 LEIDOS.
+ * Copyright (C) 2020 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,8 +30,8 @@ namespace cpp_message
         // initialize pub/sub
         outbound_binary_message_pub_ = nh_->advertise<cav_msgs::ByteArray>("outbound_binary_msg", 5);
         inbound_binary_message_sub_ = nh_->subscribe("inbound_binary_msg", 5, &Message::inbound_binary_callback, this);
-        outbound_geofence_request_message_sub_ = nh_->subscribe("outbound_control_request", 5, &Message::outbound_control_request_callback, this);
-        inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("inbound_control_request", 5);
+        outbound_geofence_request_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_request", 5, &Message::outbound_control_request_callback, this);
+        inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("incoming_j2735_geofence_request", 5);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -77,12 +77,12 @@ namespace cpp_message
                         bounds.offsets[j] = *message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.array[j];
                     }
                     // recover a long value from 8-bit array
-                    long temp = 0;
+                    uint64_t long_bits = 0;
                     for(auto j = 0; j < 8; j++) {
-                        temp |= message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.buf[j];
-                        temp = temp << 8;
+                        long_bits |= message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.buf[j];
+                        long_bits = long_bits << 8;
                     }
-                    bounds.oldest = temp;
+                    bounds.oldest = long_bits;
                     output.bounds.push_back(bounds);
                 }
                 // publish results
@@ -126,32 +126,29 @@ namespace cpp_message
         message->value.choice.TestMessage04.body.scale = msg->scale;
         // copy bounds
         auto count = msg->bounds.size();
-        if(count > 0)
-        {
-            for(auto i = 0; i < count; i++) {
-                // construct control bounds
-                ControlBounds_t* bounds_p;
-                bounds_p = (ControlBounds_t*) calloc(1, sizeof(ControlBounds_t));
-                bounds_p->lat = msg->bounds[i].latitude;
-                bounds_p->lon = msg->bounds[i].longitude;
-                // copy offsets from array to C list struct
-                auto offset_count = msg->bounds[i].offsets.size();
-                if(offset_count > 0) {
-                    for(auto j = 0; j < offset_count; j++) {
-                        int16_t temp = msg->bounds[i].offsets[j];
-                        asn_sequence_add(&bounds_p->offsets.list, &temp);
-                    }
+        for(auto i = 0; i < count; i++) {
+            // construct control bounds
+            ControlBounds_t* bounds_p;
+            bounds_p = (ControlBounds_t*) calloc(1, sizeof(ControlBounds_t));
+            bounds_p->lat = msg->bounds[i].latitude;
+            bounds_p->lon = msg->bounds[i].longitude;
+            // copy offsets from array to C list struct
+            auto offset_count = msg->bounds[i].offsets.size();
+            if(offset_count > 0) {
+                for(auto j = 0; j < offset_count; j++) {
+                    int16_t temp = msg->bounds[i].offsets[j];
+                    asn_sequence_add(&bounds_p->offsets.list, &temp);
                 }
-                // convert a long value to an 8-bit array of length 8
-                uint8_t oldest_val[8];
-                for(auto k = 7; k >= 0; k--) {
-                    // TODO this line needs to be tested
-                    oldest_val[7 - k] = msg->bounds[i].oldest >> (k * 8);
-                }
-                bounds_p->oldest.size = 8;
-                bounds_p->oldest.buf = oldest_val;
-                asn_sequence_add(&message->value.choice.TestMessage04.body.bounds.list, bounds_p);   
             }
+            // convert a long value to an 8-bit array of length 8
+            uint8_t oldest_val[8];
+            for(auto k = 7; k >= 0; k--) {
+                // TODO this line needs to be tested
+                oldest_val[7 - k] = msg->bounds[i].oldest >> (k * 8);
+            }
+            bounds_p->oldest.size = 8;
+            bounds_p->oldest.buf = oldest_val;
+            asn_sequence_add(&message->value.choice.TestMessage04.body.bounds.list, bounds_p);   
         }
 
 	    // encode message
