@@ -1,61 +1,5 @@
-﻿.regular-checkbox {
-    display:none;
-}
-    .regular-checkbox + label {
-        background-color: #fafafa;
-        border: 1px solid #cacece;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-        padding: 9px;
-        border-radius: 3px;
-        display: inline-block;
-        position: relative;
-    }
+﻿
 
-        .regular-checkbox + label:active, .regular-checkbox:checked + label:active {
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
-        }
-
-    .regular-checkbox:checked + label {
-        background-color: #e9ecee;
-        border: 1px solid #adb8c0;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-        color: #99a1a7;
-    }
-
-        .regular-checkbox:checked + label:after {
-            content: '\2714';
-            font-size: 14px;
-            position: absolute;
-            top: 0px;
-            left: 3px;
-            color: #4CAF50; 
-        }
-
-
-.big-checkbox + label {
-    padding: 18px;
-}
-
-.big-checkbox:checked + label:after {
-    font-size: 28px;
-    left: 6px;
-}
-
-#btnOk {
-    height: 80px;
-    width: 220px;
-    background-color: #336699;
-    color: white;
-    font-size: 25px;
-    position: relative;
-    left: 0px;
-    text-align: center;
-}
-
-#lblCheckBox {
-    font-size: 25px;
-    color: cornflowerblue;
-}
 
 /*
  * Copyright (C) 2018-2020 LEIDOS.
@@ -81,89 +25,13 @@ body {
     font-family: "Segoe UI",Arial,sans-serif;
     height: 100vh;
     width: 100vw;
-    padding: 2vh 0vw 0vh 0vw;
+    padding: 0vh 0vw 0vh 0vw;
     font-size: 20pt;
     line-height: 1.2; /***1.2 of font size**/
     overflow: hidden;
 }
 
 
-/*** Left Navigation Style ***/
-/* Style the tab */
-
-div.tabindicators {
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    width: 6%;
-    height: 675px;
-    padding: 5px 5px 5px 5px;
-    text-align: center;
-}
-    div.tabindicators button {
-        display: block;
-        border: none;
-        background-color: inherit;
-        color: black;
-        padding: 10px 10px;
-        width: 95%;
-        border-bottom: 1px solid #ccc;
-        outline: none;
-        text-align: center;
-        cursor: pointer;
-        transition: 0.3s;
-       /*** overflow: hidden;***/
-    }
-
-        /* Change background color of buttons on hover */
-        div.tabindicators button:hover {
-            background-color: #ddd;
-        }
-
-div.tab {
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    width: 12%;
-    height: 675px;
-}
-
-    /* Style the buttons inside the tab */
-    div.tab button {
-        display: block;
-        background-color: inherit;
-        color: black;
-        padding: 20px 10px;
-        width: 100%;
-        border-bottom: 1px solid #ccc;
-        outline: none;
-        text-align: left;
-        cursor: pointer;
-        transition: 0.3s;
-        font-size: 27px;
-        font-weight: bold;
-        font-family: "Segoe UI";
-        /* overflow: auto; */
-    }
-
-        /* Change background color of buttons on hover */
-        div.tab button:hover {
-            background-color: #ddd;
-        }
-
-        /* Create an active/current "tab button" class */
-        div.tab button.active {
-            background-color: #00ace6;
-        }
-
-
-/* Style the tab header */
-.tabheader {
-    padding: 0px 12px;
-    border-top: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    width: 82%;
-    height: 100px;
-}
 #messenger-main-div {
     text-align: center;
     background-color:#FFF; 
@@ -173,9 +41,9 @@ div.tab {
 /* Style the tab content */
 .tabcontent {
     position: relative;
-    padding: 2vh 0vw;
+    padding: 5px 0vw;
     border: 1px solid #ccc;
-    height:  calc(100% - 220px);
+    height:  calc(100% - 240px);
     background-color:  #F8F9FA;
     margin: 0 auto;
     display:flex;
@@ -187,64 +55,50 @@ div.tab {
 }
 /* MessageTitle */
 .MessengerTitleFrame {
-    height: 120px;
+    height: 190px;
     text-align: center;
     overflow: hidden;
+    width: 100%;
     margin: 0 auto;
-    padding: 5px 0px 10px 0px;
+    padding: 0px;
+    vertical-align: middle;
 }
 /* Rectangle 12 */
 .MessengerTitleRec{   
-    height: 100px;
+    height: 190px;
     display: inline-block;
     margin: auto;
-    text-align: center;
+    width: 100%;
 }
 
-/* Messenger_back_arrow  */
-.Messenger_back_arrow{
-    max-width: 100%;
-    display: none;
-    cursor: pointer;  
-    height: 100%; 
-}
 .Messenger_back_Div{
     height: 100%; 
     float: left;
     display: inline-block; 
-    width:8%;
+    width:30%;
     position: relative;
 }
-/****logo1**/
-.logo1{
-    height: 95%; 
-    float: left;
-    display: inline-block;
-    width:6%
+
+/* Messenger_back_arrow  */
+.Messenger_back_arrow{
+    max-width: 30%;
+    display: none;
+    cursor: pointer;     
+    float: left; 
+    height: 70%; 
+    margin-top: 15px;
 }
 
-/* logo 2 */
+/* logo  */
 
-.logo2{
-    height: 95%;  
+.logo{
+    height: 100%;  
     float: left;
     display: inline-block;
-    width:34%;
+    max-width:50%;
+    margin-top: 10px;
 }
 
-/* Messenger */
-.Messenger {
-    font-family: Roboto;
-    font-size: 80px;
-    height: 95%;
-    font-weight: bolder;
-    display: inline-block;
-    float: left;
-    vertical-align: text-top;
-    text-align: left;
-    color: #53F11B;
-    width: 42%;
-}
 
 .aceIconPanel{
     position: absolute;
@@ -273,7 +127,7 @@ div.tab {
         font-size: 80px;
     }
     .MessengerTitleRec,.MessengerTitleFrame{   
-        height: 90px;
+        /* height: 90px; */
     }
   }
   @media (min-width: 768px) and (max-width: 1024px) {      
@@ -282,7 +136,7 @@ div.tab {
         font-size: 70px;
     }
     .MessengerTitleRec,.MessengerTitleFrame{   
-        height: 80px;
+        /* height: 80px; */
     }
   } 
   /* 
@@ -292,7 +146,7 @@ div.tab {
   
   @media (min-width: 700px) and (max-width: 767px) {
     .MessengerTitleRec,.MessengerTitleFrame{   
-        height: 60px;
+        /* height: 60px; */
     }
     .Messenger{
         font-size: 30pt;
@@ -645,98 +499,6 @@ div.message_box {
 }
 
 
-/* Remaining Distance to Next Speed Limit */
-#divDistRemaining{
- position: relative;
- top: 42%;
- color: black;
- font-size: 25px;
- font-weight: bold;
- text-align: center;
-}
-
-/* Lane */
-#divLaneTracking {
-    position: relative;
-    top: 44%;
-    width: 100%;
-    height: 200px;
-    /*border: 5px solid blue; */
-    font-size: 25px;
-    font-weight: bold;
-    text-align: center;
-    justify-content: center;
-}
-
-
-#divSpeedLimit {
-    position: absolute;
-    top: 23%;
-    left: 75%;
-}
-
-
-/* Speedometer */
-.divSpeedometer {
-    width: 400px;
-    height: 200px;
-    position: absolute;
-    top: 38%;
-    left: 55%;
-   /*** overflow: hidden;****/
-    text-align: center;
-    transform: translate(-50%, -50%);
-}
-
-.gauge-a {
-    z-index: 1;
-    position: absolute;
-    background-color: rgba(136, 185, 195, .2);
-    width: 400px;
-    height: 200px;
-    top: 0%;
-    border-radius: 250px 250px 0px 0px;
-}
-
-.gauge-b {
-    z-index: 3;
-    position: absolute;
-    background-color: #1858cd;
-    width: 250px;
-    height: 125px;
-    top: 75px;
-    margin-left: 75px;
-    margin-right: auto;
-    border-radius: 250px 250px 0px 0px;
-}
-
-.gauge-c {
-    z-index: 2;
-    position: absolute;
-    background-color: cornflowerblue;
-    width: 400px;
-    height: 200px;
-    top: 200px;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 0px 0px 200px 200px;
-    transform-origin: center top;
-    transition: all 1.3s ease-in-out;
-}
-
-.gauge-data {
-    z-index: 4;
-    color: white;
-    font-size: 35px;
-    line-height: 25px;
-    position: absolute;
-    width: 400px;
-    height: 200px;
-    top: 90px;
-    margin-left: auto;
-    margin-right: auto;
-    transition: all 1s ease-out;
-}
 
 /*** Log Text Box content Style ****/
 .logStatus {
@@ -766,7 +528,7 @@ footer {
 
 /***2020-03-11 13:44:52***/
 .SystemDateTime{
-    padding: 10px;
+    padding: 0px 10px;
     font-family: Roboto;
     font-weight: normal;
     display: block;
@@ -775,6 +537,9 @@ footer {
     width: calc(35% - 10px);
     float: left;
     font-size: 80%;
+}
+.FHWALogo{
+    height:40px;
 }
 
 /* CarmaMessenger version X.Y.Z-something */

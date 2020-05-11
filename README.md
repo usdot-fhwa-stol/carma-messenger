@@ -11,7 +11,7 @@ CARMA Messenger is a standalone research platform which is aimed to deploy on no
 The core components in CARMA Messenger contains two ROS nodes origionally developed for the CARMA Platform communication stack: Message node and J2735 Convertor Node. The Message node takes in a ROS message and uses asn1c lib generated code to convert it to a binary blob and forwards it to the DSRC driver, such that any OBU/RSU can broadcast the message directly. The J2735 Converter converts the data from a ROS message based on the J2735 standard units to another message using more usable SI units and vice-versa.
 <br>
 To implement each CARMA messenger feature, different ROS nodes can be built to serve as plugins to CARMA Messenger platform. Their responsibilities are generating messages and responses to messages from CARMA Platform vehicles. Similar functionalities will be grouped under the same plugin. An example of this archetecture can be seen below. 
-![](doc/media/carma-messenger-diagram.png)
+![](docs/media/carma-messenger-diagram.png)
 <br>
 As shown in the diagram, any given piece of functionality may require client nodes running on the CARMA Platform which are configued to address the specific scenario under test. 
 

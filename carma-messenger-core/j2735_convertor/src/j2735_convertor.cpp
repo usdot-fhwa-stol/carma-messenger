@@ -19,13 +19,20 @@
  */
 
 #include "j2735_convertor.h"
+#include <j2735_convertor/control_message_convertor.h>
+#include <j2735_convertor/control_request_convertor.h>
 
-int J2735Convertor::run() {
+namespace j2735_convertor
+{
+int J2735Convertor::run()
+{
   // Initialize Node
-  try {
+  try
+  {
     initialize();
   }
-  catch(const std::exception& e) {
+  catch (const std::exception& e)
+  {
     ROS_ERROR_STREAM("Failed to initialize node with exception: " << e.what());
   }
 
@@ -39,6 +46,9 @@ int J2735Convertor::run() {
   ros::AsyncSpinner map_spinner(1, &map_queue_);
   map_spinner.start();
 
+  ros::AsyncSpinner geofence_spinner(1, &geofence_queue_);
+  geofence_spinner.start();
+
   // Continuosly process callbacks for default_nh_ using the GlobalCallbackQueue
   ros::Rate r(default_spin_rate_);
   while (ros::ok() && !shutting_down_)
@@ -49,19 +59,22 @@ int J2735Convertor::run() {
   // Request ros node shutdown before exit
   ros::shutdown();
 
-  return 0; 
+  return 0;
 }
 
-void J2735Convertor::initialize() {
+void J2735Convertor::initialize()
+{
   // Setup node handles here if needed
-  default_nh_.reset(new ros::NodeHandle());
-  bsm_nh_.reset(new ros::NodeHandle());
-  spat_nh_.reset(new ros::NodeHandle());
-  map_nh_.reset(new ros::NodeHandle());
+  default_nh_.reset(new ros::CARMANodeHandle());
+  bsm_nh_.reset(new ros::CARMANodeHandle());
+  spat_nh_.reset(new ros::CARMANodeHandle());
+  map_nh_.reset(new ros::CARMANodeHandle());
+  geofence_nh_.reset(new ros::CARMANodeHandle());
   // Set Callback Queues for Node Handles
   bsm_nh_->setCallbackQueue(&bsm_queue_);
   spat_nh_->setCallbackQueue(&spat_queue_);
   map_nh_->setCallbackQueue(&map_queue_);
+  geofence_nh_->setCallbackQueue(&geofence_queue_);
 
   // J2735 BSM Subscriber
   j2735_bsm_sub_ = bsm_nh_->subscribe("incoming_j2735_bsm", 100, &J2735Convertor::j2735BsmHandler, this);
@@ -70,10 +83,12 @@ void J2735Convertor::initialize() {
   converted_bsm_pub_ = bsm_nh_->advertise<cav_msgs::BSM>("incoming_bsm", 100);
 
   // Outgoing J2735 BSM Subscriber
-  outbound_bsm_sub_ = bsm_nh_->subscribe("outgoing_bsm", 1, &J2735Convertor::BsmHandler, this); // Queue size of 1 as we should never publish outdated BSMs
+  outbound_bsm_sub_ = bsm_nh_->subscribe("outgoing_bsm", 1, &J2735Convertor::BsmHandler,
+                                         this);  // Queue size of 1 as we should never publish outdated BSMs
 
   // BSM Publisher
-  outbound_j2735_bsm_pub_ = bsm_nh_->advertise<j2735_msgs::BSM>("outgoing_j2735_bsm", 1); // Queue size of 1 as we should never publish outdated BSMs
+  outbound_j2735_bsm_pub_ = bsm_nh_->advertise<j2735_msgs::BSM>(
+      "outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
 
   // J2735 SPAT Subscriber
   j2735_spat_sub_ = spat_nh_->subscribe("incoming_j2735_spat", 100, &J2735Convertor::j2735SpatHandler, this);
@@ -87,87 +102,71 @@ void J2735Convertor::initialize() {
   // MAP Publisher TODO think about queue sizes
   converted_map_pub_ = map_nh_->advertise<cav_msgs::MapData>("incoming_map", 50);
 
-  // SystemAlert Subscriber
-  system_alert_sub_ = default_nh_->subscribe("system_alert", 10, &J2735Convertor::systemAlertHandler, this);
+  // Incoming geofence pub/sub
+  converted_geofence_control_pub_ = geofence_nh_->advertise<cav_msgs::ControlMessage>("incoming_geofence_control", 50);
+  converted_geofence_request_pub_ = geofence_nh_->advertise<cav_msgs::ControlRequest>("incoming_geofence_request", 50);
 
-  // SystemAlert Publisher
-  system_alert_pub_ = default_nh_->advertise<cav_msgs::SystemAlert>("system_alert", 10, true);
+  j2735_geofence_control_sub_ = geofence_nh_->subscribe("incoming_j2735_geofence_control", 50, &J2735Convertor::j2735ControlMessageHandler, this);
+  j2735_geofence_request_sub_ = geofence_nh_->subscribe("incoming_j2735_geofence_request", 50, &J2735Convertor::j2735ControlRequestHandler, this);
+
+  // Outgoing geofence pub/sub
+  outbound_geofence_control_sub_ = geofence_nh_->subscribe("outgoing_geofence_control", 50, &J2735Convertor::ControlMessageHandler, this);
+  outbound_geofence_request_sub_ = geofence_nh_->subscribe("outgoing_geofence_request", 50, &J2735Convertor::ControlRequestHandler, this);
+
+  outbound_j2735_geofence_control_pub_ = geofence_nh_->advertise<j2735_msgs::ControlMessage>("outgoing_j2735_geofence_control", 10);
+  outbound_j2735_geofence_request_pub_ = geofence_nh_->advertise<j2735_msgs::ControlRequest>("outgoing_j2735_geofence_request", 10);
 }
 
-void J2735Convertor::BsmHandler(const cav_msgs::BSMConstPtr& message) {
-  try {
-    j2735_msgs::BSM j2735_msg;
-    BSMConvertor::convert(*message, j2735_msg); // Convert message
-    outbound_j2735_bsm_pub_.publish(j2735_msg); // Publish converted message
-  }
-  catch(const std::exception& e) {
-    handleException(e);
-  }
+void J2735Convertor::BsmHandler(const cav_msgs::BSMConstPtr& message)
+{
+  j2735_msgs::BSM j2735_msg;
+  BSMConvertor::convert(*message, j2735_msg);  // Convert message
+  outbound_j2735_bsm_pub_.publish(j2735_msg);  // Publish converted message
 }
 
-void J2735Convertor::j2735BsmHandler(const j2735_msgs::BSMConstPtr& message) {
-  try {
-    cav_msgs::BSM converted_msg;
-    BSMConvertor::convert(*message, converted_msg); // Convert message
-    converted_bsm_pub_.publish(converted_msg); // Publish converted message
-  }
-  catch(const std::exception& e) {
-    handleException(e);
-  }
+void J2735Convertor::j2735BsmHandler(const j2735_msgs::BSMConstPtr& message)
+{
+  cav_msgs::BSM converted_msg;
+  BSMConvertor::convert(*message, converted_msg);  // Convert message
+  converted_bsm_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::j2735SpatHandler(const j2735_msgs::SPATConstPtr& message) {
-  try {
-    cav_msgs::SPAT converted_msg;
-    SPATConvertor::convert(*message, converted_msg); // Convert message
-    converted_spat_pub_.publish(converted_msg); // Publish converted message
-  }
-  catch(const std::exception& e) {
-    handleException(e);
-  }
+void J2735Convertor::j2735SpatHandler(const j2735_msgs::SPATConstPtr& message)
+{
+  cav_msgs::SPAT converted_msg;
+  SPATConvertor::convert(*message, converted_msg);  // Convert message
+  converted_spat_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::j2735MapHandler(const j2735_msgs::MapDataConstPtr& message) {
-  try {
-    cav_msgs::MapData converted_msg;
-    MapConvertor::convert(*message, converted_msg); // Convert message
-    converted_map_pub_.publish(converted_msg); // Publish converted message
-  }
-  catch(const std::exception& e) {
-    handleException(e);
-  }
+void J2735Convertor::j2735MapHandler(const j2735_msgs::MapDataConstPtr& message)
+{
+  cav_msgs::MapData converted_msg;
+  MapConvertor::convert(*message, converted_msg);  // Convert message
+  converted_map_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::systemAlertHandler(const cav_msgs::SystemAlertConstPtr& message) {
-  try {
-    ROS_INFO_STREAM("Received SystemAlert message of type: " << message->type);
-    switch(message->type) {
-      case cav_msgs::SystemAlert::SHUTDOWN: 
-        shutdown(); // Shutdown this node when a SHUTDOWN request is received 
-        break;
-    }
-  }
-  catch(const std::exception& e) {
-    handleException(e);
-  }
+void J2735Convertor::ControlMessageHandler(const cav_msgs::ControlMessageConstPtr& message) {
+  j2735_msgs::ControlMessage converted_msg;
+  j2735_convertor::geofence_control::convert(*message, converted_msg);  // Convert message
+  outbound_j2735_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::handleException(const std::exception& e) {
-  // Create system alert message
-  cav_msgs::SystemAlert alert_msg;
-  alert_msg.type = cav_msgs::SystemAlert::FATAL;
-  alert_msg.description = "Uncaught Exception in " + ros::this_node::getName() + " exception: " + e.what();
- 
-  ROS_ERROR_STREAM(alert_msg.description); // Log exception
-
-  system_alert_pub_.publish(alert_msg); // Notify the rest of the system
-
-  ros::Duration(0.05).sleep(); // Leave a small amount of time for the alert to be published
-  shutdown(); // Shutdown this node
+void J2735Convertor::j2735ControlMessageHandler(const j2735_msgs::ControlMessageConstPtr& message) {
+  cav_msgs::ControlMessage converted_msg;
+  j2735_convertor::geofence_control::convert(*message, converted_msg);  // Convert message
+  converted_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::shutdown() {
-  std::lock_guard<std::mutex> lock(shutdown_mutex_);
-  ROS_WARN_STREAM("Node shutting down");
-  shutting_down_ = true;
+void J2735Convertor::ControlRequestHandler(const cav_msgs::ControlRequestConstPtr& message) {
+  j2735_msgs::ControlRequest converted_msg;
+  j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
+  outbound_j2735_geofence_request_pub_.publish(converted_msg);       // Publish converted message
 }
+
+void J2735Convertor::j2735ControlRequestHandler(const j2735_msgs::ControlRequestConstPtr& message) {
+  cav_msgs::ControlRequest converted_msg;
+  j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
+  converted_geofence_request_pub_.publish(converted_msg);       // Publish converted message
+}
+
+}  // namespace j2735_convertor
