@@ -34,6 +34,13 @@ TEST(CppMessageTest, testEncodeRequestMsg)
     cpp_message::Message worker;
     j2735_msgs::ControlRequest request;
     request.version = "012345678901234567890123456789012345";
+    request.scale = 1;
+    j2735_msgs::ControlBounds bounds;
+    bounds.longitude = 0;
+    bounds.latitude = 0;
+    bounds.oldest = 0;
+    for(int i = 0; i < bounds.offsets.size(); i++) bounds.offsets[i] = 0;
+    request.bounds.push_back(bounds);
     auto res = worker.encode_geofence_request(request);
     if(res) EXPECT_TRUE(true);
     else
