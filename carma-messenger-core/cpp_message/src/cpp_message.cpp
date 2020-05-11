@@ -33,7 +33,7 @@ namespace cpp_message
         outbound_geofence_request_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_request", 5, &Message::outbound_control_request_callback, this);
         inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("incoming_j2735_geofence_request", 5);
         outbound_geofence_control_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_control", 5, &Message::outbound_control_message_callback, this);
-        inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("incoming_j2735_geofence_control", 5);
+        inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::ControlMessage>("incoming_j2735_geofence_control", 5);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -49,6 +49,7 @@ namespace cpp_message
             {
                 ROS_WARN_STREAM("Cannot decode geofence request message.");
             }
+        }
 
             // handle ControlMessage
         else if(msg->messageType == "ControlMessage") {
@@ -82,7 +83,15 @@ namespace cpp_message
 
     void Message::outbound_control_message_callback(const j2735_msgs::ControlMessageConstPtr& msg)
     {
-        j2735_msgs::ControlMessagedecode_geofence_control
+        j2735_msgs::ControlMessage control_msg(*msg.get());
+        auto res = encode_geofence_control(control_msg);
+        if(res) {
+            // copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.content = res.get();
+            // publish result
+            outbound_binary_message_pub_.publish(output);
+        } else
         {
             ROS_WARN_STREAM("Cannot encode geofence control message.");
         }
@@ -177,13 +186,12 @@ namespace cpp_message
             }
             output.version = version;
 
-            uint8_t id[16];
+            // uint8_t id[16];
             auto id_len = message->value.choice.TestMessage05.body.id.size;
             for(auto i = 0; i < id_len; i++)
             {
-                id[i] = message->value.choice.TestMessage05.body.id.buf[i];
+                output.id[i] = message->value.choice.TestMessage05.body.id.buf[i];
             }
-            output.id = id;
 
             uint64_t tmp_update=0;
             for (auto i=0; i<8; i++){
@@ -215,7 +223,7 @@ namespace cpp_message
             }
             schedule.end = schedule_end;
 
-            bool[7] schedule_dow;
+            bool schedule_dow[7];
             bool schedule_dow_exist = false;
             auto dow_count = message->value.choice.TestMessage05.body.schedule->dow.list.count;
             if (dow_count > 0){
@@ -267,14 +275,14 @@ namespace cpp_message
                 schedule.repeat = schedule_repeat;
             }
             
-            schedule.repeat_exists = repeat_exit;
+            schedule.repeat_exists = repeat_exist;
             output.schedule = schedule;
 
             output.regulatory = message->value.choice.TestMessage05.body.regulatory;
 
             j2735_msgs::ControlType ctrl_type;
             ctrl_type.control_type = message->value.choice.TestMessage05.body.controltype; //????
-            output.controltype = ctrl_type;
+            output.control_type = ctrl_type;
 
             
 
@@ -287,7 +295,7 @@ namespace cpp_message
                 control_value.lataffinity = message->value.choice.TestMessage05.body.controlvalue->lataffinity;
                 control_value.perm = message->value.choice.TestMessage05.body.controlvalue->perm;
                 control_value.prkingallowd = message->value.choice.TestMessage05.body.controlvalue->prkingallowd;
-                output.controlvalue = control_value;
+                output.control_value = control_value;
             }
             else output.control_value_exists = false;
 
@@ -295,16 +303,16 @@ namespace cpp_message
 
 
             std::string proj;
-            auto str_len = message->value.choice.TestMessage05.body.proj.size;
-            for(auto i = 0; i < str_len; i++)
+            auto proj_len = message->value.choice.TestMessage05.body.proj.size;
+            for(auto i = 0; i < proj_len; i++)
             {
                 proj += message->value.choice.TestMessage05.body.proj.buf[i];
             }
             output.proj = proj;
 
             std::string datum;
-            auto str_len = message->value.choice.TestMessage05.body.datum.size;
-            for(auto i = 0; i < str_len; i++)
+            auto datum_len = message->value.choice.TestMessage05.body.datum.size;
+            for(auto i = 0; i < datum_len; i++)
             {
                 datum += message->value.choice.TestMessage05.body.datum.buf[i];
             }
@@ -328,7 +336,7 @@ namespace cpp_message
                 point.x = message->value.choice.TestMessage05.body.points.list.array[i]->x;
                 point.y = message->value.choice.TestMessage05.body.points.list.array[i]->y;
                 point.width = message->value.choice.TestMessage05.body.points.list.array[i]->width;
-                int32_t point_z = message->value.choice.TestMessage05.body.points.list.array[i]->z;
+                auto point_z = message->value.choice.TestMessage05.body.points.list.array[i]->z;
                 if (point_z){
                     point.z = point_z;
                     point.z_exists = true;
@@ -523,7 +531,7 @@ namespace cpp_message
 
 
         // copy pathParts
-        message->value.choice.TestMessage04.body.pathParts = control_msg.path_parts;
+        message->value.choice.TestMessage05.body.pathParts = control_msg.path_parts;
         
         //convert proj string to char array
         auto proj_size = control_msg.proj.size();
@@ -557,7 +565,7 @@ namespace cpp_message
         message->value.choice.TestMessage05.body.regulatory = control_msg.regulatory;
 
         // copy longitude
-        message->value.choice.TestMessage05.body.lon = control_msg.lonitude;
+        message->value.choice.TestMessage05.body.lon = control_msg.longitude;
 
         // copy latitude
         message->value.choice.TestMessage05.body.lat = control_msg.latitude;
