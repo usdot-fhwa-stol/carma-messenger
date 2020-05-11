@@ -125,6 +125,7 @@ namespace cpp_message
             }
             return boost::optional<j2735_msgs::ControlRequest>(output);
         }
+        ROS_WARN_STREAM("Cannot decode given binary array into ControlRequest message");
         return boost::optional<j2735_msgs::ControlRequest>{};
     }
 
@@ -193,6 +194,7 @@ namespace cpp_message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
+            ROS_WARN_STREAM("Cannot encode ControlRequest message.");
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg

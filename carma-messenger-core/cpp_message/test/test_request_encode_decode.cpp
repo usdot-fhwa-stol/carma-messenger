@@ -34,7 +34,7 @@ TEST(CppMessageTest, testEncodeRequestMsg)
     cpp_message::Message worker;
     j2735_msgs::ControlRequest request;
     request.version = "012345678901234567890123456789012345";
-    request.scale = 1;
+    request.scale = 0;
     j2735_msgs::ControlBounds bounds;
     bounds.longitude = 0;
     bounds.latitude = 0;
