@@ -204,79 +204,77 @@ namespace cpp_message
             auto vtype_count = message->value.choice.TestMessage05.body.vtypes.list.size;
             for (auto i = 0; i < vtype_count; i++){
                 j2735_msgs::VType v_type;
-                v_type.vehicle_type = message->value.choice.TestMessage05.body.vtypes.list.array[i];//->????;
+                v_type.vehicle_type = *message->value.choice.TestMessage05.body.vtypes.list.array[i];
                 output.vtypes.push_back(v_type);
             }
 
-            j2735_msgs::Schedule schedule;
+            j2735_msgs::Schedule schedule_tmp;
+
             uint64_t schedule_start = 0;
             for (auto i=0; i<8; i++){
-                schedule_start |= message->value.choice.TestMessage05.body.schedule->start.buf[i];
+                schedule_start |= message->value.choice.TestMessage05.body.schedule.start.buf[i];
                 schedule_start = schedule_start << 8;
             }
-            schedule.start = schedule_start;
+            schedule_tmp.start = schedule_start;
 
             uint64_t schedule_end = 0;
             for (auto i=0; i<8; i++){
-                schedule_end |= message->value.choice.TestMessage05.body.schedule->end.buf[i];
+                schedule_end |= message->value.choice.TestMessage05.body.schedule.end.buf[i];
                 schedule_end = schedule_end << 8;
             }
-            schedule.end = schedule_end;
+            schedule_tmp.end = schedule_end;
 
-            bool schedule_dow[7];
+            // bool schedule_dow[7];
             bool schedule_dow_exist = false;
-            auto dow_count = message->value.choice.TestMessage05.body.schedule->dow.list.count;
+            auto dow_count = message->value.choice.TestMessage05.body.schedule.dow->list.count;
             if (dow_count > 0){
                 schedule_dow_exist = true;
                 for (auto i=0; i<dow_count; i++){
-                    schedule_dow[i] = message->value.choice.TestMessage05.body.schedule->dow.list.array[i];
+                    schedule_tmp.dow[i] = *message->value.choice.TestMessage05.body.schedule.dow->list.array[i];
                 }
             }
-            schedule.dow = schedule_dow;
-            schedule.dow_exists = schedule_dow_exist;
+            // schedule.dow = schedule_dow;
+            schedule_tmp.dow_exists = schedule_dow_exist;
 
 
             bool schedule_between_exist = false;
-            auto between_count = message->value.choice.TestMessage05.body.schedule->between.count;
-            if (between_count > 0){
+            if (message->value.choice.TestMessage05.body.schedule.between){
                 schedule_between_exist = true;
                 
                 j2735_msgs::DaySchedule schedule_between;
 
-                schedule_between.start = message->value.choice.TestMessage05.body.schedule->between->start;
-                schedule_between.end = message->value.choice.TestMessage05.body.schedule->between->end;
-                schedule_between.utcoffset = message->value.choice.TestMessage05.body.schedule->between->utcoffset;  
-                schedule.between = schedule_between;
+                schedule_between.start = message->value.choice.TestMessage05.body.schedule.between->start;
+                schedule_between.end = message->value.choice.TestMessage05.body.schedule.between->end;
+                schedule_between.utcoffset = message->value.choice.TestMessage05.body.schedule.between->utcoffset;  
+                schedule_tmp.between = schedule_between;
             }
-            schedule.between_exists = schedule_between_exist;
+            schedule_tmp.between_exists = schedule_between_exist;
 
             
             bool repeat_exist = false;
-            
-            auto repeat_count = message->value.choice.TestMessage05.body.schedule->repeat.size;
-                
-            if (repeat_count > 0){
+                            
+            if (message->value.choice.TestMessage05.body.schedule.repeat){
                 repeat_exist = true;
                 j2735_msgs::ScheduleParams schedule_repeat;
                 uint64_t repeat_interval = 0;
                 uint64_t repeat_duration = 0;
 
                 for (auto i=0; i<8; i++){
-                    repeat_interval |= message->value.choice.TestMessage05.body.schedule->repeat->interval.buf[i];
+                    repeat_interval |= message->value.choice.TestMessage05.body.schedule.repeat->interval;//.buf[i];
                     repeat_interval = repeat_interval << 8;
                 }
 
                 for (auto i=0; i<8; i++){
-                    repeat_duration |= message->value.choice.TestMessage05.body.schedule->repeat->duration.buf[i];
+                    repeat_duration |= message->value.choice.TestMessage05.body.schedule.repeat->duration;//.buf[i];
                     repeat_duration = repeat_duration << 8;
                 }
                 schedule_repeat.interval = repeat_interval;
                 schedule_repeat.duration = repeat_duration;
-                schedule.repeat = schedule_repeat;
+                schedule_tmp.repeat = schedule_repeat;
             }
             
-            schedule.repeat_exists = repeat_exist;
-            output.schedule = schedule;
+            schedule_tmp.repeat_exists = repeat_exist;
+            output.schedule = schedule_tmp;
 
             output.regulatory = message->value.choice.TestMessage05.body.regulatory;
 
@@ -286,21 +284,20 @@ namespace cpp_message
 
             
 
-            int32_t ctrl_value = message->value.choice.TestMessage05.body.controlvalue->value;
-            if (ctrl_value > 0){
+            if (message->value.choice.TestMessage05.body.controlvalue){
                 output.control_value_exists = true;
-                j2735_msgs::ControlValue control_value;
-                control_value.value = ctrl_value;
-                control_value.direction = message->value.choice.TestMessage05.body.controlvalue->direction;
-                control_value.lataffinity = message->value.choice.TestMessage05.body.controlvalue->lataffinity;
-                control_value.perm = message->value.choice.TestMessage05.body.controlvalue->perm;
-                control_value.prkingallowd = message->value.choice.TestMessage05.body.controlvalue->prkingallowd;
-                output.control_value = control_value;
+                j2735_msgs::ControlValue ctrl_value;
+                ctrl_value.value = message->value.choice.TestMessage05.body.controlvalue->choice.value;
+                ctrl_value.direction = message->value.choice.TestMessage05.body.controlvalue->choice.direction;
+                ctrl_value.lataffinity = message->value.choice.TestMessage05.body.controlvalue->choice.lataffinity;
+                ctrl_value.perm = message->value.choice.TestMessage05.body.controlvalue->choice.perm;
+                ctrl_value.prkingallowd = message->value.choice.TestMessage05.body.controlvalue->choice.prkingallowd;
+                output.control_value = ctrl_value;
+
             }
             else output.control_value_exists = false;
 
             output.path_parts = message->value.choice.TestMessage05.body.pathParts;
-
 
             std::string proj;
             auto proj_len = message->value.choice.TestMessage05.body.proj.size;
@@ -335,14 +332,9 @@ namespace cpp_message
                 j2735_msgs::Point point;
                 point.x = message->value.choice.TestMessage05.body.points.list.array[i]->x;
                 point.y = message->value.choice.TestMessage05.body.points.list.array[i]->y;
+                if (message->value.choice.TestMessage05.body.points.list.array[i]->z)
+                    point.z = *message->value.choice.TestMessage05.body.points.list.array[i]->z;
                 point.width = message->value.choice.TestMessage05.body.points.list.array[i]->width;
-                auto point_z = message->value.choice.TestMessage05.body.points.list.array[i]->z;
-                if (point_z){
-                    point.z = point_z;
-                    point.z_exists = true;
-                }
-
-                else point.z_exists = false;
                 output.points.push_back(point);
             }
             
@@ -472,7 +464,7 @@ namespace cpp_message
         message->value.choice.TestMessage05.body.updated.buf = updated_val;
         message->value.choice.TestMessage05.body.updated.size = 8;
 
-        // copy VTypes ???
+        // copy VTypes
         auto vtype_count = control_msg.vtypes.size();
         ControlMessage::ControlMessage__vtypes* vtype_list;
         vtype_list = (ControlMessage::ControlMessage__vtypes*)calloc(1, sizeof(ControlMessage::ControlMessage__vtypes));
@@ -480,7 +472,7 @@ namespace cpp_message
             // construct VType
             VType_t* vtype_p;
             vtype_p = (VType_t*) calloc(1, sizeof(VType_t));
-            vtype_p = control_msg.vtypes[i].vehicle_type;
+            *vtype_p = control_msg.vtypes[i].vehicle_type;
             asn_sequence_add(&vtype_list->list, vtype_p);
         }
         message->value.choice.TestMessage05.body.vtypes = *vtype_list;
@@ -505,31 +497,50 @@ namespace cpp_message
                 bool temp = control_msg.schedule.dow[i];
                 asn_sequence_add(&dow->list, &temp);
             }
-            schedule_p->dow = *dow;
+            schedule_p->dow = dow;
         }
 
         if (control_msg.schedule.between_exists){
-
-            dayschedule_p->between->start = control_msg.schedule.between.start;
-            dayschedule_p->between->end = control_msg.schedule.between.end;
-            dayschedule_p->between->utcoffset = control_msg.schedule.between.utcoffset;
+            schedule_p->between->start = control_msg.schedule.between.start;
+            schedule_p->between->end = control_msg.schedule.between.end;
+            schedule_p->between->utcoffset = control_msg.schedule.between.utcoffset;
         }
+
+        // if (control_msg.schedule.repeat_exists){
+        //     uint8_t interval_val[8];
+        //     uint8_t duration_val[8];
+        //     for(auto k = 7; k >= 0; k--) {
+        //         interval_val[7 - k] = control_msg.schedule.repeat.interval >> (k * 8);
+        //         duration_val[7 - k] = control_msg.schedule.repeat.duration >> (k * 8);
+        //     }
+        //     // schedule_p->repeat->interval.size = 8;
+        //     schedule_p->repeat->interval.buf = interval_val;
+        //     // schedule_p->repeat->duration.size = 8;
+        //     schedule_p->repeat->duration.buf = duration_val;
+        // }
 
         if (control_msg.schedule.repeat_exists){
-            uint8_t interval_val[8];
-            uint8_t duration_val[8];
-            for(auto k = 7; k >= 0; k--) {
-                interval_val[7 - k] = control_msg.schedule.repeat.interval >> (k * 8);
-                duration_val[7 - k] = control_msg.schedule.repeat.duration >> (k * 8);
-            }
-            schedule_p->repeat->interval.size = 8;
-            schedule_p->repeat->interval.buf = start_val;
-            schedule_p->repeat->duration.size = 8;
-            schedule_p->repeat->duration.buf = end_val;
-            
+            schedule_p->repeat->interval = control_msg.schedule.repeat.interval;
+            schedule_p->repeat->duration = control_msg.schedule.repeat.duration;
         }
 
+        message->value.choice.TestMessage05.body.schedule = *schedule_p;
 
+        // copy regulatory
+        message->value.choice.TestMessage05.body.regulatory = control_msg.regulatory;
+
+        // copy regulatory
+        message->value.choice.TestMessage05.body.controltype = control_msg.control_type.control_type;
+
+        // copy control value
+        if (control_msg.control_value_exists){
+            message->value.choice.TestMessage05.body.controlvalue->choice.value = control_msg.control_value.value;
+            message->value.choice.TestMessage05.body.controlvalue->choice.direction = control_msg.control_value.direction;
+            message->value.choice.TestMessage05.body.controlvalue->choice.lataffinity = control_msg.control_value.lataffinity;
+            message->value.choice.TestMessage05.body.controlvalue->choice.perm = control_msg.control_value.perm;
+            message->value.choice.TestMessage05.body.controlvalue->choice.prkingallowd = control_msg.control_value.prkingallowd;
+        }
+        
         // copy pathParts
         message->value.choice.TestMessage05.body.pathParts = control_msg.path_parts;
         
@@ -561,8 +572,6 @@ namespace cpp_message
         message->value.choice.TestMessage05.body.time.buf = updated_val;
         message->value.choice.TestMessage05.body.time.size = 8;
 
-        // copy regulatory
-        message->value.choice.TestMessage05.body.regulatory = control_msg.regulatory;
 
         // copy longitude
         message->value.choice.TestMessage05.body.lon = control_msg.longitude;
@@ -580,7 +589,7 @@ namespace cpp_message
         // copy Points
         auto points_count = control_msg.points.size();
         ControlMessage::ControlMessage__points* points_list;
-        vtype_list = (ControlMessage::ControlMessage__points*)calloc(1, sizeof(ControlMessage::ControlMessage__points));
+        points_list = (ControlMessage::ControlMessage__points*)calloc(1, sizeof(ControlMessage::ControlMessage__points));
         for(auto i = 0; i < points_count; i++) {
             // construct Point
             Point_t* point_p;
@@ -588,7 +597,7 @@ namespace cpp_message
             point_p->x = control_msg.points[i].x;
             point_p->y = control_msg.points[i].y;
             point_p->width = control_msg.points[i].width;
-            if (control_msg.points[i].z_exists)  point_p->z = control_msg.points[i].z;
+            if (control_msg.points[i].z_exists)  *point_p->z = control_msg.points[i].z;
 
             asn_sequence_add(&points_list->list, point_p);
         }
