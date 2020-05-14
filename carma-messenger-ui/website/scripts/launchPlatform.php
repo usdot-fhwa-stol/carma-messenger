@@ -22,9 +22,10 @@
   }
 
   // Launch Platform
-  shell_exec("/var/www/html/scripts/launch.bash");
-
-  sleep(10); // Need delay before trying to use rosbridge. TODO move to rosbridge.js
+//  shell_exec("/var/www/html/scripts/launch.bash");
+  $output = shell_exec ("/home/dandu/carma_messenger_ws/src/carma-messenger/carma-messenger-ui/website/scripts/launch.bash");
+  echo "<pre> $output</pre>";
+  sleep(5); // Need delay before trying to use rosbridge. TODO move to rosbridge.js
   // Switch to main.html
-  header("Location: ../main.html");
+   header("Location: ../main.html");
 ?>

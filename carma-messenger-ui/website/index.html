@@ -7,145 +7,61 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <!--START: custom css-->
     <link rel="stylesheet" type="text/css" href="styles/index.css" />
+    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="thirdparty/jquery-ui-1.12.1/jquery-ui.css" type="text/css" />
     <!--END: custom css-->
 
-    <!--START: thirdparty css
-    <link rel="stylesheet" href="thirdparty/font-awesome-4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="thirdparty/font-awesome-4.7.0/css/font-awesome-animation.min.css"/>
-    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css"/>
-    <link rel = "stylesheet" href = "thirdparty/jquery-ui-1.12.1/jquery-ui.min.css"/>-->
-    <!-- <link rel = "stylesheet" href = "thirdparty/jquery-ui-1.12.1/jquery-ui.min.css"/>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
-    <!--END: thirdparty css-->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- END: favicon -->
 
-    <!--START: Jquery Widget -->
-    <!-- <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="thirdparty/jqwidgets/jqxscrollbar.js"></script> -->
-    <!--END: Jquery Widget -->
-
-    <!--START: Widget Framework and custom scripts-->
-    <script src="scripts/rosbridge.js" defer></script>
-    <script src="scripts/carma.config.js"></script>
-    <script src="scripts/carma.widgetfw.js"></script>
-    <script src="scripts/control.js" defer></script>
-    <!--END:  Widget Framework and custom scripts--->
-
     <!--START: Thirdparty-->
-    <script src="thirdparty/ros/eventemitter2.min.js"></script>
-    <script src="thirdparty/ros/roslib.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="thirdparty/fontawesome-free-5.13.0-web/css/all.css" />
     <script src="thirdparty/jquery/jquery-1.12.4.min.js"></script>
     <script src="thirdparty/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <script src="thirdparty/svg/svg.min.js" defer></script>
-
-    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
-
-
-    <!--END: Thirdparty-->
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxloader.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnStart").jqxButton({
+                width: 150
+            });
+            $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
+            $('#btnStart').on('click', function () {
+                $('#jqxLoader').jqxLoader('open');
+            });
+       });
+    </script>
 </head>
 
 <body>
-    <div id="messenger-main-div">
-        <div class="MessengerTitleFrame">
-            <div class="MessengerTitleRec">
-                <div class="Messenger_back_Div">
-                    <img class="Messenger_back_arrow" id="Messenger_back_arrow" src="images/Messenger_Back_Arrow.png"
-                        onclick="javascript:history.go(0);this.style.display='none'">
-                </div>
-                <img class="logo" src="images/C_Messenger@2x.png" alt="logo1 Image Not Available">
-                <!-- <img class="logo2" src="images/CARMA_color.png" alt="Logo2 Image Not Available">
-                <img class="Messenger" src="images/messenger_Title.png" alt="Messenger Image Not Available"> -->
-            </div>
+    <noscript>
+        <h2 style="color: #ff0000">
+            Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable Javascript and reload this page!
+        </h2>
+    </noscript>
 
+   <div id="messenger-index-div" align="center">
+        <div class="messenger-logo-div">
+            <img id="imgCARMAColor" src="images/C_Messenger@2x.png" />
         </div>
-        <div id="divSystemLogs" hidden>
-            <div id="statusIndicator">
-                <p id="connecting">
-                    Connecting to ROSbridge...<br>
-                </p>
-                <p id="connected" style="color:#00D600; display:none">
-                    Connected to ROSBridge.<br>
-                </p>
-                <p id="error" style="color:#FF0000; display:none">
-                    ROSBridge unable to connect.<br>
-                </p>
-                <p id="closed" style="display:none">
-                    ROSBridge connection closed.<br>
-                </p>
-            </div>
-            &nbsp;
-            <button id="btnWidgetOptions" title="List Widget Options" class="btnModal"
-                onclick="CarmaJS.WidgetFramework.listWidgetOptions('list');">List Widget Options</button>
-
-            <div id="divLog" class="logStatus" hidden>
-            </div>
-        </div>
-
-        <div id="divCarmaMessengerView" class="tabcontent">
-            <div id="divWidgetOptions" hidden>
-                <div id="divWidgetOptionsList">
-
-                </div>
-            </div>
-            <div id="divWidgetArea">
-                
-            </div>
-
-        </div>
-        <!-- The Modal -->
-        <div id="modalMessageBox" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>SYSTEM ALERT<i class="fa fa-exclamation-triangle" style="font-size:30px;color:red;"></i></h2>
-                </div>
-                <div class="modal-body">
-                    <p>Some text in the Modal Body.</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="btnModalButton1" title="btnModalButton1" class="btnModal">Button1</button> &nbsp; &nbsp;
-                    <button id="btnModalButton2" title="btnModalButton2" class="btnModal">Button1</button>
-                    <br />
-                    <div id="divFooterMessage"></div>
-                </div>
-            </div>
-        </div>
-        <div id="modalUIInstructions">
-            <div id="modalUIInstructionsContent">
-            </div>
-        </div>
-        <audio id="audioAlert1" preload="auto">
-            <source src="sound/not-kiddin.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <audio id="audioAlert2" preload="auto">
-            <source src="sound/sunny.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <audio id="audioAlert3" preload="auto">
-            <source src="sound/hurry.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <audio id="audioAlert4" preload="auto">
-            <source src="sound/arp.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-
-        <div class="footerPanel">
-            <div class="SystemDateTime " >
-                <img src="images/FHWALogo_2.png" class="FHWALogo"/>
-            </div>
-            <div class="systemversion" ></div>
-            <div class="copyright"></div>
-        </div>
-    </div>
-    <!--END: messenger-main-div-->
+        
+        <h1 style="color: blue">
+            Welcome to CARMA Messenger
+            <br/>
+        </h1>
+        <form action="scripts/launchPlatform.php" method="get">     
+                <div >
+                    <button id="btnStart" type="submit" title="Start CARMA Messenger" > 
+                        <i class="fas fa-play-circle" id="start_circle"></i>
+                    </button>                   
+                </div>       
+                <input type="checkbox" onchange="document.getElementById('rosBagEnabler').disabled = !this.checked;" style="vertical-align: middle" id="cbRemoteLaunch" name="remotelaunch" value="true" checked="checked" class="regular-checkbox big-checkbox" />
+                <span id="lblCheckBox">Remote Launch</span>      
+                <div id="jqxLoader"></div>
+        </form>
+   </div><!--END: messenger-index-div-->
 </body>
-
 </html>
