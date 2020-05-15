@@ -434,7 +434,7 @@ namespace cpp_message
 
 	    //set message type to TestMessage05
 	    message->messageId = 245;
-        message->value.present = MessageFrame__value_PR_TestMessage04;        
+        message->value.present = MessageFrame__value_PR_TestMessage05;        
         
         //convert version string to char array
         auto string_size = control_msg.version.size();
@@ -451,9 +451,9 @@ namespace cpp_message
         uint8_t id_content[16];
         for(auto i = 0; i < 16; i++)
         {
-            id_content[i] = control_msg.id[i];
+            message->value.choice.TestMessage05.body.id.buf[i] = control_msg.id[i];
         }
-        message->value.choice.TestMessage05.body.id.buf = id_content;
+        // message->value.choice.TestMessage05.body.id.buf = id_content;
         message->value.choice.TestMessage05.body.id.size = 16;
 
         // convert updated long value to an 8-bit array of length 8
@@ -465,6 +465,7 @@ namespace cpp_message
         message->value.choice.TestMessage05.body.updated.size = 8;
 
         // copy VTypes
+
         auto vtype_count = control_msg.vtypes.size();
         ControlMessage::ControlMessage__vtypes* vtype_list;
         vtype_list = (ControlMessage::ControlMessage__vtypes*)calloc(1, sizeof(ControlMessage::ControlMessage__vtypes));
@@ -472,7 +473,7 @@ namespace cpp_message
             // construct VType
             VType_t* vtype_p;
             vtype_p = (VType_t*) calloc(1, sizeof(VType_t));
-            *vtype_p = control_msg.vtypes[i].vehicle_type;
+            // vtype_p = control_msg.vtypes[i].vehicle_type;
             asn_sequence_add(&vtype_list->list, vtype_p);
         }
         message->value.choice.TestMessage05.body.vtypes = *vtype_list;

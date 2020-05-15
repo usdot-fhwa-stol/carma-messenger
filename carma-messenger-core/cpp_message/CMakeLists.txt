@@ -81,5 +81,5 @@ install(DIRECTORY
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gmock(${PROJECT_NAME}-test test/test_request_encode_decode.cpp)
+catkin_add_gmock(${PROJECT_NAME}-test test/test_encode_decode.cpp)
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
