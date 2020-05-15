@@ -7,35 +7,150 @@ body {
     font-family: "Segoe UI",Arial,sans-serif;
     height: 100vh;
     width: 100vw;
-    padding: 2vh 0vw 0vh 0vw;
-    font-size: 20pt;
-    line-height: 1.2; /***1.2 of font size**/
+    padding: 0vh 0vw 0vh 0vw;
+    font-size: 20pt !important;
+    line-height: 1.2 !important;  /***1.2 of font size**/
     overflow: hidden;
+    margin: 0px ;
 }
 
+/* MessageTitle */
+.MessengerTitleFrame {
+    height: 190px;
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0px;
+    vertical-align: middle;
+}
+/* Rectangle 12 */
+.MessengerTitleRec{   
+    height: 190px;
+    display: inline-block;
+    margin: auto;
+    width: 100%;
+}
 
+/* logo  */
+.messenger-logo-div{
+    height: 100%;  
+    float: left;
+    width:60%;  
+    margin-left: 20%;  
+}
+.logo{
+    height: 100%;  
+    display: inline-block;
+    max-width:60%;    
+    margin-top: 10px;
+}
 #messenger-index-div {
     text-align: center;
     background-color:#FFF; 
     height: 100vh;
 }
 
-.logo{
-    height: 100%;  
+#messenger-index-content {
+    position: relative;
+    padding: 5px 0vw;
+    border: 1px solid #ccc;
+    height:  calc(100% - 240px);
+    margin: 0 auto;
+    min-height: 240px;
+    overflow: auto;
+    text-align: center;
     display: block;
-    max-width:50%;
-    margin-top: 10px;
+}
+#messenger-index-start-div{
+    width: 80%;
+    display: block;
+    margin: 10px auto;
+    padding-top: 10px;
+}
+#btnStart{
+    font-size: 40pt;
+    padding: 10pt;
+    width: 360pt !important;
+    background-color: yellowgreen;
+    color: white;
+    font-weight: bolder;
+    border: 0px;
+    border-radius: 10px;
+    margin: 10px auto;
+    box-shadow: 5px 5px 8px rgb(73, 128, 0), 10px 10px 8px darkseagreen, 15px 15px;
+}
+#btnStart:hover,.fa-info-circle:hover
+{
+    cursor: pointer;
+}
+.alert-custom-splash{ 
+    display: inline-block;
+    text-align: left;
+}
+#messenger-option-card{
+    width: 18rem; 
+    right:10px; 
+    bottom: 10px; 
+    position: absolute; 
+    font-size: 80%;
+}
+#MessengerOptionsModal{
+    font-size: 80%;
+}
+footer {
+    color: black;
+    background-color: white;
+    clear: both;
+    height: 50px;
+    width:90vw;
+    margin: 0px 10px;
+}
+.footerPanel{
+    width: 100%;
+    clear: both;
+    display: block;
 }
 
-#btnStart
-{
-    color: black;
-    font-size: 90pt;
-    background-color: transparent !important;
-    border: transparent !important;
+/***2020-03-11 13:44:52***/
+.SystemDateTime{
+    padding: 0px 10px;
+    font-family: Roboto;
+    font-weight: normal;
+    display: block;
+    text-align: left;
+    color: #000000;    
+    width: calc(35% - 10px);
+    float: left;
+    font-size: 80%;
 }
-#btnStart:hover
-{
-    color: rgb(17, 247, 9);
-    cursor: pointer;
+.FHWALogo{
+    height:40px;
+}
+
+/* CarmaMessenger version X.Y.Z-something */
+.systemversion{
+    padding: 10px;
+    font-family: Roboto;
+    font-weight: normal;
+    display: block;
+    text-align: center;
+    color: #000000;
+    width: calc(30% - 10px);
+    float: left;
+    font-size: 80%;
+}
+
+/* Copyright © Leidos, 2020 */
+.copyright{
+    padding: 10px;
+    float: left;
+    width: calc(35% - 10px);
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    text-align: right;
+    display: block;
+    color: #000000;
+    font-size: 80%;
 }

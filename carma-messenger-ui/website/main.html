@@ -8,6 +8,7 @@
     <!--START: custom css-->
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="stylesheet" type="text/css" href="thirdparty/fontawesome-free-5.13.0-web/css/all.css" />
+    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css" type="text/css" />
     <!--END: custom css-->
 
     <!--START: thirdparty css
@@ -42,30 +43,45 @@
     <script src="thirdparty/jquery/jquery-1.12.4.min.js"></script>
     <script src="thirdparty/jquery-ui-1.12.1/jquery-ui.min.js"></script>
     <script src="thirdparty/svg/svg.min.js" defer></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxloader.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
 
     <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
-
+        <script>
+            $(document).ready(function () {
+                $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
+                $('#btnModalButton2').on('click', function () {
+                    $('#jqxLoader').jqxLoader('open');                    
+                });
+                $('#btnStop').on('click', function () {
+                        $('#jqxLoader').jqxLoader('open');               
+                });
+            });
+        </script>
     <!--END: Thirdparty-->
 </head>
 
 <body>
     <div id="messenger-main-div">
         <div class="MessengerTitleFrame">
-            <div class="MessengerTitleRec">
+            <div class="MessengerTitleRec">               
+                <div class="Messenger_back_Div">
+                    <img class="Messenger_back_arrow" id="Messenger_back_arrow" src="images/Messenger_Back_Arrow.png"
+                        onclick="javascript:history.go(0);this.style.display='none'">
+                </div>
+                <div class="messenger-logo-div">
+                    <img class="logo" src="images/C_Messenger@2x.png" alt="logo1 Image Not Available">
+                </div>
+                <!-- <img class="logo2" src="images/CARMA_color.png" alt="Logo2 Image Not Available">
+                <img class="Messenger" src="images/messenger_Title.png" alt="Messenger Image Not Available"> -->
                 <div class="Messenger_stop_Div">
                     <button id="btnStop" type="submit" onclick="shutdown();" title="Shutdown or Logout CARMA Messenger"> 
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
-                <div class="Messenger_back_Div">
-                    <img class="Messenger_back_arrow" id="Messenger_back_arrow" src="images/Messenger_Back_Arrow.png"
-                        onclick="javascript:history.go(0);this.style.display='none'">
-                </div>
-                <img class="logo" src="images/C_Messenger@2x.png" alt="logo1 Image Not Available">
-                <!-- <img class="logo2" src="images/CARMA_color.png" alt="Logo2 Image Not Available">
-                <img class="Messenger" src="images/messenger_Title.png" alt="Messenger Image Not Available"> -->
             </div>
 
         </div>
@@ -100,9 +116,10 @@
             </div>
             <div id="divWidgetArea">
                 
-            </div>
-
+            </div>            
         </div>
+
+        <div id="jqxLoader"></div>
         <!-- The Modal -->
         <div id="modalMessageBox" class="modal">
             <!-- Modal content -->

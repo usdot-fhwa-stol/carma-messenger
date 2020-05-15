@@ -15,23 +15,23 @@
 #  the License.
 
 # Kill all ROS related processes
-pkill -f ros
+pkill -f ros ;
 
 # Source ROS (Must be called after ROS_HOME assignment)
 # Assumes ROS Java was installed as package and included in this source
-source /opt/ros/kinetic/setup.bash
+source /opt/ros/kinetic/setup.bash ;
 
 # Source platform and set ros environment variables
 # source /opt/carma/app/bin/setup.bash
-source ~/carma_messenger_ws/devel/setup.bash
-# Set ros to run from /opt/carma instead of home directory
-export ROS_HOME=/opt/carma/.ros
+source /home/dandu/carma_messenger_ws/devel/setup.bash ;
 
 # Remove bad launch.pid file if it exists
-# rm /opt/carma/launch.pid
+rm /opt/carma/launch.pid
 
 # Launch platform
-# roslaunch --pid=/opt/carma/launch.pid carma-messenger carma-messenger.launch 
-roslaunch --pid=/opt/carma/launch.pid carma-messenger carma-messenger.launch
-echo "hello122"
+roslaunch  carma-messenger carma-messenger.launch >/dev/null 2>/dev/null &
 
+# block wait for ros to launch
+sleep 10;
+
+exit; 
