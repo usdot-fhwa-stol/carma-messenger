@@ -135,8 +135,6 @@ TEST(CppMessageTest, testEncodeControlMsg)
     point2.z = 0;
     point2.width = 0;
     control.points.push_back(point2);
-
-    for(auto i = 0; i < res1.size(); i++) std::cout<< (int)res1[i]<< ", ";
     if(res) EXPECT_TRUE(true);
     else
     {
