@@ -185,31 +185,36 @@ namespace cpp_message
                 version += message->value.choice.TestMessage05.body.version.buf[i];
             }
             output.version = version;
-
-            // uint8_t id[16];
+            
+            // decode id
+            uint8_t id[16];
             auto id_len = message->value.choice.TestMessage05.body.id.size;
             for(auto i = 0; i < id_len; i++)
             {
-                output.id[i] = message->value.choice.TestMessage05.body.id.buf[i];
+                 output.id[i] = message->value.choice.TestMessage05.body.id.buf[i];
             }
 
+            // recover a long value from 8-bit array
             uint64_t tmp_update=0;
             for (auto i=0; i<8; i++){
                 tmp_update |= message->value.choice.TestMessage05.body.updated.buf[i];
                 tmp_update = tmp_update << 8;
             }
             output.updated = tmp_update;
-
            
+            // decode vtype list
             auto vtype_count = message->value.choice.TestMessage05.body.vtypes.list.size;
             for (auto i = 0; i < vtype_count; i++){
                 j2735_msgs::VType v_type;
-                v_type.vehicle_type = *message->value.choice.TestMessage05.body.vtypes.list.array[i];
+                v_type.vehicle_type = (long) message->value.choice.TestMessage05.body.vtypes.list.array[i];
                 output.vtypes.push_back(v_type);
             }
 
+            // recover schedule parameters
             j2735_msgs::Schedule schedule_tmp;
 
+
+            // recover schedule start and end
             uint64_t schedule_start = 0;
             for (auto i=0; i<8; i++){
                 schedule_start |= message->value.choice.TestMessage05.body.schedule.start.buf[i];
@@ -224,7 +229,7 @@ namespace cpp_message
             }
             schedule_tmp.end = schedule_end;
 
-            // bool schedule_dow[7];
+            // recover the schedule dow array (optional)
             bool schedule_dow_exist = false;
             auto dow_count = message->value.choice.TestMessage05.body.schedule.dow->list.count;
             if (dow_count > 0){
@@ -233,10 +238,9 @@ namespace cpp_message
                     schedule_tmp.dow[i] = *message->value.choice.TestMessage05.body.schedule.dow->list.array[i];
                 }
             }
-            // schedule.dow = schedule_dow;
             schedule_tmp.dow_exists = schedule_dow_exist;
 
-
+            // decode schedule between parameters
             bool schedule_between_exist = false;
             if (message->value.choice.TestMessage05.body.schedule.between){
                 schedule_between_exist = true;
@@ -253,6 +257,7 @@ namespace cpp_message
             
             bool repeat_exist = false;
                             
+            // decode schedule repeat
             if (message->value.choice.TestMessage05.body.schedule.repeat){
                 repeat_exist = true;
                 j2735_msgs::ScheduleParams schedule_repeat;
@@ -276,14 +281,16 @@ namespace cpp_message
             schedule_tmp.repeat_exists = repeat_exist;
             output.schedule = schedule_tmp;
 
+            // copy regulatory
             output.regulatory = message->value.choice.TestMessage05.body.regulatory;
 
+            // copy control type
             j2735_msgs::ControlType ctrl_type;
-            ctrl_type.control_type = message->value.choice.TestMessage05.body.controltype; //????
+            ctrl_type.control_type = message->value.choice.TestMessage05.body.controltype;
             output.control_type = ctrl_type;
 
             
-
+            // copy control value (optional)
             if (message->value.choice.TestMessage05.body.controlvalue){
                 output.control_value_exists = true;
                 j2735_msgs::ControlValue ctrl_value;
@@ -297,8 +304,10 @@ namespace cpp_message
             }
             else output.control_value_exists = false;
 
+            // copy path parts
             output.path_parts = message->value.choice.TestMessage05.body.pathParts;
 
+            // convert proj from 8-bit array to string
             std::string proj;
             auto proj_len = message->value.choice.TestMessage05.body.proj.size;
             for(auto i = 0; i < proj_len; i++)
@@ -307,6 +316,7 @@ namespace cpp_message
             }
             output.proj = proj;
 
+            // convert datum from 8-bit array to string
             std::string datum;
             auto datum_len = message->value.choice.TestMessage05.body.datum.size;
             for(auto i = 0; i < datum_len; i++)
@@ -320,6 +330,7 @@ namespace cpp_message
             output.altitude = message->value.choice.TestMessage05.body.alt;
             output.heading = message->value.choice.TestMessage05.body.heading;
 
+            // recover long int from 8-bit array
             uint64_t tmp_time = 0;
             for (auto i=0; i<8; i++){
                 tmp_time |= message->value.choice.TestMessage05.body.time.buf[i];
@@ -327,6 +338,7 @@ namespace cpp_message
             }
             output.time = tmp_time;
 
+            // recover points list
             auto points_count = message->value.choice.TestMessage05.body.points.list.count;
             for(auto i = 0; i < points_count; i++) {
                 j2735_msgs::Point point;
@@ -435,7 +447,6 @@ namespace cpp_message
 	    //set message type to TestMessage05
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05;        
-        
         //convert version string to char array
         auto string_size = control_msg.version.size();
         uint8_t version_content[string_size];
@@ -446,14 +457,14 @@ namespace cpp_message
         message->value.choice.TestMessage05.body.version.buf = version_content;
         message->value.choice.TestMessage05.body.version.size = string_size;
 
-
         //convert id string to integer array
         uint8_t id_content[16];
         for(auto i = 0; i < 16; i++)
         {
-            message->value.choice.TestMessage05.body.id.buf[i] = control_msg.id[i];
+            id_content[i] = control_msg.id[i];
         }
-        // message->value.choice.TestMessage05.body.id.buf = id_content;
+
+        message->value.choice.TestMessage05.body.id.buf = id_content;
         message->value.choice.TestMessage05.body.id.size = 16;
 
         // convert updated long value to an 8-bit array of length 8
@@ -473,11 +484,14 @@ namespace cpp_message
             // construct VType
             VType_t* vtype_p;
             vtype_p = (VType_t*) calloc(1, sizeof(VType_t));
-            // vtype_p = control_msg.vtypes[i].vehicle_type;
+            *vtype_p = control_msg.vtypes[i].vehicle_type;
             asn_sequence_add(&vtype_list->list, vtype_p);
         }
         message->value.choice.TestMessage05.body.vtypes = *vtype_list;
+        
+        // encode Schedule fields
 
+        // convert schedule start and end time to 8 bit array
         Schedule_t* schedule_p;
         schedule_p = (Schedule_t*) calloc(1, sizeof(Schedule_t));
         uint8_t start_val[8];
@@ -491,6 +505,7 @@ namespace cpp_message
         schedule_p->end.size = 8;
         schedule_p->end.buf = end_val;
 
+        // copy schedule day of week
         if (control_msg.schedule.dow_exists){
             Schedule::Schedule__dow* dow;
             dow = (Schedule::Schedule__dow*)calloc(1, sizeof(Schedule::Schedule__dow*));
@@ -500,29 +515,24 @@ namespace cpp_message
             }
             schedule_p->dow = dow;
         }
-
+        // copy schedule between
         if (control_msg.schedule.between_exists){
-            schedule_p->between->start = control_msg.schedule.between.start;
-            schedule_p->between->end = control_msg.schedule.between.end;
-            schedule_p->between->utcoffset = control_msg.schedule.between.utcoffset;
+            DaySchedule_t* between_p;
+            between_p = (DaySchedule_t*) calloc(1, sizeof(DaySchedule_t));
+            between_p->start = control_msg.schedule.between.start;
+            between_p->end = control_msg.schedule.between.end;
+            between_p->utcoffset = control_msg.schedule.between.utcoffset;
+
+            schedule_p->between = between_p;
         }
 
-        // if (control_msg.schedule.repeat_exists){
-        //     uint8_t interval_val[8];
-        //     uint8_t duration_val[8];
-        //     for(auto k = 7; k >= 0; k--) {
-        //         interval_val[7 - k] = control_msg.schedule.repeat.interval >> (k * 8);
-        //         duration_val[7 - k] = control_msg.schedule.repeat.duration >> (k * 8);
-        //     }
-        //     // schedule_p->repeat->interval.size = 8;
-        //     schedule_p->repeat->interval.buf = interval_val;
-        //     // schedule_p->repeat->duration.size = 8;
-        //     schedule_p->repeat->duration.buf = duration_val;
-        // }
-
+        // copy schedule repear
         if (control_msg.schedule.repeat_exists){
-            schedule_p->repeat->interval = control_msg.schedule.repeat.interval;
-            schedule_p->repeat->duration = control_msg.schedule.repeat.duration;
+            ScheduleParams_t* repeat_p;
+            repeat_p = (ScheduleParams_t*) calloc(1, sizeof(ScheduleParams_t));
+            repeat_p->interval = control_msg.schedule.repeat.interval;
+            repeat_p->duration = control_msg.schedule.repeat.duration;
+            schedule_p->repeat = repeat_p;
         }
 
         message->value.choice.TestMessage05.body.schedule = *schedule_p;
@@ -530,18 +540,36 @@ namespace cpp_message
         // copy regulatory
         message->value.choice.TestMessage05.body.regulatory = control_msg.regulatory;
 
-        // copy regulatory
+        // copy control type
         message->value.choice.TestMessage05.body.controltype = control_msg.control_type.control_type;
 
         // copy control value
         if (control_msg.control_value_exists){
-            message->value.choice.TestMessage05.body.controlvalue->choice.value = control_msg.control_value.value;
-            message->value.choice.TestMessage05.body.controlvalue->choice.direction = control_msg.control_value.direction;
-            message->value.choice.TestMessage05.body.controlvalue->choice.lataffinity = control_msg.control_value.lataffinity;
-            message->value.choice.TestMessage05.body.controlvalue->choice.perm = control_msg.control_value.perm;
-            message->value.choice.TestMessage05.body.controlvalue->choice.prkingallowd = control_msg.control_value.prkingallowd;
+            ControlValue_t* ctrl_value_p;
+            ctrl_value_p = (ControlValue_t*) calloc(1, sizeof(ControlValue_t));
+            //TODO: Is there a better way to check which field is populated?
+            if (sizeof(control_msg.control_value.value)>0.0){
+                ctrl_value_p->present = ControlValue_PR_value;
+                ctrl_value_p->choice.value = control_msg.control_value.value;
+            }
+            else if (sizeof(control_msg.control_value.direction)>0.0){
+                ctrl_value_p->present = ControlValue_PR_direction;
+                ctrl_value_p->choice.direction = control_msg.control_value.direction;
+            }
+            else if (sizeof(control_msg.control_value.lataffinity)>0.0){
+                ctrl_value_p->present = ControlValue_PR_lataffinity;
+                ctrl_value_p->choice.lataffinity = control_msg.control_value.lataffinity;
+            }
+            else if (sizeof(control_msg.control_value.perm)>0.0){
+                ctrl_value_p->present = ControlValue_PR_perm;
+                ctrl_value_p->choice.perm = control_msg.control_value.perm;
+            }
+            else if (sizeof(control_msg.control_value.prkingallowd)>0.0){
+                ctrl_value_p->present = ControlValue_PR_prkingallowd;
+                ctrl_value_p->choice.prkingallowd = control_msg.control_value.prkingallowd;
+            }            
+            message->value.choice.TestMessage05.body.controlvalue = ctrl_value_p;
         }
-        
         // copy pathParts
         message->value.choice.TestMessage05.body.pathParts = control_msg.path_parts;
         
@@ -586,7 +614,6 @@ namespace cpp_message
         // copy heading
         message->value.choice.TestMessage05.body.heading = control_msg.heading;
 
-
         // copy Points
         auto points_count = control_msg.points.size();
         ControlMessage::ControlMessage__points* points_list;
@@ -598,12 +625,13 @@ namespace cpp_message
             point_p->x = control_msg.points[i].x;
             point_p->y = control_msg.points[i].y;
             point_p->width = control_msg.points[i].width;
-            if (control_msg.points[i].z_exists)  *point_p->z = control_msg.points[i].z;
-
+            if (control_msg.points[i].z_exists){
+                long zp = control_msg.points[i].z;
+                point_p->z = &zp;
+            }  
             asn_sequence_add(&points_list->list, point_p);
         }
         message->value.choice.TestMessage05.body.points = *points_list;
-
 	    // encode message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
@@ -614,6 +642,7 @@ namespace cpp_message
         auto array_length = ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
+        // for(auto i = 0; i < array_length; i++) std::cout<< b_array[i]<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
