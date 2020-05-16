@@ -58,8 +58,7 @@ TEST(CppMessageTest, testDecodeControlMsg)
                                         12, 89, 51, 104, 212, 4, 8, 12, 16, 20, 24, 28, 32, 4, 8, 12, 16, 20, 24, 
                                         28, 32, 0, 0, 0, 0, 0, 0, 0, 0, 8, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                                         0, 0, 0, 0, 0, 0, 0, 90, 0, 32, 0, 32, 16, 0, 16, 0, 0, 56, 64, 112, 128, 0, 
-                                        0, 0, 0, 0, 0, 0, 107, 73, 210, 0, 107, 73, 210, 0, 0, 0, 0, 0, 16, 16, 0, 16,
-                                         0, 16, 0, 16, 8, 8, 0, 8, 0, 8, 0, 8, 0};
+                                        0, 0, 0, 0, 0, 0, 107, 73, 210, 0, 107, 73, 210, 0, 0, 0, 0, 0, 16, 16, 0, 16, 0, 16, 0, 16, 8, 8, 0, 8, 0, 8, 0, 8, 0};
     cpp_message::Message worker;
     auto res = worker.decode_geofence_control(binar_input);
     if(res) EXPECT_TRUE(true);
@@ -135,6 +134,9 @@ TEST(CppMessageTest, testEncodeControlMsg)
     point2.z = 0;
     point2.width = 0;
     control.points.push_back(point2);
+
+    auto res = worker.encode_geofence_control(control);
+
     if(res) EXPECT_TRUE(true);
     else
     {
