@@ -26,6 +26,7 @@ extern "C"
 #include <carma_utils/CARMAUtils.h>
 #include <cav_msgs/ByteArray.h>
 #include <j2735_msgs/ControlRequest.h>
+#include <j2735_msgs/ControlMessage.h>
 
 namespace cpp_message
 {
@@ -46,8 +47,10 @@ private:
     int default_spin_rate_ = 10;
     ros::Publisher outbound_binary_message_pub_;
     ros::Subscriber outbound_geofence_request_message_sub_;
+    ros::Subscriber outbound_geofence_control_message_sub_;
     ros::Subscriber inbound_binary_message_sub_;
     ros::Publisher inbound_geofence_request_message_pub_;
+    ros::Publisher inbound_geofence_control_message_pub_;
 
     /**
      * @brief Initialize pub/sub and params.
@@ -57,6 +60,7 @@ private:
     // callbacks for subscribers
     void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg);
     void outbound_control_request_callback(const j2735_msgs::ControlRequestConstPtr& msg);
+    void outbound_control_message_callback(const j2735_msgs::ControlMessageConstPtr& msg);
 
 public:
 
@@ -68,6 +72,8 @@ public:
     // helper functions for message decode/encode
     boost::optional<j2735_msgs::ControlRequest> decode_geofence_request(std::vector<uint8_t>& binary_array);
     boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::ControlRequest request_msg);
+    boost::optional<j2735_msgs::ControlMessage> decode_geofence_control(std::vector<uint8_t>& binary_array);
+    boost::optional<std::vector<uint8_t>> encode_geofence_control(j2735_msgs::ControlMessage control_msg);
 
 };
 }
