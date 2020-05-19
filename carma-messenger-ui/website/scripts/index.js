@@ -27,7 +27,7 @@ $(document).ready(function () {
     $('#btnStart').on('click', function () {
 
             //If launching backend platform, call the waitForROSConnection since starting backend service takes time;
-            if($('input[name=remotelaunch]').prop('checked')) {
+            if($('input[name=launchplatform]').prop('checked')) {
                 $('#jqxLoader').jqxLoader('open'); 
                 waitForROSConnection();
             }              
@@ -38,14 +38,14 @@ $(document).ready(function () {
     });
     $('form').submit(function(event){
         console.log('submit form');
-        console.log($('input[name=remotelaunch]').prop('checked'));
+        console.log($('input[name=launchplatform]').prop('checked'));
         console.log($('input[name=rosbagrecorder]').prop('checked'));
         event.preventDefault();
         $.ajax({
             type:'POST',
             url:'scripts/launchPlatform.php',
             data: {
-                'remotelaunch':$('input[name=remotelaunch]').prop('checked'),
+                'launchplatform':$('input[name=launchplatform]').prop('checked'),
                 'rosbagrecorder':$('input[name=rosbagrecorder]').prop('checked')
             },
             dataType:'json'
