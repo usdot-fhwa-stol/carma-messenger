@@ -36,7 +36,12 @@ sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
 curl -o /opt/carma-messenger/Desktop/CARMA Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Desktop/CARMA Messenger.desktop
 chmod 775 /opt/carma-messenger/Desktop/CARMA Messenger.desktop
 
+
+
 curl -o /opt/carma-messenger/Pictures/CARMA_icon_color.png -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Pictures/CARMA_icon_color.png
 chmod 775 /opt/carma-messenger/Pictures/CARMA_icon_color.png
+
+cd /opt/carma-messenger/Desktop/
+ln -s ../Pictures/CARMA_icon_color.png  CARMA_icon_color.png
 
 ln -s "$1" /opt/carma/vehicle
