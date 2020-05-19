@@ -15,11 +15,8 @@
   //  the License.
 
   //Check if remotelaunch parameter is selected. 
-  if (isset($_GET['remotelaunch'])){
+  if (isset($_POST['remotelaunch']) && trim($_POST['remotelaunch']) == "true"){
     // Launch Platform
     shell_exec("/var/www/html/scripts/launch.bash");
   }
-
-  // Switch to main.html
-  header("Location: ../main.html");
 ?>

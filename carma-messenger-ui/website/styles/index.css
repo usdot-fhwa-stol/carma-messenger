@@ -84,6 +84,9 @@ body {
 {
     cursor: pointer;
 }
+#btnStart:active{
+    background-color: rgb(136, 182, 44);
+}
 .alert-custom-splash{ 
     display: inline-block;
     text-align: left;

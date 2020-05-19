@@ -11,26 +11,12 @@
     <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css" type="text/css" />
     <!--END: custom css-->
 
-    <!--START: thirdparty css
-    <link rel="stylesheet" href="thirdparty/font-awesome-4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="thirdparty/font-awesome-4.7.0/css/font-awesome-animation.min.css"/>
-    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css"/>
-    <link rel = "stylesheet" href = "thirdparty/jquery-ui-1.12.1/jquery-ui.min.css"/>-->
-    <!-- <link rel = "stylesheet" href = "thirdparty/jquery-ui-1.12.1/jquery-ui.min.css"/>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
-    <!--END: thirdparty css-->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- END: favicon -->
 
-    <!--START: Jquery Widget -->
-    <!-- <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="thirdparty/jqwidgets/jqxscrollbar.js"></script> -->
-    <!--END: Jquery Widget -->
-
-    <!--START: Widget Framework and custom scripts-->
+   <!--START: Widget Framework and custom scripts-->
     <script src="scripts/rosbridge.js" defer></script>
     <script src="scripts/carma.config.js"></script>
     <script src="scripts/carma.widgetfw.js"></script>
@@ -46,22 +32,21 @@
     <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="thirdparty/jqwidgets/jqxloader.js"></script>
     <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
-
-    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
-
-        <script>
-            $(document).ready(function () {
-                $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
-                $('#btnModalButton2').on('click', function () {
-                    $('#jqxLoader').jqxLoader('open');                    
-                });
-                $('#btnStop').on('click', function () {
-                        $('#jqxLoader').jqxLoader('open');               
-                });
-            });
-        </script>
     <!--END: Thirdparty-->
+
+    <!--START: CUSTOM scripts-->
+    <script>
+        $(document).ready(function () {
+            $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
+            $('#btnModalButton2').on('click', function () {
+                $('#jqxLoader').jqxLoader('open');                    
+            });
+            $('#btnStop').on('click', function () {
+                    $('#jqxLoader').jqxLoader('open');               
+            });
+        });
+    </script>
+    <!--END: CUSTOM scripts-->
 </head>
 
 <body>
