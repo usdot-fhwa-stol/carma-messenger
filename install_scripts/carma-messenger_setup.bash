@@ -33,7 +33,7 @@ sudo chmod 775 -R /opt/carma-messenger/
 sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
 
 
-curl -o opt/carma-messenger/Desktop/CARMA_Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/feature/login_logout/install_scripts/Desktop/CARMA_Messenger.desktop 
+curl -o /opt/carma-messenger/Desktop/CARMA_Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/feature/login_logout/install_scripts/Desktop/CARMA_Messenger.desktop 
 chmod 775 /opt/carma-messenger/Desktop/CARMA_Messenger.desktop
 
 
