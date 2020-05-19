@@ -40,5 +40,7 @@ chmod 775 /opt/carma-messenger/Desktop/CARMA_Messenger.desktop
 curl -o /opt/carma-messenger/Pictures/CARMA_icon_color.png  https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/feature/login_logout/install_scripts/Pictures/CARMA_icon_color.png 
 chmod 775 /opt/carma-messenger/Pictures/CARMA_icon_color.png
 
+cp /opt/carma-messenger/Desktop/CARMA_Messenger.desktop ~/Desktop/
+chmod 775 ~/Desktop/CARMA_Messenger.desktop
 
 # ln -s "$1" /opt/carma/vehicle
