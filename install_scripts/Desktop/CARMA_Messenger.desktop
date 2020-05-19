@@ -4,16 +4,6 @@ Type=Application
 Terminal=true
 Exec=chromium-browser 'http://localhost'
 Name=CARMA Messenger
-Comment=Sensor Visualization
-Icon=~/Pictures/CARMA_icon_color.png
-Name[en_US]=CARMA Messenger
-Comment[en_US]= 
-[Desktop Entry]
-Version=1.0
-Type=Application
-Terminal=true
-Exec=chromium-browser 'http://localhost'
-Name=CARMA Messenger
 Comment=CARMA Messenger
 Icon=/opt/carma-messenger/Pictures/CARMA_icon_color.png
 Name[en_US]=CARMA Messenger
