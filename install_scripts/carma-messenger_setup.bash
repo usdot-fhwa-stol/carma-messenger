@@ -27,21 +27,18 @@ sudo groupadd --gid $GRP_ID carma # create the carma messenger group if it does 
 USERNAME=$(whoami)
 sudo usermod -a -G $GRP_ID $USERNAME
 
-#sudo mkdir -p /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures 
-#sudo chgrp -R $GRP_ID /opt/carma-messenger/
-#sudo chmod 775 -R /opt/carma-messenger/
-#sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
+sudo mkdir -p /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures 
+sudo chgrp -R $GRP_ID /opt/carma-messenger/
+sudo chmod 775 -R /opt/carma-messenger/
+sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
 
 
-curl -o ~/Desktop/CARMA Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/tree/feature/login_logout/install_scripts/Desktop/CARMA_Messenger.desktop
-chmod 775 /opt/carma-messenger/Desktop/CARMA Messenger.desktop
+curl -o opt/carma-messenger/Desktop/CARMA_Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/feature/login_logout/install_scripts/Desktop/CARMA_Messenger.desktop 
+chmod 775 /opt/carma-messenger/Desktop/CARMA_Messenger.desktop
 
 
-
-curl -o ~/Pictures/CARMA_icon_color.png -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/tree/feature/login_logout/install_scripts/Pictures/CARMA_icon_color.png 
+curl -o /opt/carma-messenger/Pictures/CARMA_icon_color.png  https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/feature/login_logout/install_scripts/Pictures/CARMA_icon_color.png 
 chmod 775 /opt/carma-messenger/Pictures/CARMA_icon_color.png
 
-cd /opt/carma-messenger/Desktop/
-ln -s ../Pictures/CARMA_icon_color.png  CARMA_icon_color.png
 
-ln -s "$1" /opt/carma/vehicle
+# ln -s "$1" /opt/carma/vehicle

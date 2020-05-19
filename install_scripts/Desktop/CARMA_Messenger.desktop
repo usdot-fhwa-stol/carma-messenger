@@ -15,6 +15,6 @@ Terminal=true
 Exec=chromium-browser 'http://localhost'
 Name=CARMA Messenger
 Comment=CARMA Messenger
-Icon=~/Pictures/CARMA_icon_color.png
+Icon=/opt/carma-messenger/Pictures/CARMA_icon_color.png
 Name[en_US]=CARMA Messenger
 Comment[en_US]= 
