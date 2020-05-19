@@ -17,28 +17,28 @@
 # Script sets up the /opt/carma-messenger folder for the user
 # Takes in one argument which is the path to the vehicle installation folder to use
 
-if [ ! -d "$1" ]; then
-    echo "Please specify a path to the location of your vehicle installation folder. Such as carma-messenger-config/example_installation_folder/vehicle/"
-    exit -1
-fi
+#if [ ! -d "$1" ]; then
+#    echo "Please specify a path to the location of your vehicle installation folder. Such as carma-messenger-config/example_installation_folder/vehicle/"
+#    exit -1
+#fi
 
 GRP_ID=1000
 sudo groupadd --gid $GRP_ID carma # create the carma messenger group if it does not already exist and add current user to it
 USERNAME=$(whoami)
 sudo usermod -a -G $GRP_ID $USERNAME
 
-sudo mkdir -p /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures 
-sudo chgrp -R $GRP_ID /opt/carma-messenger/
-sudo chmod 775 -R /opt/carma-messenger/
-sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
+#sudo mkdir -p /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures 
+#sudo chgrp -R $GRP_ID /opt/carma-messenger/
+#sudo chmod 775 -R /opt/carma-messenger/
+#sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
 
 
-curl -o /opt/carma-messenger/Desktop/CARMA Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Desktop/CARMA Messenger.desktop
+curl -o ~/Desktop/CARMA Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/tree/feature/login_logout/install_scripts/Desktop/CARMA_Messenger.desktop
 chmod 775 /opt/carma-messenger/Desktop/CARMA Messenger.desktop
 
 
 
-curl -o /opt/carma-messenger/Pictures/CARMA_icon_color.png -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Pictures/CARMA_icon_color.png
+curl -o ~/Pictures/CARMA_icon_color.png -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/tree/feature/login_logout/install_scripts/Pictures/CARMA_icon_color.png 
 chmod 775 /opt/carma-messenger/Pictures/CARMA_icon_color.png
 
 cd /opt/carma-messenger/Desktop/
