@@ -14,7 +14,7 @@
   //  License for the specific language governing permissions and limitations under
   //  the License.
 
-  //Check if remotelaunch parameter is selected. 
+  //Check if launchplatform parameter is selected. 
   if (isset($_POST['launchplatform']) && trim($_POST['launchplatform']) == "true"){
     // Launch Platform
     shell_exec("/var/www/html/scripts/launch.bash");
