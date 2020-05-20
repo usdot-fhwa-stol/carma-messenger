@@ -25,7 +25,7 @@ ARG VERSION="NULL"
 ARG VCS_REF="NULL"
 
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name="carma-messenger"
+LABEL org.label-schema.name="carma-messenger-core"
 LABEL org.label-schema.description="nForce CARMA Messenger docker image"
 LABEL org.label-schema.vendor="Leidos"
 LABEL org.label-schema.version=${VERSION}

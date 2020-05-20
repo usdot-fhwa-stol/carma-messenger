@@ -1,0 +1,51 @@
+{
+  "name": "bootstrap-switch-button",
+  "version": "1.1.0",
+  "author": {
+    "name": "Brent Ely",
+    "url": "https://github.com/gitbrent/"
+  },
+  "description": "Bootstrap Switch Button is a bootstrap 4 plugin that converts checkboxes into switch button toggles.",
+  "homepage": "https://gitbrent.github.io/bootstrap-switch-button/",
+  "license": "MIT",
+  "main": "dist/bootstrap-switch-button.min.js",
+  "files": [
+    "css",
+    "dist"
+  ],
+  "scripts": {
+    "build": "grunt"
+  },
+  "directories": {
+    "example": "demo",
+    "lib": "dist"
+  },
+  "devDependencies": {
+    "clean-css": "^4.2.1",
+    "grunt": "^1.0.4",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-uglify-es": "git://github.com/gruntjs/grunt-contrib-uglify.git#harmony"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitbrent/bootstrap-switch-button.git"
+  },
+  "keywords": [
+    "bootstrap",
+    "bootstrap4",
+    "bootstrap-4",
+    "bootstrap 4",
+    "bootstrap 4 checkbox",
+    "bootstrap 4 switch",
+    "bootstrap 4 toggle",
+    "bootstrap-checkbox",
+    "bootstrap-switch",
+    "bootstrap-switch-button",
+    "bootstrap-toggle"
+  ],
+  "bugs": {
+    "url": "https://github.com/gitbrent/bootstrap-switch-button/issues"
+  }
+}

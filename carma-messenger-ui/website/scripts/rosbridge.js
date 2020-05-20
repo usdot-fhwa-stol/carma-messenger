@@ -23,6 +23,7 @@ var sound_counter = 0;
 var sound_counter_max = 3; //max # of times the sounds will be repeated.
 var sound_played_once = false;
 var isModalPopupShowing = false;
+var IsLogoutPressed=false;
 
 // Deployment variables
 var ip = CarmaJS.Config.getIP();
@@ -83,7 +84,9 @@ function connectToROS() {
             //Show modal popup for when ROS connection has been abruptly closed.
             var messageTypeFullDescription = 'ROS Connection Closed.';
             messageTypeFullDescription += '<br/><br/>PLEASE CHECK YOUR ROS CONNECTION.';
-            showModal(true, messageTypeFullDescription, false);
+            if(!IsLogoutPressed)
+                showModal(true, messageTypeFullDescription, false);
+
         });
 
         // Create a connection to the rosbridge WebSocket server.
@@ -95,6 +98,12 @@ function connectToROS() {
     }
 }
 
+function manualShutdown()
+{
+    IsLogoutPressed = true;
+    sessionStorage.clear();
+    window.location.assign('scripts/killPlatform.php');
+}
 /*
     Get the CARMA version using the PHP script calling the docker container inspect to get the carma-config image version used.
 */

@@ -14,17 +14,9 @@
   //  License for the specific language governing permissions and limitations under
   //  the License.
 
-  //Check if remotelaunch parameter is selected. 
-  if (!isset($_GET['remotelaunch'])){
-    // Switch to main.html
-    header("Location: ../main.html");
-    exit;
+  //Check if launchplatform parameter is selected. 
+  if (isset($_POST['launchplatform']) && trim($_POST['launchplatform']) == "true"){
+    // Launch Platform
+    shell_exec("/var/www/html/scripts/launch.bash");
   }
-
-  // Launch Platform
-  shell_exec("/var/www/html/scripts/launch.bash");
-
-  sleep(10); // Need delay before trying to use rosbridge. TODO move to rosbridge.js
-  // Switch to main.html
-  header("Location: ../main.html");
 ?>

@@ -15,7 +15,7 @@
 #  the License.
 
 cd "$(dirname "$0")"
-REPO_NAME="$(./get-repo-name.sh)"
+REPO_NAME="$(./get-repo-name.sh)-core" 
 
 # This sed command based on Stack Overflow answer: https://stackoverflow.com/questions/28795479/awk-sed-script-to-convert-a-file-from-camelcase-to-underscores
 # Asked by Corentin Peuvrel: https://stackoverflow.com/users/4608146/corentin-peuvrel

@@ -411,7 +411,7 @@ function showModal(showWarning, modalMessage, restart) {
     btnModalButton2.title = 'Logout and Shutdown';
 
     btnModalButton1.innerHTML = 'Continue';
-    btnModalButton2.innerHTML = 'Logout';
+    btnModalButton2.innerHTML = 'Logout'; 
 
     btnModalButton1.onclick = function () {
         closeModal('RESTART');

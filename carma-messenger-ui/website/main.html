@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CARMA Messenger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!--START: custom css-->
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="thirdparty/fontawesome-free-5.13.0-web/css/all.css" />
+    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <!--END: custom css-->
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- END: favicon -->
+
+   <!--START: Widget Framework and custom scripts-->
+    <script src="scripts/rosbridge.js" defer></script>
+    <script src="scripts/carma.config.js"></script>
+    <script src="scripts/carma.widgetfw.js"></script>
+    <script src="scripts/control.js" defer></script>
+    <!--END:  Widget Framework and custom scripts--->
+
+    <!--START: Thirdparty-->
+    <script src="thirdparty/ros/eventemitter2.min.js"></script>
+    <script src="thirdparty/ros/roslib.min.js"></script>
+    <script src="thirdparty/jquery/jquery-1.12.4.min.js"></script>
+    <script src="thirdparty/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="thirdparty/svg/svg.min.js" defer></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxloader.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
+    <!--END: Thirdparty-->
+
+    <!--START: CUSTOM scripts-->
+    <script>
+        $(document).ready(function () {
+            $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
+            $('#btnModalButton2').on('click', function () {
+                $('#jqxLoader').jqxLoader('open');                    
+            });
+            $('#btnStop').on('click', function () {
+                    $('#jqxLoader').jqxLoader('open');               
+            });
+        });
+    </script>
+    <!--END: CUSTOM scripts-->
+</head>
+
+<body>
+    <div id="messenger-main-div">
+        <div class="MessengerTitleFrame">
+            <div class="MessengerTitleRec">               
+                <div class="Messenger_back_Div">
+                    <img class="Messenger_back_arrow" id="Messenger_back_arrow" src="images/Messenger_Back_Arrow.png"
+                        onclick="javascript:history.go(0);this.style.display='none'">
+                </div>
+                <div class="messenger-logo-div">
+                    <img class="logo" src="images/C_Messenger@2x.png" alt="logo1 Image Not Available">
+                </div>
+                <!-- <img class="logo2" src="images/CARMA_color.png" alt="Logo2 Image Not Available">
+                <img class="Messenger" src="images/messenger_Title.png" alt="Messenger Image Not Available"> -->
+                <div class="Messenger_stop_Div">
+                    <button id="btnStop" type="submit" onclick="manualShutdown();" title="Shutdown or Logout CARMA Messenger"> 
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div id="divSystemLogs" hidden>
+            <div id="statusIndicator">
+                <p id="connecting">
+                    Connecting to ROSbridge...<br>
+                </p>
+                <p id="connected" style="color:#00D600; display:none">
+                    Connected to ROSBridge.<br>
+                </p>
+                <p id="error" style="color:#FF0000; display:none">
+                    ROSBridge unable to connect.<br>
+                </p>
+                <p id="closed" style="display:none">
+                    ROSBridge connection closed.<br>
+                </p>
+            </div>
+            &nbsp;
+            <button id="btnWidgetOptions" title="List Widget Options" class="btnModal"
+                onclick="CarmaJS.WidgetFramework.listWidgetOptions('list');">List Widget Options</button>
+
+            <div id="divLog" class="logStatus" hidden>
+            </div>
+        </div>
+
+        <div id="divCarmaMessengerView" class="tabcontent">
+            <div id="divWidgetOptions" hidden>
+                <div id="divWidgetOptionsList">
+
+                </div>
+            </div>
+            <div id="divWidgetArea">
+                
+            </div>            
+        </div>
+
+        <div id="jqxLoader"></div>
+        <!-- The Modal -->
+        <div id="modalMessageBox" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>SYSTEM ALERT<i class="fa fa-exclamation-triangle" style="font-size:30px;color:red;"></i></h2>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the Modal Body.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnModalButton1" title="btnModalButton1" class="btnModal">Button1</button> &nbsp; &nbsp;
+                    <button id="btnModalButton2" title="btnModalButton2" class="btnModal">Button1</button>
+                    <br />
+                    <div id="divFooterMessage"></div>
+                </div>
+            </div>
+        </div>
+        <div id="modalUIInstructions">
+            <div id="modalUIInstructionsContent">
+            </div>
+        </div>
+        <audio id="audioAlert1" preload="auto">
+            <source src="sound/not-kiddin.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <audio id="audioAlert2" preload="auto">
+            <source src="sound/sunny.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <audio id="audioAlert3" preload="auto">
+            <source src="sound/hurry.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <audio id="audioAlert4" preload="auto">
+            <source src="sound/arp.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div class="footerPanel">
+            <div class="SystemDateTime " >
+                <img src="images/FHWALogo_2.png" class="FHWALogo"/>
+            </div>
+            <div class="systemversion" ></div>
+            <div class="copyright"></div>
+        </div>
+    </div>
+    <!--END: messenger-main-div-->
+</body>
+
+</html>
