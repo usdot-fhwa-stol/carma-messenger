@@ -30,7 +30,7 @@ services:
   messenger:
     image: usdotfhwastoldev/carma-messenger-core:develop
     network_mode: host
-    container_name: messenger
+    container_name: carma-messenger-core
     volumes_from:
       - container:carma-config:ro
     volumes:
