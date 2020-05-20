@@ -98,6 +98,12 @@ function connectToROS() {
     }
 }
 
+function manualShutdown()
+{
+    IsLogoutPressed = true;
+    sessionStorage.clear();
+    window.location.assign('scripts/killPlatform.php');
+}
 /*
     Get the CARMA version using the PHP script calling the docker container inspect to get the carma-config image version used.
 */

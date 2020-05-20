@@ -535,7 +535,6 @@ function closeModal(action) {
 
 function shutdown()
 {
-    IsLogoutPressed = true;
     sessionStorage.clear();
     window.location.assign('scripts/killPlatform.php');
 }
