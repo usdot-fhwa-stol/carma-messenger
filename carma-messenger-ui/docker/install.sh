@@ -53,10 +53,6 @@ chmod +x /usr/local/bin/docker-compose
 # Configure user permissions for docker
 usermod -aG docker www-data
 
-# Switch to dockerized version of launch and kill script
-#mv /var/www/html/scripts/docker_launch.bash /var/www/html/scripts/launch.bash
-#mv /var/www/html/scripts/docker_kill.bash /var/www/html/scripts/kill.bash
-
 # Install stub carma.config.js to be overriden by later configuration
  mkdir -p /opt/carma/vehicle/config
  touch /opt/carma/vehicle/config/carma.config.js
