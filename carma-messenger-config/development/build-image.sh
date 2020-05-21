@@ -27,16 +27,27 @@ IMAGE=carma-messenger-config
 cd "$(dirname "$0")"
 DIR_NAME=${PWD##*/}
 CONFIG_NAME=`echo $DIR_NAME | sed 's/_/-/g'`
+COMPONENT_VERSION_STRING=$1
 
 echo ""
 echo "##### CARMA $CONFIG_NAME Configuration Docker Image Build Script #####"
 echo ""
 
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case $arg in
+        -d|--develop)
+            USERNAME=usdotfhwastoldev
+            COMPONENT_VERSION_STRING=develop
+            shift
+            ;;
+    esac
+done
 
-if [[ -z "$1" ]]; then
+if [[ -z "$COMPONENT_VERSION_STRING" ]]; then
     TAG="$("../docker/get-system-version.sh")-$CONFIG_NAME"
 else
-    TAG="$1-$CONFIG_NAME"
+    TAG="$COMPONENT_VERSION_STRING-$CONFIG_NAME"
 fi
 
 echo "Building docker image for CARMA Configuration version: $TAG"
