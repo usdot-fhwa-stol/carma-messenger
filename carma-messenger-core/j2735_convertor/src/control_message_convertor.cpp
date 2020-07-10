@@ -242,7 +242,7 @@ void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficC
 void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
-  // uint8[8] reqid
+  // j2735_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
@@ -258,7 +258,7 @@ void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::Traff
   out_msg.msgnum = in_msg.msgnum;
 
   // # id Id128b, -- unique traffic control id
-  // uint8[16] id
+  // j2735_msgs/Id128b id
   out_msg.id = in_msg.id;
 
   // # updated EpochMins
@@ -566,7 +566,7 @@ void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficC
 void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
-  // uint8[8] reqid
+  // j2735_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
@@ -582,7 +582,7 @@ void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::Traff
   out_msg.msgnum = in_msg.msgnum;
 
   // # id Id128b, -- unique traffic control id
-  // uint8[16] id
+  // j2735_msgs/Id128b id
   out_msg.id = in_msg.id;
 
   // # updated EpochMins

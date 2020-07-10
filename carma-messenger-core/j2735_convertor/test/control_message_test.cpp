@@ -151,8 +151,8 @@ namespace j2735_convertor
   {
     j2735_msgs::TrafficControlMessageV01 in_msg;
     // # reqid ::= Id64b
-    // uint8[8] reqid
-    in_msg.reqid = {0, 1, 2, 3, 4, 5, 6, 7};
+    // j2735_msgs/Id64b reqid
+    in_msg.reqid.id = {0, 1, 2, 3, 4, 5, 6, 7};
 
     // # reqseq ::= INTEGER (0..255)
     // uint8 reqseq
@@ -167,8 +167,8 @@ namespace j2735_convertor
     in_msg.msgnum = 0;
 
     // # id Id128b, -- unique traffic control id
-    // uint8[16] id
-    in_msg.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    // j2735_msgs/Id128b reqid
+    in_msg.id.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
     // # updated EpochMins
     // time updated
@@ -193,11 +193,15 @@ namespace j2735_convertor
     if(optional)
     {
       in_msg.package.label = "This Is A Label";
-      in_msg.package.tcids = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+      j2735_msgs::Id128b id128b;
+      for(int i = 0; i < NUM_NODES; i++)
+      {
+        id128b.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        in_msg.package.tcids.push_back(id128b);
+      }
 
       in_msg.params = create_j2735_TrafficControlParams();
       in_msg.geometry = create_j2735_TrafficControlGeometry();
-
     }
 
     return in_msg;
@@ -332,7 +336,7 @@ namespace j2735_convertor
     cav_msgs::TrafficControlMessageV01 in_msg;
     // # reqid ::= Id64b
     // uint8[8] reqid
-    in_msg.reqid = {0, 1, 2, 3, 4, 5, 6, 7};
+    in_msg.reqid.id = {0, 1, 2, 3, 4, 5, 6, 7};
 
     // # reqseq ::= INTEGER (0..255)
     // uint8 reqseq
@@ -348,7 +352,7 @@ namespace j2735_convertor
 
     // # id Id128b, -- unique traffic control id
     // uint8[16] id
-    in_msg.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    in_msg.id.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
     // # updated EpochMins
     // time updated
@@ -372,7 +376,12 @@ namespace j2735_convertor
     if(optional)
     {
       in_msg.package.label = "This Is A Label";
-      in_msg.package.tcids = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+      j2735_msgs::Id128b id128b;
+      for(int i = 0; i < NUM_NODES; i++)
+      {
+        id128b.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        in_msg.package.tcids.push_back(id128b);
+      }
 
       in_msg.params = create_cav_TrafficControlParams();
       in_msg.geometry = create_cav_TrafficControlGeometry();
@@ -516,11 +525,11 @@ namespace j2735_convertor
     j2735_msgs::TrafficControlMessageV01 in_msg, 
     cav_msgs::TrafficControlMessageV01 out_msg)
   {
-    ASSERT_EQ(in_msg.reqid, out_msg.reqid);
+    ASSERT_EQ(in_msg.reqid.id, out_msg.reqid.id);
     ASSERT_EQ(in_msg.reqseq, out_msg.reqseq);
     ASSERT_EQ(in_msg.msgtot, out_msg.msgtot);
     ASSERT_EQ(in_msg.msgnum, out_msg.msgnum);
-    ASSERT_EQ(in_msg.id, out_msg.id);
+    ASSERT_EQ(in_msg.id.id, out_msg.id.id);
     ASSERT_EQ(out_msg.updated.sec, in_msg.updated * units::SEC_PER_MIN);
     ASSERT_EQ(out_msg.updated.nsec, 0);
 
@@ -528,7 +537,10 @@ namespace j2735_convertor
     if(in_msg.package_exists)
     {
       ASSERT_EQ(in_msg.package.label, out_msg.package.label);
-      ASSERT_EQ(in_msg.package.tcids, out_msg.package.tcids);
+      for(int i = 0; i < NUM_NODES; i++)
+      {
+        ASSERT_EQ(in_msg.package.tcids[i].id, out_msg.package.tcids[i].id);
+      }
     }
 
     ASSERT_EQ(in_msg.params_exists, out_msg.params_exists);
