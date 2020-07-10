@@ -104,12 +104,6 @@ void convert(const j2735_msgs::DailySchedule& in_msg, cav_msgs::DailySchedule& o
   out_msg.duration = ros::Duration(in_msg.duration * units::SEC_PER_MIN);
 }
 
-void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg)
-{
-  out_msg.deltax = (double)in_msg.deltax;
-  out_msg.deltay = (double)in_msg.deltay;
-}
-
 void convert(const j2735_msgs::PathNode& in_msg, cav_msgs::PathNode& out_msg)
 {
   out_msg.x = (double)in_msg.x / units::CM_PER_M;
@@ -133,18 +127,6 @@ void convert(const j2735_msgs::RepeatParams& in_msg, cav_msgs::RepeatParams& out
   out_msg.offset = ros::Duration(in_msg.offset * units::SEC_PER_MIN);
   out_msg.period = ros::Duration(in_msg.period * units::SEC_PER_MIN);
   out_msg.span = ros::Duration(in_msg.span * units::SEC_PER_MIN);
-}
-
-void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg)
-{
-  out_msg.oldest = ros::Time(in_msg.oldest * units::SEC_PER_MIN, 0);
-  out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
-
-  for(int i = 0; i < 3; i++)
-  {
-    convert(in_msg.offsets[i], out_msg.offsets[i]);
-  }
 }
 
 void convert(const j2735_msgs::TrafficControlDetail& in_msg, cav_msgs::TrafficControlDetail& out_msg)
@@ -215,7 +197,9 @@ void convert(const j2735_msgs::TrafficControlDetail& in_msg, cav_msgs::TrafficCo
     case j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
       break;
-    
+    default : 
+      // Throw Error?
+      break;
   }
 }
 
@@ -248,6 +232,9 @@ void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficC
       break;
     case j2735_msgs::TrafficControlMessage::TCMV01 : 
       convert(in_msg.tcmV01, out_msg.tcmV01);
+      break;
+    default : 
+      // Throw Error?
       break;
   }
 }
@@ -303,15 +290,6 @@ void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::Traff
   if(out_msg.geometry_exists)
   {
     convert(in_msg.geometry, out_msg.geometry);
-  }
-
-  // # Bounds SEQUENCE (SIZE(1..63)) OF TrafficControlBounds
-  // cav_msgs/TrafficControlBounds[] bounds
-  for (auto in_bound : in_msg.bounds)
-  {
-    cav_msgs::TrafficControlBounds out_bound;
-    convert(in_bound, out_bound);
-    out_msg.bounds.push_back(out_bound);
   }
 }
 
@@ -450,12 +428,6 @@ void convert(const cav_msgs::DailySchedule& in_msg, j2735_msgs::DailySchedule& o
   out_msg.duration = in_msg.duration.toSec() / units::SEC_PER_MIN;
 }
 
-void convert(const cav_msgs::OffsetPoint& in_msg, j2735_msgs::OffsetPoint& out_msg)
-{
-  out_msg.deltax = (int16_t)in_msg.deltax;
-  out_msg.deltay = (int16_t)in_msg.deltay;
-}
-
 void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg)
 {
   out_msg.x = (int16_t)(in_msg.x * units::CM_PER_M);
@@ -479,18 +451,6 @@ void convert(const cav_msgs::RepeatParams& in_msg, j2735_msgs::RepeatParams& out
   out_msg.offset = in_msg.offset.toSec() / units::SEC_PER_MIN;
   out_msg.period = in_msg.period.toSec() / units::SEC_PER_MIN;
   out_msg.span = in_msg.span.toSec() / units::SEC_PER_MIN;
-}
-
-void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg)
-{
-  out_msg.oldest = in_msg.oldest.toSec() / units::SEC_PER_MIN;
-  out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
-  out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
-
-  for(int i = 0; i < 3; i++)
-  {
-    convert(in_msg.offsets[i], out_msg.offsets[i]);
-  }
 }
 
 void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficControlDetail& out_msg)
@@ -561,6 +521,9 @@ void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficCo
     case cav_msgs::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
       break;
+    default : 
+      // Throw Error?
+      break;
   }
 }
 
@@ -593,6 +556,9 @@ void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficC
       break;
     case cav_msgs::TrafficControlMessage::TCMV01 : 
       convert(in_msg.tcmV01, out_msg.tcmV01);
+      break;
+    default : 
+      // Throw Error?
       break;
   }
 }
@@ -648,15 +614,6 @@ void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::Traff
   if(out_msg.geometry_exists)
   {
     convert(in_msg.geometry, out_msg.geometry);
-  }
-
-  // # Bounds SEQUENCE (SIZE(1..63)) OF TrafficControlBounds
-  // cav_msgs/TrafficControlBounds[] bounds
-  for (auto in_bound : in_msg.bounds)
-  {
-    j2735_msgs::TrafficControlBounds out_bound;
-    convert(in_bound, out_bound);
-    out_msg.bounds.push_back(out_bound);
   }
 }
 

@@ -41,14 +41,6 @@ namespace j2735_convertor
     return in_msg;
   }
 
-  j2735_msgs::OffsetPoint create_j2735_OffsetPoint(bool optional = true)
-  {
-    j2735_msgs::OffsetPoint in_msg;
-    in_msg.deltax = 100; // min
-    in_msg.deltay = -1364; // min
-    return in_msg;
-  }
-
   j2735_msgs::PathNode create_j2735_PathNode(bool optional = true)
   {
     j2735_msgs::PathNode in_msg;
@@ -71,21 +63,6 @@ namespace j2735_convertor
     in_msg.offset = 60; // min
     in_msg.period = 360; // min
     in_msg.span = 180; // min
-    return in_msg;
-  }
-
-  j2735_msgs::TrafficControlBounds create_j2735_TrafficControlBounds(bool optional = true)
-  {
-    j2735_msgs::TrafficControlBounds in_msg;
-    in_msg.oldest = 1000000;
-    in_msg.reflon = -400000000;
-    in_msg.reflat = 800000000;
-
-    for(int i = 0; i < 3; i++)
-    {
-      in_msg.offsets[i].deltax = 100;
-      in_msg.offsets[i].deltay = -1364;
-    }
     return in_msg;
   }
 
@@ -223,13 +200,6 @@ namespace j2735_convertor
 
     }
 
-    j2735_msgs::TrafficControlBounds tcb;
-    for(int i = 0; i < NUM_NODES; i++)
-    {
-      tcb = create_j2735_TrafficControlBounds();
-      in_msg.bounds.push_back(tcb);
-    }
-
     return in_msg;
   }
 
@@ -248,14 +218,6 @@ namespace j2735_convertor
     cav_msgs::DailySchedule in_msg;
     in_msg.begin = ros::Duration(36000);
     in_msg.duration = ros::Duration(3600);
-    return in_msg;
-  }
-
-  cav_msgs::OffsetPoint create_cav_OffsetPoint(bool optional = true)
-  {
-    cav_msgs::OffsetPoint in_msg;
-    in_msg.deltax = 10.0;
-    in_msg.deltay = 20.0;
     return in_msg;
   }
 
@@ -281,20 +243,6 @@ namespace j2735_convertor
     in_msg.offset = ros::Duration(3600);
     in_msg.period = ros::Duration(6000);
     in_msg.span = ros::Duration(1800);
-    return in_msg;
-  }
-
-  cav_msgs::TrafficControlBounds create_cav_TrafficControlBounds(bool optional = true)
-  {
-    cav_msgs::TrafficControlBounds in_msg;
-    in_msg.oldest = ros::Time(180000);
-    in_msg.reflon = -40.0;
-    in_msg.reflat = 80.0;
-
-    for(int i = 0; i < 3; i++)
-    {
-      in_msg.offsets[i] = create_cav_OffsetPoint();
-    }
     return in_msg;
   }
 
@@ -431,13 +379,6 @@ namespace j2735_convertor
 
     }
 
-    cav_msgs::TrafficControlBounds tcb;
-    for(int i = 0; i < NUM_NODES; i++)
-    {
-      tcb = create_cav_TrafficControlBounds();
-      in_msg.bounds.push_back(tcb);
-    }
-
     return in_msg;
   }
 
@@ -459,14 +400,6 @@ namespace j2735_convertor
     ASSERT_EQ(out_msg.begin.nsec, 0);
     ASSERT_EQ(out_msg.duration.sec, in_msg.duration * units::SEC_PER_MIN);
     ASSERT_EQ(out_msg.duration.nsec, 0);
-  }
-
-  void test_OffsetPoint(
-    j2735_msgs::OffsetPoint in_msg, 
-    cav_msgs::OffsetPoint out_msg)
-  {
-    ASSERT_NEAR(out_msg.deltax, out_msg.deltax, 0.000001);
-    ASSERT_NEAR(out_msg.deltay, out_msg.deltay, 0.000001);
   }
 
   void test_PathNode(
@@ -498,24 +431,6 @@ namespace j2735_convertor
     ASSERT_EQ(out_msg.period.nsec, 0);
     ASSERT_EQ(out_msg.span.sec, in_msg.span * units::SEC_PER_MIN);
     ASSERT_EQ(out_msg.span.nsec, 0);
-  }
-
-  void test_TrafficControlBounds(
-    j2735_msgs::TrafficControlBounds in_msg, 
-    cav_msgs::TrafficControlBounds out_msg)
-  {
-    ASSERT_EQ(out_msg.oldest.sec, in_msg.oldest * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.oldest.nsec, 0.);
-    ASSERT_NEAR(in_msg.reflon, out_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
-    ASSERT_NEAR(in_msg.reflat, out_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
-
-    for(int i = 0; i < 3; i++)
-    {
-      auto in_offset = in_msg.offsets[i];
-      auto out_offset = out_msg.offsets[i];
-      ASSERT_NEAR(in_offset.deltax, out_offset.deltax, 0.000001);
-      ASSERT_NEAR(in_offset.deltay, out_offset.deltay, 0.000001);
-    }
   }
 
   void test_TrafficControlDetail(
@@ -626,11 +541,6 @@ namespace j2735_convertor
     if(in_msg.geometry_exists)
     {
       test_TrafficControlGeometry(in_msg.geometry, out_msg.geometry);
-    }
-    
-    for(int i = 0; i < NUM_NODES; i++)
-    {
-      test_TrafficControlBounds(in_msg.bounds[i], out_msg.bounds[i]);
     }
   }
   
@@ -854,18 +764,6 @@ TEST(ControlMessage, convertDailyScheduleToCAV)
   test_DailySchedule(in_msg, out_msg);
 }
 
-TEST(ControlMessage, convertOffsetPointToCAV)
-{
-  // Create variables
-  j2735_msgs::OffsetPoint in_msg;
-  cav_msgs::OffsetPoint out_msg;
-
-  // Test
-  in_msg = create_j2735_OffsetPoint();
-  j2735_convertor::geofence_control::convert(in_msg, out_msg);
-  test_OffsetPoint(in_msg, out_msg);
-}
-
 TEST(ControlMessage, convertPathNodeToCAV)
 {
   // Create variables
@@ -895,24 +793,15 @@ TEST(ControlMessage, convertRepeatParamsToCAV)
   test_RepeatParams(in_msg, out_msg);
 }
 
-TEST(ControlMessage, convertTrafficControlBoundsToCAV)
-{
-  // Create variables
-  j2735_msgs::TrafficControlBounds in_msg;
-  cav_msgs::TrafficControlBounds out_msg;
-
-  // Test
-  in_msg = create_j2735_TrafficControlBounds();
-  j2735_convertor::geofence_control::convert(in_msg, out_msg);
-  test_TrafficControlBounds(in_msg, out_msg);
-}
-
-  
-
 TEST(ControlMessage, convertTrafficControlDetailToCAV)
 {
   j2735_msgs::TrafficControlDetail in_msg;
   cav_msgs::TrafficControlDetail out_msg;
+
+  // Default Case Test
+  in_msg.choice = 63;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
   // SIGNAL Test
   in_msg.choice = j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE;
@@ -920,6 +809,26 @@ TEST(ControlMessage, convertTrafficControlDetailToCAV)
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
   ASSERT_EQ(in_msg.signal, out_msg.signal);
+
+  // STOP Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::STOP_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+
+  // YIELD Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::YIELD_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+
+  // NOTOWING Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+
+  // RESTRICTED Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
   // CLOSED Test
   in_msg.choice = j2735_msgs::TrafficControlDetail::CLOSED_CHOICE;
@@ -1051,6 +960,11 @@ TEST(ControlMessage, convertTrafficControlMessageToCAV)
   // Create variables
   j2735_msgs::TrafficControlMessage in_msg;
   cav_msgs::TrafficControlMessage out_msg;
+
+  // Test Default Case
+  in_msg.choice = 63;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
   // Test RESERVED
   in_msg.choice = j2735_msgs::TrafficControlMessage::RESERVED;
@@ -1314,18 +1228,6 @@ TEST(ControlMessage, convertDailyScheduleToJ2735)
   test_DailySchedule(out_msg, in_msg);
 }
 
-TEST(ControlMessage, convertOffsetPointToJ2735)
-{
-  // Create variables
-  cav_msgs::OffsetPoint in_msg;
-  j2735_msgs::OffsetPoint out_msg;
-
-  // Test
-  in_msg = create_cav_OffsetPoint();
-  j2735_convertor::geofence_control::convert(in_msg, out_msg);
-  test_OffsetPoint(out_msg, in_msg);
-}
-
 TEST(ControlMessage, convertPathNodeToJ2735)
 {
   // Create variables
@@ -1355,40 +1257,42 @@ TEST(ControlMessage, convertRepeatParamsToJ2735)
   test_RepeatParams(out_msg, in_msg);
 }
 
-TEST(ControlMessage, convertTrafficControlBoundsToJ2735)
-{
-  // Create variables
-  cav_msgs::TrafficControlBounds in_msg;
-  j2735_msgs::TrafficControlBounds out_msg;
-
-  // Test
-  in_msg = create_cav_TrafficControlBounds();
-  j2735_convertor::geofence_control::convert(in_msg, out_msg);
-  test_TrafficControlBounds(out_msg, in_msg);
-}
-
 TEST(ControlMessage, convertTrafficControlDetailToJ2735)
 {
   cav_msgs::TrafficControlDetail in_msg;
   j2735_msgs::TrafficControlDetail out_msg;
 
-  // // SIGNAL Test
-  // in_msg.choice = cav_msgs::TrafficControlDetail::SIGNAL_CHOICE;
+  // Default Case Test
+  in_msg.choice = 63;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
-  // int sig;
-  // for(int i = 0; i < NUM_NODES; i++)
-  // {
-  //   sig = i;
-  //   in_msg.signal.push_back(sig);
-  // }
+  // SIGNAL Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE;
+  in_msg.signal = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+  ASSERT_EQ(in_msg.signal, out_msg.signal);
 
-  // j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  // STOP Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::STOP_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
-  // ASSERT_EQ(out_msg.choice, in_msg.choice);
-  // for(int i = 0; i < NUM_NODES; i++)
-  // {
-  //   ASSERT_EQ(in_msg.signal[i], out_msg.signal[i]);
-  // }
+  // YIELD Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::YIELD_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+
+  // NOTOWING Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+
+  // RESTRICTED Test
+  in_msg.choice = j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
   // CLOSED Test
   in_msg.choice = cav_msgs::TrafficControlDetail::CLOSED_CHOICE;
@@ -1520,6 +1424,11 @@ TEST(ControlMessage, convertTrafficControlMessageToJ2735)
   // Create variables
   cav_msgs::TrafficControlMessage in_msg;
   j2735_msgs::TrafficControlMessage out_msg;
+
+  // Test Default Case
+  in_msg.choice = 63;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
 
   // Test RESERVED
   in_msg.choice = cav_msgs::TrafficControlMessage::RESERVED;

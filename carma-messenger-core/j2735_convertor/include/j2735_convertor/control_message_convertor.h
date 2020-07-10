@@ -100,16 +100,6 @@ void convert(const j2735_msgs::Point& in_msg, cav_msgs::Point& out_msg);
 void convert(const j2735_msgs::DailySchedule& in_msg, cav_msgs::DailySchedule& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::OffsetPoint into a cav_msgs::OffsetPoint
- *
- * @param in_msg The message to be converted
- * @param out_msg The message to store the output
- *
- * Unit conversions and presence flags are handled
- */
-void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg);
-
-/**
  * @brief Convert the contents of a j2735_msgs::PathNode into a cav_msgs::PathNode
  *
  * @param in_msg The message to be converted
@@ -128,16 +118,6 @@ void convert(const j2735_msgs::PathNode& in_msg, cav_msgs::PathNode& out_msg);
  * Unit conversions and presence flags are handled
  */
 void convert(const j2735_msgs::RepeatParams& in_msg, cav_msgs::RepeatParams& out_msg);
-
-/**
- * @brief Convert the contents of a j2735_msgs::TrafficControlBounds into a cav_msgs::TrafficControlBounds
- *
- * @param in_msg The message to be converted
- * @param out_msg The message to store the output
- *
- * Unit conversions and presence flags are handled
- */
-void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg);
 
 /**
  * @brief Convert the contents of a j2735_msgs::TrafficControlDetail into a cav_msgs::TrafficControlDetail
@@ -264,16 +244,6 @@ void convert(const cav_msgs::Point& in_msg, j2735_msgs::Point& out_msg);
 void convert(const cav_msgs::DailySchedule& in_msg, j2735_msgs::DailySchedule& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::OffsetPoint into a j2735_msgs::OffsetPoint
- *
- * @param in_msg The message to be converted
- * @param out_msg The message to store the output
- *
- * Unit conversions and presence flags are handled
- */
-void convert(const cav_msgs::OffsetPoint& in_msg, j2735_msgs::OffsetPoint& out_msg);
-
-/**
  * @brief Convert the contents of a cav_msgs::PathNode into a j2735_msgs::PathNode
  *
  * @param in_msg The message to be converted
@@ -292,16 +262,6 @@ void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg);
  * Unit conversions and presence flags are handled
  */
 void convert(const cav_msgs::RepeatParams& in_msg, j2735_msgs::RepeatParams& out_msg);
-
-/**
- * @brief Convert the contents of a cav_msgs::TrafficControlBounds into a j2735_msgs::TrafficControlBounds
- *
- * @param in_msg The message to be converted
- * @param out_msg The message to store the output
- *
- * Unit conversions and presence flags are handled
- */
-void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg);
 
 /**
  * @brief Convert the contents of a cav_msgs::TrafficControlDetail into a j2735_msgs::TrafficControlDetail
