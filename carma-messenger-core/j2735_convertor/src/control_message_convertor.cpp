@@ -504,7 +504,7 @@ void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficCo
       out_msg.minhdwy = (uint16_t)(in_msg.minhdwy * units::DECA_M_PER_M);
       break;
     case cav_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE : 
-      out_msg.maxvehmass = (int16_t)in_msg.maxvehmass;
+      out_msg.maxvehmass = (uint16_t)in_msg.maxvehmass;
       break;
     case cav_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
       out_msg.maxvehheight = (uint8_t)(in_msg.maxvehheight * units::DECA_M_PER_M);
