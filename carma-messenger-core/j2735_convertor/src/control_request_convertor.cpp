@@ -25,25 +25,61 @@ namespace geofence_request
 // Convert j2735_msgs to cav_msgs
 ////
 
+void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg,const int8_t scale)
+{
+  out_msg.deltax = (double)in_msg.deltax* pow(10, scale);
+  out_msg.deltay = (double)in_msg.deltay* pow(10, scale);
+}
 
-void convert(const j2735_msgs::ControlRequest& in_msg, cav_msgs::ControlRequest& out_msg) {
+void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg, const int8_t scale) 
+{
+  out_msg.oldest = out_msg.oldest.fromNSec(in_msg.oldest * units::NS_PER_MS_INT);
+  out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
+  out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
 
-  out_msg.version = in_msg.version;
-
-  for (auto bound : in_msg.bounds) {
-    cav_msgs::ControlBounds out_bound;
-    convert(bound, out_bound, in_msg.scale);
-    out_msg.bounds.emplace_back(out_bound);
+  for(int i = 0; i < 3; i++)
+  {
+    convert(in_msg.offsets[i], out_msg.offsets[i],scale);
   }
 }
 
-void convert(const j2735_msgs::ControlBounds& in_msg, cav_msgs::ControlBounds& out_msg, const int8_t scale) {
-  out_msg.oldest = out_msg.oldest.fromNSec(in_msg.oldest * units::NS_PER_MS_INT);
-  out_msg.latitude = (double)in_msg.latitude / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.longitude = (double)in_msg.longitude / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.offsets[0] = (double)(in_msg.offsets[0]) * pow(10, scale);
-  out_msg.offsets[1] = (double)(in_msg.offsets[1]) * pow(10, scale);
-  out_msg.offsets[2] = (double)(in_msg.offsets[2]) * pow(10, scale);
+void convert(const j2735_msgs::TrafficControlRequestV01& in_msg, cav_msgs::TrafficControlRequestV01& out_msg)
+{
+  // # reqid ::= Id64b
+  // j2735_msgs/Id64b reqid
+  out_msg.reqid = in_msg.reqid;
+
+  // # reqseq ::= INTEGER (0..255)
+  // uint8 reqseq
+  out_msg.reqseq = in_msg.reqseq;
+
+  //# Bounds SEQUENCE (SIZE(1..63)) OF TrafficControlBounds
+
+  for (auto in_bound : in_msg.bounds)
+  {
+    cav_msgs::TrafficControlBounds out_bound;
+    convert(in_bound, out_bound, in_msg.scale);
+    out_msg.bounds.emplace_back(out_bound);
+  }
+
+} 
+
+void convert(const j2735_msgs::TrafficControlRequest& in_msg, cav_msgs::TrafficControlRequest& out_msg) 
+{
+  // uint8 choice
+  out_msg.choice = in_msg.choice;
+
+  switch(in_msg.choice)
+  {
+    case j2735_msgs::TrafficControlRequest::RESERVED : 
+      break;
+    case j2735_msgs::TrafficControlRequest::TCRV01 : 
+      convert(in_msg.tcrV01, out_msg.tcrV01);
+      break;
+    default:
+      break;
+  }
+
 }
 
 ////
@@ -54,10 +90,13 @@ void convert(const j2735_msgs::ControlBounds& in_msg, cav_msgs::ControlBounds& o
 // Therefore it is safe to truncate and then use the modulo operator
 // Therefore control requests sent from this component cannot have accuracy better than 1m
 
-bool isIntegerDivisable(const std::vector<double>& data, int16_t divisor) {
-  for (auto element : data) {
+bool isIntegerDivisable(const std::vector<double>& data, int16_t divisor) 
+{
+  for (auto element : data) 
+  {
     int64_t int_element = (int64_t)element; // Cast to integer to allow use of modulo
-    if (int_element % divisor != 0) {
+    if (int_element % divisor != 0) 
+    {
       return false;
     }
   }
@@ -65,9 +104,12 @@ bool isIntegerDivisable(const std::vector<double>& data, int16_t divisor) {
   return true;
 }
 
-bool isLessThan(const std::vector<double>& data, int16_t threshold) {
-  for (auto element : data) {
-    if (element > fabs(threshold)) {
+bool isLessThan(const std::vector<double>& data, int16_t threshold) 
+{
+  for (auto element : data) 
+  {
+    if (element > fabs(threshold))
+    {
       return false;
     }
   }
@@ -75,80 +117,160 @@ bool isLessThan(const std::vector<double>& data, int16_t threshold) {
   return true;
 }
 
-void convert(const cav_msgs::ControlBounds& in_msg, j2735_msgs::ControlBounds& out_msg, const int8_t scale) {
+void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg, const int8_t scale) 
+{
   out_msg.oldest = (in_msg.oldest.sec * units::MS_PER_S) + (in_msg.oldest.nsec / units::NS_PER_MS_INT);
-  out_msg.latitude = in_msg.latitude * units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.longitude = in_msg.longitude * units::TENTH_MICRO_DEG_PER_DEG;
-  
-  double scaled_x = in_msg.offsets[0] / pow(10, scale);
-  double scaled_y = in_msg.offsets[1] / pow(10, scale);
-  double scaled_z = in_msg.offsets[2] / pow(10, scale);
+  out_msg.reflat = in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG;
+  out_msg.reflon = in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG;
+
+  double scaled_deltax0 = in_msg.offsets[0].deltax / pow(10, scale);
+  double scaled_deltay0 = in_msg.offsets[1].deltay / pow(10, scale);
+  double scaled_deltax1 = in_msg.offsets[0].deltax / pow(10, scale);
+  double scaled_deltay1 = in_msg.offsets[1].deltay / pow(10, scale);
+  double scaled_deltax2 = in_msg.offsets[0].deltax / pow(10, scale);
+  double scaled_deltay2 = in_msg.offsets[1].deltay / pow(10, scale);
+
   // Check bounds of message storage ability
   constexpr int INT_16_MIN = -32768;
   constexpr int INT_16_MAX = 32767; 
-  if (scaled_x < INT_16_MIN || INT_16_MAX < scaled_x ||
-      scaled_y < INT_16_MIN || INT_16_MAX < scaled_y ||
-      scaled_z < INT_16_MIN || INT_16_MAX < scaled_z) 
+  if (scaled_deltax0 < INT_16_MIN || INT_16_MAX < scaled_deltax0 ||
+      scaled_deltay0 < INT_16_MIN || INT_16_MAX < scaled_deltay0 ||
+      scaled_deltax1 < INT_16_MIN || INT_16_MAX < scaled_deltax1 ||
+      scaled_deltay1 < INT_16_MIN || INT_16_MAX < scaled_deltay1 ||
+      scaled_deltax2 < INT_16_MIN || INT_16_MAX < scaled_deltay2 ||
+      scaled_deltay2 < INT_16_MIN || INT_16_MAX < scaled_deltay2 ) 
   {
     throw std::invalid_argument("cav_msgs::ControlBounds cannot be converted because the provided bounds cannot be scaled into the 16 bit integer range without reducing precision below 1m.");
   }
 
-  out_msg.offsets[0] = scaled_x;
-  out_msg.offsets[1] = scaled_y;
-  out_msg.offsets[2] = scaled_z;
+  out_msg.offsets[0].deltax=scaled_deltax0;
+  out_msg.offsets[1].deltay=scaled_deltay0;
+  out_msg.offsets[0].deltax=scaled_deltax1;
+  out_msg.offsets[1].deltay=scaled_deltay1;
+  out_msg.offsets[0].deltax=scaled_deltax2;
+  out_msg.offsets[1].deltay=scaled_deltay2;
+
 }
 
-void convert(const cav_msgs::ControlRequest& in_msg, j2735_msgs::ControlRequest& out_msg) {
-  out_msg.version = in_msg.version;
+void convert(const cav_msgs::TrafficControlRequestV01& in_msg, j2735_msgs::TrafficControlRequestV01& out_msg)
+{
+  // # reqid ::= Id64b
+  // j2735_msgs/Id64b reqid
+  out_msg.reqid = in_msg.reqid;
 
-  bool canScale_neg_1 = true;
-  bool canScale_neg_2 = true;
-  bool canScale_neg_3 = true;
+  // # reqseq ::= INTEGER (0..255)
+  // uint8 reqseq
+  out_msg.reqseq = in_msg.reqseq;
 
-  for (auto bound : in_msg.bounds) {
-    std::vector<double> offsets(bound.offsets.begin(), bound.offsets.end());
-    canScale_neg_1 = canScale_neg_1 && isLessThan(offsets, 1000);
-    canScale_neg_2 = canScale_neg_2 && isLessThan(offsets, 100);
-    canScale_neg_3 = canScale_neg_3 && isLessThan(offsets, 10);
+  bool canScale_neg_1_x = true;
+  bool canScale_neg_2_x = true;
+  bool canScale_neg_3_x = true;
+
+  bool canScale_neg_1_y = true;
+  bool canScale_neg_2_y = true;
+  bool canScale_neg_3_y = true;
+
+  for (auto bound : in_msg.bounds) 
+  {
+
+  	std::vector<double> offsetsx; 
+  	std::vector<double> offsetsy;
+  
+  	for (auto offset : bound.offsets) 
+  	{
+  		offsetsx.push_back(offset.deltax);
+  		offsetsy.push_back(offset.deltay);
+ 	}
+
+    canScale_neg_1_x = canScale_neg_1_x && isLessThan(offsetsx, 1000);
+    canScale_neg_2_x = canScale_neg_2_x && isLessThan(offsetsx, 100);
+    canScale_neg_3_x = canScale_neg_3_x && isLessThan(offsetsx, 10);
+
+    canScale_neg_1_y = canScale_neg_1_y && isLessThan(offsetsy, 1000);
+    canScale_neg_2_y = canScale_neg_2_y && isLessThan(offsetsy, 100);
+    canScale_neg_3_y = canScale_neg_3_y && isLessThan(offsetsy, 10);
   }
 
-  if (canScale_neg_3) {
+  if (canScale_neg_3_x && canScale_neg_3_y )
+  {
     out_msg.scale = -3;
-  } else if (canScale_neg_2) {
+  } else if (canScale_neg_2_x && canScale_neg_2_y )
+  {
     out_msg.scale = -2;
-  } else if (canScale_neg_1) {
+  } else if (canScale_neg_1_x && canScale_neg_1_y)
+  {
     out_msg.scale = -1;
-  } else {
+  } else 
+  {
     out_msg.scale = 0;
   }     
 
-  if (out_msg.scale == 0) {
-    bool canScale_1 = true;
-    bool canScale_2 = true;
-    bool canScale_3 = true;
+  if (out_msg.scale == 0) 
+  {
+    bool canScale_1_x = true;
+    bool canScale_2_x = true;
+    bool canScale_3_x = true;
 
-    for (auto bound : in_msg.bounds) {
-      std::vector<double> offsets(bound.offsets.begin(), bound.offsets.end());
-      canScale_1 = canScale_1 && isIntegerDivisable(offsets, 10);
-      canScale_2 = canScale_2 && isIntegerDivisable(offsets, 100);
-      canScale_3 = canScale_3 && isIntegerDivisable(offsets, 1000); 
+    bool canScale_1_y = true;
+    bool canScale_2_y = true;
+    bool canScale_3_y = true;
+
+  	for (auto bound : in_msg.bounds) 
+  	{
+      std::vector<double> offsetsx;
+      std::vector<double> offsetsy;
+  
+  	  for (auto offset : bound.offsets) 
+  		{  	
+  		offsetsx.push_back(offset.deltax);
+  		offsetsy.push_back(offset.deltay);
+  		}
+     // std::vector<cav_msgs::OffsetPoint> offsets(bound.offsets.begin(), bound.offsets.end());
+      canScale_1_x = canScale_1_x && isIntegerDivisable(offsetsx, 10);
+      canScale_2_x = canScale_2_x && isIntegerDivisable(offsetsx, 100);
+      canScale_3_x = canScale_3_x && isIntegerDivisable(offsetsx, 1000); 
+
+      canScale_1_y = canScale_1_y && isIntegerDivisable(offsetsy, 10);
+      canScale_2_y = canScale_2_y && isIntegerDivisable(offsetsy, 100);
+      canScale_3_y = canScale_3_y && isIntegerDivisable(offsetsy, 1000); 
     }
 
-    if (canScale_3) {
+    if (canScale_3_x && canScale_3_y) 
+    {
       out_msg.scale = 3;
-    } else if (canScale_2) {
+    } else if (canScale_2_x && canScale_3_y) 
+    {
       out_msg.scale = 2;
-    } else if (canScale_1) {
+    } else if (canScale_1_x && canScale_1_y)
+    {
       out_msg.scale = 1;
     }
   }
 
-  for (auto bound : in_msg.bounds) {
-
-    j2735_msgs::ControlBounds out_bound;
+  for (auto bound : in_msg.bounds)
+  {
+    j2735_msgs::TrafficControlBounds out_bound;
     convert(bound, out_bound, out_msg.scale);
     out_msg.bounds.emplace_back(out_bound);
-  }                                            
+  }
 }
-}  // namespace geofence_control
-}  // namespace j2735_convertor
+
+   void convert(const cav_msgs::TrafficControlRequest& in_msg, j2735_msgs::TrafficControlRequest& out_msg) 
+  {
+     // uint8 choice
+     out_msg.choice = in_msg.choice;
+
+     switch(in_msg.choice)
+     {
+       case cav_msgs::TrafficControlRequest::RESERVED : 
+       break;
+       case cav_msgs::TrafficControlRequest::TCRV01 : 
+       convert(in_msg.tcrV01, out_msg.tcrV01);
+       break;
+       default : 
+      break;
+     }
+  }
+
+}// namespace geofence_control
+}// namespace j2735_convertor

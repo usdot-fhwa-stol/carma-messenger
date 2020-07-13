@@ -157,13 +157,13 @@ void J2735Convertor::j2735ControlMessageHandler(const j2735_msgs::ControlMessage
   converted_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::ControlRequestHandler(const cav_msgs::ControlRequestConstPtr& message) {
+void J2735Convertor::ControlRequestHandler(const cav_msgs::TrafficControlRequestConstPtr& message) {
   j2735_msgs::ControlRequest converted_msg;
   j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
   outbound_j2735_geofence_request_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::j2735ControlRequestHandler(const j2735_msgs::ControlRequestConstPtr& message) {
+void J2735Convertor::j2735ControlRequestHandler(const j2735_msgs::TrafficControlRequestConstPtr& message) {
   cav_msgs::ControlRequest converted_msg;
   j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
   converted_geofence_request_pub_.publish(converted_msg);       // Publish converted message
