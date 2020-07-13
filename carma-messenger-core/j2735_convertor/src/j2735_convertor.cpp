@@ -145,14 +145,14 @@ void J2735Convertor::j2735MapHandler(const j2735_msgs::MapDataConstPtr& message)
   converted_map_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::ControlMessageHandler(const cav_msgs::ControlMessageConstPtr& message) {
-  j2735_msgs::ControlMessage converted_msg;
+void J2735Convertor::ControlMessageHandler(const cav_msgs::TrafficControlMessageConstPtr& message) {
+  j2735_msgs::TrafficControlMessage converted_msg;
   j2735_convertor::geofence_control::convert(*message, converted_msg);  // Convert message
   outbound_j2735_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::j2735ControlMessageHandler(const j2735_msgs::ControlMessageConstPtr& message) {
-  cav_msgs::ControlMessage converted_msg;
+void J2735Convertor::j2735ControlMessageHandler(const j2735_msgs::TrafficControlMessageConstPtr& message) {
+  cav_msgs::TrafficControlMessage converted_msg;
   j2735_convertor::geofence_control::convert(*message, converted_msg);  // Convert message
   converted_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
