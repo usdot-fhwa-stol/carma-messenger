@@ -125,8 +125,8 @@ TEST(ControlRequest, convertControlBoundsToCAV)
   cav_msgs::TrafficControlBounds out_msg;  
   j2735_convertor::geofence_request::convert(in_msg, out_msg, scale);
   
-  ASSERT_EQ(out_msg.oldest.sec, 0);
-  ASSERT_EQ(out_msg.oldest.nsec, 500000000);
+  ASSERT_EQ(out_msg.oldest.sec, 30000);
+  ASSERT_EQ(out_msg.oldest.nsec, 0);
   ASSERT_NEAR(out_msg.reflat, 45.0, 0.00000001);
   ASSERT_NEAR(out_msg.reflon, 40.0, 0.00000001);
 
@@ -207,22 +207,22 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   ASSERT_EQ(out_msg.bounds.size(), 4); // Verify the correct number of bounds exist
   // Verify bounds are converted. No need to check everything as there is a separate bounds unit test.
   ASSERT_EQ(out_msg.bounds[0].offsets[0].deltax, 1000);
-  ASSERT_EQ(out_msg.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg.bounds[0].offsets[0].deltay, 100); 
 
-  ASSERT_EQ(out_msg.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg.bounds[0].offsets[1].deltax, 1000);
   ASSERT_EQ(out_msg.bounds[0].offsets[1].deltay, 100);
 
-  ASSERT_EQ(out_msg.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg.bounds[0].offsets[2].deltax, 1000);
+  ASSERT_EQ(out_msg.bounds[0].offsets[2].deltay, 100);
 
   ASSERT_EQ(out_msg.bounds[1].offsets[0].deltax, 2000);
-  ASSERT_EQ(out_msg.bounds[1].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg.bounds[1].offsets[0].deltay, 100); 
 
-  ASSERT_EQ(out_msg.bounds[1].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg.bounds[1].offsets[1].deltax, 2000);
   ASSERT_EQ(out_msg.bounds[1].offsets[1].deltay, 100);
 
-  ASSERT_EQ(out_msg.bounds[1].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg.bounds[1].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg.bounds[1].offsets[2].deltax, 2000);
+  ASSERT_EQ(out_msg.bounds[1].offsets[2].deltay, 100);
 
   ASSERT_EQ(out_msg.scale, 0); 
 
@@ -244,13 +244,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg2, out_msg2);
 
   ASSERT_EQ(out_msg2.bounds[0].offsets[0].deltax, 1010);
-  ASSERT_EQ(out_msg2.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg2.bounds[0].offsets[0].deltay, 200); 
 
-  ASSERT_EQ(out_msg2.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg2.bounds[0].offsets[1].deltax, 100);
   ASSERT_EQ(out_msg2.bounds[0].offsets[1].deltay, 200);
 
-  ASSERT_EQ(out_msg2.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg2.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg2.bounds[0].offsets[2].deltax, 1005);
+  ASSERT_EQ(out_msg2.bounds[0].offsets[2].deltay, 200);
 
 
   // +2 Scaling
@@ -271,13 +271,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg3, out_msg3);
 
   ASSERT_EQ(out_msg3.bounds[0].offsets[0].deltax, 1100);
-  ASSERT_EQ(out_msg3.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg3.bounds[0].offsets[0].deltay, 100); 
 
-  ASSERT_EQ(out_msg3.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg3.bounds[0].offsets[1].deltax, 100);
   ASSERT_EQ(out_msg3.bounds[0].offsets[1].deltay, 200);
 
-  ASSERT_EQ(out_msg3.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg3.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg3.bounds[0].offsets[2].deltax, 1005);
+  ASSERT_EQ(out_msg3.bounds[0].offsets[2].deltay, 200);
 
   // +3 Scaling
   cav_msgs::TrafficControlRequestV01 in_msg4;
@@ -297,13 +297,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg4, out_msg4);
 
   ASSERT_EQ(out_msg4.bounds[0].offsets[0].deltax, 15000);
-  ASSERT_EQ(out_msg4.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg4.bounds[0].offsets[0].deltay, 5000); 
 
-  ASSERT_EQ(out_msg4.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg4.bounds[0].offsets[1].deltax, 1000);
   ASSERT_EQ(out_msg4.bounds[0].offsets[1].deltay, 2000);
 
-  ASSERT_EQ(out_msg4.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg4.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg4.bounds[0].offsets[2].deltax, 1005);
+  ASSERT_EQ(out_msg4.bounds[0].offsets[2].deltay, 2000);
 
   // -1 Scaling
   cav_msgs::TrafficControlRequestV01 in_msg5;
@@ -323,13 +323,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg5, out_msg5);
 
   ASSERT_EQ(out_msg5.bounds[0].offsets[0].deltax, 9999);
-  ASSERT_EQ(out_msg5.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg5.bounds[0].offsets[0].deltay, 1014); 
 
-  ASSERT_EQ(out_msg5.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg5.bounds[0].offsets[1].deltax, 9999);
   ASSERT_EQ(out_msg5.bounds[0].offsets[1].deltay, 1014);
 
-  ASSERT_EQ(out_msg5.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg5.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg5.bounds[0].offsets[2].deltax, 9999);
+  ASSERT_EQ(out_msg5.bounds[0].offsets[2].deltay, 1014);
 
   // -2 Scaling
   cav_msgs::TrafficControlRequestV01 in_msg6;
@@ -349,13 +349,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg6, out_msg6);
 
   ASSERT_EQ(out_msg6.bounds[0].offsets[0].deltax, 9999);
-  ASSERT_EQ(out_msg6.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg6.bounds[0].offsets[0].deltay, 1014); 
 
-  ASSERT_EQ(out_msg6.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg6.bounds[0].offsets[1].deltax, 9999);
   ASSERT_EQ(out_msg6.bounds[0].offsets[1].deltay, 1014);
 
-  ASSERT_EQ(out_msg6.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg6.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg6.bounds[0].offsets[2].deltax, 9999);
+  ASSERT_EQ(out_msg6.bounds[0].offsets[2].deltay,1014);
 
   // -3 Scaling
   cav_msgs::TrafficControlRequestV01 in_msg7;
@@ -375,13 +375,13 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   j2735_convertor::geofence_request::convert(in_msg7, out_msg7);
 
   ASSERT_EQ(out_msg7.bounds[0].offsets[0].deltax, 9999);
-  ASSERT_EQ(out_msg7.bounds[0].offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg7.bounds[0].offsets[0].deltay, 1014); 
 
-  ASSERT_EQ(out_msg7.bounds[0].offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg7.bounds[0].offsets[1].deltax, 9999);
   ASSERT_EQ(out_msg7.bounds[0].offsets[1].deltay, 1014);
 
-  ASSERT_EQ(out_msg7.bounds[0].offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg7.bounds[0].offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg7.bounds[0].offsets[2].deltax, 9999);
+  ASSERT_EQ(out_msg7.bounds[0].offsets[2].deltay, 1014);
 }
 
 
@@ -404,16 +404,15 @@ TEST(ControlRequest, convertControlBoundsToJ2735)
   j2735_convertor::geofence_request::convert(in_msg, out_msg, scale);
   
   ASSERT_EQ(out_msg.offsets[0].deltax, 5);
-  ASSERT_EQ(out_msg.offsets[0].deltay, 0); 
+  ASSERT_EQ(out_msg.offsets[0].deltay, 5); 
 
-  ASSERT_EQ(out_msg.offsets[1].deltax, 0);
+  ASSERT_EQ(out_msg.offsets[1].deltax, 6);
   ASSERT_EQ(out_msg.offsets[1].deltay, 6);
 
-  ASSERT_EQ(out_msg.offsets[2].deltax, 0);
-  ASSERT_EQ(out_msg.offsets[2].deltay, 0);
+  ASSERT_EQ(out_msg.offsets[2].deltax, 2);
+  ASSERT_EQ(out_msg.offsets[2].deltay, 2);
 
   // Check exception
   ASSERT_THROW(j2735_convertor::geofence_request::convert(in_msg, out_msg, -6);, std::invalid_argument);
 }
-
 }// namespace j2735_convertor*/

@@ -33,7 +33,7 @@ void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_m
 
 void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg, const int8_t scale) 
 {
-  out_msg.oldest = out_msg.oldest.fromNSec(in_msg.oldest * units::NS_PER_MS_INT);
+  out_msg.oldest = ros::Time(in_msg.oldest * units::SEC_PER_MIN, 0);
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
 
@@ -119,16 +119,16 @@ bool isLessThan(const std::vector<double>& data, int16_t threshold)
 
 void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg, const int8_t scale) 
 {
-  out_msg.oldest = (in_msg.oldest.sec * units::MS_PER_S) + (in_msg.oldest.nsec / units::NS_PER_MS_INT);
+  out_msg.oldest = in_msg.oldest.toSec() / units::SEC_PER_MIN;
   out_msg.reflat = in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflon = in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG;
 
   double scaled_deltax0 = in_msg.offsets[0].deltax / pow(10, scale);
-  double scaled_deltay0 = in_msg.offsets[1].deltay / pow(10, scale);
-  double scaled_deltax1 = in_msg.offsets[0].deltax / pow(10, scale);
+  double scaled_deltay0 = in_msg.offsets[0].deltay / pow(10, scale);
+  double scaled_deltax1 = in_msg.offsets[1].deltax / pow(10, scale);
   double scaled_deltay1 = in_msg.offsets[1].deltay / pow(10, scale);
-  double scaled_deltax2 = in_msg.offsets[0].deltax / pow(10, scale);
-  double scaled_deltay2 = in_msg.offsets[1].deltay / pow(10, scale);
+  double scaled_deltax2 = in_msg.offsets[2].deltax / pow(10, scale);
+  double scaled_deltay2 = in_msg.offsets[2].deltay / pow(10, scale);
 
   // Check bounds of message storage ability
   constexpr int INT_16_MIN = -32768;
@@ -144,11 +144,11 @@ void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficCo
   }
 
   out_msg.offsets[0].deltax=scaled_deltax0;
-  out_msg.offsets[1].deltay=scaled_deltay0;
-  out_msg.offsets[0].deltax=scaled_deltax1;
+  out_msg.offsets[0].deltay=scaled_deltay0;
+  out_msg.offsets[1].deltax=scaled_deltax1;
   out_msg.offsets[1].deltay=scaled_deltay1;
-  out_msg.offsets[0].deltax=scaled_deltax2;
-  out_msg.offsets[1].deltay=scaled_deltay2;
+  out_msg.offsets[2].deltax=scaled_deltax2;
+  out_msg.offsets[2].deltay=scaled_deltay2;
 
 }
 
