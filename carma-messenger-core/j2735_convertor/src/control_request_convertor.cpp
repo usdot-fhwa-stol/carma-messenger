@@ -21,9 +21,9 @@ namespace j2735_convertor
 {
 namespace geofence_request
 {
-////
+/////
 // Convert j2735_msgs to cav_msgs
-////
+/////
 
 void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg,const int8_t scale)
 {
