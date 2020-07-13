@@ -22,13 +22,13 @@
 #include <j2735_msgs/SPAT.h>
 #include <j2735_msgs/MapData.h>
 #include <j2735_msgs/ControlMessage.h>
-#include <j2735_msgs/ControlRequest.h>
+#include <j2735_msgs/TrafficControlRequest.h>
 #include <cav_msgs/SystemAlert.h>
 #include <cav_msgs/BSM.h>
 #include <cav_msgs/SPAT.h>
 #include <cav_msgs/MapData.h>
 #include <cav_msgs/ControlMessage.h>
-#include <cav_msgs/ControlRequest.h>
+#include <cav_msgs/TrafficControlRequest.h>
 #include <cav_msgs/MapData.h>
 #include <j2735_convertor/bsm_convertor.h>
 #include <j2735_convertor/map_convertor.h>
