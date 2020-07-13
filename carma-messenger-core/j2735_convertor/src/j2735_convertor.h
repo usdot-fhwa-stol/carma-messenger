@@ -144,14 +144,14 @@ private:
    *
    * @param message The message to convert
    */
-  void ControlRequestHandler(const cav_msgs::ControlRequestConstPtr& message);
+  void ControlRequestHandler(const cav_msgs::TrafficControlRequestConstPtr& message);
 
   /**
    * @brief Converts j2735_msgs::ControlRequest messages to cav_msgs::ControlRequest and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735ControlRequestHandler(const j2735_msgs::ControlRequestConstPtr& message);
+  void j2735ControlRequestHandler(const j2735_msgs::TrafficControlRequestConstPtr& message);
 };
 
 }  // namespace j2735_convertor
