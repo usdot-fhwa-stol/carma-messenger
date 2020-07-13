@@ -104,7 +104,7 @@ void J2735Convertor::initialize()
 
   // Incoming geofence pub/sub
   converted_geofence_control_pub_ = geofence_nh_->advertise<cav_msgs::ControlMessage>("incoming_geofence_control", 50);
-  converted_geofence_request_pub_ = geofence_nh_->advertise<cav_msgs::ControlRequest>("incoming_geofence_request", 50);
+  converted_geofence_request_pub_ = geofence_nh_->advertise<cav_msgs::TrafficControlRequest>("incoming_geofence_request", 50);
 
   j2735_geofence_control_sub_ = geofence_nh_->subscribe("incoming_j2735_geofence_control", 50, &J2735Convertor::j2735ControlMessageHandler, this);
   j2735_geofence_request_sub_ = geofence_nh_->subscribe("incoming_j2735_geofence_request", 50, &J2735Convertor::j2735ControlRequestHandler, this);
@@ -114,7 +114,7 @@ void J2735Convertor::initialize()
   outbound_geofence_request_sub_ = geofence_nh_->subscribe("outgoing_geofence_request", 50, &J2735Convertor::ControlRequestHandler, this);
 
   outbound_j2735_geofence_control_pub_ = geofence_nh_->advertise<j2735_msgs::ControlMessage>("outgoing_j2735_geofence_control", 10);
-  outbound_j2735_geofence_request_pub_ = geofence_nh_->advertise<j2735_msgs::ControlRequest>("outgoing_j2735_geofence_request", 10);
+  outbound_j2735_geofence_request_pub_ = geofence_nh_->advertise<j2735_msgs::TrafficControlRequest>("outgoing_j2735_geofence_request", 10);
 }
 
 void J2735Convertor::BsmHandler(const cav_msgs::BSMConstPtr& message)
@@ -157,14 +157,14 @@ void J2735Convertor::j2735ControlMessageHandler(const j2735_msgs::ControlMessage
   converted_geofence_control_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::ControlRequestHandler(const cav_msgs::ControlRequestConstPtr& message) {
-  j2735_msgs::ControlRequest converted_msg;
+void J2735Convertor::ControlRequestHandler(const cav_msgs::TrafficControlRequestConstPtr& message) {
+  j2735_msgs::TrafficControlRequest converted_msg;
   j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
   outbound_j2735_geofence_request_pub_.publish(converted_msg);       // Publish converted message
 }
 
-void J2735Convertor::j2735ControlRequestHandler(const j2735_msgs::ControlRequestConstPtr& message) {
-  cav_msgs::ControlRequest converted_msg;
+void J2735Convertor::j2735ControlRequestHandler(const j2735_msgs::TrafficControlRequestConstPtr& message) {
+  cav_msgs::TrafficControlRequest converted_msg;
   j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
   converted_geofence_request_pub_.publish(converted_msg);       // Publish converted message
 }
