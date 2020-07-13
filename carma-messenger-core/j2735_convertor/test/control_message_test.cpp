@@ -719,8 +719,8 @@ TEST(ControlMessage, convertDayScheduleToCAV)
 TEST(ControlMessage, convertScheduleParamsToCAV)
 {
   j2735_msgs::ScheduleParams in_msg;
-  in_msg.interval = 60;
-  in_msg.duration = 30;
+  in_msg.interval = 60; // min
+  in_msg.duration = 30; // min
 
   cav_msgs::ScheduleParams out_msg;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);

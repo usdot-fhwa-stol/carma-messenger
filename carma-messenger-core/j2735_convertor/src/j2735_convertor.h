@@ -22,13 +22,13 @@
 #include <j2735_msgs/SPAT.h>
 #include <j2735_msgs/MapData.h>
 #include <j2735_msgs/TrafficControlMessage.h>
-#include <j2735_msgs/ControlRequest.h>
+#include <j2735_msgs/TrafficControlRequest.h>
 #include <cav_msgs/SystemAlert.h>
 #include <cav_msgs/BSM.h>
 #include <cav_msgs/SPAT.h>
 #include <cav_msgs/MapData.h>
 #include <cav_msgs/TrafficControlMessage.h>
-#include <cav_msgs/ControlRequest.h>
+#include <cav_msgs/TrafficControlRequest.h>
 #include <cav_msgs/MapData.h>
 #include <j2735_convertor/bsm_convertor.h>
 #include <j2735_convertor/map_convertor.h>
@@ -144,14 +144,14 @@ private:
    *
    * @param message The message to convert
    */
-  void ControlRequestHandler(const cav_msgs::ControlRequestConstPtr& message);
+  void ControlRequestHandler(const cav_msgs::TrafficControlRequestConstPtr& message);
 
   /**
    * @brief Converts j2735_msgs::ControlRequest messages to cav_msgs::ControlRequest and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735ControlRequestHandler(const j2735_msgs::ControlRequestConstPtr& message);
+  void j2735ControlRequestHandler(const j2735_msgs::TrafficControlRequestConstPtr& message);
 };
 
 }  // namespace j2735_convertor
