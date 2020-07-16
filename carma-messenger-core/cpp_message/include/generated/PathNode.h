@@ -5,8 +5,8 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_DaySchedule_H_
-#define	_DaySchedule_H_
+#ifndef	_PathNode_H_
+#define	_PathNode_H_
 
 
 #include <asn_application.h>
@@ -19,24 +19,25 @@
 extern "C" {
 #endif
 
-/* DaySchedule */
-typedef struct DaySchedule {
-	long	 start;
-	long	 end;
-	long	 utcoffset;
+/* PathNode */
+typedef struct PathNode {
+	long	 x;
+	long	 y;
+	long	*z	/* OPTIONAL */;
+	long	*width	/* OPTIONAL */;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} DaySchedule_t;
+} PathNode_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_DaySchedule;
-extern asn_SEQUENCE_specifics_t asn_SPC_DaySchedule_specs_1;
-extern asn_TYPE_member_t asn_MBR_DaySchedule_1[3];
+extern asn_TYPE_descriptor_t asn_DEF_PathNode;
+extern asn_SEQUENCE_specifics_t asn_SPC_PathNode_specs_1;
+extern asn_TYPE_member_t asn_MBR_PathNode_1[4];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _DaySchedule_H_ */
+#endif	/* _PathNode_H_ */
 #include <asn_internal.h>

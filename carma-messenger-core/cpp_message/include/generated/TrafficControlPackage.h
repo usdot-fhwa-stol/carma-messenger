@@ -5,15 +5,15 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_ControlBounds_H_
-#define	_ControlBounds_H_
+#ifndef	_TrafficControlPackage_H_
+#define	_TrafficControlPackage_H_
 
 
 #include <asn_application.h>
 
 /* Including external dependencies */
-#include <INTEGER.h>
-#include <NativeInteger.h>
+#include <IA5String.h>
+#include "Id128b.h"
 #include <asn_SEQUENCE_OF.h>
 #include <constr_SEQUENCE_OF.h>
 #include <constr_SEQUENCE.h>
@@ -22,30 +22,28 @@
 extern "C" {
 #endif
 
-/* ControlBounds */
-typedef struct ControlBounds {
-	INTEGER_t	 oldest;
-	long	 lon;
-	long	 lat;
-	struct ControlBounds__offsets {
-		A_SEQUENCE_OF(long) list;
+/* TrafficControlPackage */
+typedef struct TrafficControlPackage {
+	IA5String_t	*label	/* OPTIONAL */;
+	struct TrafficControlPackage__tcids {
+		A_SEQUENCE_OF(Id128b_t) list;
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} offsets;
+	} tcids;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} ControlBounds_t;
+} TrafficControlPackage_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_ControlBounds;
-extern asn_SEQUENCE_specifics_t asn_SPC_ControlBounds_specs_1;
-extern asn_TYPE_member_t asn_MBR_ControlBounds_1[4];
+extern asn_TYPE_descriptor_t asn_DEF_TrafficControlPackage;
+extern asn_SEQUENCE_specifics_t asn_SPC_TrafficControlPackage_specs_1;
+extern asn_TYPE_member_t asn_MBR_TrafficControlPackage_1[2];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _ControlBounds_H_ */
+#endif	/* _TrafficControlPackage_H_ */
 #include <asn_internal.h>

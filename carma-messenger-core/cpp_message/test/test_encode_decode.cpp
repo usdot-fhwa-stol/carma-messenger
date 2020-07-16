@@ -18,124 +18,177 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(CppMessageTest, testDecodeRequestMsg)
+TEST(CppMessageTest, testDecodeControlMsgPackage)
 {
-    std::vector<uint8_t> binar_input = {0, 244, 56, 18, 48, 98, 201, 155, 70, 173, 155, 184, 114, 193, 139, 38, 109, 26,
-                                        182, 110, 225, 203, 6, 44, 153, 180, 106, 217, 187, 135, 45, 155, 54, 108, 217, 179,
-                                        0, 0, 0, 0, 0, 0, 0, 0, 3, 90, 78, 144, 3, 90, 78, 144, 8, 0, 8, 0, 8, 0, 0};
+    std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                                                     
     cpp_message::Message worker;
-    auto res = worker.decode_geofence_request(binar_input);
+    auto res = worker.decode_geofence_control(binar_input_package_only);
     if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);\
+    
+}
+
+TEST(CppMessageTest, testDecodeControlMsgParams)
+{
+    std::vector<uint8_t> binar_input_params_only = {0, 245, 67, 40, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0,
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 56, 0, 47, 0, 0, 0, 1, 226,
+                                                    64, 0, 0, 0, 1, 226, 64, 56, 1, 1, 1, 1, 1, 1, 1, 0, 0, 128, 32, 2, 0, 128, 28, 88};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_control(binar_input_params_only);
+    if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, testEncodeRequestMsg)
+TEST(CppMessageTest, testDecodeControlMsgGeometry)
+{
+    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 120, 36, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 57, 206, 154, 52, 243, 65, 
+                                                    167, 154, 12, 40, 57, 225, 219, 195, 102, 84, 28, 57, 111, 212, 131, 159, 78, 
+                                                    90, 119, 103, 119, 166, 141, 60, 208, 105, 230, 131, 10, 14, 120, 118, 240, 217, 
+                                                    149, 6, 76, 61, 58, 237, 65, 207, 167, 45, 59, 179, 128, 0, 0, 0, 2, 94, 181, 164, 
+                                                    233, 0, 53, 164, 233, 1, 16, 1, 0, 16, 30, 0, 6, 0, 6, 0, 6, 7, 128, 1, 128, 1, 128, 1, 129};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_control(binar_input_geometry_only);
+    if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+}
+
+
+TEST(CppMessageTest, testEncodeControlMsg1)
 {
     cpp_message::Message worker;
-    j2735_msgs::ControlRequest request;
-    request.version = "012345678901234567890123456789012345";
-    request.scale = 0;
-    j2735_msgs::ControlBounds bounds;
-    bounds.longitude = 0;
-    bounds.latitude = 0;
-    bounds.oldest = 0;
-    for(int i = 0; i < bounds.offsets.size(); i++) bounds.offsets[i] = 0;
-    request.bounds.push_back(bounds);
-    auto res = worker.encode_geofence_request(request);
+
+    j2735_msgs::TrafficControlMessage control;
+    control.choice = j2735_msgs::TrafficControlMessage::RESERVED;
+    auto res = worker.encode_geofence_control(control);
     if(res) EXPECT_TRUE(true);
     else
     {
-        //std::cout << "encoding failed!\n";
+        std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
 }
 
-
-TEST(CppMessageTest, testDecodeControlMsg)
-{
-    std::vector<uint8_t> binar_input = {0, 245, 128, 128, 73, 24, 49, 100, 205, 163, 86, 205, 220, 57, 96, 197,
-                                        147, 54, 141, 91, 55, 112, 229, 131, 22, 76, 218, 53, 108, 221, 195, 150, 
-                                        12, 89, 51, 104, 212, 4, 8, 12, 16, 20, 24, 28, 32, 4, 8, 12, 16, 20, 24, 
-                                        28, 32, 0, 0, 0, 0, 0, 0, 0, 0, 8, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0, 0, 0, 90, 0, 32, 0, 32, 16, 0, 16, 0, 0, 56, 64, 112, 128, 0, 
-                                        0, 0, 0, 0, 0, 0, 107, 73, 210, 0, 107, 73, 210, 0, 0, 0, 0, 0, 16, 16, 0, 16, 0, 16, 0, 16, 8, 8, 0, 8, 0, 8, 0, 8, 0};
-    cpp_message::Message worker;
-    auto res = worker.decode_geofence_control(binar_input);
-    if(res) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
-}
-
-
-TEST(CppMessageTest, testEncodeControlMsg)
+TEST(CppMessageTest, testEncodeControlMsg2)
 {
     cpp_message::Message worker;
-    j2735_msgs::ControlMessage control;
-    control.version = "012345678901234567890123456789012345";
-    
-    control.id = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
-    
-    control.updated = 0;
-    
-    j2735_msgs::VType v_type;
-    v_type.vehicle_type = 0;
-    control.vtypes.push_back(v_type);
+    // ControlMessage START
+    j2735_msgs::TrafficControlMessage control_main;
+    control_main.choice = j2735_msgs::TrafficControlMessage::TCMV01;
+    // ControlMessageV01 START
+    j2735_msgs::TrafficControlMessageV01 control;
+    j2735_msgs::Id64b id64b;
+    for(int i = 0; i < id64b.id.size(); i++){
+        id64b.id[i] = 0;
+    }
+    control.reqid = id64b;
+    control.reqseq = 111;
+    j2735_msgs::Id128b id128b;
+    for(int i = 0; i < id128b.id.size(); i++){
+        id128b.id[i] = 0;
+    }
+    control.id = id128b;
+    control.msgnum = 5;
+    control.msgtot = 6;
+    control.updated = (unsigned)12345678;
 
-    j2735_msgs::Schedule schedule;
-    schedule.start = 0;
-    schedule.end = 0;
-    
-    schedule.dow_exists = true;
-    schedule.dow = {false, true, false, false, false, false, false};
+    //==============================================
+    // ENABLES OPTIONAL FIELDS IN CONTROL MESSAGE
+    bool PACKAGE_BOOL = 1;
+    bool PARAM_BOOL = 1;
+    bool GEO_BOOL = 1;
 
+    //=======================================
+    // TrafficControlPackage START
+    j2735_msgs::TrafficControlPackage package;
+    package.label = "avs";
+    package.label_exists = true;
+    for (auto i = 0; i < 2; i++) package.tcids.push_back(id128b);
+    control.package = package;
+    control.package_exists = PACKAGE_BOOL;
+    // TrafficControlPackage END
+
+    // TrafficControlParams START
+    j2735_msgs::TrafficControlParams params;
+    params.regulatory = true;
+    j2735_msgs::TrafficControlVehClass bycicle;
+    bycicle.vehicle_class = j2735_msgs::TrafficControlVehClass::BICYCLE;
+    params.vclasses.push_back(bycicle);
+    j2735_msgs::TrafficControlSchedule schedule;
     schedule.between_exists = true;
-    schedule.between.start = 0;
-    schedule.between.end = 0;
-    schedule.between.utcoffset = 0;
-    
-
+    schedule.dow_exists = true;
     schedule.repeat_exists = true;
-    schedule.repeat.duration = 0;
-    schedule.repeat.interval = 0;
+    schedule.end_exists = true;
+    j2735_msgs::DailySchedule daily_schedule;
+    daily_schedule.begin = 1;
+    daily_schedule.duration = 2;
+    schedule.between.push_back(daily_schedule);
+    schedule.start = (unsigned)123456;
+    schedule.end = (unsigned)123456;
+    j2735_msgs::DayOfWeek dow;
+    dow.dow = {1,1,1,1,1,1,1};
+    schedule.dow = dow;
+    j2735_msgs::RepeatParams repeat;
+    repeat.offset = (unsigned)1;
+    repeat.period = (unsigned)2;
+    repeat.span = (unsigned)3;
+    schedule.repeat = repeat;
+    params.schedule = schedule;
+    // TrafficControlDetails START
+    j2735_msgs::TrafficControlDetail detail;
+    detail.choice = j2735_msgs::TrafficControlDetail::CLOSED_CHOICE;
+    detail.closed = j2735_msgs::TrafficControlDetail::OPENLEFT;
 
-    control.schedule = schedule;
+    //boost::array<uint8_t, 2UL> stuff {{0 ,1}}; //
+    //detail.latperm = stuff;
 
-    control.regulatory = true;
+    //ROS_WARN_STREAM("latperm og " << (int)detail.latperm.elems[0] << " | " << (int)detail.latperm.elems[1]);
+    // TrafficControlDetails END
+    params.detail = detail;
+    control.params = params;
+    control.params_exists = PARAM_BOOL;
+    // TrafficControlParams END
 
-    control.control_type.control_type = 0;
-
-    control.control_value_exists = true;
-    control.control_value.value = 0;
-
-    control.path_parts = 0;
-
-    control.proj = "a";
-
-    control.datum = "a";
-
-    control.time = 0;
-
-    control.longitude = 0;
-    control.latitude = 0;
-    control.altitude = 0;
-    control.heading = 0;
-
-    j2735_msgs::Point point1;
-    point1.x = 0;
-    point1.y = 0;
-    point1.z_exists = true;
-    point1.z = 0;
-    point1.width = 0;
-    control.points.push_back(point1);
-
-    j2735_msgs::Point point2;
-    point2.x = 0;
-    point2.y = 0;
-    point2.z_exists = true;
-    point2.z = 0;
-    point2.width = 0;
-    control.points.push_back(point2);
-
-    auto res = worker.encode_geofence_control(control);
+    // TrafficControlGeometry START
+    j2735_msgs::TrafficControlGeometry geometry;
+    geometry.proj = "this is a sample proj string";
+    geometry.datum = "this is a sample datum string";
+    geometry.reftime = (unsigned)1213;
+    geometry.reflon = 1;
+    geometry.reflat = 1;
+    geometry.refelv = 1;
+    geometry.heading = (unsigned)1;
+    j2735_msgs::PathNode node;
+    node.x = 1;
+    node.y = 1;
+    node.z_exists = true;
+    node.z = 1;
+    node.width_exists = true;
+    node.width = 1;
+    geometry.nodes.push_back(node);
+    geometry.nodes.push_back(node);
+    control.geometry = geometry;
+    control.geometry_exists = GEO_BOOL;    
+    // TrafficControlGeometry END
+    // TrafficControlMessageV01 END
+    control_main.tcmV01 = control;
+    // TrafficControlMessage END
+    auto res = worker.encode_geofence_control(control_main);
 
     if(res) EXPECT_TRUE(true);
     else
@@ -143,6 +196,18 @@ TEST(CppMessageTest, testEncodeControlMsg)
         std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
+
+    auto res_decoded = worker.decode_geofence_control(res.get());
+
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    j2735_msgs::TrafficControlMessage result = res_decoded.get();
+    EXPECT_EQ(result.tcmV01.id.id, control_main.tcmV01.id.id);
+    EXPECT_EQ(result.tcmV01.updated, control_main.tcmV01.updated);
 }
 
 // Run all the tests
