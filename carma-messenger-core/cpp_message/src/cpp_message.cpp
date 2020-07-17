@@ -39,7 +39,7 @@ namespace cpp_message
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
     {
         // only handle ControlRequest for now
-        if(msg->messageType == "ControlRequest") {
+        if(msg->messageType == "TrafficControlRequest") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_request(array);
             if(output)
@@ -52,7 +52,7 @@ namespace cpp_message
         }
 
             // handle ControlMessage
-        else if(msg->messageType == "ControlMessage") {
+        else if(msg->messageType == "TrafficControlMessage") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_control(array);
             if(output)
@@ -67,6 +67,7 @@ namespace cpp_message
 
     void Message::outbound_control_request_callback(const j2735_msgs::ControlRequestConstPtr& msg)
     {
+        /* TODO: by Saina
         j2735_msgs::ControlRequest request_msg(*msg.get());
         auto res = encode_geofence_request(request_msg);
         if(res) {
@@ -79,6 +80,7 @@ namespace cpp_message
         {
             ROS_WARN_STREAM("Cannot encode geofence request message.");
         }
+        */
     }
 
     void Message::outbound_control_message_callback(const j2735_msgs::ControlMessageConstPtr& msg)
@@ -106,6 +108,7 @@ namespace cpp_message
 
     boost::optional<j2735_msgs::ControlRequest> Message::decode_geofence_request(std::vector<uint8_t>& binary_array)
     {
+        /* TODO by Saina
         j2735_msgs::ControlRequest output;
         // decode results
         asn_dec_rval_t rval;
@@ -156,6 +159,7 @@ namespace cpp_message
             }
             return boost::optional<j2735_msgs::ControlRequest>(output);
         }
+        */
         return boost::optional<j2735_msgs::ControlRequest>{};
     }
 
@@ -355,9 +359,9 @@ namespace cpp_message
         return boost::optional<j2735_msgs::ControlMessage>{};
     }
 
-
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_request(j2735_msgs::ControlRequest request_msg)
     {
+        /* TODO By Saina
         // encode result placeholder
         uint8_t buffer[512];
 	    size_t buffer_size = sizeof(buffer);
@@ -427,6 +431,8 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         return boost::optional<std::vector<uint8_t>>(b_array);
+        */
+        return boost::optional<std::vector<uint8_t>>({});
     }
 
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::ControlMessage control_msg)
