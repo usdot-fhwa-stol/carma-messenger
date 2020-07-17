@@ -12,7 +12,7 @@
 #include <asn_application.h>
 
 /* Including external dependencies */
-#include "ControlMessage.h"
+#include "TrafficControlMessage.h"
 #include <constr_SEQUENCE.h>
 
 #ifdef __cplusplus
@@ -21,7 +21,7 @@ extern "C" {
 
 /* TestMessage05 */
 typedef struct TestMessage05 {
-	ControlMessage_t	 body;
+	TrafficControlMessage_t	 body;
 	/*
 	 * This type is extensible,
 	 * possible extensions are below.

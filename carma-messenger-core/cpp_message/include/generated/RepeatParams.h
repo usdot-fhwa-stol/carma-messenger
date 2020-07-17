@@ -5,8 +5,8 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_OffsetPoint_H_
-#define	_OffsetPoint_H_
+#ifndef	_RepeatParams_H_
+#define	_RepeatParams_H_
 
 
 #include <asn_application.h>
@@ -19,23 +19,24 @@
 extern "C" {
 #endif
 
-/* OffsetPoint */
-typedef struct OffsetPoint {
-	long	 deltax;
-	long	 deltay;
+/* RepeatParams */
+typedef struct RepeatParams {
+	long	 offset;
+	long	 period;
+	long	 span;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} OffsetPoint_t;
+} RepeatParams_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_OffsetPoint;
-extern asn_SEQUENCE_specifics_t asn_SPC_OffsetPoint_specs_1;
-extern asn_TYPE_member_t asn_MBR_OffsetPoint_1[2];
+extern asn_TYPE_descriptor_t asn_DEF_RepeatParams;
+extern asn_SEQUENCE_specifics_t asn_SPC_RepeatParams_specs_1;
+extern asn_TYPE_member_t asn_MBR_RepeatParams_1[3];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _OffsetPoint_H_ */
+#endif	/* _RepeatParams_H_ */
 #include <asn_internal.h>
