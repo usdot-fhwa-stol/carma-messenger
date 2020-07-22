@@ -71,7 +71,7 @@ public:
 
     // helper functions for message decode/encode
     boost::optional<j2735_msgs::ControlRequest> decode_geofence_request(std::vector<uint8_t>& binary_array);
-    boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::ControlRequest request_msg);
+    boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::TrafficControlRequest request_msg);
     boost::optional<j2735_msgs::ControlMessage> decode_geofence_control(std::vector<uint8_t>& binary_array);
     boost::optional<std::vector<uint8_t>> encode_geofence_control(j2735_msgs::ControlMessage control_msg);
 
