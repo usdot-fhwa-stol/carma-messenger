@@ -61,6 +61,7 @@ namespace Mobility_Operation
     }
 
     boost::optional<cav_msgs::MobilityOperation> Mobility_Operation_Message::decode_mobility_operation_message(std::vector<uint8_t>& binary_array){
+        
         cav_msgs::MobilityOperation output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
@@ -72,12 +73,12 @@ namespace Mobility_Operation
         for(uint8_t i=0;i < len;i++){
             buf[i]=binary_array[i];
         }
-
         //use asn1c lib to decode
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
 
         //if decode success
         if(rval.code==RC_OK){
+            std::cout<<"rval ok"<<std::endl;
             //convert strategy from char array to string (TestMessage03 for MobilityOperation)
             std::string sender_id, recipient_id, sender_bsm_id, plan_id,timestamp_string, strategy,strategy_params;
             uint64_t timestamp;
@@ -94,7 +95,6 @@ namespace Mobility_Operation
                 sender_id=STRING_DEFAULT;
             }
             
-            output.header.sender_id=sender_id;
 
             //get recepient id
             str_len=message->value.choice.TestMessage03.header.targetStaticId.size;
@@ -110,7 +110,7 @@ namespace Mobility_Operation
             }
 
             output.header.recipient_id=recipient_id;
-
+            
             //get bsm id
             str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
             if(str_len==BSM_ID_LENGTH)
@@ -181,6 +181,7 @@ namespace Mobility_Operation
                 strategy_params="";
             }
             output.strategy_params=strategy_params;
+            
 
             return boost::optional<cav_msgs::MobilityOperation>(output);
         }

@@ -30,7 +30,9 @@
 TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg)
 {
     Mobility_Operation::Mobility_Operation_Message worker;
-    cav_msgs::MobilityOperation message;
+    cav_msgs::MobilityHeader header;
+    cav_msgs::MobilityOperation message; 
+    message.header=header;
     message.header.sender_id="USDOT-45100";
     message.header.recipient_id="USDOT-45095";
     message.header.sender_bsm_id="10ABCDEF";
@@ -38,6 +40,7 @@ TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg)
     message.header.timestamp=1585836731814;
     message.strategy="Carma/Platooning";
     message.strategy_params="vin_number:1FUJGHDV0CLBP8834,license_plate:DOT-10003,carrier_name:Silver Truck FHWA TFHRC,carrier_id:USDOT 0000001,weight:,ads_software_version:System Version Unknown,date_of_last_state_inspection:YYYY-MM-DD,date_of_last_ads_calibration:YYYY-MM-DD,pre_trip_ads_health_check:Green,ads_status:Red,iss_score:49,permit_required:0,timestamp:1585836731814";
+    
     auto res = worker.encode_mobility_operation_message(message);
     if(res) EXPECT_TRUE(true);
     else

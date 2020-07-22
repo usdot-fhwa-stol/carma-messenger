@@ -25,6 +25,6 @@ int main(int argc, char**argv)
     ros::init(argc,argv,"cpp_message_node");
     cpp_message::Message node;
     Mobility_Operation::Mobility_Operation_Message MobilityOperation_node;
-    //MobilityOperation_node.run();
+    MobilityOperation_node.run();
     return node.run();
 }
