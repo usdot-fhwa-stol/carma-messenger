@@ -62,23 +62,26 @@ namespace Mobility_Operation
 
     boost::optional<cav_msgs::MobilityOperation> Mobility_Operation_Message::decode_mobility_operation_message(std::vector<uint8_t>& binary_array){
         
+        cav_msgs::MobilityHeader header;
         cav_msgs::MobilityOperation output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
         MessageFrame_t* message=0;
-
+        
         //copy from vector to array         
-        uint8_t len=binary_array.size();    //error using auto
+        auto len=binary_array.size();    //error using auto
+        
         uint8_t buf[len];             
-        for(uint8_t i=0;i < len;i++){
+        for(auto i=0;i < len;i++){
             buf[i]=binary_array[i];
         }
         //use asn1c lib to decode
+        
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
-
+         
         //if decode success
         if(rval.code==RC_OK){
-            std::cout<<"rval ok"<<std::endl;
+           
             //convert strategy from char array to string (TestMessage03 for MobilityOperation)
             std::string sender_id, recipient_id, sender_bsm_id, plan_id,timestamp_string, strategy,strategy_params;
             uint64_t timestamp;
@@ -109,7 +112,7 @@ namespace Mobility_Operation
                 recipient_id=STRING_DEFAULT;
             }
 
-            output.header.recipient_id=recipient_id;
+            header.recipient_id=recipient_id;
             
             //get bsm id
             str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
@@ -124,7 +127,7 @@ namespace Mobility_Operation
                 sender_bsm_id=BSM_ID_DEFAULT;
             }
             
-            output.header.sender_bsm_id=sender_bsm_id;
+            header.sender_bsm_id=sender_bsm_id;
 
             //get plan id
             str_len=message->value.choice.TestMessage03.header.planId.size;
@@ -138,16 +141,17 @@ namespace Mobility_Operation
             {
                 plan_id=GUID_DEFAULT;
             }
-            output.header.plan_id=plan_id;
-
-            //recover a long value from 8-bit array- timestamp  -TO DO
-                timestamp=0;
-                for(auto i=0;i<8;i++){
-                    timestamp |=message->value.choice.TestMessage03.header.timestamp.buf[i];
-                    timestamp=timestamp << 8;
-                }
-               output.header.timestamp=timestamp;
-
+            header.plan_id=plan_id;
+            
+            //recover uint64_t timestamp from string
+            str_len=message->value.choice.TestMessage03.header.timestamp.size;
+            timestamp=0;
+            for(auto i=0;i<str_len;i++){
+                timestamp*=10;
+                timestamp+=int(message->value.choice.TestMessage03.header.timestamp.buf[i])-'0';
+            }
+               header.timestamp=timestamp;
+            
             //get strategy
             str_len=message->value.choice.TestMessage03.body.strategy.size;
             if(str_len<=STRATEGY_MAX_LENGTH && str_len!=0)
@@ -165,23 +169,16 @@ namespace Mobility_Operation
             }
             
             output.strategy=strategy;
-
+            output.header=header;
             //get strategy params
             str_len=message->value.choice.TestMessage03.body.operationParams.size;
-            if(str_len <=STRATEGY_MAX_LENGTH && str_len!=0){
-                for(auto i=0;i<str_len;i++){
-                    strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
-                }
-            }
-            else
-            {
-                strategy_params=STRING_DEFAULT;
+            for(auto i=0;i<str_len;i++){
+                strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
             }
             if(strategy_params==STRING_DEFAULT){
                 strategy_params="";
             }
             output.strategy_params=strategy_params;
-            
 
             return boost::optional<cav_msgs::MobilityOperation>(output);
         }
@@ -211,7 +208,7 @@ namespace Mobility_Operation
     boost::optional<std::vector<uint8_t>> Mobility_Operation_Message::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
     {
         //encode result placeholder
-        uint8_t buffer[512];
+        uint8_t buffer[1024];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
         MessageFrame_t* message;
@@ -277,8 +274,6 @@ namespace Mobility_Operation
         message->value.choice.TestMessage03.header.timestamp.buf=string_content_timestamp;
         message->value.choice.TestMessage03.header.timestamp.size=string_size;
 
-        for(auto i=0;i<string_size;i++)std::cout<<message->value.choice.TestMessage03.header.timestamp.buf[i];
-        std::cout<<std::endl;
          //convert strategy string to char array
         string_size=plainMessage.strategy.size();
         uint8_t string_content_strategy[string_size];
@@ -307,12 +302,12 @@ namespace Mobility_Operation
         if(ec.encoded == -1) {
             return boost::optional<std::vector<uint8_t>>{};
         }
-        ROS_WARN_STREAM("Reaching End");
+        
         //copy to byte array msg
         auto array_length=ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i=0;i<array_length;i++)b_array[i]=buffer[i];
-        
+        for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
