@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
 	<name>asn1c</name>
 	<version>3.3.0</version>
 	<description>This is asn1c library for DSRC.</description>

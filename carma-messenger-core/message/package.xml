@@ -14,7 +14,7 @@
   License for the specific language governing permissions and limitations under
   the License.
 -->
-<package>
+<package format="3">
   <name>message</name>
   <version>3.3.0</version>
   <description>Message package which converts DSRC binary into ros messages</description>
@@ -24,18 +24,18 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rosjava_build_tools</build_depend>
-  <build_depend>message_generation</build_depend>
-  <build_depend>genjava</build_depend>
-  <build_depend>rosjava_messages</build_depend>
-  <build_depend>cav_msgs</build_depend>
-  <build_depend>cav_srvs</build_depend>
-  <build_depend>j2735_msgs</build_depend>
-  <build_depend>rostest</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>rosjava_utils</build_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>robot_state_publisher</run_depend>
+  <depend>rosjava_build_tools</depend>
+  <depend>message_generation</depend>
+  <depend>genjava</depend>
+  <depend>rosjava_messages</depend>
+  <depend>cav_msgs</depend>
+  <depend>cav_srvs</depend>
+  <depend>j2735_msgs</depend>
+  <depend>rostest</depend>
+  <depend>rospy</depend>
+  <depend>rosjava_utils</depend>
+
+  <exec_depend>robot_state_publisher</exec_depend>
 
 
 
