@@ -44,7 +44,6 @@ class MessageConsumer
 
     void initialize();
 
-    
     public:
     int run();
     //callbacks for subscribers
