@@ -33,12 +33,12 @@ namespace cpp_message
         outbound_geofence_request_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_request", 5, &Message::outbound_control_request_callback, this);
         inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("incoming_j2735_geofence_request", 5);
         outbound_geofence_control_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_control", 5, &Message::outbound_control_message_callback, this);
-        inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::ControlMessage>("incoming_j2735_geofence_control", 5);
+        inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::TrafficControlMessage>("incoming_j2735_geofence_control", 5);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
     {
-        // only handle ControlRequest for now
+        // only handle TrafficControlRequest for now
         if(msg->messageType == "TrafficControlRequest") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_request(array);
@@ -51,7 +51,7 @@ namespace cpp_message
             }
         }
 
-            // handle ControlMessage
+            // handle TrafficControlMessage
         else if(msg->messageType == "TrafficControlMessage") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_control(array);
@@ -83,9 +83,9 @@ namespace cpp_message
         */
     }
 
-    void Message::outbound_control_message_callback(const j2735_msgs::ControlMessageConstPtr& msg)
+    void Message::outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg)
     {
-        j2735_msgs::ControlMessage control_msg(*msg.get());
+        j2735_msgs::TrafficControlMessage control_msg(*msg.get());
         auto res = encode_geofence_control(control_msg);
         if(res) {
             // copy to byte array msg
@@ -163,9 +163,10 @@ namespace cpp_message
         return boost::optional<j2735_msgs::ControlRequest>{};
     }
 
-    boost::optional<j2735_msgs::ControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
+
+    boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
     {
-        j2735_msgs::ControlMessage output;
+        j2735_msgs::TrafficControlMessage output;
         // decode results
         asn_dec_rval_t rval;
         MessageFrame_t* message = 0;
@@ -179,184 +180,357 @@ namespace cpp_message
         // use asn1c lib to decode
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
 
-        // if decode successed
+        // if decode succeed
         if(rval.code == RC_OK) {
-            // convert version from char array to string
-            std::string version;
-            auto str_len = message->value.choice.TestMessage05.body.version.size;
-            for(auto i = 0; i < str_len; i++)
+            if (message->value.choice.TestMessage05.body.choice.reserved)
             {
-                version += message->value.choice.TestMessage05.body.version.buf[i];
+                output.choice = j2735_msgs::TrafficControlMessage::RESERVED;
             }
-            output.version = version;
-            
-            // decode id
-            uint8_t id[16];
-            auto id_len = message->value.choice.TestMessage05.body.id.size;
-            for(auto i = 0; i < id_len; i++)
+            else if (message->value.choice.TestMessage05.body.choice.tcmV01.reqid.size)
             {
-                 output.id[i] = message->value.choice.TestMessage05.body.id.buf[i];
+                output.choice = j2735_msgs::TrafficControlMessage::TCMV01;
+                output.tcmV01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
             }
-
-            // recover a long value from 8-bit array
-            uint64_t tmp_update=0;
-            for (auto i=0; i<8; i++){
-                tmp_update |= message->value.choice.TestMessage05.body.updated.buf[i];
-                tmp_update = tmp_update << 8;
-            }
-            output.updated = tmp_update;
-           
-            // decode vtype list
-            auto vtype_count = message->value.choice.TestMessage05.body.vtypes.list.size;
-            for (auto i = 0; i < vtype_count; i++){
-                j2735_msgs::VType v_type;
-                v_type.vehicle_type = (long) message->value.choice.TestMessage05.body.vtypes.list.array[i];
-                output.vtypes.push_back(v_type);
-            }
-
-            // recover schedule parameters
-            j2735_msgs::Schedule schedule_tmp;
-
-
-            // recover schedule start and end
-            uint64_t schedule_start = 0;
-            for (auto i=0; i<8; i++){
-                schedule_start |= message->value.choice.TestMessage05.body.schedule.start.buf[i];
-                schedule_start = schedule_start << 8;
-            }
-            schedule_tmp.start = schedule_start;
-
-            uint64_t schedule_end = 0;
-            for (auto i=0; i<8; i++){
-                schedule_end |= message->value.choice.TestMessage05.body.schedule.end.buf[i];
-                schedule_end = schedule_end << 8;
-            }
-            schedule_tmp.end = schedule_end;
-
-            // recover the schedule dow array (optional)
-            bool schedule_dow_exist = false;
-            auto dow_count = message->value.choice.TestMessage05.body.schedule.dow->list.count;
-            if (dow_count > 0){
-                schedule_dow_exist = true;
-                for (auto i=0; i<dow_count; i++){
-                    schedule_tmp.dow[i] = *message->value.choice.TestMessage05.body.schedule.dow->list.array[i];
-                }
-            }
-            schedule_tmp.dow_exists = schedule_dow_exist;
-
-            // decode schedule between parameters
-            bool schedule_between_exist = false;
-            if (message->value.choice.TestMessage05.body.schedule.between){
-                schedule_between_exist = true;
-                
-                j2735_msgs::DaySchedule schedule_between;
-
-                schedule_between.start = message->value.choice.TestMessage05.body.schedule.between->start;
-                schedule_between.end = message->value.choice.TestMessage05.body.schedule.between->end;
-                schedule_between.utcoffset = message->value.choice.TestMessage05.body.schedule.between->utcoffset;  
-                schedule_tmp.between = schedule_between;
-            }
-            schedule_tmp.between_exists = schedule_between_exist;
-
-            
-            bool repeat_exist = false;
-                            
-            // decode schedule repeat
-            if (message->value.choice.TestMessage05.body.schedule.repeat){
-                repeat_exist = true;
-                j2735_msgs::ScheduleParams schedule_repeat;
-                uint64_t repeat_interval = 0;
-                uint64_t repeat_duration = 0;
-
-                for (auto i=0; i<8; i++){
-                    repeat_interval |= message->value.choice.TestMessage05.body.schedule.repeat->interval;//.buf[i];
-                    repeat_interval = repeat_interval << 8;
-                }
-
-                for (auto i=0; i<8; i++){
-                    repeat_duration |= message->value.choice.TestMessage05.body.schedule.repeat->duration;//.buf[i];
-                    repeat_duration = repeat_duration << 8;
-                }
-                schedule_repeat.interval = repeat_interval;
-                schedule_repeat.duration = repeat_duration;
-                schedule_tmp.repeat = schedule_repeat;
-            }
-            
-            schedule_tmp.repeat_exists = repeat_exist;
-            output.schedule = schedule_tmp;
-
-            // copy regulatory
-            output.regulatory = message->value.choice.TestMessage05.body.regulatory;
-
-            // copy control type
-            j2735_msgs::ControlType ctrl_type;
-            ctrl_type.control_type = message->value.choice.TestMessage05.body.controltype;
-            output.control_type = ctrl_type;
-
-            
-            // copy control value (optional)
-            if (message->value.choice.TestMessage05.body.controlvalue){
-                output.control_value_exists = true;
-                j2735_msgs::ControlValue ctrl_value;
-                ctrl_value.value = message->value.choice.TestMessage05.body.controlvalue->choice.value;
-                ctrl_value.direction = message->value.choice.TestMessage05.body.controlvalue->choice.direction;
-                ctrl_value.lataffinity = message->value.choice.TestMessage05.body.controlvalue->choice.lataffinity;
-                ctrl_value.perm = message->value.choice.TestMessage05.body.controlvalue->choice.perm;
-                ctrl_value.prkingallowd = message->value.choice.TestMessage05.body.controlvalue->choice.prkingallowd;
-                output.control_value = ctrl_value;
-
-            }
-            else output.control_value_exists = false;
-
-            // copy path parts
-            output.path_parts = message->value.choice.TestMessage05.body.pathParts;
-
-            // convert proj from 8-bit array to string
-            std::string proj;
-            auto proj_len = message->value.choice.TestMessage05.body.proj.size;
-            for(auto i = 0; i < proj_len; i++)
-            {
-                proj += message->value.choice.TestMessage05.body.proj.buf[i];
-            }
-            output.proj = proj;
-
-            // convert datum from 8-bit array to string
-            std::string datum;
-            auto datum_len = message->value.choice.TestMessage05.body.datum.size;
-            for(auto i = 0; i < datum_len; i++)
-            {
-                datum += message->value.choice.TestMessage05.body.datum.buf[i];
-            }
-            output.datum = datum;
-
-            output.latitude = message->value.choice.TestMessage05.body.lat;
-            output.longitude = message->value.choice.TestMessage05.body.lon;
-            output.altitude = message->value.choice.TestMessage05.body.alt;
-            output.heading = message->value.choice.TestMessage05.body.heading;
-
-            // recover long int from 8-bit array
-            uint64_t tmp_time = 0;
-            for (auto i=0; i<8; i++){
-                tmp_time |= message->value.choice.TestMessage05.body.time.buf[i];
-                tmp_time = tmp_time << 8;
-            }
-            output.time = tmp_time;
-
-            // recover points list
-            auto points_count = message->value.choice.TestMessage05.body.points.list.count;
-            for(auto i = 0; i < points_count; i++) {
-                j2735_msgs::Point point;
-                point.x = message->value.choice.TestMessage05.body.points.list.array[i]->x;
-                point.y = message->value.choice.TestMessage05.body.points.list.array[i]->y;
-                if (message->value.choice.TestMessage05.body.points.list.array[i]->z)
-                    point.z = *message->value.choice.TestMessage05.body.points.list.array[i]->z;
-                point.width = message->value.choice.TestMessage05.body.points.list.array[i]->width;
-                output.points.push_back(point);
-            }
-            
-            return boost::optional<j2735_msgs::ControlMessage>(output);
+            return output;            
         }
-        return boost::optional<j2735_msgs::ControlMessage>{};
+        return boost::optional<j2735_msgs::TrafficControlMessage>{};
+    }
+
+    j2735_msgs::TrafficControlMessageV01 Message::decode_geofence_control_v01(const TrafficControlMessageV01_t& message)
+    {
+        j2735_msgs::TrafficControlMessageV01 output;
+
+        // decode reqid
+        output.reqid = decode_id64b(message.reqid);
+        
+        // decode reqseq 
+        output.reqseq = message.reqseq;
+
+        // decode msgtot
+        output.msgtot = message.msgtot;
+
+        // decode msgnum
+        output.msgnum = message.msgnum;
+
+        // decode id
+        output.id = decode_id128b(message.id);
+                
+        // decode updated
+        // recover a long value from 8-bit array
+        uint64_t tmp_update=0;
+        for (auto i=0; i<8; i++){
+            tmp_update |= message.updated.buf[i];
+            tmp_update = tmp_update << 8;
+        }
+        output.updated = tmp_update;
+
+        // decode package optional
+        output.package_exists = false;
+        if (message.package->label->size)
+        {
+            output.package_exists = true;
+            output.package = decode_geofence_control_package(*message.package);
+        }
+
+        // decode params optional
+        output.params_exists = false;
+        if (message.params->detail.choice.signal.size)
+        {
+            output.params_exists = true;
+            output.params = decode_geofence_control_params(*message.params);        
+        }
+
+        // decode geometry optional
+        output.geometry_exists = false;
+        if (message.geometry->nodes.list.size)
+        {
+            output.geometry_exists = true;
+            output.geometry = decode_geofence_control_geometry(*message.geometry);
+        }
+        return output;
+    }
+
+    j2735_msgs::Id64b Message::decode_id64b (const Id64b_t& message)
+    {
+        j2735_msgs::Id64b output;
+        
+        // Type uint8[8]
+        auto id_len = message.size;
+        for(auto i = 0; i < id_len; i++)
+        {
+            output.id[i] = message.buf[i];
+        }
+        return output;
+    }
+    
+    j2735_msgs::Id128b Message::decode_id128b (const Id128b_t& message)
+    {
+        j2735_msgs::Id128b output;
+        // Type uint8[16]
+        auto id_len = message.size;
+        for(auto i = 0; i < id_len; i++)
+        {
+            output.id[i] = message.buf[i];
+        }
+        return output;
+    }
+
+    j2735_msgs::TrafficControlPackage Message::decode_geofence_control_package (const TrafficControlPackage_t& message)
+    {
+        j2735_msgs::TrafficControlPackage output;
+
+        // convert label from 8-bit array to string optional
+        std::string label;
+        auto label_len = message.label->size;
+        for(auto i = 0; i < label_len; i++)
+            label += message.label->buf[i];
+
+        output.label = label;
+        output.label_exists = label_len > 0;
+
+        // convert tcids from list of Id128b
+        auto tcids_len = message.tcids.list.size;
+        for (auto i = 0; i < tcids_len; i++)
+            output.tcids.push_back(decode_id128b(*message.tcids.list.array[i]));
+
+        return output;
+    }
+
+    j2735_msgs::TrafficControlParams Message::decode_geofence_control_params (const TrafficControlParams_t& message)
+    {
+        j2735_msgs::TrafficControlParams output;
+
+        // convert vlasses
+        auto vclasses_len = message.vclasses.list.size;
+        for (auto i = 0; i < vclasses_len; i ++)
+        {
+            output.vclasses.push_back(decode_geofence_control_veh_class(*message.vclasses.list.array[i]));
+        }
+        
+        // convert schedule
+        output.schedule = decode_geofence_control_schedule(message.schedule);
+        
+        // regulatory
+        output.regulatory = message.regulatory;
+
+        // convert traffic control detail
+        output.detail = decode_geofence_control_detail(message.detail);
+
+        return output;
+    }
+
+    j2735_msgs::TrafficControlVehClass Message::decode_geofence_control_veh_class (const TrafficControlVehClass_t& message)
+    {
+        j2735_msgs::TrafficControlVehClass output;
+
+        output.vehicle_class = message;    
+
+        return output;
+    }
+
+    j2735_msgs::TrafficControlSchedule Message::decode_geofence_control_schedule (const TrafficControlSchedule_t& message)
+    {
+        j2735_msgs::TrafficControlSchedule output;
+        
+        // long int from 8-bit array for "start"
+        uint64_t tmp_time = 0;
+        for (auto i=0; i<8; i++){
+            tmp_time |= message.start.buf[i];
+            tmp_time = tmp_time << 8;
+        }
+        output.start = tmp_time;
+
+        // long int from 8-bit array for "end" (optional)
+        tmp_time = 0;
+        for (auto i=0; i<8; i++){
+            tmp_time |= message.end->buf[i];
+            tmp_time = tmp_time << 8;
+        }
+        output.end = tmp_time;
+        output.end_exists = output.end != 153722867280912; // default value, which is same as not having it
+
+        // recover the dow array (optional)
+        output.dow_exists = message.dow->size > 0;
+        output.dow = decode_day_of_week(*message.dow);
+        
+        // recover the dailyschedule between (optional)
+        auto between_len = message.between->list.size;
+        output.between_exists = between_len > 0;
+        for (auto i = 0; i < between_len; i ++)
+        {
+            output.between.push_back(decode_daily_schedule(*message.between->list.array[i]));
+        }
+
+        // recover the repeat parameter (optional)
+        output.repeat_exists = message.repeat->span > 0; // span is number of minuts schedule is active
+                                                           // therefore it gives reasonable idea that the parameter is there
+        output.repeat = decode_repeat_params(*message.repeat);
+
+        return output;
+    }
+
+    j2735_msgs::DayOfWeek Message::decode_day_of_week(const DSRC_DayOfWeek_t& message)
+    {
+        j2735_msgs::DayOfWeek output;
+        
+        auto dow_size= message.size;
+        for (auto i = 0; i < dow_size; i++)
+        {
+            output.dow[i] = message.buf[i];
+        }
+        return output;
+    } 
+
+    j2735_msgs::DailySchedule Message::decode_daily_schedule(const DailySchedule_t& message)
+    {
+        j2735_msgs::DailySchedule output;
+        
+        output.begin = message.begin;
+        output.duration = message.duration;
+
+        return output;
+    } 
+
+    j2735_msgs::RepeatParams Message::decode_repeat_params (const RepeatParams_t& message)
+    {
+        j2735_msgs::RepeatParams output;
+
+        output.offset = message.offset;
+        output.period = message.period; 
+        output.span = message.span;   
+
+        return output;
+    }
+
+    j2735_msgs::TrafficControlDetail Message::decode_geofence_control_detail (const TrafficControlDetail_t& message)
+    {
+        j2735_msgs::TrafficControlDetail output;
+
+        // TODO figure out how choice fits in here
+
+        // signal OCTET STRING SIZE(0..63),
+        auto signal_size = message.choice.signal.size;
+        for (auto i = 0; i < signal_size; i ++)
+            output.signal.push_back(message.choice.signal.buf[i]);
+
+        // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
+        output.closed = message.choice.closed;
+
+        // 	chains ENUMERATED {no, permitted, required},
+        output.chains = message.choice.chains;
+
+        // 	direction ENUMERATED {forward, reverse},
+        output.direction = message.choice.direction;
+
+        // 	lataffinity ENUMERATED {left, right},
+        output.lataffinity = message.choice.lataffinity;
+
+        // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
+        auto latperm_size = message.choice.latperm.list.size;
+        for(auto i = 0; i < latperm_size; i++)
+            output.latperm[i] = *message.choice.latperm.list.array[i];
+
+        // 	parking ENUMERATED {no, parallel, angled},
+        output.parking = message.choice.parking;
+
+        // 	minspeed INTEGER (0..1023), -- tenths of m/s
+        output.minspeed = message.choice.minspeed;
+
+        // 	maxspeed INTEGER (0..1023), -- tenths of m/s
+        output.maxspeed = message.choice.maxspeed;
+
+        // 	minhdwy INTEGER (0..2047), -- tenths of meters
+        output.minhdwy = message.choice.minhdwy;
+
+        // 	maxvehmass INTEGER (0..65535), -- kg
+        output.maxvehmass = message.choice.maxvehmass;
+
+        // 	maxvehheight INTEGER (0..127), -- tenths of meters
+        output.maxvehheight = message.choice.maxvehheight;
+
+        // 	maxvehwidth INTEGER (0..127), -- tenths of meters
+        output.maxvehwidth = message.choice.maxvehwidth;
+
+        // 	maxvehlength INTEGER (0..1023), -- tenths of meters
+        output.maxvehlength = message.choice.maxvehlength;
+
+        // 	maxvehaxles INTEGER (2..15),
+        output.maxvehaxles = message.choice.maxvehaxles;
+
+        // 	minvehocc INTEGER (1..15), 
+        output.minvehocc = message.choice.minvehocc;
+
+        return output;
+    }
+
+    j2735_msgs::TrafficControlGeometry Message::decode_geofence_control_geometry (const TrafficControlGeometry_t& message)
+    {
+        j2735_msgs::TrafficControlGeometry output;
+
+        // proj
+        std::string proj;
+        auto proj_len = message.proj.size;
+        for(auto i = 0; i < proj_len; i++)
+        {
+            proj += message.proj.buf[i];
+        }
+        output.proj = proj;
+
+        // datum
+        std::string datum;
+        auto datum_len = message.datum.size;
+        for(auto i = 0; i < datum_len; i++)
+        {
+            datum += message.datum.buf[i];
+        }
+        output.datum = datum;
+
+        // convert reftime
+        uint64_t reftime = 0;
+        for (auto i=0; i<8; i++){
+            reftime |= message.reftime.buf[i];
+            reftime = reftime << 8;
+        }
+        output.reftime = reftime;
+
+        // reflon
+        output.reflon = message.reflon;
+        
+        // reflat
+        output.reflat = message.reflat;
+
+        // refelv
+        output.refelv = message.refelv;
+
+        // heading
+        output.heading = message.heading;
+
+        // nodes
+        auto nodes_len = message.nodes.list.size;
+        for (auto i = 0; i < nodes_len; i ++)
+        {
+            output.nodes.push_back(decode_path_node(*message.nodes.list.array[i]));
+        }
+        return output;
+    }
+
+    j2735_msgs::PathNode Message::decode_path_node (const PathNode_t& message)
+    {
+        j2735_msgs::PathNode output;
+
+        output.x = message.x;
+        output.y = message.y; 
+        output.z = *message.z;
+        
+        output.z_exists = false;
+        if ( *message.z <= 32767 || *message.z >= -32768)
+            output.z_exists = true;
+
+        output.width_exists = false;
+        if ( *message.width <= 127 || *message.width >= -128)
+            output.width_exists = true;
+           
+        return output;
     }
 
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_request(j2735_msgs::ControlRequest request_msg)
@@ -432,10 +606,11 @@ namespace cpp_message
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         return boost::optional<std::vector<uint8_t>>(b_array);
         */
-        return boost::optional<std::vector<uint8_t>>({});
+        std::vector<uint8_t> b_array(10);
+        return boost::optional<std::vector<uint8_t>>(b_array);
     }
-
-    boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::ControlMessage control_msg)
+    
+    boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::TrafficControlMessage control_msg)
     {
         // encode result placeholder
         uint8_t buffer[512];
@@ -446,202 +621,31 @@ namespace cpp_message
         // if mem allocation fails
 	    if (!message)
         {
-		    ROS_WARN_STREAM("Cannot allocate mem for ControlMessage message encoding");
+		    ROS_WARN_STREAM("Cannot allocate mem for TrafficControlMessage message encoding");
             return boost::optional<std::vector<uint8_t>>{};
 	    }
 
 	    //set message type to TestMessage05
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05;        
-        //convert version string to char array
-        auto string_size = control_msg.version.size();
-        uint8_t version_content[string_size];
-        for(auto i = 0; i < string_size; i++)
+    
+        switch(control_msg.choice)
         {
-            version_content[i] = control_msg.version[i];
-        }
-        message->value.choice.TestMessage05.body.version.buf = version_content;
-        message->value.choice.TestMessage05.body.version.size = string_size;
-
-        //convert id string to integer array
-        uint8_t id_content[16];
-        for(auto i = 0; i < 16; i++)
-        {
-            id_content[i] = control_msg.id[i];
+            case j2735_msgs::TrafficControlMessage::RESERVED:
+            // do nothing as it is NULL
+            break;
+            case j2735_msgs::TrafficControlMessage::TCMV01:
+            message->value.choice.TestMessage05.body.choice.tcmV01 = *encode_geofence_control_v01(control_msg.tcmV01);
+            break;
+            default:
+            break;
         }
 
-        message->value.choice.TestMessage05.body.id.buf = id_content;
-        message->value.choice.TestMessage05.body.id.size = 16;
-
-        // convert updated long value to an 8-bit array of length 8
-        uint8_t updated_val[8];
-        for(auto k = 7; k >= 0; k--) {
-            updated_val[7 - k] = control_msg.updated >> (k * 8);
-        }
-        message->value.choice.TestMessage05.body.updated.buf = updated_val;
-        message->value.choice.TestMessage05.body.updated.size = 8;
-
-        // copy VTypes
-
-        auto vtype_count = control_msg.vtypes.size();
-        ControlMessage::ControlMessage__vtypes* vtype_list;
-        vtype_list = (ControlMessage::ControlMessage__vtypes*)calloc(1, sizeof(ControlMessage::ControlMessage__vtypes));
-        for(auto i = 0; i < vtype_count; i++) {
-            // construct VType
-            VType_t* vtype_p;
-            vtype_p = (VType_t*) calloc(1, sizeof(VType_t));
-            *vtype_p = control_msg.vtypes[i].vehicle_type;
-            asn_sequence_add(&vtype_list->list, vtype_p);
-        }
-        message->value.choice.TestMessage05.body.vtypes = *vtype_list;
-        
-        // encode Schedule fields
-
-        // convert schedule start and end time to 8 bit array
-        Schedule_t* schedule_p;
-        schedule_p = (Schedule_t*) calloc(1, sizeof(Schedule_t));
-        uint8_t start_val[8];
-        uint8_t end_val[8];
-        for(auto k = 7; k >= 0; k--) {
-            start_val[7 - k] = control_msg.schedule.start >> (k * 8);
-            end_val[7 - k] = control_msg.schedule.end >> (k * 8);
-        }
-        schedule_p->start.size = 8;
-        schedule_p->start.buf = start_val;
-        schedule_p->end.size = 8;
-        schedule_p->end.buf = end_val;
-
-        // copy schedule day of week
-        if (control_msg.schedule.dow_exists){
-            Schedule::Schedule__dow* dow;
-            dow = (Schedule::Schedule__dow*)calloc(1, sizeof(Schedule::Schedule__dow*));
-            for(auto i = 0; i < 7; i++) {
-                bool temp = control_msg.schedule.dow[i];
-                asn_sequence_add(&dow->list, &temp);
-            }
-            schedule_p->dow = dow;
-        }
-        // copy schedule between
-        if (control_msg.schedule.between_exists){
-            DaySchedule_t* between_p;
-            between_p = (DaySchedule_t*) calloc(1, sizeof(DaySchedule_t));
-            between_p->start = control_msg.schedule.between.start;
-            between_p->end = control_msg.schedule.between.end;
-            between_p->utcoffset = control_msg.schedule.between.utcoffset;
-
-            schedule_p->between = between_p;
-        }
-
-        // copy schedule repear
-        if (control_msg.schedule.repeat_exists){
-            ScheduleParams_t* repeat_p;
-            repeat_p = (ScheduleParams_t*) calloc(1, sizeof(ScheduleParams_t));
-            repeat_p->interval = control_msg.schedule.repeat.interval;
-            repeat_p->duration = control_msg.schedule.repeat.duration;
-            schedule_p->repeat = repeat_p;
-        }
-
-        message->value.choice.TestMessage05.body.schedule = *schedule_p;
-
-        // copy regulatory
-        message->value.choice.TestMessage05.body.regulatory = control_msg.regulatory;
-
-        // copy control type
-        message->value.choice.TestMessage05.body.controltype = control_msg.control_type.control_type;
-
-        // copy control value
-        if (control_msg.control_value_exists){
-            ControlValue_t* ctrl_value_p;
-            ctrl_value_p = (ControlValue_t*) calloc(1, sizeof(ControlValue_t));
-            //TODO: Is there a better way to check which field is populated?
-            if (sizeof(control_msg.control_value.value)>0.0){
-                ctrl_value_p->present = ControlValue_PR_value;
-                ctrl_value_p->choice.value = control_msg.control_value.value;
-            }
-            else if (sizeof(control_msg.control_value.direction)>0.0){
-                ctrl_value_p->present = ControlValue_PR_direction;
-                ctrl_value_p->choice.direction = control_msg.control_value.direction;
-            }
-            else if (sizeof(control_msg.control_value.lataffinity)>0.0){
-                ctrl_value_p->present = ControlValue_PR_lataffinity;
-                ctrl_value_p->choice.lataffinity = control_msg.control_value.lataffinity;
-            }
-            else if (sizeof(control_msg.control_value.perm)>0.0){
-                ctrl_value_p->present = ControlValue_PR_perm;
-                ctrl_value_p->choice.perm = control_msg.control_value.perm;
-            }
-            else if (sizeof(control_msg.control_value.prkingallowd)>0.0){
-                ctrl_value_p->present = ControlValue_PR_prkingallowd;
-                ctrl_value_p->choice.prkingallowd = control_msg.control_value.prkingallowd;
-            }            
-            message->value.choice.TestMessage05.body.controlvalue = ctrl_value_p;
-        }
-        // copy pathParts
-        message->value.choice.TestMessage05.body.pathParts = control_msg.path_parts;
-        
-        //convert proj string to char array
-        auto proj_size = control_msg.proj.size();
-        uint8_t proj_content[proj_size];
-        for(auto i = 0; i < proj_size; i++)
-        {
-            proj_content[i] = control_msg.proj[i];
-        }
-        message->value.choice.TestMessage05.body.proj.buf = proj_content;
-        message->value.choice.TestMessage05.body.proj.size = proj_size;
-
-        //convert datum string to char array
-        auto datum_size = control_msg.datum.size();
-        uint8_t datum_content[datum_size];
-        for(auto i = 0; i < datum_size; i++)
-        {
-            datum_content[i] = control_msg.datum[i];
-        }
-        message->value.choice.TestMessage05.body.datum.buf = datum_content;
-        message->value.choice.TestMessage05.body.datum.size = datum_size;
-
-        // convert time long value to an 8-bit array of length 8
-        uint8_t time_val[8];
-        for(auto k = 7; k >= 0; k--) {
-            time_val[7 - k] = control_msg.time >> (k * 8);
-        }
-        message->value.choice.TestMessage05.body.time.buf = updated_val;
-        message->value.choice.TestMessage05.body.time.size = 8;
-
-
-        // copy longitude
-        message->value.choice.TestMessage05.body.lon = control_msg.longitude;
-
-        // copy latitude
-        message->value.choice.TestMessage05.body.lat = control_msg.latitude;
-
-        // copy altitude
-        message->value.choice.TestMessage05.body.alt = control_msg.altitude;
-
-        // copy heading
-        message->value.choice.TestMessage05.body.heading = control_msg.heading;
-
-        // copy Points
-        auto points_count = control_msg.points.size();
-        ControlMessage::ControlMessage__points* points_list;
-        points_list = (ControlMessage::ControlMessage__points*)calloc(1, sizeof(ControlMessage::ControlMessage__points));
-        for(auto i = 0; i < points_count; i++) {
-            // construct Point
-            Point_t* point_p;
-            point_p = (Point_t*) calloc(1, sizeof(Point_t));
-            point_p->x = control_msg.points[i].x;
-            point_p->y = control_msg.points[i].y;
-            point_p->width = control_msg.points[i].width;
-            if (control_msg.points[i].z_exists){
-                long zp = control_msg.points[i].z;
-                point_p->z = &zp;
-            }  
-            asn_sequence_add(&points_list->list, point_p);
-        }
-        message->value.choice.TestMessage05.body.points = *points_list;
-	    // encode message
+        // encode message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
+            ROS_WARN_STREAM("Encoding Control Message failed!");
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg
@@ -652,4 +656,396 @@ namespace cpp_message
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
-}
+    TrafficControlMessageV01_t* Message::encode_geofence_control_v01(const j2735_msgs::TrafficControlMessageV01& msg)
+    {
+        TrafficControlMessageV01_t* output;
+        output = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
+        
+        // encode reqid
+        output->reqid = *encode_id64b(msg.reqid);
+        
+        // encode reqseq 
+        output->reqseq = msg.reqseq;
+
+        // encode msgtot
+        output->msgtot = msg.msgtot;
+
+        // encode msgnum
+        output->msgnum = msg.msgnum;
+
+        // encode id
+        output->id = *encode_id128b(msg.id);
+    
+        // encode updated
+        // recover an 8-bit array from a long value 
+        uint8_t updated_val[8];
+        for(auto k = 7; k >= 0; k--) {
+            updated_val[7 - k] = msg.updated >> (k * 8);
+        }
+        output->updated.buf = updated_val;
+        output->updated.size = 8;
+
+        // encode package optional
+        if (msg.package_exists)
+        {
+            output->package = encode_geofence_control_package(msg.package);
+        }
+        ROS_WARN_STREAM("REACHED PACKAGE ENDING");
+        // encode params optional
+        if (msg.params_exists)
+        {
+            output->params = encode_geofence_control_params(msg.params);        
+        }
+        ROS_WARN_STREAM("REACHED PARAMS ENDING");
+
+        // encode geometry optional
+        if (msg.geometry_exists)
+        {
+            output->geometry = encode_geofence_control_geometry(msg.geometry);
+        }
+        ROS_WARN_STREAM("REACHED GEOMETRY ENDING");
+
+        return output;
+    }
+
+    Id64b_t* Message::encode_id64b (const j2735_msgs::Id64b& msg)
+    {
+        Id64b_t* output;
+        output = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+        
+        // Type uint8[8]
+        uint8_t val[8];
+        for(auto i = 0; i < msg.id.size(); i++)
+        {
+            val[i] = msg.id[i];
+        }
+        output->buf = val;
+        output->size = msg.id.size();
+
+        return output;
+    }
+    
+    Id128b_t* Message::encode_id128b (const j2735_msgs::Id128b& msg)
+    {
+        Id128b_t* output;
+        output = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+        // Type uint8[16]
+        uint8_t val[16];
+        for(auto i = 0; i < msg.id.size(); i++)
+        {
+            val[i] = msg.id[i];
+        }
+        output->buf = val;
+        output->size = msg.id.size();
+
+        return output;
+    }
+
+    TrafficControlPackage_t* Message::encode_geofence_control_package (const j2735_msgs::TrafficControlPackage& msg)
+    {
+        TrafficControlPackage_t* output;
+        output = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
+        
+        //convert label string to char array (optional)
+        if (msg.label_exists)
+        {
+            auto string_size = msg.label.size();
+            uint8_t label_content[string_size];
+            for(auto i = 0; i < string_size; i++)
+            {
+                label_content[i] = msg.label[i];
+            }
+            output->label = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+            output->label->buf = label_content;
+            output->label->size = string_size;
+        }
+        
+        // convert tcids from list of Id128b
+        auto tcids_len = msg.tcids.size();
+        TrafficControlPackage::TrafficControlPackage__tcids* tcids;
+        tcids = (TrafficControlPackage::TrafficControlPackage__tcids*)calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+        for (auto i = 0; i < tcids_len; i++)
+            asn_sequence_add(&tcids->list, encode_id128b(msg.tcids[i]));
+        output->tcids = *tcids;
+
+        return output;
+    }
+
+    TrafficControlParams_t* Message::encode_geofence_control_params (const j2735_msgs::TrafficControlParams& msg)
+    {
+        TrafficControlParams_t* output;
+        output = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t));
+
+        // convert vlasses
+        auto vclasses_size = msg.vclasses.size();
+        TrafficControlParams::TrafficControlParams__vclasses* vclasses_list;
+        vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
+        
+        for (auto i = 0; i < vclasses_size; i ++)
+        {
+            asn_sequence_add(&vclasses_list->list, encode_geofence_control_veh_class(msg.vclasses[i]));
+        }
+        output->vclasses = *vclasses_list;
+
+        // convert schedule
+        output->schedule = *encode_geofence_control_schedule(msg.schedule);
+        ROS_WARN_STREAM("REACHED CHECKPOINT");
+        
+        // regulatory
+        output->regulatory = msg.regulatory;
+
+        // convert traffic control detail
+        output->detail = *encode_geofence_control_detail(msg.detail);
+        ROS_WARN_STREAM("REACHED CHECKPOINT NEXT");
+        return output;
+    }
+
+    TrafficControlVehClass_t* Message::encode_geofence_control_veh_class (const j2735_msgs::TrafficControlVehClass& msg)
+    {
+        TrafficControlVehClass_t* output;
+        output = (TrafficControlVehClass_t*) calloc(1, sizeof(TrafficControlVehClass_t));
+        
+        *output = msg.vehicle_class;
+        return output;
+    }
+
+    TrafficControlSchedule_t* Message::encode_geofence_control_schedule (const j2735_msgs::TrafficControlSchedule& msg)
+    {
+        TrafficControlSchedule_t* output;
+        output = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t));
+        // 8-bit array from long int for "start"
+        uint8_t start_val[8];
+        for(auto k = 7; k >= 0; k--) {
+            start_val[7 - k] = msg.start >> (k * 8);
+        }
+        output->start.buf= start_val;
+        output->start.size = 8;
+        // long int from 8-bit array for "end" (optional)
+        if (msg.end_exists)
+        {
+            uint8_t end_val[8];
+            for(auto k = 7; k >= 0; k--) {
+                end_val[7 - k] = msg.end >> (k * 8);
+            }
+            output->end = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+            output->end->buf = end_val;
+            output->end->size = 8;
+        }
+        // recover the dow array (optional)
+        if (msg.dow_exists)
+        {
+            output->dow = encode_day_of_week(msg.dow);
+        }
+        // recover the dailyschedule between (optional)
+        if (msg.between_exists)
+        {
+            auto between_len = msg.between.size();
+            TrafficControlSchedule::TrafficControlSchedule__between* between_list;
+            between_list = (TrafficControlSchedule::TrafficControlSchedule__between*) calloc(1, sizeof(TrafficControlSchedule::TrafficControlSchedule__between));
+            
+            for (auto i = 0; i < between_len; i ++)
+            {
+                asn_sequence_add(&between_list->list, encode_daily_schedule(msg.between[i]));
+            }
+            output->between = between_list;
+        }
+
+        // recover the repeat parameter (optional)
+        if (msg.repeat_exists)
+        {
+            output->repeat = encode_repeat_params(msg.repeat);
+        }
+
+        return output;
+    }
+
+    DSRC_DayOfWeek_t* Message::encode_day_of_week(const j2735_msgs::DayOfWeek& msg)
+    {
+        DSRC_DayOfWeek_t* output;
+        output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
+        
+        output->size = 8;
+        uint8_t dow_val[8];
+        for (auto i = 0; i < msg.dow.size(); i++)
+        {
+            dow_val[i] = msg.dow[i];
+        }
+        output->buf = dow_val;
+
+        return output;
+    } 
+
+    DailySchedule_t* Message::encode_daily_schedule(const j2735_msgs::DailySchedule& msg)
+    {
+        DailySchedule_t* output;
+        output = (DailySchedule_t*) calloc(1, sizeof(DailySchedule_t));
+        
+        output->begin = msg.begin;
+        output->duration = msg.duration;
+
+        return output;
+    } 
+
+    RepeatParams_t* Message::encode_repeat_params (const j2735_msgs::RepeatParams& msg)
+    {
+        RepeatParams_t* output;
+        output = (RepeatParams_t*) calloc(1, sizeof(RepeatParams_t));
+
+        output->offset = msg.offset;
+        output->period = msg.period; 
+        output->span = msg.span;   
+
+        return output;
+    }
+
+    TrafficControlDetail_t* Message::encode_geofence_control_detail (const j2735_msgs::TrafficControlDetail& msg)
+    {
+        TrafficControlDetail_t* output;
+        output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
+
+        // TODO figure out how choice fits in here
+
+        // signal OCTET STRING SIZE(0..63),
+        auto signal_size = msg.signal.size();
+        uint8_t signal_val[signal_size];
+        for (auto i = 0; i < signal_size; i ++)
+            signal_val[i] = msg.signal[i];
+        output->choice.signal.buf = signal_val;
+        output->choice.signal.size = signal_size;
+        ROS_WARN_STREAM("REACHED CHECKPOINT A");
+        // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
+        output->choice.closed = msg.closed;
+
+        // 	chains ENUMERATED {no, permitted, required},
+        output->choice.chains = msg.chains;
+        // 	direction ENUMERATED {forward, reverse},
+        output->choice.direction = msg.direction;
+
+        // 	lataffinity ENUMERATED {left, right},
+        output->choice.lataffinity = msg.lataffinity;
+
+        // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
+        // TODO: review if this conversion is correct
+        auto latperm_size = msg.latperm.size();
+        long latperm_val[latperm_size];
+        for(auto i = 0; i < latperm_size; i++)
+        {
+            ROS_WARN_STREAM("REACHED CHECKPOINT B " << msg.latperm.at(0));
+            //latperm_val[i] = msg.latperm[i];
+        }
+
+        TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
+        latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
+        output->choice.latperm = *latperm_p;
+        *output->choice.latperm.list.array = latperm_val;
+        output->choice.latperm.list.size = latperm_size;
+        ROS_WARN_STREAM("REACHED CHECKPOINT B ");
+        ROS_WARN_STREAM("REACHED CHECKPOINT B " << output->choice.latperm.list.array[0]);
+        // 	parking ENUMERATED {no, parallel, angled},
+        output->choice.parking = msg.parking;
+
+        // 	minspeed INTEGER (0..1023), -- tenths of m/s
+        output->choice.minspeed = msg.minspeed;
+
+        // 	maxspeed INTEGER (0..1023), -- tenths of m/s
+        output->choice.maxspeed = msg.maxspeed;
+
+        // 	minhdwy INTEGER (0..2047), -- tenths of meters
+        output->choice.minhdwy = msg.minhdwy;
+
+        // 	maxvehmass INTEGER (0..65535), -- kg
+        output->choice.maxvehmass = msg.maxvehmass;
+
+        // 	maxvehheight INTEGER (0..127), -- tenths of meters
+        output->choice.maxvehheight = msg.maxvehheight;
+
+        // 	maxvehwidth INTEGER (0..127), -- tenths of meters
+        output->choice.maxvehwidth = msg.maxvehwidth;
+
+        // 	maxvehlength INTEGER (0..1023), -- tenths of meters
+        output->choice.maxvehlength = msg.maxvehlength;
+
+        // 	maxvehaxles INTEGER (2..15),
+        output->choice.maxvehaxles = msg.maxvehaxles;
+
+        // 	minvehocc INTEGER (1..15), 
+        output->choice.minvehocc = msg.minvehocc;
+        ROS_WARN_STREAM("REACHED CHECKPOINT C");
+        return output;
+    }
+
+    TrafficControlGeometry_t* Message::encode_geofence_control_geometry (const j2735_msgs::TrafficControlGeometry& msg)
+    {
+        TrafficControlGeometry_t* output;
+        output = (TrafficControlGeometry_t*) calloc(1, sizeof(TrafficControlGeometry_t));
+
+        // convert proj string to char array
+        auto proj_size = msg.proj.size();
+        uint8_t proj_content[proj_size];
+        for(auto i = 0; i < proj_size; i++)
+        {
+            proj_content[i] = msg.proj[i];
+        }
+        output->proj.buf = proj_content;
+        output->proj.size = proj_size;
+
+        // convert datum string to char array
+        auto datum_size = msg.datum.size();
+        uint8_t datum_content[datum_size];
+        for(auto i = 0; i < datum_size; i++)
+        {
+            datum_content[i] = msg.datum[i];
+        }
+        output->datum.buf = datum_content;
+        output->datum.size = datum_size;
+
+        // encode reftime
+        // recover an 8-bit array from a long value 
+        uint8_t reftime_val[8];
+        for(auto k = 7; k >= 0; k--) {
+            reftime_val[7 - k] = msg.reftime >> (k * 8);
+        }
+        output->reftime.buf = reftime_val;
+        output->reftime.size = 8;
+
+        // reflon
+        output->reflon = msg.reflon;
+        
+        // reflat
+        output->reflat = msg.reflat;
+
+        // refelv
+        output->refelv = msg.refelv;
+
+        // heading
+        output->heading = msg.heading;
+
+        // nodes
+        auto nodes_len = msg.nodes.size();
+        TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
+        nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
+        for (auto i = 0; i < nodes_len; i ++)
+        {
+            asn_sequence_add(&nodes_list->list, encode_path_node(msg.nodes[i]));
+        }
+        output->nodes = *nodes_list;
+
+        return output;
+    }
+
+    PathNode_t* Message::encode_path_node (const j2735_msgs::PathNode& msg)
+    {
+        PathNode_t* output;
+        output = (PathNode_t*) calloc(1, sizeof(PathNode_t));
+
+        output->x = msg.x;
+        output->y = msg.y;
+
+        // optional fields
+        if (msg.z_exists) *output->z = msg.z;
+        if (msg.width_exists) *output->width = msg.width;
+           
+        return output;
+    }
+
+} // cpp_message namespace
