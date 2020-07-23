@@ -15,7 +15,7 @@
  */
 
 #include "cpp_message.h"
-#include "Mobility_Operation_Message.h"
+#include "MessageConsumer.cpp"
 
 /**
  * Entry Function for Execution
@@ -24,7 +24,7 @@ int main(int argc, char**argv)
 {
     ros::init(argc,argv,"cpp_message_node");
     cpp_message::Message node;
-    Mobility_Operation::Mobility_Operation_Message MobilityOperation_node;
-    MobilityOperation_node.run();
+    Message_cpp::MessageConsumer node_2;
+    node_2.run();
     return node.run();
 }

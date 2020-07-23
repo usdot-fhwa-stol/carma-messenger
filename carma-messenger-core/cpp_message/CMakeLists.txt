@@ -40,12 +40,15 @@ set_property(TARGET testlib PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 add_executable(cpp_message_node
          src/main.cpp
          src/cpp_message.cpp
-         src/Mobility_Operation_Message.cpp)
+         src/MessageConsumer.cpp
+         src/MobilityOperation_Message.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 
-add_library(cpp_message_library src/cpp_message.cpp src/Mobility_Operation_Message.cpp)
+add_library(cpp_message_library src/cpp_message.cpp 
+            src/MessageConsumer.cpp
+            src/MobilityOperation_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
 
 ## Add cmake target dependencies of the executable

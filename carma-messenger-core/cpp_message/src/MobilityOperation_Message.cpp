@@ -18,49 +18,11 @@
  * CPP File containing Mobility Operation Message method implementations
  */
 
-#include "Mobility_Operation_Message.h"
+#include "MobilityOperation_Message.h"
 
-namespace Mobility_Operation
+namespace Message_cpp
 {
-    void Mobility_Operation_Message::initialize()
-    {
-        nh_.reset(new ros::CARMANodeHandle());
-        pnh_.reset(new ros::CARMANodeHandle("~"));
-        //initialize pub/sub
-        outbound_binary_message_pub_=nh_->advertise<cav_msgs::ByteArray>("outbound_binary_msg",5);
-        inbound_binary_message_sub_=nh_->subscribe("inbound_binary_msg",5, &Mobility_Operation_Message::inbound_binary_callback, this);
-        mobility_operation_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_operation_message_decoded",5);
-        mobility_operation_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Mobility_Operation_Message::outbound_mobility_operation_message_callback,this);
-    }
-
-    void Mobility_Operation_Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
-    {   //decode and publish as mobility operation message
-        if(msg->messageType=="MobilityOperation")   
-        {
-            //store message content
-            std::vector<uint8_t> array=msg->content;
-            //decode the content
-            auto output=decode_mobility_operation_message(array);
-            if(output)
-            {
-                mobility_operation_message_pub_.publish(output.get());
-            }
-            else
-            {
-                ROS_WARN_STREAM("Cannot decode mobility operation message.");
-            }
-            
-        }
-
-    }
-
-    int Mobility_Operation_Message::run(){
-        initialize();
-        ros::CARMANodeHandle::spin();
-        return 0;
-    }
-
-    boost::optional<cav_msgs::MobilityOperation> Mobility_Operation_Message::decode_mobility_operation_message(std::vector<uint8_t>& binary_array){
+    boost::optional<cav_msgs::MobilityOperation> Mobility_Operation::decode_mobility_operation_message(std::vector<uint8_t>& binary_array){
         
         cav_msgs::MobilityHeader header;
         cav_msgs::MobilityOperation output;
@@ -186,26 +148,7 @@ namespace Mobility_Operation
 
     }
 
-
-    void Mobility_Operation_Message::outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg)
-    {   //encode and publish as outbound binary message
-        //cav_msgs::MobilityOperation mobility_operation_msg(*msg.get());       //check
-        auto res= encode_mobility_operation_message(msg);
-        if(res)
-        {
-            //copy to byte array msg
-            cav_msgs::ByteArray output;
-            output.content=res.get();
-            //publish result
-            outbound_binary_message_pub_.publish(output);
-        }
-        else
-        {
-            ROS_WARN_STREAM("Cannot encode geofence control message.");
-        }
-    }
-
-    boost::optional<std::vector<uint8_t>> Mobility_Operation_Message::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
+    boost::optional<std::vector<uint8_t>> Mobility_Operation::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
     {
         //encode result placeholder
         uint8_t buffer[1024];
@@ -307,8 +250,8 @@ namespace Mobility_Operation
         auto array_length=ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i=0;i<array_length;i++)b_array[i]=buffer[i];
-        for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        
+        //for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
-
 }
