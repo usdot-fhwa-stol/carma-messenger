@@ -632,12 +632,14 @@ namespace cpp_message
         switch(control_msg.choice)
         {
             case j2735_msgs::TrafficControlMessage::RESERVED:
-            // do nothing as it is NULL
+                message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_reserved;
             break;
             case j2735_msgs::TrafficControlMessage::TCMV01:
-            message->value.choice.TestMessage05.body.choice.tcmV01 = *encode_geofence_control_v01(control_msg.tcmV01);
+                message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
+                message->value.choice.TestMessage05.body.choice.tcmV01 = *encode_geofence_control_v01(control_msg.tcmV01);
             break;
             default:
+                message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_NOTHING;
             break;
         }
 
@@ -658,6 +660,7 @@ namespace cpp_message
 
     TrafficControlMessageV01_t* Message::encode_geofence_control_v01(const j2735_msgs::TrafficControlMessageV01& msg)
     {
+        
         TrafficControlMessageV01_t* output;
         output = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
         
@@ -755,9 +758,12 @@ namespace cpp_message
             {
                 label_content[i] = msg.label[i];
             }
-            output->label = (IA5String_t*) calloc(1, sizeof(IA5String_t));
-            output->label->buf = label_content;
-            output->label->size = string_size;
+            // such chain init and assignments are needed to properly encode
+            IA5String_t* label_p;
+            label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+            label_p->buf = label_content;
+            label_p->size = string_size;
+            output->label = label_p;
         }
         
         // convert tcids from list of Id128b
@@ -827,9 +833,11 @@ namespace cpp_message
             for(auto k = 7; k >= 0; k--) {
                 end_val[7 - k] = msg.end >> (k * 8);
             }
-            output->end = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
-            output->end->buf = end_val;
-            output->end->size = 8;
+            EpochMins_t* end_p;
+            end_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+            end_p->buf = end_val;
+            end_p->size = 8;
+            output->end = end_p;
         }
         // recover the dow array (optional)
         if (msg.dow_exists)
@@ -864,13 +872,13 @@ namespace cpp_message
         DSRC_DayOfWeek_t* output;
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
         
-        output->size = 8;
-        uint8_t dow_val[8];
+        uint8_t dow_val[7];
         for (auto i = 0; i < msg.dow.size(); i++)
         {
             dow_val[i] = msg.dow[i];
         }
         output->buf = dow_val;
+        output->size = 7;
 
         return output;
     } 
@@ -885,7 +893,7 @@ namespace cpp_message
 
         return output;
     } 
-
+//// CHECKED ABOVE
     RepeatParams_t* Message::encode_repeat_params (const j2735_msgs::RepeatParams& msg)
     {
         RepeatParams_t* output;
@@ -903,74 +911,157 @@ namespace cpp_message
         TrafficControlDetail_t* output;
         output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
 
-        // TODO figure out how choice fits in here
-
-        // signal OCTET STRING SIZE(0..63),
-        auto signal_size = msg.signal.size();
-        uint8_t signal_val[signal_size];
-        for (auto i = 0; i < signal_size; i ++)
-            signal_val[i] = msg.signal[i];
-        output->choice.signal.buf = signal_val;
-        output->choice.signal.size = signal_size;
-        ROS_WARN_STREAM("REACHED CHECKPOINT A");
-        // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
-        output->choice.closed = msg.closed;
-
-        // 	chains ENUMERATED {no, permitted, required},
-        output->choice.chains = msg.chains;
-        // 	direction ENUMERATED {forward, reverse},
-        output->choice.direction = msg.direction;
-
-        // 	lataffinity ENUMERATED {left, right},
-        output->choice.lataffinity = msg.lataffinity;
-
-        // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
-        // TODO: review if this conversion is correct
-        auto latperm_size = msg.latperm.size();
-        long latperm_val[latperm_size];
-        for(auto i = 0; i < latperm_size; i++)
+        switch(msg.choice)
         {
-            ROS_WARN_STREAM("REACHED CHECKPOINT B " << msg.latperm.at(0));
-            //latperm_val[i] = msg.latperm[i];
+            case j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_signal;
+                // signal OCTET STRING SIZE(0..63),
+                auto signal_size = msg.signal.size();
+                uint8_t signal_val[signal_size];
+                for (auto i = 0; i < signal_size; i ++)
+                    signal_val[i] = msg.signal[i];
+                output->choice.signal.buf = signal_val;
+                output->choice.signal.size = signal_size;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::STOP_CHOICE:
+                output->present = TrafficControlDetail_PR_stop;
+            break;
+            
+            case j2735_msgs::TrafficControlDetail::YIELD_CHOICE:
+                output->present = TrafficControlDetail_PR_yield;
+            break;
+
+            case j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE:
+                output->present = TrafficControlDetail_PR_notowing;
+            break;
+
+            case j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE:
+                output->present = TrafficControlDetail_PR_restricted;
+            break;
+
+            case j2735_msgs::TrafficControlDetail::CLOSED_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_closed;
+                // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
+                output->choice.closed = msg.closed;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::CHAINS_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_chains;
+                // 	chains ENUMERATED {no, permitted, required},
+                output->choice.chains = msg.chains;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_direction;
+                // 	direction ENUMERATED {forward, reverse},
+                output->choice.direction = msg.direction;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_lataffinity;
+                // 	lataffinity ENUMERATED {left, right},
+                output->choice.lataffinity = msg.lataffinity;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::LATPERM_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_latperm;
+                // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
+                auto latperm_size = msg.latperm.size();
+                TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
+                latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
+                
+                for(auto i = 0; i < latperm_size; i++)
+                {
+                    long* item_p;
+                    item_p = (long*) calloc(1, sizeof(long));
+                    *item_p = msg.latperm[i];
+                    asn_sequence_add(&latperm_p->list, item_p);
+                }
+                output->choice.latperm = *latperm_p;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::PARKING_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_parking;
+                // 	parking ENUMERATED {no, parallel, angled},
+                output->choice.parking = msg.parking;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minspeed;
+                // 	minspeed INTEGER (0..1023), -- tenths of m/s
+                output->choice.minspeed = msg.minspeed;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxspeed;
+                // 	maxspeed INTEGER (0..1023), -- tenths of m/s
+                output->choice.maxspeed = msg.maxspeed;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minhdwy;
+                // 	minhdwy INTEGER (0..2047), -- tenths of meters
+                output->choice.minhdwy = msg.minhdwy;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxvehmass;
+                // 	maxvehmass INTEGER (0..65535), -- kg
+                output->choice.maxvehmass = msg.maxvehmass;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxvehheight;
+                // 	maxvehheight INTEGER (0..127), -- tenths of meters
+                output->choice.maxvehheight = msg.maxvehheight;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxvehwidth;
+                // 	maxvehwidth INTEGER (0..127), -- tenths of meters
+                output->choice.maxvehwidth = msg.maxvehwidth;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxvehlength;
+                // 	maxvehlength INTEGER (0..1023), -- tenths of meters
+                output->choice.maxvehlength = msg.maxvehlength;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxvehaxles;
+                // 	maxvehaxles INTEGER (2..15),
+                output->choice.maxvehaxles = msg.maxvehaxles;
+            break;
+            }
+            case j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minvehocc;
+                // 	minvehocc INTEGER (1..15), 
+                output->choice.minvehocc = msg.minvehocc;
+            break;
+            }
+            default:
+                output->present = TrafficControlDetail_PR_NOTHING;
+            break;
         }
 
-        TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
-        latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
-        output->choice.latperm = *latperm_p;
-        *output->choice.latperm.list.array = latperm_val;
-        output->choice.latperm.list.size = latperm_size;
-        ROS_WARN_STREAM("REACHED CHECKPOINT B ");
-        ROS_WARN_STREAM("REACHED CHECKPOINT B " << output->choice.latperm.list.array[0]);
-        // 	parking ENUMERATED {no, parallel, angled},
-        output->choice.parking = msg.parking;
-
-        // 	minspeed INTEGER (0..1023), -- tenths of m/s
-        output->choice.minspeed = msg.minspeed;
-
-        // 	maxspeed INTEGER (0..1023), -- tenths of m/s
-        output->choice.maxspeed = msg.maxspeed;
-
-        // 	minhdwy INTEGER (0..2047), -- tenths of meters
-        output->choice.minhdwy = msg.minhdwy;
-
-        // 	maxvehmass INTEGER (0..65535), -- kg
-        output->choice.maxvehmass = msg.maxvehmass;
-
-        // 	maxvehheight INTEGER (0..127), -- tenths of meters
-        output->choice.maxvehheight = msg.maxvehheight;
-
-        // 	maxvehwidth INTEGER (0..127), -- tenths of meters
-        output->choice.maxvehwidth = msg.maxvehwidth;
-
-        // 	maxvehlength INTEGER (0..1023), -- tenths of meters
-        output->choice.maxvehlength = msg.maxvehlength;
-
-        // 	maxvehaxles INTEGER (2..15),
-        output->choice.maxvehaxles = msg.maxvehaxles;
-
-        // 	minvehocc INTEGER (1..15), 
-        output->choice.minvehocc = msg.minvehocc;
-        ROS_WARN_STREAM("REACHED CHECKPOINT C");
         return output;
     }
 
@@ -998,15 +1089,18 @@ namespace cpp_message
         }
         output->datum.buf = datum_content;
         output->datum.size = datum_size;
-
+        
         // encode reftime
         // recover an 8-bit array from a long value 
         uint8_t reftime_val[8];
         for(auto k = 7; k >= 0; k--) {
             reftime_val[7 - k] = msg.reftime >> (k * 8);
         }
-        output->reftime.buf = reftime_val;
-        output->reftime.size = 8;
+        EpochMins_t* reftime_p;
+        reftime_p = (EpochMins_t*) calloc(1, sizeof(EpochMins_t));
+        reftime_p->buf = reftime_val;
+        reftime_p->size = 8;
+        output->reftime = *reftime_p;
 
         // reflon
         output->reflon = msg.reflon;
@@ -1019,7 +1113,7 @@ namespace cpp_message
 
         // heading
         output->heading = msg.heading;
-
+        
         // nodes
         auto nodes_len = msg.nodes.size();
         TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
@@ -1029,7 +1123,6 @@ namespace cpp_message
             asn_sequence_add(&nodes_list->list, encode_path_node(msg.nodes[i]));
         }
         output->nodes = *nodes_list;
-
         return output;
     }
 
@@ -1040,10 +1133,22 @@ namespace cpp_message
 
         output->x = msg.x;
         output->y = msg.y;
-
         // optional fields
-        if (msg.z_exists) *output->z = msg.z;
-        if (msg.width_exists) *output->width = msg.width;
+        if (msg.z_exists) 
+        {
+            long* z_p;
+            z_p = (long*) calloc(1, sizeof(long));
+            *z_p = msg.z;
+            output->z = z_p;
+        }
+
+        if (msg.width_exists) 
+        {
+            long* width_p;
+            width_p = (long*) calloc(1, sizeof(long));
+            *width_p = msg.z;
+            output->width = width_p;
+        }
            
         return output;
     }

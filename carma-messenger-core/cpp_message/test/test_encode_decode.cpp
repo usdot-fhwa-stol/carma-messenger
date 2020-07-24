@@ -18,38 +18,6 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(CppMessageTest, DISABLED_testDecodeRequestMsg)
-{
-    std::vector<uint8_t> binar_input = {0, 244, 56, 18, 48, 98, 201, 155, 70, 173, 155, 184, 114, 193, 139, 38, 109, 26,
-                                        182, 110, 225, 203, 6, 44, 153, 180, 106, 217, 187, 135, 45, 155, 54, 108, 217, 179,
-                                        0, 0, 0, 0, 0, 0, 0, 0, 3, 90, 78, 144, 3, 90, 78, 144, 8, 0, 8, 0, 8, 0, 0};
-    cpp_message::Message worker;
-    auto res = worker.decode_geofence_request(binar_input);
-    if(res) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
-}
-
-TEST(CppMessageTest, DISABLED_testEncodeRequestMsg)
-{
-    cpp_message::Message worker;
-    j2735_msgs::ControlRequest request;
-    request.version = "012345678901234567890123456789012345";
-    request.scale = 0;
-    j2735_msgs::ControlBounds bounds;
-    bounds.longitude = 0;
-    bounds.latitude = 0;
-    bounds.oldest = 0;
-    for(int i = 0; i < bounds.offsets.size(); i++) bounds.offsets[i] = 0;
-    request.bounds.push_back(bounds);
-    auto res = worker.encode_geofence_request(request);
-    if(res) EXPECT_TRUE(true);
-    else
-    {
-        //std::cout << "encoding failed!\n";
-        EXPECT_TRUE(false);
-    }
-}
-
 
 TEST(CppMessageTest, DISABLED_testDecodeControlMsg)
 {
@@ -65,8 +33,22 @@ TEST(CppMessageTest, DISABLED_testDecodeControlMsg)
     else EXPECT_TRUE(false);
 }
 
+TEST(CppMessageTest, testEncodeControlMsg1)
+{
+    cpp_message::Message worker;
 
-TEST(CppMessageTest, testEncodeControlMsg)
+    j2735_msgs::TrafficControlMessage control;
+    control.choice = j2735_msgs::TrafficControlMessage::RESERVED;
+    auto res = worker.encode_geofence_control(control);
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
+TEST(CppMessageTest, testEncodeControlMsg2)
 {
     cpp_message::Message worker;
     // ControlMessage START
@@ -74,11 +56,16 @@ TEST(CppMessageTest, testEncodeControlMsg)
     control_main.choice = j2735_msgs::TrafficControlMessage::TCMV01;
     // ControlMessageV01 START
     j2735_msgs::TrafficControlMessageV01 control;
-    
-    control.reqid.id = {1, 2, 3, 4, 5, 6, 7, 8};
+    j2735_msgs::Id64b id64b;
+    for(int i = 0; i < id64b.id.size(); i++){
+        id64b.id[i] = 0;
+    }
+    control.reqid = id64b;
     control.reqseq = 111;
     j2735_msgs::Id128b id128b;
-    id128b.id = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
+    for(int i = 0; i < id128b.id.size(); i++){
+        id128b.id[i] = 0;
+    }
     control.id = id128b;
     control.msgnum = 5;
     control.msgtot = 6;
@@ -121,11 +108,13 @@ TEST(CppMessageTest, testEncodeControlMsg)
     params.schedule = schedule;
     // TrafficControlDetails START
     j2735_msgs::TrafficControlDetail detail;
-    detail.choice = j2735_msgs::TrafficControlDetail::LATPERM_CHOICE;
-    //detail.closed = j2735_msgs::TrafficControlDetail::OPENLEFT;
-    detail.latperm[0] = 1;
-    detail.latperm[1] = 2;
-    ROS_WARN_STREAM("latperm og" << detail.latperm[0]);
+    detail.choice = j2735_msgs::TrafficControlDetail::CLOSED_CHOICE;
+    detail.closed = j2735_msgs::TrafficControlDetail::OPENLEFT;
+
+    //boost::array<uint8_t, 2UL> stuff {{0 ,1}}; //
+    //detail.latperm = stuff;
+
+    //ROS_WARN_STREAM("latperm og " << (int)detail.latperm.elems[0] << " | " << (int)detail.latperm.elems[1]);
     // TrafficControlDetails END
     params.detail = detail;
     control.params = params;
@@ -136,19 +125,18 @@ TEST(CppMessageTest, testEncodeControlMsg)
     j2735_msgs::TrafficControlGeometry geometry;
     geometry.proj = "this_is_sample_proj_string";
     geometry.datum = "WGS84";
-    geometry.reftime = 1234567890;
-    geometry.reflon = 1234567890;
-    geometry.reflon = -1234567890;
-    geometry.reflat = -123456890;
-    geometry.refelv = 12345;
-    geometry.heading = 1234;
+    geometry.reftime = 1;
+    geometry.reflon = 1;
+    geometry.reflat = 1;
+    geometry.refelv = 1;
+    geometry.heading = 1;
     j2735_msgs::PathNode node;
     node.x = -1;
     node.y = 1;
     node.z_exists = true;
     node.z = 1;
     node.width_exists = true;
-    node.width = -1;
+    node.width = 1;
     geometry.nodes.push_back(node);
     control.geometry = geometry;
     control.geometry_exists = true;    
