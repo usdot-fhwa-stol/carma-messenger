@@ -59,7 +59,7 @@ namespace Message_cpp
             {
                 sender_id=STRING_DEFAULT;
             }
-            
+            header.sender_id=sender_id;
 
             //get recepient id
             str_len=message->value.choice.TestMessage03.header.targetStaticId.size;

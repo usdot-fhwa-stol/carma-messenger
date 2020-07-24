@@ -33,7 +33,7 @@ public class DSRCMessageFactory {
         case "MobilityResponse":
             return new MobilityResponseMessage(log, factory);
         case "MobilityOperation":
-		break;
+		    return null;
             //return new MobilityOperationMessage(factory, log);
         case "MAP":
             return new MapMessage(factory, log);
