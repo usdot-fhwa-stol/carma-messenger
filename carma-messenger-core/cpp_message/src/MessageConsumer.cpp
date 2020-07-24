@@ -50,9 +50,9 @@ namespace Message_cpp
     }
     
     int MessageConsumer::run(){
-    initialize();
-    ros::CARMANodeHandle::spin();
-    return 0;
+        initialize();
+        ros::CARMANodeHandle::spin();
+        return 0;
     }
 
     void MessageConsumer::outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg)
