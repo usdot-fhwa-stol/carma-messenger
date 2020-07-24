@@ -610,6 +610,129 @@ namespace cpp_message
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
     
+    // ==================================== START =============================================
+
+    boost::optional<std::vector<uint8_t>> Message::encode_geofence_control_combined(j2735_msgs::TrafficControlMessage control_msg)
+    {
+        // encode result placeholder
+        uint8_t buffer[512];
+	    size_t buffer_size = sizeof(buffer);
+	    asn_enc_rval_t ec;
+	    MessageFrame_t* message;
+	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+        // if mem allocation fails
+	    if (!message)
+        {
+		    ROS_WARN_STREAM("Cannot allocate mem for TrafficControlMessage message encoding");
+            return boost::optional<std::vector<uint8_t>>{};
+	    }
+
+	    //set message type to TestMessage05
+	    message->messageId = 245;
+        message->value.present = MessageFrame__value_PR_TestMessage05;        
+
+        if (control_msg.choice == j2735_msgs::TrafficControlMessage::RESERVED)
+        {
+            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_reserved;
+        }
+        else if (control_msg.choice == j2735_msgs::TrafficControlMessage::TCMV01)
+        {
+            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
+            // ========== TCMV01 =============
+            TrafficControlMessageV01_t* output_v01;
+            output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
+            j2735_msgs::TrafficControlMessageV01 msg_v01;
+            msg_v01 = control_msg.tcmV01;
+            // encode reqid
+            output_v01->reqid = *encode_id64b(msg_v01.reqid);
+            // encode reqseq 
+            output_v01->reqseq = msg_v01.reqseq;
+            // encode msgtot
+            output_v01->msgtot = msg_v01.msgtot;
+            // encode msgnum
+            output_v01->msgnum = msg_v01.msgnum;
+            // encode id
+            output_v01->id = *encode_id128b(msg_v01.id);
+
+            // encode updated
+            // recover an 8-bit array from a long value 
+            uint8_t updated_val[8];
+            for(auto k = 7; k >= 0; k--) {
+                updated_val[7 - k] = msg_v01.updated >> (k * 8);
+            }
+            output_v01->updated.buf = updated_val;
+            output_v01->updated.size = 8;
+
+            // encode package optional
+            if (msg_v01.package_exists)
+            {
+                //===================PACKAGE START==================
+                
+                TrafficControlPackage_t* output;
+                output = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
+                
+                //convert label string to char array (optional)
+                if (msg.label_exists)
+                {
+                    auto string_size = msg.label.size();
+                    uint8_t label_content[string_size];
+                    for(auto i = 0; i < string_size; i++)
+                    {
+                        label_content[i] = msg.label[i];
+                    }
+                    // such chain init and assignments are needed to properly encode
+                    IA5String_t* label_p;
+                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+                    label_p->buf = label_content;
+                    label_p->size = string_size;
+                    output->label = label_p;
+                }
+                
+                // convert tcids from list of Id128b
+                auto tcids_len = msg.tcids.size();
+                TrafficControlPackage::TrafficControlPackage__tcids* tcids;
+                tcids = (TrafficControlPackage::TrafficControlPackage__tcids*)calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+                for (auto i = 0; i < tcids_len; i++)
+                    asn_sequence_add(&tcids->list, encode_id128b(msg.tcids[i]));
+                output->tcids = *tcids;
+            }
+            ROS_WARN_STREAM("REACHED PACKAGE ENDING");
+            // encode params optional
+            if (msg_v01.params_exists)
+            {
+                output_v01->params = encode_geofence_control_params(msg_v01.params);        
+            }
+            ROS_WARN_STREAM("REACHED PARAMS ENDING");
+
+            // encode geometry optional
+            if (msg_v01.geometry_exists)
+            {
+                output_v01->geometry = encode_geofence_control_geometry(msg_v01.geometry);
+            }
+            ROS_WARN_STREAM("REACHED GEOMETRY ENDING");
+            }
+            else
+            {
+                message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_NOTHING;
+            }
+
+
+        // ===================== V01 end =====================
+        // encode message
+	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
+        // log a warning if fails
+        if(ec.encoded == -1) {
+            ROS_WARN_STREAM("Encoding Control Message failed!");
+            return boost::optional<std::vector<uint8_t>>{};
+        }
+        // copy to byte array msg
+        auto array_length = ec.encoded / 8;
+        std::vector<uint8_t> b_array(array_length);
+        for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
+        // for(auto i = 0; i < array_length; i++) std::cout<< b_array[i]<< ", ";
+        return boost::optional<std::vector<uint8_t>>(b_array);
+    }
+
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::TrafficControlMessage control_msg)
     {
         // encode result placeholder

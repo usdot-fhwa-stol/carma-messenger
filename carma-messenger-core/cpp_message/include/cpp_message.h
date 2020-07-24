@@ -94,6 +94,7 @@ public:
     j2735_msgs::PathNode decode_path_node(const PathNode_t& message);
     
     // sub-helper functions for encoding TrafficControlMessage
+    boost::optional<std::vector<uint8_t>> Message::encode_geofence_control_combined(j2735_msgs::TrafficControlMessage control_msg);
     TrafficControlMessageV01_t*  encode_geofence_control_v01(const j2735_msgs::TrafficControlMessageV01& msg);
     Id64b_t* encode_id64b(const j2735_msgs::Id64b& msg);
     Id128b_t*    encode_id128b(const j2735_msgs::Id128b& msg);
