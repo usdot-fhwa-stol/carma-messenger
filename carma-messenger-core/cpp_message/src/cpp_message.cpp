@@ -19,7 +19,7 @@
  */
 
 #include "cpp_message.h"
-
+#include <mutex>   
 namespace cpp_message
 {
 
@@ -108,58 +108,7 @@ namespace cpp_message
 
     boost::optional<j2735_msgs::ControlRequest> Message::decode_geofence_request(std::vector<uint8_t>& binary_array)
     {
-        /* TODO by Saina
-        j2735_msgs::ControlRequest output;
-        // decode results
-        asn_dec_rval_t rval;
-        MessageFrame_t* message = 0;
-        // copy from vector to array
-        auto len = binary_array.size();
-        uint8_t buf[len];
-        for(auto i = 0; i < len; i++) {
-            buf[i] = binary_array[i];
-        }
         
-        // use asn1c lib to decode
-        rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
-
-        // if decode successed
-        if(rval.code == RC_OK) {
-            // convert version from char array to string
-            std::string version;
-            auto str_len = message->value.choice.TestMessage04.body.version.size;
-            for(auto i = 0; i < str_len; i++)
-            {
-                version += message->value.choice.TestMessage04.body.version.buf[i];
-            }
-            output.version = version;
-            // copy scale field
-            output.scale = message->value.choice.TestMessage04.body.scale;
-            // copy bounds
-            auto bounds_count = message->value.choice.TestMessage04.body.bounds.list.count;
-            for(auto i = 0; i < bounds_count; i++) {
-                j2735_msgs::ControlBounds bound;
-                // copy lat/lon
-                bound.latitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lat;
-                bound.longitude = message->value.choice.TestMessage04.body.bounds.list.array[i]->lon;
-                // copy offset array to boost vector
-                auto count = message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.count;
-                for(auto j = 0; j < 3; j++) {
-                    bound.offsets[j] = *message->value.choice.TestMessage04.body.bounds.list.array[i]->offsets.list.array[j];
-                }
-                // recover a long value from 8-bit array
-                uint64_t long_bits = 0;
-                auto bits_array_size = message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.size;
-                for(auto j = 0; j < bits_array_size; j++) {
-                    long_bits |= message->value.choice.TestMessage04.body.bounds.list.array[i]->oldest.buf[j];
-                    long_bits = long_bits << 8;
-                }
-                bound.oldest = long_bits;
-                output.bounds.push_back(bound);
-            }
-            return boost::optional<j2735_msgs::ControlRequest>(output);
-        }
-        */
         return boost::optional<j2735_msgs::ControlRequest>{};
     }
 
@@ -535,77 +484,7 @@ namespace cpp_message
 
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_request(j2735_msgs::ControlRequest request_msg)
     {
-        /* TODO By Saina
-        // encode result placeholder
-        uint8_t buffer[512];
-	    size_t buffer_size = sizeof(buffer);
-	    asn_enc_rval_t ec;
-	    MessageFrame_t* message;
-	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
-        // if mem allocation fails
-	    if (!message)
-        {
-		    ROS_WARN_STREAM("Cannot allocate mem for ControlRequest message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-	    }
-
-	    //set message type to TestMessage04
-	    message->messageId = 244;
-        message->value.present = MessageFrame__value_PR_TestMessage04;        
-        //convert version string to char array
-        auto string_size = request_msg.version.size();
-        uint8_t strategy_string_content[string_size];
-        for(auto i = 0; i < string_size; i++)
-        {
-            strategy_string_content[i] = request_msg.version[i];
-        }
-        message->value.choice.TestMessage04.body.version.buf = strategy_string_content;
-        message->value.choice.TestMessage04.body.version.size = string_size;
-        // copy scale
-        message->value.choice.TestMessage04.body.scale = request_msg.scale;
-        // copy bounds
-        auto count = request_msg.bounds.size();
-        ControlRequest::ControlRequest__bounds* bounds_list;
-        bounds_list = (ControlRequest::ControlRequest__bounds*)calloc(1, sizeof(ControlRequest::ControlRequest__bounds));
-        for(auto i = 0; i < count; i++) {
-            // construct control bounds
-            ControlBounds_t* bounds_p;
-            bounds_p = (ControlBounds_t*) calloc(1, sizeof(ControlBounds_t));
-            bounds_p->lat = request_msg.bounds[i].latitude;
-            bounds_p->lon = request_msg.bounds[i].longitude;
-            // copy offsets from array to C list struct
-            ControlBounds::ControlBounds__offsets* offsets;
-            offsets = (ControlBounds::ControlBounds__offsets*)calloc(1, sizeof(ControlBounds::ControlBounds__offsets));
-            auto offset_count = request_msg.bounds[i].offsets.size();
-            for(auto j = 0; j < 3; j++) {
-                int16_t temp = request_msg.bounds[i].offsets[j];
-                asn_sequence_add(&offsets->list, &temp);
-            }
-            bounds_p->offsets = *offsets;
-            //convert a long value to an 8-bit array of length 8
-            uint8_t oldest_val[8];
-            for(auto k = 7; k >= 0; k--) {
-                // TODO this line needs to be tested
-                oldest_val[7 - k] = request_msg.bounds[i].oldest >> (k * 8);
-            }
-            bounds_p->oldest.size = 8;
-            bounds_p->oldest.buf = oldest_val;
-            asn_sequence_add(&bounds_list->list, bounds_p);
-        }
-        message->value.choice.TestMessage04.body.bounds = *bounds_list;
-
-	    // encode message
-	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
-        // log a warning if fails
-        if(ec.encoded == -1) {
-            return boost::optional<std::vector<uint8_t>>{};
-        }
-        // copy to byte array msg
-        auto array_length = ec.encoded / 8;
-        std::vector<uint8_t> b_array(array_length);
-        for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        return boost::optional<std::vector<uint8_t>>(b_array);
-        */
+        
         std::vector<uint8_t> b_array(10);
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
@@ -698,38 +577,7 @@ namespace cpp_message
                 j2735_msgs::TrafficControlPackage msg_package;
                 msg_package = msg_v01.package;
                 //convert label string to char array (optional)
-                if (msg_package.label_exists)
-                {
-                    auto label_size = msg_package.label.size();
-                    uint8_t label_content[label_size];
-                    for(auto i = 0; i < label_size; i++)
-                    {
-                        label_content[i] = msg_package.label[i];
-                        std::cout<< label_content[i] << std::endl;
-                    }
-                    // such chain init and assignments are needed to properly encode
-                    IA5String_t* label_p;
-                    label_p = ((IA5String_t*) calloc(1, sizeof(IA5String_t)));
-
-                    uint8_t* buf;
-                    buf = ((uint8_t*) calloc(1, sizeof(uint8_t)));
-                    buf = label_content;
-                    label_p->buf = buf;
-
-                    size_t* size_p;
-                    size_p = ((size_t*) calloc(1, sizeof(size_t)));
-                    size_p = &label_size;
-                    label_p->size = *size_p;
-
-                    output_package->label = label_p;
-                    
-                    //output_package->label->buf = label_content;
-                    //output_package->label->size = label_size;
-                    //output_package->label = ((OCTET_STRING_t*) calloc(1, sizeof(OCTET_STRING_t)));
-                    //output_package->label->buf = label_content;
-                    //output_package->label->size = label_size;
-
-                }
+                std::cout << "here " << output_package->label << std::endl;
                 
                 // convert tcids from list of Id128b
                 auto tcids_len = msg_package.tcids.size();
@@ -752,11 +600,37 @@ namespace cpp_message
                     output_128b->size = msg_128b.id.size();
                     asn_sequence_add(&tcids->list, output_128b);
                 }
-                    
+                
                 output_package->tcids = *tcids;
+                
                 // ================= PACKAGE END ==========================
                 output_v01->package = output_package;
+
+                if (msg_package.label_exists)
+                {
+                    std::mutex mtx;
+                    mtx.lock();
+                    auto label_size = msg_package.label.size();
+
+                    uint8_t label_content[label_size] = {0};
+                    for(auto i = 0; i < label_size; i++)
+                    {
+                        label_content[i] = msg_package.label[i];
+                        //std::cout<< label_content[i] << std::endl;
+                    }
+                    IA5String_t* label_p;
+                    if (!label_p) ROS_WARN_STREAM("WTF"); 
+                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+                    label_p->buf = label_content;
+                    label_p->size = (size_t)label_size;
+                    output_v01->package->label = label_p;
+                    std::cout << "A->" << output_package->label->buf << std::endl;
+                    std::cout << label_p->buf << std::endl;
+                    mtx.unlock();
+                }
+                
             }
+            std::cout << "Address->" <<  output_v01->package->label << std::endl;
             ROS_WARN_STREAM("REACHED PACKAGE ENDING");
             // encode params optional
             if (msg_v01.params_exists)

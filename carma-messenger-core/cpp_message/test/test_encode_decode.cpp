@@ -118,7 +118,7 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     // TrafficControlDetails END
     params.detail = detail;
     control.params = params;
-    control.params_exists = true;
+    control.params_exists = false;
     // TrafficControlParams END
 
     // TrafficControlGeometry START
