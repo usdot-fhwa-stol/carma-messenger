@@ -67,20 +67,7 @@ namespace cpp_message
 
     void Message::outbound_control_request_callback(const j2735_msgs::ControlRequestConstPtr& msg)
     {
-        /* TODO: by Saina
-        j2735_msgs::ControlRequest request_msg(*msg.get());
-        auto res = encode_geofence_request(request_msg);
-        if(res) {
-            // copy to byte array msg
-            cav_msgs::ByteArray output;
-            output.content = res.get();
-            // publish result
-            outbound_binary_message_pub_.publish(output);
-        } else
-        {
-            ROS_WARN_STREAM("Cannot encode geofence request message.");
-        }
-        */
+        return;
     }
 
     void Message::outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg)
@@ -131,11 +118,11 @@ namespace cpp_message
 
         // if decode succeed
         if(rval.code == RC_OK) {
-            if (message->value.choice.TestMessage05.body.choice.reserved)
+            if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_reserved)
             {
                 output.choice = j2735_msgs::TrafficControlMessage::RESERVED;
             }
-            else if (message->value.choice.TestMessage05.body.choice.tcmV01.reqid.size)
+            else if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_tcmV01)
             {
                 output.choice = j2735_msgs::TrafficControlMessage::TCMV01;
                 output.tcmV01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
@@ -154,48 +141,55 @@ namespace cpp_message
         
         // decode reqseq 
         output.reqseq = message.reqseq;
-
+        std::cout << "checking insideseq " << (int)output.reqseq << std::endl; 
         // decode msgtot
         output.msgtot = message.msgtot;
-
+        std::cout << "checking insidetot " << output.msgtot << std::endl; 
         // decode msgnum
         output.msgnum = message.msgnum;
-
+        std::cout << "checking insidenum " << output.msgnum << std::endl; 
         // decode id
         output.id = decode_id128b(message.id);
-                
+        std::cout << "checking inside id" << output.id << std::endl; 
         // decode updated
         // recover a long value from 8-bit array
         uint64_t tmp_update=0;
-        for (auto i=0; i<8; i++){
+        auto update_bits_size = message.updated.size;
+        for (auto i=0; i< update_bits_size; i++){
             tmp_update |= message.updated.buf[i];
-            tmp_update = tmp_update << 8;
+            if (i !=7) tmp_update = tmp_update << 8;
         }
         output.updated = tmp_update;
-
+        std::cout << "checking inside updated" << (int)tmp_update << std::endl; 
         // decode package optional
         output.package_exists = false;
-        if (message.package->label->size)
+        if (message.package)
         {
             output.package_exists = true;
+
             output.package = decode_geofence_control_package(*message.package);
         }
 
         // decode params optional
         output.params_exists = false;
-        if (message.params->detail.choice.signal.size)
+        if (message.params)
         {
+            ROS_WARN_STREAM("HERE! params ");
+            
             output.params_exists = true;
             output.params = decode_geofence_control_params(*message.params);        
         }
+        ROS_WARN_STREAM("HERE!2");
 
         // decode geometry optional
         output.geometry_exists = false;
-        if (message.geometry->nodes.list.size)
+        if (message.geometry)
         {
             output.geometry_exists = true;
             output.geometry = decode_geofence_control_geometry(*message.geometry);
         }
+        ROS_WARN_STREAM("HERE!3");
+
         return output;
     }
 
@@ -238,9 +232,15 @@ namespace cpp_message
         output.label_exists = label_len > 0;
 
         // convert tcids from list of Id128b
-        auto tcids_len = message.tcids.list.size;
+        size_t tcids_len = message.tcids.list.count;
+        ROS_WARN_STREAM("HERE! packages 1 " << tcids_len);
+
         for (auto i = 0; i < tcids_len; i++)
+        {
+            ROS_WARN_STREAM("HERE! packages" << decode_id128b(*message.tcids.list.array[i]));
             output.tcids.push_back(decode_id128b(*message.tcids.list.array[i]));
+        }
+            
 
         return output;
     }
@@ -250,20 +250,23 @@ namespace cpp_message
         j2735_msgs::TrafficControlParams output;
 
         // convert vlasses
-        auto vclasses_len = message.vclasses.list.size;
+        auto vclasses_len = message.vclasses.list.count;
         for (auto i = 0; i < vclasses_len; i ++)
         {
             output.vclasses.push_back(decode_geofence_control_veh_class(*message.vclasses.list.array[i]));
+            ROS_WARN_STREAM(">>" << decode_geofence_control_veh_class(*message.vclasses.list.array[i]));        
         }
         
         // convert schedule
         output.schedule = decode_geofence_control_schedule(message.schedule);
+        ROS_WARN_STREAM(">>" << output.schedule);
         
         // regulatory
         output.regulatory = message.regulatory;
-
+        ROS_WARN_STREAM(">>" << (int)output.regulatory);
         // convert traffic control detail
         output.detail = decode_geofence_control_detail(message.detail);
+        ROS_WARN_STREAM(">>" << output.detail);
 
         return output;
     }
@@ -282,20 +285,20 @@ namespace cpp_message
         j2735_msgs::TrafficControlSchedule output;
         
         // long int from 8-bit array for "start"
-        uint64_t tmp_time = 0;
+        uint64_t tmp_start = 0;
         for (auto i=0; i<8; i++){
-            tmp_time |= message.start.buf[i];
-            tmp_time = tmp_time << 8;
+            tmp_start |= message.start.buf[i];
+            if (i != 7) tmp_start = tmp_start << 8;
         }
-        output.start = tmp_time;
-
+        output.start = tmp_start;
+        
         // long int from 8-bit array for "end" (optional)
-        tmp_time = 0;
+        uint64_t tmp_end = 0;
         for (auto i=0; i<8; i++){
-            tmp_time |= message.end->buf[i];
-            tmp_time = tmp_time << 8;
+            tmp_end |= message.end->buf[i];
+            if (i != 7) tmp_end = tmp_end << 8;
         }
-        output.end = tmp_time;
+        output.end = tmp_end;
         output.end_exists = output.end != 153722867280912; // default value, which is same as not having it
 
         // recover the dow array (optional)
@@ -303,7 +306,7 @@ namespace cpp_message
         output.dow = decode_day_of_week(*message.dow);
         
         // recover the dailyschedule between (optional)
-        auto between_len = message.between->list.size;
+        auto between_len = message.between->list.count;
         output.between_exists = between_len > 0;
         for (auto i = 0; i < between_len; i ++)
         {
@@ -322,7 +325,8 @@ namespace cpp_message
     {
         j2735_msgs::DayOfWeek output;
         
-        auto dow_size= message.size;
+        size_t dow_size= message.size;
+        ROS_WARN_STREAM("=================decode dow size: " << (uint8_t)dow_size);
         for (auto i = 0; i < dow_size; i++)
         {
             output.dow[i] = message.buf[i];
@@ -355,60 +359,112 @@ namespace cpp_message
     {
         j2735_msgs::TrafficControlDetail output;
 
-        // TODO figure out how choice fits in here
-
-        // signal OCTET STRING SIZE(0..63),
-        auto signal_size = message.choice.signal.size;
-        for (auto i = 0; i < signal_size; i ++)
-            output.signal.push_back(message.choice.signal.buf[i]);
-
-        // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
-        output.closed = message.choice.closed;
-
-        // 	chains ENUMERATED {no, permitted, required},
-        output.chains = message.choice.chains;
-
-        // 	direction ENUMERATED {forward, reverse},
-        output.direction = message.choice.direction;
-
-        // 	lataffinity ENUMERATED {left, right},
-        output.lataffinity = message.choice.lataffinity;
-
-        // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
-        auto latperm_size = message.choice.latperm.list.size;
-        for(auto i = 0; i < latperm_size; i++)
-            output.latperm[i] = *message.choice.latperm.list.array[i];
-
-        // 	parking ENUMERATED {no, parallel, angled},
-        output.parking = message.choice.parking;
-
-        // 	minspeed INTEGER (0..1023), -- tenths of m/s
-        output.minspeed = message.choice.minspeed;
-
-        // 	maxspeed INTEGER (0..1023), -- tenths of m/s
-        output.maxspeed = message.choice.maxspeed;
-
-        // 	minhdwy INTEGER (0..2047), -- tenths of meters
-        output.minhdwy = message.choice.minhdwy;
-
-        // 	maxvehmass INTEGER (0..65535), -- kg
-        output.maxvehmass = message.choice.maxvehmass;
-
-        // 	maxvehheight INTEGER (0..127), -- tenths of meters
-        output.maxvehheight = message.choice.maxvehheight;
-
-        // 	maxvehwidth INTEGER (0..127), -- tenths of meters
-        output.maxvehwidth = message.choice.maxvehwidth;
-
-        // 	maxvehlength INTEGER (0..1023), -- tenths of meters
-        output.maxvehlength = message.choice.maxvehlength;
-
-        // 	maxvehaxles INTEGER (2..15),
-        output.maxvehaxles = message.choice.maxvehaxles;
-
-        // 	minvehocc INTEGER (1..15), 
-        output.minvehocc = message.choice.minvehocc;
-
+        switch (message.present)
+        {
+            case TrafficControlDetail_PR_signal:
+            {
+                // signal OCTET STRING SIZE(0..63),
+                output.choice = j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE;
+                auto signal_size = message.choice.signal.size;
+                for (auto i = 0; i < signal_size; i ++)
+                output.signal.push_back(message.choice.signal.buf[i]);    
+                break;
+            }
+            case TrafficControlDetail_PR_stop:
+                output.choice = j2735_msgs::TrafficControlDetail::STOP_CHOICE;
+                break;
+            case TrafficControlDetail_PR_yield:
+                output.choice = j2735_msgs::TrafficControlDetail::YIELD_CHOICE;
+                break;
+            case TrafficControlDetail_PR_notowing:
+                output.choice = j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE;
+                break;
+            case TrafficControlDetail_PR_restricted:
+                output.choice = j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE;
+                break;
+            case TrafficControlDetail_PR_closed:
+                // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
+                output.closed = message.choice.closed;
+                output.choice = j2735_msgs::TrafficControlDetail::CLOSED_CHOICE;
+                break;
+            case TrafficControlDetail_PR_chains:
+                // 	chains ENUMERATED {no, permitted, required},
+                output.chains = message.choice.chains;
+                output.choice = j2735_msgs::TrafficControlDetail::CHAINS_CHOICE;
+                break;
+            case TrafficControlDetail_PR_direction:
+                // 	direction ENUMERATED {forward, reverse},
+                output.direction = message.choice.direction;
+                output.choice = j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE;
+                break;
+            case TrafficControlDetail_PR_lataffinity:
+                // 	lataffinity ENUMERATED {left, right},
+                output.lataffinity = message.choice.lataffinity;
+                output.choice = j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE;
+                break;
+            case TrafficControlDetail_PR_latperm:
+            {
+                // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
+                auto latperm_size = message.choice.latperm.list.count;
+                for(auto i = 0; i < latperm_size; i++)
+                    output.latperm[i] = *message.choice.latperm.list.array[i];
+                output.choice = j2735_msgs::TrafficControlDetail::LATPERM_CHOICE;
+                break;
+            }
+            case TrafficControlDetail_PR_parking:
+                // 	parking ENUMERATED {no, parallel, angled},
+                output.parking = message.choice.parking;
+                output.choice = j2735_msgs::TrafficControlDetail::PARKING_CHOICE;
+                break;
+            case TrafficControlDetail_PR_minspeed:
+                // 	minspeed INTEGER (0..1023), -- tenths of m/s
+                output.minspeed = message.choice.minspeed;
+                output.choice = j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxspeed:
+                // 	maxspeed INTEGER (0..1023), -- tenths of m/s
+                output.maxspeed = message.choice.maxspeed;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE;
+                break;
+            case TrafficControlDetail_PR_minhdwy:
+                // 	minhdwy INTEGER (0..2047), -- tenths of meters
+                output.minhdwy = message.choice.minhdwy;
+                output.choice = j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxvehmass:
+                // 	maxvehmass INTEGER (0..65535), -- kg
+                output.maxvehmass = message.choice.maxvehmass;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxvehheight:
+                // 	maxvehheight INTEGER (0..127), -- tenths of meters
+                output.maxvehheight = message.choice.maxvehheight;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxvehwidth:
+                // 	maxvehwidth INTEGER (0..127), -- tenths of meters
+                output.maxvehwidth = message.choice.maxvehwidth;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxvehlength:
+                // 	maxvehlength INTEGER (0..1023), -- tenths of meters
+                output.maxvehlength = message.choice.maxvehlength;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxvehaxles:
+                // 	maxvehaxles INTEGER (2..15),
+                output.maxvehaxles = message.choice.maxvehaxles;
+                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE;
+                break;
+            case TrafficControlDetail_PR_minvehocc:
+                // 	minvehocc INTEGER (1..15), 
+                output.minvehocc = message.choice.minvehocc;
+                output.choice = j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE;
+                break;
+            default:
+                break;
+        }
+        
         return output;
     }
 
@@ -435,12 +491,15 @@ namespace cpp_message
         output.datum = datum;
 
         // convert reftime
+        std:: cout << std::endl;
         uint64_t reftime = 0;
         for (auto i=0; i<8; i++){
             reftime |= message.reftime.buf[i];
-            reftime = reftime << 8;
+            ROS_WARN_STREAM("decodign " << message.reftime.buf[i]);
+            if (i != 7) reftime = reftime << 8;
         }
         output.reftime = reftime;
+        
 
         // reflon
         output.reflon = message.reflon;
@@ -455,7 +514,7 @@ namespace cpp_message
         output.heading = message.heading;
 
         // nodes
-        auto nodes_len = message.nodes.list.size;
+        auto nodes_len = message.nodes.list.count;
         for (auto i = 0; i < nodes_len; i ++)
         {
             output.nodes.push_back(decode_path_node(*message.nodes.list.array[i]));
@@ -495,9 +554,18 @@ namespace cpp_message
     {
         // encode result placeholder
         uint8_t buffer[512];
+        void * buffer_new;
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
 	    MessageFrame_t* message;
+        size_t s1 = sizeof(TrafficControlMessageV01_t);
+        size_t s2 = sizeof(TrafficControlGeometry_t);
+        size_t s3 = sizeof(TrafficControlParams_t);
+        size_t s4 = sizeof(TrafficControlPackage_t);
+        std::cout << "message frame: " << s1 << std::endl;
+        std::cout << "geometry: " << s2 << std::endl;
+        std::cout << "params: " << s3 << std::endl;        
+        std::cout << "package: " << s4 << std::endl;
 	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
         // if mem allocation fails
 	    if (!message)
@@ -549,7 +617,7 @@ namespace cpp_message
             output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
             
             // Type uint8[8]
-            uint8_t val_128b[8];
+            uint8_t val_128b[16];
             for(auto i = 0; i < msg_128b.id.size(); i++)
             {
                 val_128b[i] = msg_128b.id[i];
@@ -563,6 +631,7 @@ namespace cpp_message
             uint8_t updated_val[8];
             for(auto k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
+                ROS_WARN_STREAM("weird " << (uint8_t)updated_val[7-k]);
             }
             output_v01->updated.buf = updated_val;
             output_v01->updated.size = 8;
@@ -579,6 +648,23 @@ namespace cpp_message
                 //convert label string to char array (optional)
                 std::cout << "here " << output_package->label << std::endl;
                 
+                if (msg_package.label_exists)
+                {
+                    auto label_size = msg_package.label.size();
+
+                    uint8_t label_content[63] = {0};
+                    for(auto i = 0; i < label_size; i++)
+                    {
+                        label_content[i] = (char)msg_package.label[i];
+                        //std::cout<< label_content[i] << std::endl;
+                    }
+                    IA5String_t* label_p;
+                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+                    label_p->buf = label_content;
+                    label_p->size = (size_t)label_size;
+                    output_package->label = label_p;
+                }
+
                 // convert tcids from list of Id128b
                 auto tcids_len = msg_package.tcids.size();
                 TrafficControlPackage::TrafficControlPackage__tcids* tcids;
@@ -590,8 +676,8 @@ namespace cpp_message
                     msg_128b = msg_package.tcids[i];
                     output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     
-                    // Type uint8[8]
-                    uint8_t val[8];
+                    // Type uint8[16]
+                    uint8_t val[16];
                     for(auto i = 0; i < msg_128b.id.size(); i++)
                     {
                         val[i] = msg_128b.id[i];
@@ -602,36 +688,16 @@ namespace cpp_message
                 }
                 
                 output_package->tcids = *tcids;
+                ROS_WARN_STREAM( "size " << output_package->tcids.list.count);
+                ROS_WARN_STREAM( "size " << tcids_len);
+
                 
                 // ================= PACKAGE END ==========================
                 output_v01->package = output_package;
-
-                if (msg_package.label_exists)
-                {
-                    std::mutex mtx;
-                    mtx.lock();
-                    auto label_size = msg_package.label.size();
-
-                    uint8_t label_content[label_size] = {0};
-                    for(auto i = 0; i < label_size; i++)
-                    {
-                        label_content[i] = msg_package.label[i];
-                        //std::cout<< label_content[i] << std::endl;
-                    }
-                    IA5String_t* label_p;
-                    if (!label_p) ROS_WARN_STREAM("WTF"); 
-                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
-                    label_p->buf = label_content;
-                    label_p->size = (size_t)label_size;
-                    output_v01->package->label = label_p;
-                    std::cout << "A->" << output_package->label->buf << std::endl;
-                    std::cout << label_p->buf << std::endl;
-                    mtx.unlock();
-                }
                 
+                size_t ss = sizeof(*output_package);
+                std::cout << "real package: " << ss;
             }
-            std::cout << "Address->" <<  output_v01->package->label << std::endl;
-            ROS_WARN_STREAM("REACHED PACKAGE ENDING");
             // encode params optional
             if (msg_v01.params_exists)
             {
@@ -664,6 +730,8 @@ namespace cpp_message
                 }
                 output_schedule->start.buf= start_val;
                 output_schedule->start.size = 8;
+                ROS_WARN_STREAM("================s" <<(long)msg_schedule.start );
+
                 // long int from 8-bit array for "end" (optional)
                 if (msg_schedule.end_exists)
                 {
@@ -671,6 +739,7 @@ namespace cpp_message
                     for(auto k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
+                    ROS_WARN_STREAM("===============e" <<(long)msg_schedule.end );
                     EpochMins_t* end_p;
                     end_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
                     end_p->buf = end_val;
@@ -681,6 +750,7 @@ namespace cpp_message
                 if (msg_schedule.dow_exists)
                 {
                     output_schedule->dow = encode_day_of_week(msg_schedule.dow);
+                    ROS_WARN_STREAM("=========" << msg_schedule.dow);
                 }
                 // recover the dailyschedule between (optional)
                 if (msg_schedule.between_exists)
@@ -869,6 +939,8 @@ namespace cpp_message
                 ROS_WARN_STREAM("REACHED CHECKPOINT NEXT");
                 // ===================== PARAMS END =====================
                 output_v01->params = output_params;
+                size_t ss = sizeof(*output_params);
+                std::cout << "params real: " << ss;
             }
             ROS_WARN_STREAM("REACHED PARAMS ENDING");
 
@@ -883,52 +955,72 @@ namespace cpp_message
                 msg_geometry = msg_v01.geometry;
                 // convert proj string to char array
                 /// DEBUG START
-                
-                auto proj_size = msg_geometry.proj.size();
-                uint8_t proj_content[proj_size];
+                size_t proj_size = msg_geometry.proj.size();
+                uint8_t proj_content[63] = {0}; // 63 needs to be specified here
                 for(auto i = 0; i < proj_size; i++)
                 {
                     proj_content[i] = msg_geometry.proj[i];
                 }
+
                 output_geometry->proj.buf = proj_content;
                 output_geometry->proj.size = proj_size;
 
                 // convert datum string to char array
-                auto datum_size = msg_geometry.datum.size();
-                uint8_t datum_content[datum_size];
+                size_t datum_size = msg_geometry.datum.size();
+                uint8_t datum_content[63] = {0}; // 63 needs to be specified here
                 for(auto i = 0; i < datum_size; i++)
                 {
-                    datum_content[i] = msg_geometry.datum[i];
+                    datum_content[i] = msg_geometry.datum[i]; 
                 }
+
                 output_geometry->datum.buf = datum_content;
                 output_geometry->datum.size = datum_size;
+
+                /// DEBUGGG
                 
                 // encode reftime
                 // recover an 8-bit array from a long value 
+                //uint8_t reftime_val[8];
+                //for(auto k = 7; k >= 0; k--) {
+                //    reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
+                //}
+                //output_geometry->reftime.buf = reftime_val;
+                //output_geometry->reftime.size = 8;
+                
                 uint8_t reftime_val[8];
                 for(auto k = 7; k >= 0; k--) {
                     reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
+                    ROS_WARN_STREAM("reftime" << reftime_val[7 - k]);
                 }
-                output_geometry->reftime.buf = reftime_val;
-                output_geometry->reftime.size = 8;
 
+                EpochMins_t* reftime_p;
+                reftime_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+                reftime_p->buf = reftime_val;
+                reftime_p->size = 8;
+                output_geometry->reftime = *reftime_p;
+                
                 // reflon
                 output_geometry->reflon = msg_geometry.reflon;
+                ROS_WARN_STREAM("reflon" << (long)output_geometry->reflon);
                 
                 // reflat
                 output_geometry->reflat = msg_geometry.reflat;
+                ROS_WARN_STREAM("reflat" << (long)output_geometry->reflat);
 
                 // refelv
                 //uint16_t refelv_corrected = (unsigned) msg_geometry.refelv + 4096; // corrected refelv
-                output_geometry->refelv = (uint16_t)0;
+                output_geometry->refelv = msg_geometry.refelv;
+                ROS_WARN_STREAM("redev" << output_geometry->refelv);
 
                 // heading
                 output_geometry->heading = msg_geometry.heading;
+                ROS_WARN_STREAM("jeading" << (long)output_geometry->heading);
                 
                 // nodes
                 auto nodes_len = msg_geometry.nodes.size();
                 TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
                 nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
+                
                 for (auto i = 0; i < nodes_len; i ++)
                 {
                     //=============== NODE START ===========================
@@ -938,6 +1030,7 @@ namespace cpp_message
                     msg_node = msg_geometry.nodes[i];
                     output_node->x = msg_node.x;
                     output_node->y = msg_node.y;
+                    std::cout << "x:" << msg_node.x;
                     // optional fields
                     if (msg_node.z_exists) 
                     {
@@ -954,10 +1047,13 @@ namespace cpp_message
                     asn_sequence_add(&nodes_list->list, output_node);
                 }
                 output_geometry->nodes = *nodes_list;
+                ROS_WARN_STREAM("sze" << (long)output_geometry->nodes.list.count);
                 
                 //// DEBUG END
                 // ======================== GEOMETRY END =========================
                 output_v01->geometry = output_geometry;
+                size_t ss = sizeof(*output_geometry);
+                std::cout << "sdsdsd: " << ss;
             }
             ROS_WARN_STREAM("REACHED GEOMETRY ENDING");
             //============================TCMV01 END=====================
@@ -971,8 +1067,21 @@ namespace cpp_message
 
         // ===================== CONTROL MESSAGE end =====================
         // encode message
+        ssize_t ssize_res;
+        ssize_res = uper_encode_to_new_buffer(&asn_DEF_MessageFrame, 0, message, &buffer_new);
+        if (ssize_res =! -1)
+        {
+            ROS_WARN_STREAM("BYTES" << (int)ssize_res);
+        }
+        else
+        {
+            ROS_WARN_STREAM("SSIT_T LOST");
+        }
+        
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
+
+        
         if(ec.encoded == -1) {
             ROS_WARN_STREAM("Encoding Control Message failed!");
             return boost::optional<std::vector<uint8_t>>{};
@@ -981,7 +1090,7 @@ namespace cpp_message
         auto array_length = ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        // for(auto i = 0; i < array_length; i++) std::cout<< b_array[i]<< ", ";
+        for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
@@ -1248,13 +1357,15 @@ namespace cpp_message
         DSRC_DayOfWeek_t* output;
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
         
-        uint8_t dow_val[7];
-        for (auto i = 0; i < msg.dow.size(); i++)
+        uint8_t dow_val[8]; 
+        for (auto i = 0; i < 7; i++)
         {
             dow_val[i] = msg.dow[i];
+            ROS_WARN_STREAM("dow enc" << (uint8_t)dow_val[i]);
+
         }
         output->buf = dow_val;
-        output->size = 7;
+        output->size = 8;
 
         return output;
     } 

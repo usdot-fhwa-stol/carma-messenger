@@ -18,22 +18,63 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-
-TEST(CppMessageTest, DISABLED_testDecodeControlMsg)
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgPackage)
 {
-    std::vector<uint8_t> binar_input = {0, 245, 128, 128, 73, 24, 49, 100, 205, 163, 86, 205, 220, 57, 96, 197,
-                                        147, 54, 141, 91, 55, 112, 229, 131, 22, 76, 218, 53, 108, 221, 195, 150, 
-                                        12, 89, 51, 104, 212, 4, 8, 12, 16, 20, 24, 28, 32, 4, 8, 12, 16, 20, 24, 
-                                        28, 32, 0, 0, 0, 0, 0, 0, 0, 0, 8, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0, 0, 0, 90, 0, 32, 0, 32, 16, 0, 16, 0, 0, 56, 64, 112, 128, 0, 
-                                        0, 0, 0, 0, 0, 0, 107, 73, 210, 0, 107, 73, 210, 0, 0, 0, 0, 0, 16, 16, 0, 16, 0, 16, 0, 16, 8, 8, 0, 8, 0, 8, 0, 8, 0};
+    std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 
+                                                    20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 2, 241, 133, 58, 16, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0};
+                                                     
     cpp_message::Message worker;
-    auto res = worker.decode_geofence_control(binar_input);
+    auto res = worker.decode_geofence_control(binar_input_package_only);
     if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control_combined(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, testEncodeControlMsg1)
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgParams)
+{
+    std::vector<uint8_t> binar_input_params_only = {0, 245, 66, 40, 0, 0, 0, 0, 0, 0, 0, 
+                                                    1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    2, 241, 133, 56, 0, 47, 0, 0, 0, 1, 226, 
+                                                    64, 0, 0, 0, 1, 226, 64, 48, 190, 119, 
+                                                    169, 31, 110, 127, 0, 0, 128, 32, 2, 0, 
+                                                    128, 28, 88};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_control(binar_input_params_only);
+    if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control_combined(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+}
+
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgGeometry)
+{
+    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 72, 36, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 
+                                                        24, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                        0, 0, 0, 0, 0, 0, 2, 241, 133, 56, 28, 32, 225,
+                                                         0, 0, 0, 0, 4, 189, 107, 73, 210, 0, 107, 73, 
+                                                         210, 2, 32, 2, 0, 32, 60, 0, 12, 0, 12, 0, 12, 
+                                                         15, 0, 3, 0, 3, 0, 3, 2};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_control(binar_input_geometry_only);
+    if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+
+    auto res_encoded = worker.encode_geofence_control_combined(res.get());
+    if(res_encoded) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+}
+
+
+TEST(CppMessageTest, DISABLED_testEncodeControlMsg1)
 {
     cpp_message::Message worker;
 
@@ -69,7 +110,7 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     control.id = id128b;
     control.msgnum = 5;
     control.msgtot = 6;
-    control.updated = 12345678;
+    control.updated = (unsigned)12345678;
 
     // TrafficControlPackage START
     j2735_msgs::TrafficControlPackage package;
@@ -95,15 +136,15 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     daily_schedule.begin = 1;
     daily_schedule.duration = 2;
     schedule.between.push_back(daily_schedule);
-    schedule.start = 123456;
-    schedule.end = 123456;
+    schedule.start = (unsigned)123456;
+    schedule.end = (unsigned)123456;
     j2735_msgs::DayOfWeek dow;
-    dow.dow = {0,1,0,1,0,1,0};
+    dow.dow = {dow.MON,dow.TUE,dow.WED,dow.THU,dow.FRI,dow.SAT,dow.SUN};
     schedule.dow = dow;
     j2735_msgs::RepeatParams repeat;
-    repeat.offset = 1;
-    repeat.period = 2;
-    repeat.span = 3;
+    repeat.offset = (unsigned)1;
+    repeat.period = (unsigned)2;
+    repeat.span = (unsigned)3;
     schedule.repeat = repeat;
     params.schedule = schedule;
     // TrafficControlDetails START
@@ -118,28 +159,29 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     // TrafficControlDetails END
     params.detail = detail;
     control.params = params;
-    control.params_exists = false;
+    control.params_exists = true;
     // TrafficControlParams END
 
     // TrafficControlGeometry START
     j2735_msgs::TrafficControlGeometry geometry;
     geometry.proj = "a";
     geometry.datum = "a";
-    geometry.reftime = 0;
-    geometry.reflon = 0;
-    geometry.reflat = 0;
-    geometry.refelv = 0;
-    geometry.heading = 0;
+    geometry.reftime = (unsigned)1213;
+    geometry.reflon = 1;
+    geometry.reflat = 1;
+    geometry.refelv = 1;
+    geometry.heading = (unsigned)1;
     j2735_msgs::PathNode node;
     node.x = 1;
     node.y = 1;
-    node.z_exists = false;
+    node.z_exists = true;
     node.z = 1;
-    node.width_exists = false;
+    node.width_exists = true;
     node.width = 1;
     geometry.nodes.push_back(node);
+    geometry.nodes.push_back(node);
     control.geometry = geometry;
-    control.geometry_exists = false;    
+    control.geometry_exists = true;    
     // TrafficControlGeometry END
     // TrafficControlMessageV01 END
     control_main.tcmV01 = control;
