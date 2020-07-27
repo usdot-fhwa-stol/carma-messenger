@@ -18,7 +18,7 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(CppMessageTest, DISABLED_testDecodeControlMsgPackage)
+TEST(CppMessageTest, testDecodeControlMsgPackage)
 {
     std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 
                                                     20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -36,7 +36,7 @@ TEST(CppMessageTest, DISABLED_testDecodeControlMsgPackage)
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, DISABLED_testDecodeControlMsgParams)
+TEST(CppMessageTest, testDecodeControlMsgParams)
 {
     std::vector<uint8_t> binar_input_params_only = {0, 245, 66, 40, 0, 0, 0, 0, 0, 0, 0, 
                                                     1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 
@@ -50,12 +50,12 @@ TEST(CppMessageTest, DISABLED_testDecodeControlMsgParams)
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 
-    auto res_encoded = worker.encode_geofence_control_combined(res.get());
-    if(res_encoded) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
+    //auto res_encoded = worker.encode_geofence_control_combined(res.get());
+    //if(res_encoded) EXPECT_TRUE(true);
+    //else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, DISABLED_testDecodeControlMsgGeometry)
+TEST(CppMessageTest, testDecodeControlMsgGeometry)
 {
     std::vector<uint8_t> binar_input_geometry_only = {0, 245, 72, 36, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 
                                                         24, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -68,9 +68,9 @@ TEST(CppMessageTest, DISABLED_testDecodeControlMsgGeometry)
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 
-    auto res_encoded = worker.encode_geofence_control_combined(res.get());
-    if(res_encoded) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
+    //auto res_encoded = worker.encode_geofence_control_combined(res.get());
+    //if(res_encoded) EXPECT_TRUE(true);
+    //else EXPECT_TRUE(false);
 }
 
 
