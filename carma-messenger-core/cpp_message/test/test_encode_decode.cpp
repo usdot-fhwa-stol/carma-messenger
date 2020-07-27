@@ -73,7 +73,7 @@ TEST(CppMessageTest, testEncodeControlMsg2)
 
     // TrafficControlPackage START
     j2735_msgs::TrafficControlPackage package;
-    package.label = "12345";
+    package.label = "avs";
     package.label_exists = true;
     for (auto i = 0; i < 2; i++) package.tcids.push_back(id128b);
     control.package = package;
@@ -123,30 +123,39 @@ TEST(CppMessageTest, testEncodeControlMsg2)
 
     // TrafficControlGeometry START
     j2735_msgs::TrafficControlGeometry geometry;
-    geometry.proj = "this_is_sample_proj_string";
-    geometry.datum = "WGS84";
-    geometry.reftime = 1;
-    geometry.reflon = 1;
-    geometry.reflat = 1;
-    geometry.refelv = 1;
-    geometry.heading = 1;
+    geometry.proj = "a";
+    geometry.datum = "a";
+    geometry.reftime = 0;
+    geometry.reflon = 0;
+    geometry.reflat = 0;
+    geometry.refelv = 0;
+    geometry.heading = 0;
     j2735_msgs::PathNode node;
-    node.x = -1;
+    node.x = 1;
     node.y = 1;
-    node.z_exists = true;
+    node.z_exists = false;
     node.z = 1;
-    node.width_exists = true;
+    node.width_exists = false;
     node.width = 1;
     geometry.nodes.push_back(node);
     control.geometry = geometry;
-    control.geometry_exists = true;    
+    control.geometry_exists = false;    
     // TrafficControlGeometry END
     // TrafficControlMessageV01 END
     control_main.tcmV01 = control;
     // TrafficControlMessage END
-
+    /*
     auto res = worker.encode_geofence_control(control_main);
 
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+    */
+    auto res = worker.encode_geofence_control_combined(control_main);
+    
     if(res) EXPECT_TRUE(true);
     else
     {

@@ -630,7 +630,7 @@ namespace cpp_message
 	    //set message type to TestMessage05
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05;        
-
+        //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_msgs::TrafficControlMessage::RESERVED)
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_reserved;
@@ -638,13 +638,25 @@ namespace cpp_message
         else if (control_msg.choice == j2735_msgs::TrafficControlMessage::TCMV01)
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
-            // ========== TCMV01 =============
+            // ========== TCMV01 START =============
             TrafficControlMessageV01_t* output_v01;
             output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
             j2735_msgs::TrafficControlMessageV01 msg_v01;
             msg_v01 = control_msg.tcmV01;
             // encode reqid
-            output_v01->reqid = *encode_id64b(msg_v01.reqid);
+            Id64b_t* output_64b;
+            j2735_msgs::Id64b msg_64b;
+            msg_64b = msg_v01.reqid;
+            output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+            // Type uint8[8]
+            uint8_t val_64b[8];
+            for(auto i = 0; i < msg_64b.id.size(); i++)
+            {
+                val_64b[i] = msg_64b.id[i];
+            }
+            output_64b->buf = val_64b;
+            output_64b->size = msg_64b.id.size();
+            output_v01->reqid = *output_64b;
             // encode reqseq 
             output_v01->reqseq = msg_v01.reqseq;
             // encode msgtot
@@ -652,7 +664,20 @@ namespace cpp_message
             // encode msgnum
             output_v01->msgnum = msg_v01.msgnum;
             // encode id
-            output_v01->id = *encode_id128b(msg_v01.id);
+            Id128b_t* output_128b;
+            j2735_msgs::Id128b msg_128b;
+            msg_128b = msg_v01.id;
+            output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+            
+            // Type uint8[8]
+            uint8_t val_128b[8];
+            for(auto i = 0; i < msg_128b.id.size(); i++)
+            {
+                val_128b[i] = msg_128b.id[i];
+            }
+            output_128b->buf = val_128b;
+            output_128b->size = msg_128b.id.size();
+            output_v01->id = *output_128b;
 
             // encode updated
             // recover an 8-bit array from a long value 
@@ -667,57 +692,410 @@ namespace cpp_message
             if (msg_v01.package_exists)
             {
                 //===================PACKAGE START==================
+                TrafficControlPackage_t* output_package;
+                output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
                 
-                TrafficControlPackage_t* output;
-                output = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
-                
+                j2735_msgs::TrafficControlPackage msg_package;
+                msg_package = msg_v01.package;
                 //convert label string to char array (optional)
-                if (msg.label_exists)
+                if (msg_package.label_exists)
                 {
-                    auto string_size = msg.label.size();
-                    uint8_t label_content[string_size];
-                    for(auto i = 0; i < string_size; i++)
+                    auto label_size = msg_package.label.size();
+                    uint8_t label_content[label_size];
+                    for(auto i = 0; i < label_size; i++)
                     {
-                        label_content[i] = msg.label[i];
+                        label_content[i] = msg_package.label[i];
+                        std::cout<< label_content[i] << std::endl;
                     }
                     // such chain init and assignments are needed to properly encode
                     IA5String_t* label_p;
-                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
-                    label_p->buf = label_content;
-                    label_p->size = string_size;
-                    output->label = label_p;
+                    label_p = ((IA5String_t*) calloc(1, sizeof(IA5String_t)));
+
+                    uint8_t* buf;
+                    buf = ((uint8_t*) calloc(1, sizeof(uint8_t)));
+                    buf = label_content;
+                    label_p->buf = buf;
+
+                    size_t* size_p;
+                    size_p = ((size_t*) calloc(1, sizeof(size_t)));
+                    size_p = &label_size;
+                    label_p->size = *size_p;
+
+                    output_package->label = label_p;
+                    
+                    //output_package->label->buf = label_content;
+                    //output_package->label->size = label_size;
+                    //output_package->label = ((OCTET_STRING_t*) calloc(1, sizeof(OCTET_STRING_t)));
+                    //output_package->label->buf = label_content;
+                    //output_package->label->size = label_size;
+
                 }
                 
                 // convert tcids from list of Id128b
-                auto tcids_len = msg.tcids.size();
+                auto tcids_len = msg_package.tcids.size();
                 TrafficControlPackage::TrafficControlPackage__tcids* tcids;
                 tcids = (TrafficControlPackage::TrafficControlPackage__tcids*)calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
                 for (auto i = 0; i < tcids_len; i++)
-                    asn_sequence_add(&tcids->list, encode_id128b(msg.tcids[i]));
-                output->tcids = *tcids;
+                {
+                    Id128b_t* output_128b;
+                    j2735_msgs::Id128b msg_128b;
+                    msg_128b = msg_package.tcids[i];
+                    output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+                    
+                    // Type uint8[8]
+                    uint8_t val[8];
+                    for(auto i = 0; i < msg_128b.id.size(); i++)
+                    {
+                        val[i] = msg_128b.id[i];
+                    }
+                    output_128b->buf = val;
+                    output_128b->size = msg_128b.id.size();
+                    asn_sequence_add(&tcids->list, output_128b);
+                }
+                    
+                output_package->tcids = *tcids;
+                // ================= PACKAGE END ==========================
+                output_v01->package = output_package;
             }
             ROS_WARN_STREAM("REACHED PACKAGE ENDING");
             // encode params optional
             if (msg_v01.params_exists)
             {
-                output_v01->params = encode_geofence_control_params(msg_v01.params);        
+                // ===================== PARAMS START =====================
+                TrafficControlParams_t* output_params;
+                output_params = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t));
+                j2735_msgs::TrafficControlParams msg_params;
+                msg_params = msg_v01.params;
+                // convert vlasses
+                auto vclasses_size = msg_params.vclasses.size();
+                TrafficControlParams::TrafficControlParams__vclasses* vclasses_list;
+                vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
+                
+                for (auto i = 0; i < vclasses_size; i ++)
+                {
+                    asn_sequence_add(&vclasses_list->list, encode_geofence_control_veh_class(msg_params.vclasses[i]));
+                }
+                output_params->vclasses = *vclasses_list;
+
+                // convert schedule
+                // ======================= SCHEDULE START ===================================
+                TrafficControlSchedule_t* output_schedule;
+                output_schedule = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t));
+                j2735_msgs::TrafficControlSchedule msg_schedule;
+                msg_schedule = msg_params.schedule;
+                // 8-bit array from long int for "start"
+                uint8_t start_val[8];
+                for(auto k = 7; k >= 0; k--) {
+                    start_val[7 - k] = msg_schedule.start >> (k * 8);
+                }
+                output_schedule->start.buf= start_val;
+                output_schedule->start.size = 8;
+                // long int from 8-bit array for "end" (optional)
+                if (msg_schedule.end_exists)
+                {
+                    uint8_t end_val[8];
+                    for(auto k = 7; k >= 0; k--) {
+                        end_val[7 - k] = msg_schedule.end >> (k * 8);
+                    }
+                    EpochMins_t* end_p;
+                    end_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+                    end_p->buf = end_val;
+                    end_p->size = 8;
+                    output_schedule->end = end_p;
+                }
+                // recover the dow array (optional)
+                if (msg_schedule.dow_exists)
+                {
+                    output_schedule->dow = encode_day_of_week(msg_schedule.dow);
+                }
+                // recover the dailyschedule between (optional)
+                if (msg_schedule.between_exists)
+                {
+                    auto between_len = msg_schedule.between.size();
+                    TrafficControlSchedule::TrafficControlSchedule__between* between_list;
+                    between_list = (TrafficControlSchedule::TrafficControlSchedule__between*) calloc(1, sizeof(TrafficControlSchedule::TrafficControlSchedule__between));
+                    
+                    for (auto i = 0; i < between_len; i ++)
+                    {
+                        asn_sequence_add(&between_list->list, encode_daily_schedule(msg_schedule.between[i]));
+                    }
+                    output_schedule->between = between_list;
+                }
+
+                // recover the repeat parameter (optional)
+                if (msg_schedule.repeat_exists)
+                {
+                    output_schedule->repeat = encode_repeat_params(msg_schedule.repeat);
+                }
+                // ======================= SCHEDULE END =============================
+                output_params->schedule = *output_schedule;
+
+                // regulatory
+                output_params->regulatory = msg_params.regulatory;
+
+                // convert traffic control detail
+                // ===================== DETAIL START ============================
+                TrafficControlDetail_t* output_detail;
+                output_detail = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
+                j2735_msgs::TrafficControlDetail msg_detail;
+                msg_detail = msg_params.detail;
+                switch(msg_detail.choice)
+                {
+                    case j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_signal;
+                        // signal OCTET STRING SIZE(0..63),
+                        auto signal_size = msg_detail.signal.size();
+                        uint8_t signal_val[signal_size];
+                        for (auto i = 0; i < signal_size; i ++)
+                            signal_val[i] = msg_detail.signal[i];
+                        output_detail->choice.signal.buf = signal_val;
+                        output_detail->choice.signal.size = signal_size;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::STOP_CHOICE:
+                        output_detail->present = TrafficControlDetail_PR_stop;
+                    break;
+                    
+                    case j2735_msgs::TrafficControlDetail::YIELD_CHOICE:
+                        output_detail->present = TrafficControlDetail_PR_yield;
+                    break;
+
+                    case j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE:
+                        output_detail->present = TrafficControlDetail_PR_notowing;
+                    break;
+
+                    case j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE:
+                        output_detail->present = TrafficControlDetail_PR_restricted;
+                    break;
+
+                    case j2735_msgs::TrafficControlDetail::CLOSED_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_closed;
+                        // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
+                        output_detail->choice.closed = msg_detail.closed;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::CHAINS_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_chains;
+                        // 	chains ENUMERATED {no, permitted, required},
+                        output_detail->choice.chains = msg_detail.chains;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_direction;
+                        // 	direction ENUMERATED {forward, reverse},
+                        output_detail->choice.direction = msg_detail.direction;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_lataffinity;
+                        // 	lataffinity ENUMERATED {left, right},
+                        output_detail->choice.lataffinity = msg_detail.lataffinity;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::LATPERM_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_latperm;
+                        // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
+                        auto latperm_size = msg_detail.latperm.size();
+                        TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
+                        latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
+                        
+                        for(auto i = 0; i < latperm_size; i++)
+                        {
+                            long* item_p;
+                            item_p = (long*) calloc(1, sizeof(long));
+                            *item_p = msg_detail.latperm[i];
+                            asn_sequence_add(&latperm_p->list, item_p);
+                        }
+                        output_detail->choice.latperm = *latperm_p;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::PARKING_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_parking;
+                        // 	parking ENUMERATED {no, parallel, angled},
+                        output_detail->choice.parking = msg_detail.parking;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_minspeed;
+                        // 	minspeed INTEGER (0..1023), -- tenths of m/s
+                        output_detail->choice.minspeed = msg_detail.minspeed;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxspeed;
+                        // 	maxspeed INTEGER (0..1023), -- tenths of m/s
+                        output_detail->choice.maxspeed = msg_detail.maxspeed;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_minhdwy;
+                        // 	minhdwy INTEGER (0..2047), -- tenths of meters
+                        output_detail->choice.minhdwy = msg_detail.minhdwy;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxvehmass;
+                        // 	maxvehmass INTEGER (0..65535), -- kg
+                        output_detail->choice.maxvehmass = msg_detail.maxvehmass;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxvehheight;
+                        // 	maxvehheight INTEGER (0..127), -- tenths of meters
+                        output_detail->choice.maxvehheight = msg_detail.maxvehheight;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxvehwidth;
+                        // 	maxvehwidth INTEGER (0..127), -- tenths of meters
+                        output_detail->choice.maxvehwidth = msg_detail.maxvehwidth;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxvehlength;
+                        // 	maxvehlength INTEGER (0..1023), -- tenths of meters
+                        output_detail->choice.maxvehlength = msg_detail.maxvehlength;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_maxvehaxles;
+                        // 	maxvehaxles INTEGER (2..15),
+                        output_detail->choice.maxvehaxles = msg_detail.maxvehaxles;
+                    break;
+                    }
+                    case j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE:
+                    {
+                        output_detail->present = TrafficControlDetail_PR_minvehocc;
+                        // 	minvehocc INTEGER (1..15), 
+                        output_detail->choice.minvehocc = msg_detail.minvehocc;
+                    break;
+                    }
+                    default:
+                        output_detail->present = TrafficControlDetail_PR_NOTHING;
+                    break;
+                }
+
+                // ===================== DETAIL END =====================
+                output_params->detail = *output_detail;
+                ROS_WARN_STREAM("REACHED CHECKPOINT NEXT");
+                // ===================== PARAMS END =====================
+                output_v01->params = output_params;
             }
             ROS_WARN_STREAM("REACHED PARAMS ENDING");
 
             // encode geometry optional
             if (msg_v01.geometry_exists)
             {
-                output_v01->geometry = encode_geofence_control_geometry(msg_v01.geometry);
+                // ====================== GEOMETRY START ==========================
+                //output_v01->geometry = encode_geofence_control_geometry(msg_v01.geometry);
+                TrafficControlGeometry_t* output_geometry;
+                output_geometry = (TrafficControlGeometry_t*) calloc(1, sizeof(TrafficControlGeometry_t));
+                j2735_msgs::TrafficControlGeometry msg_geometry;
+                msg_geometry = msg_v01.geometry;
+                // convert proj string to char array
+                /// DEBUG START
+                
+                auto proj_size = msg_geometry.proj.size();
+                uint8_t proj_content[proj_size];
+                for(auto i = 0; i < proj_size; i++)
+                {
+                    proj_content[i] = msg_geometry.proj[i];
+                }
+                output_geometry->proj.buf = proj_content;
+                output_geometry->proj.size = proj_size;
+
+                // convert datum string to char array
+                auto datum_size = msg_geometry.datum.size();
+                uint8_t datum_content[datum_size];
+                for(auto i = 0; i < datum_size; i++)
+                {
+                    datum_content[i] = msg_geometry.datum[i];
+                }
+                output_geometry->datum.buf = datum_content;
+                output_geometry->datum.size = datum_size;
+                
+                // encode reftime
+                // recover an 8-bit array from a long value 
+                uint8_t reftime_val[8];
+                for(auto k = 7; k >= 0; k--) {
+                    reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
+                }
+                output_geometry->reftime.buf = reftime_val;
+                output_geometry->reftime.size = 8;
+
+                // reflon
+                output_geometry->reflon = msg_geometry.reflon;
+                
+                // reflat
+                output_geometry->reflat = msg_geometry.reflat;
+
+                // refelv
+                //uint16_t refelv_corrected = (unsigned) msg_geometry.refelv + 4096; // corrected refelv
+                output_geometry->refelv = (uint16_t)0;
+
+                // heading
+                output_geometry->heading = msg_geometry.heading;
+                
+                // nodes
+                auto nodes_len = msg_geometry.nodes.size();
+                TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
+                nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
+                for (auto i = 0; i < nodes_len; i ++)
+                {
+                    //=============== NODE START ===========================
+                    PathNode_t* output_node;
+                    output_node = (PathNode_t*) calloc(1, sizeof(PathNode_t));
+                    j2735_msgs::PathNode msg_node;
+                    msg_node = msg_geometry.nodes[i];
+                    output_node->x = msg_node.x;
+                    output_node->y = msg_node.y;
+                    // optional fields
+                    if (msg_node.z_exists) 
+                    {
+                        long z_temp = msg_node.z;
+                        output_node->z = &z_temp;
+                    }
+
+                    if (msg_node.width_exists) 
+                    {
+                        long width_temp = msg_node.width;
+                        output_node->width = &width_temp;
+                    }
+                    //================== NODE END =============================
+                    asn_sequence_add(&nodes_list->list, output_node);
+                }
+                output_geometry->nodes = *nodes_list;
+                
+                //// DEBUG END
+                // ======================== GEOMETRY END =========================
+                output_v01->geometry = output_geometry;
             }
             ROS_WARN_STREAM("REACHED GEOMETRY ENDING");
-            }
-            else
-            {
-                message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_NOTHING;
-            }
+            //============================TCMV01 END=====================
+            message->value.choice.TestMessage05.body.choice.tcmV01 = *output_v01;
+        }
+        else
+        {
+            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_NOTHING;
+        }
 
 
-        // ===================== V01 end =====================
+        // ===================== CONTROL MESSAGE end =====================
         // encode message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
@@ -788,6 +1166,7 @@ namespace cpp_message
         output = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
         
         // encode reqid
+
         output->reqid = *encode_id64b(msg.reqid);
         
         // encode reqseq 
@@ -1016,7 +1395,7 @@ namespace cpp_message
 
         return output;
     } 
-//// CHECKED ABOVE
+
     RepeatParams_t* Message::encode_repeat_params (const j2735_msgs::RepeatParams& msg)
     {
         RepeatParams_t* output;
