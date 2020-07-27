@@ -124,11 +124,11 @@ namespace cpp_message
 
         // if decode successed
         if(rval.code == RC_OK) {
-            if (message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_reserved){
+            if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_reserved){
                 
                 output.choice = j2735_msgs::TrafficControlRequest::RESERVED;
             }
-            else if (message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_tcrV01){
+            else if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_tcrV01){
 
                 output.choice = j2735_msgs::TrafficControlRequest::TCRV01;
                 j2735_msgs::TrafficControlRequestV01 tcrV01;
