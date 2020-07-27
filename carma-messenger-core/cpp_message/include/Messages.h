@@ -26,6 +26,8 @@ extern "C"
 #include<cav_msgs/ByteArray.h>
 #include<cav_msgs/MobilityHeader.h>
 #include<cav_msgs/MobilityOperation.h>
+#include<cav_msgs/MobilityResponse.h>
+#include<cav_msgs/MobilityPath.h>
 
 namespace Message_cpp
 {
@@ -39,8 +41,10 @@ class MessageConsumer
     int default_spin_rate=10;
     ros::Publisher outbound_binary_message_pub_;    //outgoing byte array after encode
     ros::Publisher mobility_operation_message_pub_;  //incoming mobility operation message after decoded
+    ros::Publisher mobility_response_message_pub_;
     ros::Subscriber inbound_binary_message_sub_;      //incoming byte array, need to decode
     ros::Subscriber mobility_operation_message_sub_; //outgoing plain mobility operation message 
+    ros::Subscriber mobility_response_message_sub_;
 
     void initialize();
 
@@ -48,8 +52,8 @@ class MessageConsumer
     int run();
     //callbacks for subscribers
     void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg);   //decode the message
-    void outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg);   //Check message type
-
+    void outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg);  
+    void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);   
 
 };
 

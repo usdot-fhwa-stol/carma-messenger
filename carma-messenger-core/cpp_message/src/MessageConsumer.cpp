@@ -20,6 +20,7 @@
 
 #include "Messages.h"
 #include "MobilityOperation_Message.h"
+#include "MobilityResponse_Message.h"
 
 namespace Message_cpp
 {
@@ -32,6 +33,8 @@ namespace Message_cpp
         inbound_binary_message_sub_=nh_->subscribe("inbound_binary_msg",5, &MessageConsumer::inbound_binary_callback, this);
         mobility_operation_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_operation_message_decoded",5);
         mobility_operation_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &MessageConsumer::outbound_mobility_operation_message_callback,this);
+        mobility_response_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_response_message_decoded",5);
+        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &MessageConsumer::outbound_mobility_response_message_callback,this);
     }
     
     void MessageConsumer::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -42,6 +45,12 @@ namespace Message_cpp
             Mobility_Operation decode;
             auto output=decode.decode_mobility_operation_message(array);
 
+        }
+        else if(msg->messageType=="MobilityResponse")
+        {
+            std::vector<uint8_t> array=msg->content;
+            Mobility_Response decode;
+            auto output=decode.decode_mobility_response_message(array);
         }
         else
         {
@@ -69,7 +78,25 @@ namespace Message_cpp
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode geofence control message.");
+            ROS_WARN_STREAM("Cannot encode mobility operation message.");
+        }
+    }
+
+    void MessageConsumer::outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg)
+        {//encode and publish as outbound binary message
+        Mobility_Response encode;
+        auto res=encode.encode_mobility_response_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility response message.");
         }
     }
 }

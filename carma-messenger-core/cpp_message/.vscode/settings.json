@@ -55,7 +55,8 @@
         "hash_map": "cpp",
         "hash_set": "cpp",
         "mutex": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "*.tpp": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/carma/carma-messenger-ws/devel/lib/python2.7/dist-packages",
