@@ -113,8 +113,33 @@ namespace cpp_message
             buf[i] = binary_array[i];
         }
         
-        // use asn1c lib to decode
-        rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
+        // decode reqseq 
+        output.reqseq = message.reqseq;
+        std::cout << "checking insideseq " << (int)output.reqseq << std::endl; 
+        // decode msgtot
+        output.msgtot = message.msgtot;
+        std::cout << "checking insidetot " << output.msgtot << std::endl; 
+        // decode msgnum
+        output.msgnum = message.msgnum;
+        std::cout << "checking insidenum " << output.msgnum << std::endl; 
+        // decode id
+        output.id = decode_id128b(message.id);
+        std::cout << "checking inside id" << output.id << std::endl; 
+        // decode updated
+        // recover a long value from 8-bit array
+        uint64_t tmp_update=0;
+        auto update_bits_size = message.updated.size;
+        for (auto i=0; i< update_bits_size; i++){
+            tmp_update |= message.updated.buf[i];
+            if (i !=7) tmp_update = tmp_update << 8;
+        }
+        output.updated = tmp_update;
+        std::cout << "checking inside updated" << (int)tmp_update << std::endl; 
+        // decode package optional
+        output.package_exists = false;
+        if (message.package)
+        {
+            output.package_exists = true;
 
         // if decode succeed
         if(rval.code == RC_OK) {
@@ -567,6 +592,14 @@ namespace cpp_message
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
 	    MessageFrame_t* message;
+        size_t s1 = sizeof(TrafficControlMessageV01_t);
+        size_t s2 = sizeof(TrafficControlGeometry_t);
+        size_t s3 = sizeof(TrafficControlParams_t);
+        size_t s4 = sizeof(TrafficControlPackage_t);
+        std::cout << "message frame: " << s1 << std::endl;
+        std::cout << "geometry: " << s2 << std::endl;
+        std::cout << "params: " << s3 << std::endl;        
+        std::cout << "package: " << s4 << std::endl;
 	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
         // if mem allocation fails
 	    if (!message)
@@ -878,7 +911,10 @@ namespace cpp_message
         ssize_t ec_new = uper_encode_to_new_buffer(&asn_DEF_MessageFrame, constraints, message, &buffer_void);
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
+
+        
         if(ec.encoded == -1) {
+            ROS_WARN_STREAM("Encoding Control Message failed!");
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg
