@@ -31,7 +31,7 @@ TEST(CppMessageTest, testDecodeControlMsgPackage)
 
     auto res_encoded = worker.encode_geofence_control(res.get());
     if(res_encoded) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);\
+    else EXPECT_TRUE(false);
     
 }
 
@@ -189,14 +189,12 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     control_main.tcmV01 = control;
     // TrafficControlMessage END
     auto res = worker.encode_geofence_control(control_main);
-
     if(res) EXPECT_TRUE(true);
     else
     {
         std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
-
     auto res_decoded = worker.decode_geofence_control(res.get());
 
     if(res_decoded) EXPECT_TRUE(true);
@@ -208,6 +206,84 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     j2735_msgs::TrafficControlMessage result = res_decoded.get();
     EXPECT_EQ(result.tcmV01.id.id, control_main.tcmV01.id.id);
     EXPECT_EQ(result.tcmV01.updated, control_main.tcmV01.updated);
+}
+
+
+
+TEST(CppMessageTest, testDecodeRequestMsg1)
+{
+    std::vector<uint8_t> binar_input = {0, 244, 1, 0};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_request(binar_input);
+    if(res) EXPECT_TRUE(true);
+    else EXPECT_TRUE(false);
+}
+
+
+TEST(CppMessageTest, testDecodeRequestMsg2)
+{
+    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_request(binar_input);
+    // if(res) EXPECT_TRUE(true);
+    if (res){
+        j2735_msgs::TrafficControlRequest req = res.get();
+        EXPECT_EQ(2344, req.tcrV01.bounds[0].oldest);
+        EXPECT_EQ(0, req.tcrV01.bounds[0].reflon);
+        EXPECT_EQ(1, req.tcrV01.reqseq);
+    }
+    else EXPECT_TRUE(false);
+}
+
+TEST(CppMessageTest, testEncodeRequestMsg1)
+{
+    cpp_message::Message worker;
+
+    j2735_msgs::TrafficControlRequest request;
+    request.choice = j2735_msgs::TrafficControlRequest::RESERVED;
+    auto res = worker.encode_geofence_request(request);
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
+TEST(CppMessageTest, testEncodeRequestMsg2)
+{
+    cpp_message::Message worker;
+
+    j2735_msgs::TrafficControlRequest request;
+    request.choice = j2735_msgs::TrafficControlRequest::TCRV01;
+
+    j2735_msgs::TrafficControlRequestV01 request1;
+    j2735_msgs::Id64b id64;
+    for(int i = 0; i < id64.id.size(); i++){
+        id64.id[i] = 0;
+    }
+    request1.reqid = id64;
+    request1.reqseq = 1;
+    request1.scale = 0;
+    j2735_msgs::TrafficControlBounds bounds;
+    bounds.reflon = 0;
+    bounds.reflat = 0;
+    bounds.oldest = 2344;
+    for(int i = 0; i < bounds.offsets.size(); i++){
+        j2735_msgs::OffsetPoint point;
+        point.deltax = 0;
+        point.deltay = 0;
+        bounds.offsets[i] = point;
+    } 
+    request1.bounds.push_back(bounds);
+    request.tcrV01 = request1;
+    auto res = worker.encode_geofence_request(request);
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
 }
 
 // Run all the tests

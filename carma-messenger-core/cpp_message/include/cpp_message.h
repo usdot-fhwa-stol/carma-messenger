@@ -28,9 +28,6 @@ extern "C"
 #include <j2735_msgs/TrafficControlRequest.h>
 #include <j2735_msgs/TrafficControlMessage.h>
 
-// TODO Delete before PR
-#include <j2735_msgs/ControlRequest.h>
-
 namespace cpp_message
 {
 /**
@@ -62,8 +59,8 @@ private:
 
     // callbacks for subscribers
     void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg);
-    void outbound_control_request_callback(const j2735_msgs::ControlRequestConstPtr& msg);
     void outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg);
+    void outbound_control_request_callback(const j2735_msgs::TrafficControlRequestConstPtr& msg);
 
 public:
 
@@ -73,8 +70,8 @@ public:
     int run();
 
     // helper functions for control message/request decode/encode
-    boost::optional<j2735_msgs::ControlRequest> decode_geofence_request(std::vector<uint8_t>& binary_array);
-    boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::ControlRequest request_msg);
+    boost::optional<j2735_msgs::TrafficControlRequest> decode_geofence_request(std::vector<uint8_t>& binary_array);
+    boost::optional<std::vector<uint8_t>> encode_geofence_request(j2735_msgs::TrafficControlRequest request_msg);
     boost::optional<j2735_msgs::TrafficControlMessage> decode_geofence_control(std::vector<uint8_t>& binary_array);
     boost::optional<std::vector<uint8_t>> encode_geofence_control(j2735_msgs::TrafficControlMessage control_msg);
 
