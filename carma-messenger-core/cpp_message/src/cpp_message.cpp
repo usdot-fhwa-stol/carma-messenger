@@ -154,13 +154,17 @@ namespace cpp_message
                 uint64_t long_bits = 0;
                 auto bits_array_size = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.size;
                 for(auto j = 0; j < bits_array_size; j++) {
-                    long_bits |= message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[j];
                     long_bits = long_bits << 8;
+                    long_bits |= message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[j];
+                    // long_bits = long_bits << 8;
+                    
                 }
+                // for(auto i = 0; i < 8; i++) std::cout<< int(message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[i])<< ", ";
+                
                 bound.oldest = long_bits;
                 // copy lat/lon
                 bound.reflon = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->reflon;
-                bound.reflon = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->reflon;
+                bound.reflat = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->reflat;
                 // copy offset array to boost vector
                 auto count = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.count;
                 for(auto j = 0; j < count; j++) {
@@ -259,7 +263,7 @@ namespace cpp_message
                 //convert a long value to an 8-bit array of length 8
                 uint8_t oldest_val[8];
                 for(auto k = 7; k >= 0; k--) {
-                    oldest_val[7 - k] = request_msg.tcrV01.bounds[i].oldest >> (k * 8);
+                    oldest_val[7-k] = request_msg.tcrV01.bounds[i].oldest >> (k * 8);
                 }
                 bounds_p->oldest.size = 8;
                 bounds_p->oldest.buf = oldest_val;

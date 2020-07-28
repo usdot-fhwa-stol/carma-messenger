@@ -29,12 +29,16 @@ TEST(CppMessageTest, testDecodeRequestMsg1)
 
 TEST(CppMessageTest, testDecodeRequestMsg2)
 {
-    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44,
-                                        0, 0, 0, 0, 0, 0, 6, 180, 157, 31, 246, 180, 157, 
-                                        32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
+    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
     cpp_message::Message worker;
     auto res = worker.decode_geofence_request(binar_input);
-    if(res) EXPECT_TRUE(true);
+    // if(res) EXPECT_TRUE(true);
+    if (res){
+        j2735_msgs::TrafficControlRequest req = res.get();
+        EXPECT_EQ(2344, req.tcrV01.bounds[0].oldest);
+        EXPECT_EQ(0, req.tcrV01.bounds[0].reflon);
+        EXPECT_EQ(1, req.tcrV01.reqseq);
+    }
     else EXPECT_TRUE(false);
 }
 
@@ -71,7 +75,7 @@ TEST(CppMessageTest, testEncodeRequestMsg2)
     j2735_msgs::TrafficControlBounds bounds;
     bounds.reflon = 0;
     bounds.reflat = 0;
-    bounds.oldest = 0;
+    bounds.oldest = 2344;
     for(int i = 0; i < bounds.offsets.size(); i++){
         j2735_msgs::OffsetPoint point;
         point.deltax = 0;
