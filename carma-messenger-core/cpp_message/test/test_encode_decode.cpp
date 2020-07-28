@@ -18,125 +18,73 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(CppMessageTest, testDecodeRequestMsg)
+TEST(CppMessageTest, testDecodeRequestMsg1)
 {
-    std::vector<uint8_t> binar_input = {0, 244, 56, 18, 48, 98, 201, 155, 70, 173, 155, 184, 114, 193, 139, 38, 109, 26,
-                                        182, 110, 225, 203, 6, 44, 153, 180, 106, 217, 187, 135, 45, 155, 54, 108, 217, 179,
-                                        0, 0, 0, 0, 0, 0, 0, 0, 3, 90, 78, 144, 3, 90, 78, 144, 8, 0, 8, 0, 8, 0, 0};
+    std::vector<uint8_t> binar_input = {0, 244, 1, 0};
     cpp_message::Message worker;
     auto res = worker.decode_geofence_request(binar_input);
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, testEncodeRequestMsg)
+TEST(CppMessageTest, testDecodeRequestMsg2)
+{
+    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
+    cpp_message::Message worker;
+    auto res = worker.decode_geofence_request(binar_input);
+    // if(res) EXPECT_TRUE(true);
+    if (res){
+        j2735_msgs::TrafficControlRequest req = res.get();
+        EXPECT_EQ(2344, req.tcrV01.bounds[0].oldest);
+        EXPECT_EQ(0, req.tcrV01.bounds[0].reflon);
+        EXPECT_EQ(1, req.tcrV01.reqseq);
+    }
+    else EXPECT_TRUE(false);
+}
+
+TEST(CppMessageTest, testEncodeRequestMsg1)
 {
     cpp_message::Message worker;
-    j2735_msgs::ControlRequest request;
-    request.version = "012345678901234567890123456789012345";
-    request.scale = 0;
-    j2735_msgs::ControlBounds bounds;
-    bounds.longitude = 0;
-    bounds.latitude = 0;
-    bounds.oldest = 0;
-    for(int i = 0; i < bounds.offsets.size(); i++) bounds.offsets[i] = 0;
-    request.bounds.push_back(bounds);
+
+    j2735_msgs::TrafficControlRequest request;
+    request.choice = j2735_msgs::TrafficControlRequest::RESERVED;
     auto res = worker.encode_geofence_request(request);
     if(res) EXPECT_TRUE(true);
     else
     {
-        //std::cout << "encoding failed!\n";
+        std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
 }
 
-
-TEST(CppMessageTest, testDecodeControlMsg)
-{
-    std::vector<uint8_t> binar_input = {0, 245, 128, 128, 73, 24, 49, 100, 205, 163, 86, 205, 220, 57, 96, 197,
-                                        147, 54, 141, 91, 55, 112, 229, 131, 22, 76, 218, 53, 108, 221, 195, 150, 
-                                        12, 89, 51, 104, 212, 4, 8, 12, 16, 20, 24, 28, 32, 4, 8, 12, 16, 20, 24, 
-                                        28, 32, 0, 0, 0, 0, 0, 0, 0, 0, 8, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                        0, 0, 0, 0, 0, 0, 0, 90, 0, 32, 0, 32, 16, 0, 16, 0, 0, 56, 64, 112, 128, 0, 
-                                        0, 0, 0, 0, 0, 0, 107, 73, 210, 0, 107, 73, 210, 0, 0, 0, 0, 0, 16, 16, 0, 16, 0, 16, 0, 16, 8, 8, 0, 8, 0, 8, 0, 8, 0};
-    cpp_message::Message worker;
-    auto res = worker.decode_geofence_control(binar_input);
-    if(res) EXPECT_TRUE(true);
-    else EXPECT_TRUE(false);
-}
-
-
-TEST(CppMessageTest, testEncodeControlMsg)
+TEST(CppMessageTest, testEncodeRequestMsg2)
 {
     cpp_message::Message worker;
-    j2735_msgs::ControlMessage control;
-    control.version = "012345678901234567890123456789012345";
-    
-    control.id = {1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8};
-    
-    control.updated = 0;
-    
-    j2735_msgs::VType v_type;
-    v_type.vehicle_type = 0;
-    control.vtypes.push_back(v_type);
 
-    j2735_msgs::Schedule schedule;
-    schedule.start = 0;
-    schedule.end = 0;
-    
-    schedule.dow_exists = true;
-    schedule.dow = {false, true, false, false, false, false, false};
+    j2735_msgs::TrafficControlRequest request;
+    request.choice = j2735_msgs::TrafficControlRequest::TCRV01;
 
-    schedule.between_exists = true;
-    schedule.between.start = 0;
-    schedule.between.end = 0;
-    schedule.between.utcoffset = 0;
-    
-
-    schedule.repeat_exists = true;
-    schedule.repeat.duration = 0;
-    schedule.repeat.interval = 0;
-
-    control.schedule = schedule;
-
-    control.regulatory = true;
-
-    control.control_type.control_type = 0;
-
-    control.control_value_exists = true;
-    control.control_value.value = 0;
-
-    control.path_parts = 0;
-
-    control.proj = "a";
-
-    control.datum = "a";
-
-    control.time = 0;
-
-    control.longitude = 0;
-    control.latitude = 0;
-    control.altitude = 0;
-    control.heading = 0;
-
-    j2735_msgs::Point point1;
-    point1.x = 0;
-    point1.y = 0;
-    point1.z_exists = true;
-    point1.z = 0;
-    point1.width = 0;
-    control.points.push_back(point1);
-
-    j2735_msgs::Point point2;
-    point2.x = 0;
-    point2.y = 0;
-    point2.z_exists = true;
-    point2.z = 0;
-    point2.width = 0;
-    control.points.push_back(point2);
-
-    auto res = worker.encode_geofence_control(control);
-
+    j2735_msgs::TrafficControlRequestV01 request1;
+    j2735_msgs::Id64b id64;
+    for(int i = 0; i < id64.id.size(); i++){
+        id64.id[i] = 0;
+    }
+    request1.reqid = id64;
+    request1.reqseq = 1;
+    request1.scale = 0;
+    j2735_msgs::TrafficControlBounds bounds;
+    bounds.reflon = 0;
+    bounds.reflat = 0;
+    bounds.oldest = 2344;
+    for(int i = 0; i < bounds.offsets.size(); i++){
+        j2735_msgs::OffsetPoint point;
+        point.deltax = 0;
+        point.deltay = 0;
+        bounds.offsets[i] = point;
+    } 
+    request1.bounds.push_back(bounds);
+    request.tcrV01 = request1;
+    auto res = worker.encode_geofence_request(request);
     if(res) EXPECT_TRUE(true);
     else
     {

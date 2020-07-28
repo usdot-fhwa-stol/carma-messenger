@@ -5,40 +5,37 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_TestMessage05_H_
-#define	_TestMessage05_H_
+#ifndef	_DailySchedule_H_
+#define	_DailySchedule_H_
 
 
 #include <asn_application.h>
 
 /* Including external dependencies */
-#include "TrafficControlMessage.h"
+#include <NativeInteger.h>
 #include <constr_SEQUENCE.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* TestMessage05 */
-typedef struct TestMessage05 {
-	TrafficControlMessage_t	 body;
-	/*
-	 * This type is extensible,
-	 * possible extensions are below.
-	 */
+/* DailySchedule */
+typedef struct DailySchedule {
+	long	 begin;
+	long	 duration;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} TestMessage05_t;
+} DailySchedule_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_TestMessage05;
-extern asn_SEQUENCE_specifics_t asn_SPC_TestMessage05_specs_1;
-extern asn_TYPE_member_t asn_MBR_TestMessage05_1[1];
+extern asn_TYPE_descriptor_t asn_DEF_DailySchedule;
+extern asn_SEQUENCE_specifics_t asn_SPC_DailySchedule_specs_1;
+extern asn_TYPE_member_t asn_MBR_DailySchedule_1[2];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _TestMessage05_H_ */
+#endif	/* _DailySchedule_H_ */
 #include <asn_internal.h>
