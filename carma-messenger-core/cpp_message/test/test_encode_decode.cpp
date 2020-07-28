@@ -28,6 +28,17 @@ TEST(CppMessageTest, testDecodeControlMsgPackage)
     auto res = worker.decode_geofence_control(binar_input_package_only);
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
+    
+    j2735_msgs::TrafficControlMessageV01 msg;
+    msg = res.get().tcmV01;
+
+    ASSERT_EQ(msg.reqseq, 111);
+    ASSERT_EQ(msg.msgnum, 5);
+    ASSERT_EQ(msg.msgtot, 6);
+    ASSERT_FALSE(msg.geometry_exists);
+    ASSERT_FALSE(msg.params_exists);
+    ASSERT_TRUE(msg.package_exists);
+    ASSERT_EQ(msg.package.label, "avs");
 
     auto res_encoded = worker.encode_geofence_control(res.get());
     if(res_encoded) EXPECT_TRUE(true);
@@ -44,6 +55,18 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
     auto res = worker.decode_geofence_control(binar_input_params_only);
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
+
+    j2735_msgs::TrafficControlMessageV01 msg;
+    msg = res.get().tcmV01;
+
+    ASSERT_EQ(msg.reqseq, 111);
+    ASSERT_EQ(msg.msgnum, 5);
+    ASSERT_EQ(msg.msgtot, 6);
+    ASSERT_FALSE(msg.geometry_exists);
+    ASSERT_TRUE(msg.params_exists);
+    ASSERT_FALSE(msg.package_exists);
+    ASSERT_EQ(msg.params.detail.choice, j2735_msgs::TrafficControlDetail::CLOSED_CHOICE);
+    ASSERT_EQ(msg.params.schedule.between[0].begin, 1);
 
     auto res_encoded = worker.encode_geofence_control(res.get());
     if(res_encoded) EXPECT_TRUE(true);
@@ -62,6 +85,18 @@ TEST(CppMessageTest, testDecodeControlMsgGeometry)
     auto res = worker.decode_geofence_control(binar_input_geometry_only);
     if(res) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
+
+    j2735_msgs::TrafficControlMessageV01 msg;
+    msg = res.get().tcmV01;
+
+    ASSERT_EQ(msg.reqseq, 111);
+    ASSERT_EQ(msg.msgnum, 5);
+    ASSERT_EQ(msg.msgtot, 6);
+    ASSERT_TRUE(msg.geometry_exists);
+    ASSERT_FALSE(msg.params_exists);
+    ASSERT_FALSE(msg.package_exists);
+    ASSERT_EQ(msg.geometry.reftime, 1213);
+    ASSERT_EQ(msg.geometry.refelv, 1);
 
     auto res_encoded = worker.encode_geofence_control(res.get());
     if(res_encoded) EXPECT_TRUE(true);
