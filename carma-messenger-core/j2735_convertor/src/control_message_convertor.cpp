@@ -210,7 +210,7 @@ void convert(const j2735_msgs::TrafficControlGeometry& in_msg, cav_msgs::Traffic
   out_msg.reftime = ros::Time(in_msg.reftime * units::SEC_PER_MIN, 0);
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.refelv = (float)in_msg.refelv / units::DECA_M_PER_M;
+  out_msg.refelv = (float)in_msg.refelv / units::DECA_M_PER_M - (float) 409.6; //handle offset
   out_msg.heading = (float)in_msg.heading / units::DECA_S_PER_S;
 
   for (auto in_node : in_msg.nodes)
@@ -534,7 +534,7 @@ void convert(const cav_msgs::TrafficControlGeometry& in_msg, j2735_msgs::Traffic
   out_msg.reftime = in_msg.reftime.toSec() / units::SEC_PER_MIN;
   out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
-  out_msg.refelv = (int32_t)(in_msg.refelv * units::DECA_M_PER_M);
+  out_msg.refelv = (int32_t)((in_msg.refelv + 409.6) * units::DECA_M_PER_M); // handle offset
   out_msg.heading = (int32_t)(in_msg.heading * units::DECA_S_PER_S);
 
   for (auto in_node : in_msg.nodes)

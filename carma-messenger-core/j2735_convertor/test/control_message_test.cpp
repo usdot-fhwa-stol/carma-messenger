@@ -106,7 +106,13 @@ namespace j2735_convertor
     if(optional)
     {
       in_msg.end = 3000000;
-      in_msg.dow.dow = j2735_msgs::DayOfWeek::TUE;
+      in_msg.dow.dow[0] = j2735_msgs::DayOfWeek::TUE;
+      in_msg.dow.dow[1] = j2735_msgs::DayOfWeek::MON;
+      in_msg.dow.dow[2] = j2735_msgs::DayOfWeek::WED;
+      in_msg.dow.dow[3] = j2735_msgs::DayOfWeek::THU;
+      in_msg.dow.dow[4] = j2735_msgs::DayOfWeek::FRI;
+      in_msg.dow.dow[5] = j2735_msgs::DayOfWeek::SAT;
+      in_msg.dow.dow[6] = j2735_msgs::DayOfWeek::SUN;
 
       j2735_msgs::DailySchedule ds;
       for(int i = 0; i < NUM_NODES; i++)
@@ -290,7 +296,13 @@ namespace j2735_convertor
     if(optional)
     {
       in_msg.end = ros::Time(180000);
-      in_msg.dow.dow = j2735_msgs::DayOfWeek::TUE;
+      in_msg.dow.dow[0] = j2735_msgs::DayOfWeek::TUE;
+      in_msg.dow.dow[1] = j2735_msgs::DayOfWeek::MON;
+      in_msg.dow.dow[2] = j2735_msgs::DayOfWeek::WED;
+      in_msg.dow.dow[3] = j2735_msgs::DayOfWeek::THU;
+      in_msg.dow.dow[4] = j2735_msgs::DayOfWeek::FRI;
+      in_msg.dow.dow[5] = j2735_msgs::DayOfWeek::SAT;
+      in_msg.dow.dow[6] = j2735_msgs::DayOfWeek::SUN;
 
       cav_msgs::DailySchedule ds;
       for(int i = 0; i < NUM_NODES; i++)
@@ -460,7 +472,7 @@ namespace j2735_convertor
     ASSERT_EQ(out_msg.reftime.nsec, 0.);
     ASSERT_NEAR(in_msg.reflon, out_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
     ASSERT_NEAR(in_msg.reflat, out_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
-    ASSERT_NEAR(in_msg.refelv, out_msg.refelv * units::DECA_M_PER_M, 0.000001);
+    ASSERT_NEAR(in_msg.refelv - 4096, out_msg.refelv * units::DECA_M_PER_M, 0.001 );
     ASSERT_NEAR(in_msg.heading, out_msg.heading * units::DECA_S_PER_S, 0.000001);
 
     for(int i = 0; i < NUM_NODES; i++)
