@@ -515,8 +515,7 @@ namespace cpp_message
         output.reflat = message.reflat;
 
         // refelv
-        output.refelv = message.refelv - 4096; //offset. currently ROS elevation supports -4096 while
-                                                // traffic control message does not
+        output.refelv = message.refelv; 
 
         // heading
         output.heading = message.heading;
@@ -604,10 +603,7 @@ namespace cpp_message
                 for(auto j = 0; j < bits_array_size; j++) {
                     long_bits = long_bits << 8;
                     long_bits |= message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[j];
-                    // long_bits = long_bits << 8;
-                    
                 }
-                // for(auto i = 0; i < 8; i++) std::cout<< int(message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[i])<< ", ";
                 
                 bound.oldest = long_bits;
                 // copy lat/lon
@@ -899,7 +895,6 @@ namespace cpp_message
                 output_geometry->reflat = msg_geometry.reflat;
 
                 // refelv
-                //uint16_t refelv_corrected = (unsigned) msg_geometry.refelv + 4096; // corrected refelv
                 output_geometry->refelv = msg_geometry.refelv;
 
                 // heading
