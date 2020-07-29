@@ -58,4 +58,7 @@
   <!-- UI -->
   <include file="$(find carma-messenger)/launch/ui.launch"/>
 
+  <!-- Message Encoder/Decoder Node -->
+  <include file="$(find cpp_message)/launch/cpp_message.launch"/>
+
 </launch>
