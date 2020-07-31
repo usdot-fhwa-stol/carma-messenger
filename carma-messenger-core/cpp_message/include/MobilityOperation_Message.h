@@ -1,3 +1,4 @@
+#pragma once
 /*
  * Copyright (C) 2020 LEIDOS.
  *
@@ -21,19 +22,28 @@ namespace Message_cpp
     {
         private:
         //constants
-            int STATIC_ID_MAX_LENGTH=16;
+            static const int STATIC_ID_MAX_LENGTH=16;
             std::string BSM_ID_DEFAULT="00000000";
-            int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
+            const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
             std::string STRING_DEFAULT="[]";
-            int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
+            const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
             std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-            int GUID_LENGTH=GUID_DEFAULT.length();
-            int STRATEGY_MAX_LENGTH=50;
-            int STRATEGY_PARAMS_MAX_LENGTH=1000;
+            const int GUID_LENGTH=GUID_DEFAULT.length();
+            static const int STRATEGY_MAX_LENGTH=50;
+            static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
         
         public:
-        //helper functions for message decode/encode
+        /**
+         * \brief helper function for Mobility Operation message decoding.
+         * \param binary_array Container with binary input.
+         * \return decoded ros message, returns null if decoding fails. 
+         */
         boost::optional<cav_msgs::MobilityOperation>decode_mobility_operation_message(std::vector<uint8_t>& binary_array);
+        /**
+         * \brief helper functions for Mobility Operation message encoding.
+         * \param plainMessage contains mobility operation ros message to be encoded as byte array.
+         * \return encoded byte array returns null if encoding fails. 
+         */
         boost::optional<std::vector<uint8_t>> encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage);
     };
 }

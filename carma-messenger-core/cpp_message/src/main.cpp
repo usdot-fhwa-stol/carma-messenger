@@ -23,8 +23,7 @@
 int main(int argc, char**argv)
 {
     ros::init(argc,argv,"cpp_message_node");
-    cpp_message::Message node;
-    Message_cpp::MessageConsumer node_2;
-    node_2.run();
+    //cpp_message::Message node;
+    Message_cpp::MessageConsumer node;
     return node.run();
 }

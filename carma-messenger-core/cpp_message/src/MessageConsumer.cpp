@@ -21,6 +21,7 @@
 #include "Messages.h"
 #include "MobilityOperation_Message.h"
 #include "MobilityResponse_Message.h"
+#include "cpp_message.h"
 
 namespace Message_cpp
 {
@@ -38,12 +39,13 @@ namespace Message_cpp
     }
     
     void MessageConsumer::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
-    {   //find message type and then send for decoding
+    {   
         if(msg->messageType=="MobilityOperation")   
         {
             std::vector<uint8_t> array=msg->content;
             Mobility_Operation decode;
             auto output=decode.decode_mobility_operation_message(array);
+            mobility_operation_message_pub_.publish(output.get());
 
         }
         else if(msg->messageType=="MobilityResponse")
@@ -51,6 +53,7 @@ namespace Message_cpp
             std::vector<uint8_t> array=msg->content;
             Mobility_Response decode;
             auto output=decode.decode_mobility_response_message(array);
+            mobility_response_message_pub_.publish(output);
         }
         else
         {
@@ -60,6 +63,8 @@ namespace Message_cpp
     
     int MessageConsumer::run(){
         initialize();
+        cpp_message::Message geofence_node;
+        geofence_node.run();
         ros::CARMANodeHandle::spin();
         return 0;
     }
@@ -72,6 +77,9 @@ namespace Message_cpp
         {
             //copy to byte array msg
             cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityOperation";
             output.content=res.get();
             //publish result
             outbound_binary_message_pub_.publish(output);
@@ -90,6 +98,9 @@ namespace Message_cpp
         {
             //copy to byte array msg
             cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityOperation";
             output.content=res.get();
             //publish result
             outbound_binary_message_pub_.publish(output);

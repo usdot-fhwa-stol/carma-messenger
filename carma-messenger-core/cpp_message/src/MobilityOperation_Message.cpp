@@ -28,7 +28,7 @@ namespace Message_cpp
         cav_msgs::MobilityOperation output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
-        MessageFrame_t* message=0;
+        MessageFrame_t* message=nullptr;
         
         //copy from vector to array         
         auto len=binary_array.size();    
@@ -243,6 +243,7 @@ namespace Message_cpp
          
         //log a warning if that fails
         if(ec.encoded == -1) {
+            ROS_WARN_STREAM("Encoding for Mobility Operation Message failed");
             return boost::optional<std::vector<uint8_t>>{};
         }
         

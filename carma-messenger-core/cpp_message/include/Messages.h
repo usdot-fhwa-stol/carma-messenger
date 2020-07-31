@@ -41,18 +41,31 @@ class MessageConsumer
     int default_spin_rate=10;
     ros::Publisher outbound_binary_message_pub_;    //outgoing byte array after encode
     ros::Publisher mobility_operation_message_pub_;  //incoming mobility operation message after decoded
-    ros::Publisher mobility_response_message_pub_;
+    ros::Publisher mobility_response_message_pub_;     //incoming mobility response message after decoded
     ros::Subscriber inbound_binary_message_sub_;      //incoming byte array, need to decode
     ros::Subscriber mobility_operation_message_sub_; //outgoing plain mobility operation message 
-    ros::Subscriber mobility_response_message_sub_;
+    ros::Subscriber mobility_response_message_sub_; //outgoing plain mobility response message
 
     void initialize();
 
     public:
     int run();
-    //callbacks for subscribers
-    void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg);   //decode the message
+    /**
+     * @brief function callback when there is an incoming byte array. Message type is checked and required decoding function called.
+     * @param msg container with binary input. Passed to a decoding function depending on message type.
+     */
+    void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg); 
+    /**
+     * @brief function callback when there is an incoming mobility operation message. .
+     * @param msg container with Mobility Operation ros message. Passed to an encoding function in Mobility_Operation class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
     void outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg);  
+    /**
+     * @brief function callback when there is an incoming mobility response message. .
+     * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
     void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);   
 
 };

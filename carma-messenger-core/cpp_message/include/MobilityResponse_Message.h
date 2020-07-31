@@ -1,3 +1,4 @@
+#pragma once
 /*
  * Copyright (C) 2020 LEIDOS.
  *
@@ -20,17 +21,27 @@ namespace Message_cpp
     class Mobility_Response
     {
             private:
-            int STATIC_ID_MAX_LENGTH=16;
+            static const int STATIC_ID_MAX_LENGTH=16;
             std::string BSM_ID_DEFAULT="00000000";
-            int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
+            const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
             std::string STRING_DEFAULT="[]";
-            int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
+            const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
             std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-            int GUID_LENGTH=GUID_DEFAULT.length();
+            const int GUID_LENGTH=GUID_DEFAULT.length();
 
             public:
              //helper functions for message decode/encode
+            /**
+             * \brief helper function for Mobility Response message decoding.
+             * @param binary_array Container with binary input.
+             * @return decoded ros message, returns null if decoding fails. 
+             */
             cav_msgs::MobilityResponse decode_mobility_response_message(std::vector<uint8_t>& binary_array);
+            /**
+             * helper functions for Mobility Response message encoding.
+             * @param plainMessage contains mobility response ros message to be encoded as byte array.
+             * @return encoded byte array returns null if encoding fails. 
+             */
             boost::optional<std::vector<uint8_t>> encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage);
 
     };
