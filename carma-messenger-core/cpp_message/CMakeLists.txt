@@ -45,7 +45,7 @@ add_executable(cpp_message_node
 target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES} cpp_message_library)
 
 add_library(cpp_message_library src/cpp_message.cpp 
-            src/MessageConsumer.cpp
+            ##src/MessageConsumer.cpp
             src/MobilityOperation_Message.cpp
             src/MobilityResponse_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)

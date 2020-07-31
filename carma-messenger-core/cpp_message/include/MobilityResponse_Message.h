@@ -14,9 +14,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-#include "Messages.h"
+#include "cpp_message.h"
 
-namespace Message_cpp
+namespace cpp_message
 {
     class Mobility_Response
     {

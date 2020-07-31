@@ -15,7 +15,6 @@
  */
 
 #include "cpp_message.h"
-#include "MessageConsumer.cpp"
 
 /**
  * Entry Function for Execution
@@ -23,7 +22,6 @@
 int main(int argc, char**argv)
 {
     ros::init(argc,argv,"cpp_message_node");
-    //cpp_message::Message node;
-    Message_cpp::MessageConsumer node;
+    cpp_message::Message node;
     return node.run();
 }

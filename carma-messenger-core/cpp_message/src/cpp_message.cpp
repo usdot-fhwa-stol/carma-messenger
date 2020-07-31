@@ -19,6 +19,8 @@
  */
 
 #include "cpp_message.h"
+#include "MobilityOperation_Message.h"
+#include "MobilityResponse_Message.h"
 
 namespace cpp_message
 {
@@ -34,6 +36,10 @@ namespace cpp_message
         inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::ControlRequest>("incoming_j2735_geofence_request", 5);
         outbound_geofence_control_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_control", 5, &Message::outbound_control_message_callback, this);
         inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::ControlMessage>("incoming_j2735_geofence_control", 5);
+        mobility_operation_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_operation_message_decoded",5);
+        mobility_operation_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_operation_message_callback,this);
+        mobility_response_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_response_message_decoded",5);
+        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_response_message_callback,this);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -62,6 +68,23 @@ namespace cpp_message
             {
                 ROS_WARN_STREAM("Cannot decode geofence control message.");
             }
+        }
+        
+        else if(msg->messageType=="MobilityOperation")   
+        {
+            std::vector<uint8_t> array=msg->content;
+            Mobility_Operation decode;
+            auto output=decode.decode_mobility_operation_message(array);
+            mobility_operation_message_pub_.publish(output.get());
+
+        }
+
+        else if(msg->messageType=="MobilityResponse")
+        {
+            std::vector<uint8_t> array=msg->content;
+            Mobility_Response decode;
+            auto output=decode.decode_mobility_response_message(array);
+            mobility_response_message_pub_.publish(output);
         }
     }
 
@@ -102,6 +125,48 @@ namespace cpp_message
         initialize();
         ros::CARMANodeHandle::spin();
         return 0;
+    }
+
+    void Message::outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg)
+    {//encode and publish as outbound binary message
+        Mobility_Operation encode;
+        auto res=encode.encode_mobility_operation_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityOperation";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility operation message.");
+        }
+    }
+
+    void Message::outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg)
+        {//encode and publish as outbound binary message
+        Mobility_Response encode;
+        auto res=encode.encode_mobility_response_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityOperation";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility response message.");
+        }
     }
 
     boost::optional<j2735_msgs::ControlRequest> Message::decode_geofence_request(std::vector<uint8_t>& binary_array)

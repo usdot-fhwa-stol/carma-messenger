@@ -20,7 +20,7 @@
 
 #include "MobilityOperation_Message.h"
 
-namespace Message_cpp
+namespace cpp_message
 {
     boost::optional<cav_msgs::MobilityOperation> Mobility_Operation::decode_mobility_operation_message(std::vector<uint8_t>& binary_array){
         

@@ -20,7 +20,7 @@
 
 #include "MobilityResponse_Message.h"
 
-namespace Message_cpp
+namespace cpp_message
 {
     cav_msgs::MobilityResponse Mobility_Response::decode_mobility_response_message(std::vector<uint8_t>& binary_array)
     {
