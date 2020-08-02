@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   carma_utils
 )
 
+
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system thread)
 
@@ -56,7 +57,19 @@ add_dependencies(cpp_message_node ${catkin_EXPORTED_TARGETS})
 #############
 
 ## Mark executables and/or libraries for installation
-install(TARGETS cpp_message_node
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+	file(RENAME ${CMAKE_INSTALL_PREFIX}/lib/libasn1c_x64.so ${CMAKE_INSTALL_PREFIX}/lib/libasn1c.so)
+##	install(FILES ${CATKIN_DEVEL_PREFIX}/lib/libasn1c.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x86.so ${CATKIN_DEVEL_PREFIX}/lib)
+	file(RENAME ${CATKIN_DEVEL_PREFIX}/lib/libasn1c_x86.so ${CATKIN_DEVEL_PREFIX}/lib/libasn1c.so)
+	install(FILES ${CATKIN_DEVEL_PREFIX}/lib/libasn1c.so DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/)
+endif()
+
+set_property(TARGET testlib PROPERTY IMPORTED_LOCATION ${CMAKE_INSTALL_PREFIX}/lib/libasn1c.so)
+
+install(TARGETS cpp_message_node cpp_message_library
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -73,7 +86,7 @@ install(DIRECTORY include
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(DIRECTORY
   launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/cpp_message
 )
 
 #############
