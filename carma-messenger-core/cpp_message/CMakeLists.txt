@@ -10,12 +10,12 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  cav_msgs
-  cav_srvs
-  j2735_msgs
-  bondcpp
-  roscpp
-  carma_utils
+	cav_msgs
+	cav_srvs
+	j2735_msgs
+	bondcpp
+	roscpp
+	carma_utils
 )
 
 ## System dependencies are found with CMake's conventions
@@ -28,18 +28,33 @@ catkin_package(
 ## Build ##
 ###########
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-  include
-  include/generated
+	${catkin_INCLUDE_DIRS}
+	include
+	include/generated
 )
 
 add_library(testlib SHARED IMPORTED)
-set_property(TARGET testlib PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so)
+
+## Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
+set(ASN1C_INSTALL_PATH "/opt/carma/install")
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)
+	file(RENAME ${ASN1C_INSTALL_PATH}/lib/libasn1c_x64.so ${ASN1C_INSTALL_PATH}/lib/libasn1c.so)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x86.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)
+	file(RENAME ${ASN1C_INSTALL_PATH}/lib/libasn1c_x86.so ${ASN1C_INSTALL_PATH}/lib/libasn1c.so)
+endif()
+
+set_target_properties(testlib PROPERTIES
+  IMPORTED_LOCATION ${ASN1C_INSTALL_PATH}/lib/libasn1c.so
+)
 
 ## Declare a C++ executable
 add_executable(cpp_message_node
-         src/main.cpp
-         src/cpp_message.cpp)
+	src/main.cpp
+	src/cpp_message.cpp
+)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES} cpp_message_library)
@@ -58,25 +73,24 @@ add_dependencies(cpp_message_node ${catkin_EXPORTED_TARGETS} )
 ## Install ##
 #############
 
-## Mark executables and/or libraries for installation
-install(TARGETS cpp_message_node
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(TARGETS cpp_message_node cpp_message_library
+	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Mark cpp header files for installation
 install(DIRECTORY include
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING
-  PATTERN "*.h"
-  PATTERN "*.hpp"
+	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+	FILES_MATCHING
+	PATTERN "*.h"
+	PATTERN "*.hpp"
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(DIRECTORY
-  launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+	launch
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 #############

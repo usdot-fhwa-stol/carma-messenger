@@ -14,7 +14,7 @@
   License for the specific language governing permissions and limitations under
   the License.
 -->
-<package format="2">
+<package format="3">
   <name>carma-messenger</name>
   <version>1.0.0</version>
   <description>Meta-package for launching a full carma-messenger instance</description>

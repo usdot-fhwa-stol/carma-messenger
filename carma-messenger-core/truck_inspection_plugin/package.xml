@@ -16,7 +16,7 @@
  the License.
 -->
 
-<package format="2">
+<package format="3">
   <name>truck_inspection_plugin</name>
   <version>1.0.0</version>
   <description>This node works with CARMA Messenger truck inspection client to send safety inspection request</description>
