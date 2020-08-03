@@ -5,15 +5,15 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_Schedule_H_
-#define	_Schedule_H_
+#ifndef	_TrafficControlRequestV01_H_
+#define	_TrafficControlRequestV01_H_
 
 
 #include <asn_application.h>
 
 /* Including external dependencies */
-#include <INTEGER.h>
-#include <BOOLEAN.h>
+#include "Id64b.h"
+#include <NativeInteger.h>
 #include <asn_SEQUENCE_OF.h>
 #include <constr_SEQUENCE_OF.h>
 #include <constr_SEQUENCE.h>
@@ -23,38 +23,35 @@ extern "C" {
 #endif
 
 /* Forward declarations */
-struct DaySchedule;
-struct ScheduleParams;
+struct TrafficControlBounds;
 
-/* Schedule */
-typedef struct Schedule {
-	INTEGER_t	 start;
-	INTEGER_t	 end;
-	struct Schedule__dow {
-		A_SEQUENCE_OF(BOOLEAN_t) list;
+/* TrafficControlRequestV01 */
+typedef struct TrafficControlRequestV01 {
+	Id64b_t	 reqid;
+	long	 reqseq;
+	long	 scale;
+	struct TrafficControlRequestV01__bounds {
+		A_SEQUENCE_OF(struct TrafficControlBounds) list;
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} *dow;
-	struct DaySchedule	*between	/* OPTIONAL */;
-	struct ScheduleParams	*repeat	/* OPTIONAL */;
+	} bounds;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} Schedule_t;
+} TrafficControlRequestV01_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_Schedule;
-extern asn_SEQUENCE_specifics_t asn_SPC_Schedule_specs_1;
-extern asn_TYPE_member_t asn_MBR_Schedule_1[5];
+extern asn_TYPE_descriptor_t asn_DEF_TrafficControlRequestV01;
+extern asn_SEQUENCE_specifics_t asn_SPC_TrafficControlRequestV01_specs_1;
+extern asn_TYPE_member_t asn_MBR_TrafficControlRequestV01_1[4];
 
 #ifdef __cplusplus
 }
 #endif
 
 /* Referred external types */
-#include "DaySchedule.h"
-#include "ScheduleParams.h"
+#include "TrafficControlBounds.h"
 
-#endif	/* _Schedule_H_ */
+#endif	/* _TrafficControlRequestV01_H_ */
 #include <asn_internal.h>

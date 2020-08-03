@@ -5,15 +5,16 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_ControlRequest_H_
-#define	_ControlRequest_H_
+#ifndef	_TrafficControlBounds_H_
+#define	_TrafficControlBounds_H_
 
 
 #include <asn_application.h>
 
 /* Including external dependencies */
-#include <IA5String.h>
-#include <NativeInteger.h>
+#include "EpochMins.h"
+#include "Longitude.h"
+#include "Latitude.h"
 #include <asn_SEQUENCE_OF.h>
 #include <constr_SEQUENCE_OF.h>
 #include <constr_SEQUENCE.h>
@@ -23,34 +24,35 @@ extern "C" {
 #endif
 
 /* Forward declarations */
-struct ControlBounds;
+struct OffsetPoint;
 
-/* ControlRequest */
-typedef struct ControlRequest {
-	IA5String_t	 version;
-	long	 scale;
-	struct ControlRequest__bounds {
-		A_SEQUENCE_OF(struct ControlBounds) list;
+/* TrafficControlBounds */
+typedef struct TrafficControlBounds {
+	EpochMins_t	 oldest;
+	Longitude_t	 reflon;
+	Latitude_t	 reflat;
+	struct TrafficControlBounds__offsets {
+		A_SEQUENCE_OF(struct OffsetPoint) list;
 		
 		/* Context for parsing across buffer boundaries */
 		asn_struct_ctx_t _asn_ctx;
-	} bounds;
+	} offsets;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} ControlRequest_t;
+} TrafficControlBounds_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_ControlRequest;
-extern asn_SEQUENCE_specifics_t asn_SPC_ControlRequest_specs_1;
-extern asn_TYPE_member_t asn_MBR_ControlRequest_1[3];
+extern asn_TYPE_descriptor_t asn_DEF_TrafficControlBounds;
+extern asn_SEQUENCE_specifics_t asn_SPC_TrafficControlBounds_specs_1;
+extern asn_TYPE_member_t asn_MBR_TrafficControlBounds_1[4];
 
 #ifdef __cplusplus
 }
 #endif
 
 /* Referred external types */
-#include "ControlBounds.h"
+#include "OffsetPoint.h"
 
-#endif	/* _ControlRequest_H_ */
+#endif	/* _TrafficControlBounds_H_ */
 #include <asn_internal.h>

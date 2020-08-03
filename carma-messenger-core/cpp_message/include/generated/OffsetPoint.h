@@ -5,8 +5,8 @@
  * 	`asn1c -pdu=MessageFrame -fcompound-names -gen-PER`
  */
 
-#ifndef	_ScheduleParams_H_
-#define	_ScheduleParams_H_
+#ifndef	_OffsetPoint_H_
+#define	_OffsetPoint_H_
 
 
 #include <asn_application.h>
@@ -19,23 +19,23 @@
 extern "C" {
 #endif
 
-/* ScheduleParams */
-typedef struct ScheduleParams {
-	long	 interval;
-	long	 duration;
+/* OffsetPoint */
+typedef struct OffsetPoint {
+	long	 deltax;
+	long	 deltay;
 	
 	/* Context for parsing across buffer boundaries */
 	asn_struct_ctx_t _asn_ctx;
-} ScheduleParams_t;
+} OffsetPoint_t;
 
 /* Implementation */
-extern asn_TYPE_descriptor_t asn_DEF_ScheduleParams;
-extern asn_SEQUENCE_specifics_t asn_SPC_ScheduleParams_specs_1;
-extern asn_TYPE_member_t asn_MBR_ScheduleParams_1[2];
+extern asn_TYPE_descriptor_t asn_DEF_OffsetPoint;
+extern asn_SEQUENCE_specifics_t asn_SPC_OffsetPoint_specs_1;
+extern asn_TYPE_member_t asn_MBR_OffsetPoint_1[2];
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _ScheduleParams_H_ */
+#endif	/* _OffsetPoint_H_ */
 #include <asn_internal.h>
