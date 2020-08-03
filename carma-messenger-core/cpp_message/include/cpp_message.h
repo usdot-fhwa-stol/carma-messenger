@@ -27,6 +27,10 @@ extern "C"
 #include <cav_msgs/ByteArray.h>
 #include <j2735_msgs/TrafficControlRequest.h>
 #include <j2735_msgs/TrafficControlMessage.h>
+#include<cav_msgs/MobilityHeader.h>
+#include<cav_msgs/MobilityOperation.h>
+#include<cav_msgs/MobilityResponse.h>
+
 
 namespace cpp_message
 {
@@ -51,6 +55,10 @@ private:
     ros::Subscriber inbound_binary_message_sub_;
     ros::Publisher inbound_geofence_request_message_pub_;
     ros::Publisher inbound_geofence_control_message_pub_;
+    ros::Publisher mobility_operation_message_pub_;  //incoming mobility operation message after decoded
+    ros::Publisher mobility_response_message_pub_;     //incoming mobility response message after decoded
+    ros::Subscriber mobility_operation_message_sub_; //outgoing plain mobility operation message 
+    ros::Subscriber mobility_response_message_sub_; //outgoing plain mobility response message
 
     /**
      * @brief Initialize pub/sub and params.
@@ -61,7 +69,19 @@ private:
     void inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg);
     void outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg);
     void outbound_control_request_callback(const j2735_msgs::TrafficControlRequestConstPtr& msg);
-
+    /**
+     * @brief function callback when there is an incoming mobility operation message. .
+     * @param msg container with Mobility Operation ros message. Passed to an encoding function in Mobility_Operation class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg);  
+    /**
+     * @brief function callback when there is an incoming mobility response message. .
+     * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);
+    
 public:
 
     /**
@@ -99,6 +119,5 @@ public:
     DailySchedule_t* encode_daily_schedule(const j2735_msgs::DailySchedule& msg);
     RepeatParams_t*  encode_repeat_params(const j2735_msgs::RepeatParams& msg);
     PathNode_t*  encode_path_node(const j2735_msgs::PathNode& msg);
-
 };
 }

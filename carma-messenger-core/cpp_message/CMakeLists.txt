@@ -57,14 +57,17 @@ add_executable(cpp_message_node
 )
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES} cpp_message_library)
 
-add_library(cpp_message_library src/cpp_message.cpp)
+add_library(cpp_message_library src/cpp_message.cpp 
+            ##src/MessageConsumer.cpp
+            src/MobilityOperation_Message.cpp
+            src/MobilityResponse_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(cpp_message_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(cpp_message_node ${catkin_EXPORTED_TARGETS} )
 
 #############
 ## Install ##
@@ -97,3 +100,9 @@ install(DIRECTORY
 ## Add gtest based cpp test target and link libraries
 catkin_add_gmock(${PROJECT_NAME}-test test/test_encode_decode.cpp)
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
+
+catkin_add_gmock(${PROJECT_NAME}-test_2 test/test_MobilityOperations.cpp)
+target_link_libraries(${PROJECT_NAME}-test_2 cpp_message_library testlib ${catkin_LIBRARIES})
+
+catkin_add_gmock(${PROJECT_NAME}-test_3 test/test_MobilityResponse.cpp)
+target_link_libraries(${PROJECT_NAME}-test_3 cpp_message_library testlib ${catkin_LIBRARIES})
