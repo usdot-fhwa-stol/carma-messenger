@@ -25,8 +25,6 @@ extern "C"
 #include <ros/ros.h>
 #include <carma_utils/CARMAUtils.h>
 #include <cav_msgs/ByteArray.h>
-#include <j2735_msgs/ControlRequest.h>
-#include <j2735_msgs/ControlMessage.h>
 #include <j2735_msgs/TrafficControlRequest.h>
 #include <j2735_msgs/TrafficControlMessage.h>
 #include<cav_msgs/MobilityHeader.h>
