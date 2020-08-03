@@ -103,7 +103,7 @@ void J2735Convertor::initialize()
   converted_map_pub_ = map_nh_->advertise<cav_msgs::MapData>("incoming_map", 50);
 
   // Incoming geofence pub/sub
-  converted_geofence_control_pub_ = geofence_nh_->advertise<cav_msgs::ControlMessage>("incoming_geofence_control", 50);
+  converted_geofence_control_pub_ = geofence_nh_->advertise<cav_msgs::TrafficControlMessage>("incoming_geofence_control", 50);
   converted_geofence_request_pub_ = geofence_nh_->advertise<cav_msgs::TrafficControlRequest>("incoming_geofence_request", 50);
 
   j2735_geofence_control_sub_ = geofence_nh_->subscribe("incoming_j2735_geofence_control", 50, &J2735Convertor::j2735ControlMessageHandler, this);
@@ -113,7 +113,7 @@ void J2735Convertor::initialize()
   outbound_geofence_control_sub_ = geofence_nh_->subscribe("outgoing_geofence_control", 50, &J2735Convertor::ControlMessageHandler, this);
   outbound_geofence_request_sub_ = geofence_nh_->subscribe("outgoing_geofence_request", 50, &J2735Convertor::ControlRequestHandler, this);
 
-  outbound_j2735_geofence_control_pub_ = geofence_nh_->advertise<j2735_msgs::ControlMessage>("outgoing_j2735_geofence_control", 10);
+  outbound_j2735_geofence_control_pub_ = geofence_nh_->advertise<j2735_msgs::TrafficControlMessage>("outgoing_j2735_geofence_control", 10);
   outbound_j2735_geofence_request_pub_ = geofence_nh_->advertise<j2735_msgs::TrafficControlRequest>("outgoing_j2735_geofence_request", 10);
 }
 
