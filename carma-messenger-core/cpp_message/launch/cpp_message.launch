@@ -13,6 +13,5 @@
 -->
 
 <launch>
-	<node pkg="cpp_message" type="cpp_message_node" name="cpp_message_node">
-        </node>
+	<node pkg="cpp_message" type="cpp_message_node" name="cpp_message_node"/>
 </launch>
