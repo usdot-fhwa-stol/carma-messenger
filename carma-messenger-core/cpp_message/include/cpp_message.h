@@ -30,6 +30,7 @@ extern "C"
 #include<cav_msgs/MobilityHeader.h>
 #include<cav_msgs/MobilityOperation.h>
 #include<cav_msgs/MobilityResponse.h>
+#include<cav_msgs/MobilityPath.h>
 
 
 namespace cpp_message
@@ -59,6 +60,8 @@ private:
     ros::Publisher mobility_response_message_pub_;     //incoming mobility response message after decoded
     ros::Subscriber mobility_operation_message_sub_; //outgoing plain mobility operation message 
     ros::Subscriber mobility_response_message_sub_; //outgoing plain mobility response message
+    ros::Publisher mobility_path_message_pub_;     //incoming mobility path message after decoded
+    ros::Subscriber mobility_path_message_sub_;    //outgoing plain mobility path message
 
     /**
      * @brief Initialize pub/sub and params.
@@ -81,6 +84,12 @@ private:
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);
+    /**
+     * @brief function callback when there is an incoming mobility path message. .
+     * @param msg container with Mobility path ros message. Passed to an encoding function in Mobility_Path class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_path_message_callback(const cav_msgs::MobilityPath& msg);
     
 public:
 
