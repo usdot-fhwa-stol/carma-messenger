@@ -39,7 +39,6 @@ namespace cpp_message
  * @class Message
  * @brief Is the class responsible for DSRC message encoding and decoding
  * 
- * It currently only supports Geofence message type.
  */
 class Message
 {

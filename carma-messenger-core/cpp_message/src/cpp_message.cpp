@@ -94,8 +94,15 @@ namespace cpp_message
             std::vector<uint8_t> array=msg->content;
             Mobility_Path decode;
             auto output=decode.decode_mobility_path_message(array);
-            mobility_path_message_pub_.publish(output.get());
-
+            if(output)
+            {
+                mobility_path_message_pub_.publish(output.get());
+            }
+            else
+            {
+                ROS_WARN_STREAM("Cannot decode Mobility Path message");
+            }
+             
         }
     }
 

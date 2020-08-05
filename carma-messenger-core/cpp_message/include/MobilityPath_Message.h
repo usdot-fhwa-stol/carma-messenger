@@ -21,14 +21,6 @@ namespace cpp_message
     class Mobility_Path
     {
         private:
-        static const int STATIC_ID_MAX_LENGTH=16;
-        std::string BSM_ID_DEFAULT="00000000";
-        const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-        std::string STRING_DEFAULT="[]";
-        const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
-        std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-        const int GUID_LENGTH=GUID_DEFAULT.length();
-
         static const int MAX_POINTS_IN_MESSAGE=60; //The maximum number of points which can be included in a mobility message containing a trajectory over DSRC
         //Location Range for x and y
         static const long LOCATION_MIN=-638363700;
@@ -41,15 +33,19 @@ namespace cpp_message
         static const int OFFSET_MAX=500;
         static const int OFFSET_UNAVAILABLE=501;
 
-
+        static const int MOBILITYPATH_TEST_ID=242;
         public:
-            //helper functions for message decode/encode
         /**
-         * @brief helper function for Mobility Response message decoding.
+         * @brief Mobility Path message decoding function.
          * @param binary_array Container with binary input.
-         * @return decoded ros message, returns null if decoding fails. 
+         * @return decoded ros message, returns ROS warning and empty message if decoding fails. 
          */
         boost::optional<cav_msgs::MobilityPath> decode_mobility_path_message(std::vector<uint8_t>& binary_array);
+            /**
+         * @brief Mobility Path message encoding function.
+         * @param binary_array Container with binary input.
+         * @return decoded ros message, returns ROS warning and empty array of encoding fails. 
+         */
         boost::optional<std::vector<uint8_t>> encode_mobility_path_message(cav_msgs::MobilityPath plainMessage);
 
     };
