@@ -16,8 +16,11 @@
  */
 
 #include <cstdint>
-#include <j2735_msgs/ControlRequest.h>
-#include <cav_msgs/ControlRequest.h>
+#include <j2735_msgs/TrafficControlRequest.h>
+#include <cav_msgs/TrafficControlRequest.h>
+#include <j2735_msgs/TrafficControlRequestV01.h>
+#include <cav_msgs/TrafficControlRequestV01.h>
+#include <cav_msgs/OffsetPoint.h>
 #include "units.h"
 #include "value_convertor.h"
 
@@ -36,17 +39,17 @@ namespace geofence_request
 ////
 
 /**
- * @brief Convert the contents of a j2735_msgs::ControlRequest into a cav_msgs::ControlRequest
+ * @brief Convert the contents of a j2735_msgs::OffsetPoint into a cav_msgs::OffsetPoint
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::ControlRequest& in_msg, cav_msgs::ControlRequest& out_msg);
+void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg,const int8_t scale);
 
 /**
- * @brief Convert the contents of a j2735_msgs::ControlBounds into a cav_msgs::ControlBounds
+ * @brief Convert the contents of a j2735_msgs::TrafficControlBounds into a cav_msgs::TrafficControlBounds
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
@@ -55,14 +58,58 @@ void convert(const j2735_msgs::ControlRequest& in_msg, cav_msgs::ControlRequest&
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::ControlBounds& in_msg, cav_msgs::ControlBounds& out_msg, const int8_t scale);
+void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg, const int8_t scale);
+
+/**
+ * @brief Convert the contents of a j2735_msgs::TrafficControlRequestV01 into a cav_msgs::TrafficControlRequestV01
+ *
+ * @param in_msg The message to be converted
+ * @param out_msg The message to store the output
+ *
+ * Unit conversions and presence flags are handled
+ */
+void convert(const j2735_msgs::TrafficControlRequestV01& in_msg, cav_msgs::TrafficControlRequestV01& out_msg);
+
+/**
+ * @brief Convert the contents of a j2735_msgs::TrafficControlRequest into a cav_msgs::TrafficControlRequest
+ *
+ * @param in_msg The message to be converted
+ * @param out_msg The message to store the output
+ *
+ * Unit conversions and presence flags are handled
+ */
+void convert(const j2735_msgs::TrafficControlRequest& in_msg, cav_msgs::TrafficControlRequest& out_msg);
 
 ////
 // Convert cav_msgs to j2735_msgs
 ////
 
+
 /**
- * @brief Convert the contents of a cav_msgs::ControlRequest into a j2735_msgs::ControlRequest
+ * @brief Convert the contents of a cav_msgs::TrafficControlBounds into a j2735_msgs::TrafficControlBounds
+ *
+ * @param in_msg The message to be converted
+ * @param out_msg The message to store the output
+ * @param scale The scaling exponent to apply to the bound position. Units applied as 10^n. This normally comes from a
+ * ControlRequest message. The scaling here should be the same as what would appear in the ControlRequest (ie. it is not
+ * an inverted scaling)
+ * 
+ * @throw std::invalid_argument If the provided scale will result in a value that does not fit within the 16 bit int bounds of the out message.
+ *
+ * Unit conversions and presence flags are handled
+ */
+void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg, const int8_t scale);
+/**
+ * @brief Convert the contents of a cav_msgs::TrafficControlRequestV01 into a j2735_msgs::TrafficControlRequestV01 
+ *
+ * @param in_msg The message to be converted
+ * @param out_msg The message to store the output
+ *
+ * Unit conversions and presence flags are handled
+ */
+void convert(const cav_msgs::TrafficControlRequestV01& in_msg, j2735_msgs::TrafficControlRequestV01& out_msg);
+/**
+ * @brief Convert the contents of a cav_msgs::TrafficControlRequest into a j2735_msgs::TrafficControlRequest
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
@@ -80,21 +127,8 @@ void convert(const j2735_msgs::ControlBounds& in_msg, cav_msgs::ControlBounds& o
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::ControlRequest& in_msg, j2735_msgs::ControlRequest& out_msg);
+void convert(const cav_msgs::TrafficControlRequest& in_msg, j2735_msgs::TrafficControlRequest& out_msg);
 
-/**
- * @brief Convert the contents of a cav_msgs::ControlBounds into a j2735_msgs::ControlBounds
- *
- * @param in_msg The message to be converted
- * @param out_msg The message to store the output
- * @param scale The scaling exponent to apply to the bound position. Units applied as 10^n. This normally comes from a
- * ControlRequest message. The scaling here should be the same as what would appear in the ControlRequest (ie. it is not
- * an inverted scaling)
- * 
- * @throw std::invalid_argument If the provided scale will result in a value that does not fit within the 16 bit int bounds of the out message.
- *
- * Unit conversions and presence flags are handled
- */
-void convert(const cav_msgs::ControlBounds& in_msg, j2735_msgs::ControlBounds& out_msg, const int8_t scale);
+
 }  // namespace geofence_request
 }  // namespace j2735_convertor

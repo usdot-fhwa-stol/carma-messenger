@@ -17,7 +17,7 @@
 #include "Day.h"
 #include "SummerTime.h"
 #include "Holiday.h"
-#include "DayOfWeek.h"
+#include "AddGrpB_DayOfWeek.h"
 #include "Hour.h"
 #include "Minute.h"
 #include "Second.h"
@@ -35,7 +35,7 @@ typedef struct AddGrpB_TimeMark {
 	Day_t	 day;
 	SummerTime_t	 summerTime;
 	Holiday_t	 holiday;
-	DayOfWeek_t	 dayofWeek;
+	AddGrpB_DayOfWeek_t	 dayofWeek;
 	Hour_t	 hour;
 	Minute_t	 minute;
 	Second_t	 second;
