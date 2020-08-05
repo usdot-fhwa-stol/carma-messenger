@@ -22,14 +22,14 @@
 
 namespace cpp_message
 {
-    boost::optional<cav_msgs::MobilityHeader> Mobility_Header::decode_mobility_header_message(MobilityHeader_t *message_header){
+    cav_msgs::MobilityHeader Mobility_Header::decode_mobility_header_message(MobilityHeader_t *message_header){
         cav_msgs::MobilityHeader header;
         std::string sender_id, recipient_id, sender_bsm_id, plan_id, timestamp_string;
         uint64_t timestamp;
-        auto str_len=message_header->hostStaticId.size;
+        size_t str_len=message_header->hostStaticId.size;
         if(str_len<=STATIC_ID_MAX_LENGTH && str_len!=0)
         {
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 sender_id +=message_header->hostStaticId.buf[i];
             }
         }
@@ -43,7 +43,7 @@ namespace cpp_message
         str_len=message_header->targetStaticId.size;
         if(str_len<=STATIC_ID_MAX_LENGTH && str_len!=0)
         {
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 recipient_id +=message_header->targetStaticId.buf[i];
             }
         }
@@ -58,7 +58,7 @@ namespace cpp_message
         str_len=message_header->hostBSMId.size;
         if(str_len==BSM_ID_LENGTH)
         {
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 sender_bsm_id +=message_header->hostBSMId.buf[i];
             }
         }
@@ -73,7 +73,7 @@ namespace cpp_message
         str_len=message_header->planId.size;
         if(str_len==GUID_LENGTH)
         {
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 plan_id +=message_header->planId.buf[i];
             }
         }
@@ -86,7 +86,7 @@ namespace cpp_message
         //recover uint64_t timestamp from string
         str_len=message_header->timestamp.size;
         timestamp=0;
-        for(auto i=0;i<str_len;i++){
+        for(size_t i=0;i<str_len;i++){
             timestamp*=10;
             timestamp+=int(message_header->timestamp.buf[i])-'0';
         }
@@ -102,9 +102,9 @@ namespace cpp_message
         header=(MobilityHeader_t*)calloc(1,sizeof(MobilityHeader_t));
         //For Header
          //convert host_id string to char array
-        auto string_size=plainMessage.sender_id.size();
+        size_t string_size=plainMessage.sender_id.size();
         uint8_t string_content_hostId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_hostId[i]=plainMessage.sender_id[i];
         }
@@ -113,7 +113,7 @@ namespace cpp_message
         //convert target_id string to char array
         string_size=plainMessage.recipient_id.size();
         uint8_t string_content_targetId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_targetId[i]=plainMessage.recipient_id[i];
         }
@@ -123,7 +123,7 @@ namespace cpp_message
          //convert bsm_id string to char array
         string_size=plainMessage.sender_bsm_id.size();
         uint8_t string_content_BSMId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_BSMId[i]=plainMessage.sender_bsm_id[i];
         }
@@ -133,7 +133,7 @@ namespace cpp_message
          //convert plan_id string to char array
         string_size=plainMessage.plan_id.size();
         uint8_t string_content_planId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_planId[i]=plainMessage.plan_id[i];
         }
@@ -144,7 +144,7 @@ namespace cpp_message
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
         uint8_t string_content_timestamp[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_timestamp[i]=timestamp[i];
         }

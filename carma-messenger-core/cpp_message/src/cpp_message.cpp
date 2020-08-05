@@ -89,7 +89,7 @@ namespace cpp_message
             auto output=decode.decode_mobility_response_message(array);
             mobility_response_message_pub_.publish(output);
         }
-                else if(msg->messageType=="MobilityPath")   
+        else if(msg->messageType=="MobilityPath")   
         {
             std::vector<uint8_t> array=msg->content;
             Mobility_Path decode;

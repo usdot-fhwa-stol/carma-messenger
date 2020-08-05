@@ -32,12 +32,10 @@ namespace cpp_message
         MessageFrame_t* message=0;
 
         //copy from vector to array         
-        auto len=binary_array.size();
+        size_t len=binary_array.size();
   
         uint8_t buf[len];
-        for(auto i=0;i<len;i++){
-            std::copy(binary_array.begin(),binary_array.end(),buf);
-        }
+        std::copy(binary_array.begin(),binary_array.end(),buf);
         //use asn1c lib to decode
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);        
         if(rval.code==RC_OK){
@@ -53,7 +51,7 @@ namespace cpp_message
             header->timestamp=message->value.choice.TestMessage02.header.timestamp;
 
             Mobility_Header decode_header;
-            cav_msgs::MobilityHeader header_ros=(decode_header.decode_mobility_header_message(header).get());
+            cav_msgs::MobilityHeader header_ros=decode_header.decode_mobility_header_message(header);
             output.header=header_ros;
 
             //Trajectory
@@ -81,9 +79,9 @@ namespace cpp_message
             location.ecef_z=tmp;
             
             //convert location timestamp from string in asn1 to uint64 for ros message
-            auto str_len=message->value.choice.TestMessage02.body.location.timestamp.size;
+            size_t str_len=message->value.choice.TestMessage02.body.location.timestamp.size;
             uint64_t location_timestamp=0;
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 location_timestamp*=10;
                 location_timestamp+=int(message->value.choice.TestMessage02.body.location.timestamp.buf[i])-'0';
             }
@@ -92,14 +90,14 @@ namespace cpp_message
             trajectory.location=location;
             
             //Trajectory-offset
-            auto offset_count=message->value.choice.TestMessage02.body.trajectory.list.count;
+            int offset_count=message->value.choice.TestMessage02.body.trajectory.list.count;
             
             if(offset_count>MAX_POINTS_IN_MESSAGE){
                 ROS_WARN_STREAM("offset count greater than 60.");
                 return boost::optional<cav_msgs::MobilityPath>{};
             } 
 
-            for(auto i=0;i<offset_count;i++){
+            for(int i=0;i<offset_count;i++){
                 cav_msgs::LocationOffsetECEF Offsets;
                 
                 Offsets.offset_x=message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetX;
@@ -195,11 +193,11 @@ namespace cpp_message
         message->value.choice.TestMessage02.body.location.ecefZ=location_val;
 
         //get location timestamp and convert to char array
-        auto time=plainMessage.trajectory.location.timestamp;
-        auto timestamp=std::to_string(time);
-        auto string_size=timestamp.size();
+        uint64_t time=plainMessage.trajectory.location.timestamp;
+        std::string timestamp=std::to_string(time);
+        size_t string_size=timestamp.size();
         uint8_t string_location_timestamp[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_location_timestamp[i]=timestamp[i];
         }

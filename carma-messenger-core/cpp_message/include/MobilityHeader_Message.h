@@ -31,15 +31,15 @@ namespace cpp_message
 
         public:
         /**
-         * @brief Mobility Header message decoding function.
-         * @param binary_array Container with binary input.
-         * @return decoded ros message,returns ROS warning and empty message if decoding fails. 
+         * @brief This function assigns the decoded MobilityHeader_t message to cav_msg::MobilityHeader data type.
+         * @param message_header a pointer to asn1.c decoded Mobility Header message
+         * @return  Mobility Header cav_msg for publishing as ros message. 
          */
-        boost::optional<cav_msgs::MobilityHeader> decode_mobility_header_message(MobilityHeader_t *message_header);
+        cav_msgs::MobilityHeader decode_mobility_header_message(MobilityHeader_t *message_header);
         /**
-         * @brief Mobility Header message encoding function.
-         * @param binary_array Container with binary input.
-         * @return decoded ros message,returns ROS warning and empty message if encoding fails. 
+         * @brief This function assigns MobilityHeader message to asn1.c MobilityHeader_t data type for encoding.
+         * @param plainMessage Container with MobilityHeader ros message.
+         * @return a pointer to the message stored in asn1.c MobilityHeader format. 
          */
         MobilityHeader_t* encode_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
     };
