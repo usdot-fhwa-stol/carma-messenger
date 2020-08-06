@@ -150,13 +150,17 @@ namespace cpp_message
         cav_msgs::MobilityHeader Header;
         Header=plainMessage.header;
         Mobility_Header encode_header;
-        MobilityHeader_t* header=(encode_header.toASN1_mobility_header_message(Header)).get();
-        if(!header)
+        MobilityHeader_t* header=nullptr;
+        boost::optional<MobilityHeader_t *> header_optional=encode_header.toASN1_mobility_header_message(Header);
+        if(header_optional)
         {
+            header=header_optional.get();
+        }
+        else{
             ROS_WARN_STREAM("Could not convert mobility header to asn1 format");
             return boost::optional<std::vector<uint8_t>>{};
-
         }
+
         message->value.choice.TestMessage02.header.hostStaticId.buf=header->hostStaticId.buf;
         message->value.choice.TestMessage02.header.hostStaticId.size=header->hostStaticId.size;
 
@@ -210,7 +214,7 @@ namespace cpp_message
         message->value.choice.TestMessage02.body.location.timestamp.size=string_size;
 
         //trajectory
-        auto offset_count=plainMessage.trajectory.offsets.size();
+        size_t offset_count=plainMessage.trajectory.offsets.size();
         
         if(offset_count>MAX_POINTS_IN_MESSAGE){
             ROS_WARN_STREAM("offset count greater than 60.");

@@ -40,8 +40,7 @@ namespace cpp_message
         /**
          * @brief This function assigns MobilityHeader message to asn1.c MobilityHeader_t data type for encoding.
          * @param plainMessage Container with MobilityHeader ros message.
-         * @return a pointer to the message stored in asn1.c MobilityHeader format. 
-         *  This function returns an empty message if memory allocation for header message fails.
+         * @return a pointer to the message stored in asn1.c MobilityHeader format, and an empty message if memory allocation for header message fails. 
          */
         boost::optional<MobilityHeader_t*> toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
     };

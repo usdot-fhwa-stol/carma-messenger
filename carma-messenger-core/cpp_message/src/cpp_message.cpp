@@ -40,7 +40,7 @@ namespace cpp_message
         mobility_operation_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_operation_message_decoded",5);
         mobility_operation_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_operation_message_callback,this);
         mobility_response_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_response_message_decoded",5);
-        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_response_message_callback,this);
+        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_response_message",5, &Message::outbound_mobility_response_message_callback,this);
         mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("inbound_mobility_path_message",5);
         mobility_path_message_sub_=nh_->subscribe("outbound_plain_mobility_path_message",5, &Message::outbound_mobility_path_message_callback,this);
     }
