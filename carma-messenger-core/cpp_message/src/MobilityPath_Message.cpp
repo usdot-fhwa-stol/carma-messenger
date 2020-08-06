@@ -55,7 +55,6 @@ namespace cpp_message
             output.header=header_ros;
 
             //Trajectory
-            //contains location and offset-decode to store in trajectory values
             cav_msgs::LocationECEF location;
             long tmp=message->value.choice.TestMessage02.body.location.ecefX;
             if(tmp>LOCATION_MAX || tmp<LOCATION_MIN){
@@ -152,6 +151,12 @@ namespace cpp_message
         Header=plainMessage.header;
         Mobility_Header encode_header;
         MobilityHeader_t* header=(encode_header.toASN1_mobility_header_message(Header)).get();
+        if(!header)
+        {
+            ROS_WARN_STREAM("Could not convert mobility header to asn1 format");
+            return boost::optional<std::vector<uint8_t>>{};
+
+        }
         message->value.choice.TestMessage02.header.hostStaticId.buf=header->hostStaticId.buf;
         message->value.choice.TestMessage02.header.hostStaticId.size=header->hostStaticId.size;
 

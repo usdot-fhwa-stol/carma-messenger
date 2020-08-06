@@ -84,7 +84,7 @@ private:
      */
     void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);
     /**
-     * @brief function callback when there is an incoming mobility path message. .
+     * @brief function callback when there is an outgoing mobility path message. .
      * @param msg container with Mobility path ros message. Passed to an encoding function in Mobility_Path class.
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */

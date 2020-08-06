@@ -102,7 +102,7 @@ namespace cpp_message
         header=(MobilityHeader_t*)calloc(1,sizeof(MobilityHeader_t));
         if(!header){
             ROS_WARN_STREAM("Cannot allocate mem for MobilityHeader asn1.c message");
-            return nullptr;
+            return boost::optional<MobilityHeader_t*> {};
         }
         //For Header
          //convert host_id string to char array
