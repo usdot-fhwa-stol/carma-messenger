@@ -21,6 +21,7 @@
 #include "cpp_message.h"
 #include "MobilityOperation_Message.h"
 #include "MobilityResponse_Message.h"
+#include "MobilityPath_Message.h"
 
 namespace cpp_message
 {
@@ -39,7 +40,9 @@ namespace cpp_message
         mobility_operation_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_operation_message_decoded",5);
         mobility_operation_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_operation_message_callback,this);
         mobility_response_message_pub_=nh_->advertise<cav_msgs::ByteArray>("incoming_mobility_response_message_decoded",5);
-        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_response_message_callback,this);
+        mobility_response_message_sub_=nh_->subscribe<>("outgoing_plain_mobility_response_message",5, &Message::outbound_mobility_response_message_callback,this);
+        mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("inbound_mobility_path_message",5);
+        mobility_path_message_sub_=nh_->subscribe("outbound_plain_mobility_path_message",5, &Message::outbound_mobility_path_message_callback,this);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -85,6 +88,21 @@ namespace cpp_message
             Mobility_Response decode;
             auto output=decode.decode_mobility_response_message(array);
             mobility_response_message_pub_.publish(output);
+        }
+        else if(msg->messageType=="MobilityPath")   
+        {
+            std::vector<uint8_t> array=msg->content;
+            Mobility_Path decode;
+            auto output=decode.decode_mobility_path_message(array);
+            if(output)
+            {
+                mobility_path_message_pub_.publish(output.get());
+            }
+            else
+            {
+                ROS_WARN_STREAM("Cannot decode Mobility Path message");
+            }
+             
         }
     }
 
@@ -160,7 +178,7 @@ namespace cpp_message
             cav_msgs::ByteArray output;
             output.header.frame_id="0";
             output.header.stamp=ros::Time::now();
-            output.messageType="MobilityOperation";
+            output.messageType="MobilityResponse";
             output.content=res.get();
             //publish result
             outbound_binary_message_pub_.publish(output);
@@ -168,6 +186,26 @@ namespace cpp_message
         else
         {
             ROS_WARN_STREAM("Cannot encode mobility response message.");
+        }
+    }
+    void Message::outbound_mobility_path_message_callback(const cav_msgs::MobilityPath& msg)
+    {//encode and publish as outbound binary message
+        Mobility_Path encode;
+        auto res=encode.encode_mobility_path_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityPath";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility path message.");
         }
     }
 
