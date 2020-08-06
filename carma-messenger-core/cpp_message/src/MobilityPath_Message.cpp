@@ -151,7 +151,7 @@ namespace cpp_message
         cav_msgs::MobilityHeader Header;
         Header=plainMessage.header;
         Mobility_Header encode_header;
-        MobilityHeader_t* header=encode_header.toASN1_mobility_header_message(Header);
+        MobilityHeader_t* header=(encode_header.toASN1_mobility_header_message(Header)).get();
         message->value.choice.TestMessage02.header.hostStaticId.buf=header->hostStaticId.buf;
         message->value.choice.TestMessage02.header.hostStaticId.size=header->hostStaticId.size;
 
@@ -216,7 +216,7 @@ namespace cpp_message
         offsets_list=(MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets));
 
         MobilityECEFOffset* Offsets;    
-        for(int i=0;i<offset_count;i++){
+        for(size_t i=0;i<offset_count;i++){
             Offsets=(MobilityECEFOffset*)calloc(1,sizeof(MobilityECEFOffset));
             Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
             Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
@@ -233,9 +233,10 @@ namespace cpp_message
         }
 
         //copy to byte array msg
-        auto array_length=ec.encoded/8;
+        size_t array_length=ec.encoded/8;
         std::vector<uint8_t> b_array(array_length);
-        for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
+        for(size_t i = 0; i < array_length; i++) b_array[i] = buffer[i];
+        
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 }

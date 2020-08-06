@@ -95,11 +95,15 @@ namespace cpp_message
         return header;
     }
 
-    MobilityHeader_t* Mobility_Header::toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage)
+    boost::optional<MobilityHeader_t*> Mobility_Header::toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage)
     {
         //return pointer to allocated memory
         MobilityHeader_t* header;
         header=(MobilityHeader_t*)calloc(1,sizeof(MobilityHeader_t));
+        if(!header){
+            ROS_WARN_STREAM("Cannot allocate mem for MobilityHeader asn1.c message");
+            return nullptr;
+        }
         //For Header
          //convert host_id string to char array
         size_t string_size=plainMessage.sender_id.size();

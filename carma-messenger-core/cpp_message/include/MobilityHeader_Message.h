@@ -43,6 +43,6 @@ namespace cpp_message
          * @return a pointer to the message stored in asn1.c MobilityHeader format. 
          *  This function returns a null pointer if memory allocation for header message fails.
          */
-        MobilityHeader_t* toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
+        boost::optional<MobilityHeader_t*> toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
     };
 }
