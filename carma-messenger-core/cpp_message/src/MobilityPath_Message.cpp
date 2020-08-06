@@ -51,7 +51,7 @@ namespace cpp_message
             header->timestamp=message->value.choice.TestMessage02.header.timestamp;
 
             Mobility_Header decode_header;
-            cav_msgs::MobilityHeader header_ros=decode_header.decode_mobility_header_message(header);
+            cav_msgs::MobilityHeader header_ros=decode_header.fromASN1_mobility_header_message(header);
             output.header=header_ros;
 
             //Trajectory
@@ -60,21 +60,21 @@ namespace cpp_message
             long tmp=message->value.choice.TestMessage02.body.location.ecefX;
             if(tmp>LOCATION_MAX || tmp<LOCATION_MIN){
                 ROS_WARN_STREAM("Location ecefX is out of range");
-                //return boost::optional<cav_msgs::MobilityPath>{};
+                return boost::optional<cav_msgs::MobilityPath>{};
             }
             location.ecef_x=tmp;
 
             tmp=message->value.choice.TestMessage02.body.location.ecefY;
             if(tmp>LOCATION_MAX || tmp<LOCATION_MIN){
                 ROS_WARN_STREAM("Location ecefY is out of range");
-                //return boost::optional<cav_msgs::MobilityPath>{};
+                return boost::optional<cav_msgs::MobilityPath>{};
             }
             location.ecef_y=tmp;
 
             tmp=message->value.choice.TestMessage02.body.location.ecefZ;
             if(tmp>LOCATION_MAX_Z || tmp<LOCATION_MIN_Z){
                 ROS_WARN_STREAM("Location ecefZ is out of range");
-                //return boost::optional<cav_msgs::MobilityPath>{};
+                return boost::optional<cav_msgs::MobilityPath>{};
             }
             location.ecef_z=tmp;
             
@@ -151,7 +151,7 @@ namespace cpp_message
         cav_msgs::MobilityHeader Header;
         Header=plainMessage.header;
         Mobility_Header encode_header;
-        MobilityHeader_t* header=encode_header.encode_mobility_header_message(Header);
+        MobilityHeader_t* header=encode_header.toASN1_mobility_header_message(Header);
         message->value.choice.TestMessage02.header.hostStaticId.buf=header->hostStaticId.buf;
         message->value.choice.TestMessage02.header.hostStaticId.size=header->hostStaticId.size;
 

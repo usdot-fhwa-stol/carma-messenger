@@ -36,13 +36,13 @@ namespace cpp_message
          * @return  Mobility Header cav_msg for publishing as ros message. 
          * Since this function takes in a decoded message, only if it exists, it can never be NULL.
          */
-        cav_msgs::MobilityHeader decode_mobility_header_message(MobilityHeader_t *message_header);
+        cav_msgs::MobilityHeader fromASN1_mobility_header_message(MobilityHeader_t *message_header);
         /**
          * @brief This function assigns MobilityHeader message to asn1.c MobilityHeader_t data type for encoding.
          * @param plainMessage Container with MobilityHeader ros message.
          * @return a pointer to the message stored in asn1.c MobilityHeader format. 
-         *  Since this function takes in a ros message, only if it exists, it can never be NULL.
+         *  This function returns a null pointer if memory allocation for header message fails.
          */
-        MobilityHeader_t* encode_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
+        MobilityHeader_t* toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage);
     };
 }

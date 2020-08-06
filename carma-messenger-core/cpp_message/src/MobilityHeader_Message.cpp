@@ -22,7 +22,7 @@
 
 namespace cpp_message
 {
-    cav_msgs::MobilityHeader Mobility_Header::decode_mobility_header_message(MobilityHeader_t *message_header){
+    cav_msgs::MobilityHeader Mobility_Header::fromASN1_mobility_header_message(MobilityHeader_t *message_header){
         cav_msgs::MobilityHeader header;
         std::string sender_id, recipient_id, sender_bsm_id, plan_id, timestamp_string;
         uint64_t timestamp;
@@ -95,7 +95,7 @@ namespace cpp_message
         return header;
     }
 
-    MobilityHeader_t* Mobility_Header::encode_mobility_header_message(cav_msgs::MobilityHeader plainMessage)
+    MobilityHeader_t* Mobility_Header::toASN1_mobility_header_message(cav_msgs::MobilityHeader plainMessage)
     {
         //return pointer to allocated memory
         MobilityHeader_t* header;
