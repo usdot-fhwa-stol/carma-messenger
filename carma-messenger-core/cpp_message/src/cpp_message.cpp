@@ -22,6 +22,7 @@
 #include "MobilityOperation_Message.h"
 #include "MobilityResponse_Message.h"
 #include "MobilityPath_Message.h"
+#include "MobilityRequest_Message.h"
 
 namespace cpp_message
 {
