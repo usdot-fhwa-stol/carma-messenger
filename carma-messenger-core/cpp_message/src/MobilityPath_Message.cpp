@@ -38,21 +38,67 @@ namespace cpp_message
         std::copy(binary_array.begin(),binary_array.end(),buf);
         //use asn1c lib to decode
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);        
-        if(rval.code==RC_OK){
+        if(rval.code==RC_OK)
+        {
+            Mobility_Header Header_constant;
+            std::string sender_id, recipient_id, sender_bsm_id, plan_id;
+            uint64_t timestamp;
+            //get sender id
+            size_t str_len=message->value.choice.TestMessage02.header.hostStaticId.size;
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            {
+                for(size_t i=0;i<str_len;i++){
+                    sender_id +=message->value.choice.TestMessage02.header.hostStaticId.buf[i];
+                }
+            }
+            else sender_id=Header_constant.STRING_DEFAULT;
 
-            //For Header
-            MobilityHeader_t* header;
-            header=(MobilityHeader*)calloc(1,sizeof(Mobility_Header));
+            header.sender_id=sender_id;
 
-            header->hostStaticId=message->value.choice.TestMessage02.header.hostStaticId;
-            header->targetStaticId=message->value.choice.TestMessage02.header.targetStaticId;
-            header->hostBSMId=message->value.choice.TestMessage02.header.hostBSMId;
-            header->planId=message->value.choice.TestMessage02.header.planId;
-            header->timestamp=message->value.choice.TestMessage02.header.timestamp;
+            //get recepient id
+            str_len=message->value.choice.TestMessage02.header.targetStaticId.size;
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            {
+                for(size_t i=0;i<str_len;i++){
+                    recipient_id +=message->value.choice.TestMessage02.header.targetStaticId.buf[i];
+                }
+            }
+            else recipient_id=Header_constant.STRING_DEFAULT;
 
-            Mobility_Header decode_header;
-            cav_msgs::MobilityHeader header_ros=decode_header.fromASN1_mobility_header_message(header);
-            output.header=header_ros;
+            header.recipient_id=recipient_id;
+            
+            //get bsm id
+            str_len=message->value.choice.TestMessage02.header.hostBSMId.size;
+            if(str_len==Header_constant.BSM_ID_LENGTH)
+            {
+                for(size_t i=0;i<str_len;i++){
+                    sender_bsm_id +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
+                }
+            }
+            else sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            
+            header.sender_bsm_id=sender_bsm_id;
+
+            //get plan id
+            str_len=message->value.choice.TestMessage02.header.planId.size;
+            if(str_len==Header_constant.GUID_LENGTH)
+            {
+                for(size_t i=0;i<str_len;i++){
+                    plan_id +=message->value.choice.TestMessage02.header.planId.buf[i];
+                }
+            }
+            else plan_id=Header_constant.GUID_DEFAULT;
+
+            header.plan_id=plan_id;
+            output.header=header;
+            //recover uint64_t timestamp from string
+            str_len=message->value.choice.TestMessage02.header.timestamp.size;
+            timestamp=0;
+            for(size_t i=0;i<str_len;i++){
+                timestamp*=10;
+                timestamp+=int(message->value.choice.TestMessage02.header.timestamp.buf[i])-'0';
+            }
+            header.timestamp=timestamp;
 
             //Trajectory
             cav_msgs::LocationECEF location;
@@ -78,7 +124,7 @@ namespace cpp_message
             location.ecef_z=tmp;
             
             //convert location timestamp from string in asn1 to uint64 for ros message
-            size_t str_len=message->value.choice.TestMessage02.body.location.timestamp.size;
+            str_len=message->value.choice.TestMessage02.body.location.timestamp.size;
             uint64_t location_timestamp=0;
             for(size_t i=0;i<str_len;i++){
                 location_timestamp*=10;
@@ -122,7 +168,6 @@ namespace cpp_message
 
             output.trajectory=trajectory;
             
-
             return boost::optional<cav_msgs::MobilityPath>(output);
         }
         return boost::optional<cav_msgs::MobilityPath>{};
@@ -146,35 +191,55 @@ namespace cpp_message
         message->messageId=MOBILITYPATH_TEST_ID;
         message->value.present=MessageFrame__value_PR_TestMessage02;
 
-        //send plainMessage to message header encode and get pointer
-        cav_msgs::MobilityHeader Header;
-        Header=plainMessage.header;
-        Mobility_Header encode_header;
-        MobilityHeader_t* header=nullptr;
-        boost::optional<MobilityHeader_t *> header_optional=encode_header.toASN1_mobility_header_message(Header);
-        if(header_optional)
+        //convert host_id string to char array
+        size_t string_size=plainMessage.header.sender_id.size();
+        uint8_t string_content_hostId[string_size];
+        for(size_t i=0;i<string_size;i++)
         {
-            header=header_optional.get();
+            string_content_hostId[i]=plainMessage.header.sender_id[i];
         }
-        else{
-            ROS_WARN_STREAM("Could not convert mobility header to asn1 format");
-            return boost::optional<std::vector<uint8_t>>{};
+        message->value.choice.TestMessage02.header.hostStaticId.buf=string_content_hostId;
+        message->value.choice.TestMessage02.header.hostStaticId.size=string_size;
+        //convert target_id string to char array
+        string_size=plainMessage.header.recipient_id.size();
+        uint8_t string_content_targetId[string_size];
+        for(size_t i=0;i<string_size;i++)
+        {
+            string_content_targetId[i]=plainMessage.header.recipient_id[i];
         }
-
-        message->value.choice.TestMessage02.header.hostStaticId.buf=header->hostStaticId.buf;
-        message->value.choice.TestMessage02.header.hostStaticId.size=header->hostStaticId.size;
-
-        message->value.choice.TestMessage02.header.targetStaticId.buf=header->targetStaticId.buf;
-        message->value.choice.TestMessage02.header.targetStaticId.size=header->targetStaticId.size;
-
-        message->value.choice.TestMessage02.header.hostBSMId.buf=header->hostBSMId.buf;
-        message->value.choice.TestMessage02.header.hostBSMId.size=header->hostBSMId.size;
-
-        message->value.choice.TestMessage02.header.planId.buf=header->planId.buf;
-        message->value.choice.TestMessage02.header.planId.size=header->planId.size;
+        message->value.choice.TestMessage02.header.targetStaticId.buf=string_content_targetId;
+        message->value.choice.TestMessage02.header.targetStaticId.size=string_size;
         
-        message->value.choice.TestMessage02.header.timestamp.buf=header->timestamp.buf;
-        message->value.choice.TestMessage02.header.timestamp.size=header->timestamp.size;
+         //convert bsm_id string to char array
+        string_size=plainMessage.header.sender_bsm_id.size();
+        uint8_t string_content_BSMId[string_size];
+        for(size_t i=0;i<string_size;i++)
+        {
+            string_content_BSMId[i]=plainMessage.header.sender_bsm_id[i];
+        }
+        message->value.choice.TestMessage02.header.hostBSMId.buf=string_content_BSMId;
+        message->value.choice.TestMessage02.header.hostBSMId.size=string_size;
+        
+         //convert plan_id string to char array
+        string_size=plainMessage.header.plan_id.size();
+        uint8_t string_content_planId[string_size];
+        for(size_t i=0;i<string_size;i++)
+        {
+            string_content_planId[i]=plainMessage.header.plan_id[i];
+        }
+        message->value.choice.TestMessage02.header.planId.buf=string_content_planId;
+        message->value.choice.TestMessage02.header.planId.size=string_size;
+        //get timestamp and convert to char array
+        uint64_t time=plainMessage.header.timestamp;
+        std::string timestamp=std::to_string(time);
+        string_size=timestamp.size();
+        uint8_t string_content_timestamp[string_size];
+        for(size_t i=0;i<string_size;i++)
+        {
+            string_content_timestamp[i]=timestamp[i];
+        }
+        message->value.choice.TestMessage02.header.timestamp.buf=string_content_timestamp;
+        message->value.choice.TestMessage02.header.timestamp.size=string_size;
 
         
         //location
@@ -202,9 +267,9 @@ namespace cpp_message
         message->value.choice.TestMessage02.body.location.ecefZ=location_val;
 
         //get location timestamp and convert to char array
-        uint64_t time=plainMessage.trajectory.location.timestamp;
-        std::string timestamp=std::to_string(time);
-        size_t string_size=timestamp.size();
+        time=plainMessage.trajectory.location.timestamp;
+        timestamp=std::to_string(time);
+        string_size=timestamp.size();
         uint8_t string_location_timestamp[string_size];
         for(size_t i=0;i<string_size;i++)
         {
