@@ -170,7 +170,8 @@ namespace cpp_message
             
             return boost::optional<cav_msgs::MobilityPath>(output);
         }
-        return boost::optional<cav_msgs::MobilityPath>{};
+        ROS_WARN_STREAM("Decoding mobility path message failed");
+        return boost::optional<cav_msgs::MobilityPath> {};
     }
     
     boost::optional<std::vector<uint8_t>> Mobility_Path::encode_mobility_path_message(cav_msgs::MobilityPath plainMessage)
