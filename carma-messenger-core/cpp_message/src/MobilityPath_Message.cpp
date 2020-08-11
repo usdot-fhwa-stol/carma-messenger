@@ -90,7 +90,7 @@ namespace cpp_message
             else plan_id=Header_constant.GUID_DEFAULT;
 
             header.plan_id=plan_id;
-            output.header=header;
+            
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage02.header.timestamp.size;
             timestamp=0;
@@ -99,7 +99,7 @@ namespace cpp_message
                 timestamp+=int(message->value.choice.TestMessage02.header.timestamp.buf[i])-'0';
             }
             header.timestamp=timestamp;
-
+            output.header=header;
             //Trajectory
             cav_msgs::LocationECEF location;
             long tmp=message->value.choice.TestMessage02.body.location.ecefX;

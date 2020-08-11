@@ -44,7 +44,7 @@ namespace cpp_message
             /**
          * @brief Mobility Path message encoding function.
          * @param plainMessage Container with MobilityPath ros message.
-         * @return decoded ros message, returns ROS warning and empty array if encoding fails. 
+         * @return encoded byte array, returns ROS warning and empty array if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_path_message(cav_msgs::MobilityPath plainMessage);
 
