@@ -62,6 +62,8 @@ private:
     ros::Subscriber mobility_response_message_sub_; //outgoing plain mobility response message
     ros::Publisher mobility_path_message_pub_;     //incoming mobility path message after decoded
     ros::Subscriber mobility_path_message_sub_;    //outgoing plain mobility path message
+    ros::Publisher mobility_request_message_pub_;     //incoming mobility request message after decoded
+    ros::Subscriber mobility_request_message_sub_;    //outgoing plain mobility request message
 
     /**
      * @brief Initialize pub/sub and params.
@@ -90,6 +92,12 @@ private:
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_mobility_path_message_callback(const cav_msgs::MobilityPath& msg);
+    /**
+     * @brief function callback when there is an outgoing mobility request message. .
+     * @param msg container with Mobility request ros message. Passed to an encoding function in Mobility_Request class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_request_message_callback(const cav_msgs::MobilityRequest& msg);
     
 public:
 

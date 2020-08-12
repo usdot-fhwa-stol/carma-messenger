@@ -20,7 +20,7 @@ namespace cpp_message
     class Mobility_Request
     {
         private:
-        static const int MOBILITY_REQUEST_MESSAGE_ID_=240;
+        static const int MOBILITY_REQUEST_TEST_ID_=240;
         static const int STATIC_ID_MAX_LENGTH=16;
         std::string BSM_ID_DEFAULT="00000000";
         const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();

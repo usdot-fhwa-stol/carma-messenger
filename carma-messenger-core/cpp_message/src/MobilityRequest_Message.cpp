@@ -33,10 +33,10 @@ namespace cpp_message
         MessageFrame_t* message=nullptr;
 
         //copy from vector to array
-        auto len=binary_array.size();
+        size_t len=binary_array.size();
 
         uint8_t buf[len];
-        for(auto i=0;i<len;i++){
+        for(size_t i=0;i<len;i++){
             buf[i]=binary_array[i];
         }
         
@@ -119,7 +119,7 @@ namespace cpp_message
             if(strategy==STRING_DEFAULT){
                 strategy="";
             }
-
+            output.strategy=strategy;
             //plan type   
             MobilityPlanType_t type;
             type=message->value.choice.TestMessage00.body.planType;
@@ -172,7 +172,7 @@ namespace cpp_message
             }
             location.ecef_y=tmp_l;
 
-            tmp=message->value.choice.TestMessage00.body.location.ecefZ;
+            tmp_l=message->value.choice.TestMessage00.body.location.ecefZ;
             if(tmp>LOCATION_MAX_Z || tmp<LOCATION_MIN_Z){
                 ROS_WARN_STREAM("Location ecefZ is out of range");
                 return boost::optional<cav_msgs::MobilityRequest>{};
@@ -181,19 +181,19 @@ namespace cpp_message
 
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage00.body.location.timestamp.size;
-            timestamp=0;
-            for(auto i=0;i<str_len;i++){
-                timestamp*=10;
-                timestamp+=int(message->value.choice.TestMessage00.body.location.timestamp.buf[i])-'0';
+            uint64_t location_timestamp=0;
+            for(size_t i=0;i<str_len;i++){
+                location_timestamp*=10;
+                location_timestamp+=int(message->value.choice.TestMessage00.body.location.timestamp.buf[i])-'0';
             }
-            location.timestamp=timestamp;
+            location.timestamp=location_timestamp;
 
             output.location=location;    
 
             //strategy params
             std::string strategy_params;
             str_len=message->value.choice.TestMessage00.body.strategyParams.size;
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 strategy_params +=message->value.choice.TestMessage00.body.strategyParams.buf[i];
             }
             if(strategy_params==STRING_DEFAULT){
@@ -209,7 +209,7 @@ namespace cpp_message
                 ROS_WARN_STREAM("Location ecefX is out of range");
                 return boost::optional<cav_msgs::MobilityRequest>{};
             }
-            trajectory_start.ecef_x=tmp;
+            trajectory_start.ecef_x=tmp_t;
 
             tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefY;
             if(tmp_t>LOCATION_MAX || tmp_t<LOCATION_MIN){
@@ -227,17 +227,17 @@ namespace cpp_message
 
             //convert location timestamp from string in asn1 to uint64 for ros message
             str_len=message->value.choice.TestMessage00.body.trajectoryStart->timestamp.size;
-            uint64_t location_timestamp=0;
+            uint64_t trajectory_timestamp=0;
             for(size_t i=0;i<str_len;i++){
-                location_timestamp*=10;
-                location_timestamp+=int(message->value.choice.TestMessage00.body.trajectoryStart->timestamp.buf[i])-'0';
+                trajectory_timestamp*=10;
+                trajectory_timestamp+=int(message->value.choice.TestMessage00.body.trajectoryStart->timestamp.buf[i])-'0';
             }
-            trajectory_start.timestamp=location_timestamp;
+            trajectory_start.timestamp=trajectory_timestamp;
 
             trajectory.location=trajectory_start;
 
             //Trajectory-offset
-            auto offset_count=message->value.choice.TestMessage00.body.trajectory->list.count;
+            int offset_count=message->value.choice.TestMessage00.body.trajectory->list.count;
             
             if(offset_count>MAX_POINTS_IN_MESSAGE){
             ROS_WARN_STREAM("offset count greater than 60.");
@@ -259,18 +259,16 @@ namespace cpp_message
 
             output.trajectory=trajectory;
             // //expiration time
-            // str_len=message->value.choice.TestMessage00.body.expiration->size;
-            // std::cout<<"Reaching here"<<std::endl;
-            // uint64_t expiration=0;
-            // for(auto i=0;i<str_len;i++){
-            //     expiration*=10;
-            //     expiration+=int(message->value.choice.TestMessage00.body.expiration->buf[i])-'0';
-            // }
-            // output.expiration=expiration;
+            str_len=message->value.choice.TestMessage00.body.expiration->size;
+            uint64_t expiration=0;
+            for(size_t i=0;i<str_len;i++){
+                expiration*=10;
+                expiration+=int(message->value.choice.TestMessage00.body.expiration->buf[i])-'0';
+            }
+            output.expiration=expiration;
 
             return boost::optional<cav_msgs::MobilityRequest>(output);
         }
-        ROS_WARN_STREAM("Decoding mobility request failed");
         return boost::optional<cav_msgs::MobilityRequest>{};
     }
 
@@ -288,7 +286,7 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};            
         }
         
-        message->messageId=MOBILITY_REQUEST_MESSAGE_ID_;
+        message->messageId=MOBILITY_REQUEST_TEST_ID_;
         message->value.present=MessageFrame__value_PR_TestMessage00;
 
         //For Header
@@ -381,54 +379,58 @@ namespace cpp_message
         message->value.choice.TestMessage00.body.urgency=plainMessage.urgency;
 
         //location
-        cav_msgs::LocationECEF starting_location;
         long location_val;
-        location_val=plainMessage.trajectory.location.ecef_x;
+        location_val=plainMessage.location.ecef_x;
         if(location_val> LOCATION_MAX || location_val<LOCATION_MIN){
             ROS_WARN_STREAM("Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefX=location_val;
 
-        location_val=plainMessage.trajectory.location.ecef_y;
+        location_val=plainMessage.location.ecef_y;
         if(location_val> LOCATION_MAX || location_val<LOCATION_MIN){
             ROS_WARN_STREAM("Location ecefY is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefY=location_val;
 
-        location_val=plainMessage.trajectory.location.ecef_z;
+        location_val=plainMessage.location.ecef_z;
         if(location_val> LOCATION_MAX_Z || location_val<LOCATION_MIN_Z){
             ROS_WARN_STREAM("Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefZ=location_val;
 
-        time=plainMessage.location.timestamp;
-        timestamp=std::to_string(time);
-        string_size=timestamp.size();
-        string_content_timestamp[string_size];
-        for(auto i=0;i<string_size;i++)
+        uint64_t location_time=plainMessage.location.timestamp;
+        std::string location_timestamp=std::to_string(location_time);
+        size_t location_timestamp_string_size=location_timestamp.size();
+        uint8_t string_content_location_timestamp[location_timestamp_string_size];
+        for(size_t i=0;i<location_timestamp_string_size;i++)
         {
-            string_content_timestamp[i]=timestamp[i];
+            string_content_location_timestamp[i]=location_timestamp[i];
         }
-        message->value.choice.TestMessage00.body.location.timestamp.buf=string_content_timestamp;
-        message->value.choice.TestMessage00.body.location.timestamp.size=string_size;
+        message->value.choice.TestMessage00.body.location.timestamp.buf=string_content_location_timestamp;
+        message->value.choice.TestMessage00.body.location.timestamp.size=location_timestamp_string_size;
 
         //strategyParams
-        string_size=plainMessage.strategy_params.size();
-        uint8_t string_content_params[string_size];
-        for(int i=0;i<string_size;i++)
+        size_t params_string_size=plainMessage.strategy_params.size();
+        uint8_t string_content_params[params_string_size];
+        for(size_t i=0;i<params_string_size;i++)
         {
             string_content_params[i]=plainMessage.strategy_params[i];
         }
         message->value.choice.TestMessage00.body.strategyParams.buf=string_content_params;
-        message->value.choice.TestMessage00.body.strategyParams.size=string_size;
+        message->value.choice.TestMessage00.body.strategyParams.size=params_string_size;
         
         //Trajectory
             //trajectoryStart
         MobilityLocation* trajectory_location;
         trajectory_location=(MobilityLocation*)calloc(1,sizeof(MobilityLocation));
+        if(!trajectory_location)
+        {
+            ROS_WARN_STREAM("Cannot allocate mem for trajectory.location encoding");
+            return boost::optional<std::vector<uint8_t>>{};
+        }
         long trajectory_start;
         trajectory_start=plainMessage.trajectory.location.ecef_x;
         if(trajectory_start> LOCATION_MAX || location_val<LOCATION_MIN){
@@ -452,20 +454,20 @@ namespace cpp_message
         trajectory_location->ecefZ=trajectory_start;
 
         //get location timestamp and convert to char array
-        time=plainMessage.trajectory.location.timestamp;
-        timestamp=std::to_string(time);
-        string_size=timestamp.size();
-        uint8_t string_location_timestamp[string_size];
-        for(auto i=0;i<string_size;i++)
+        uint64_t trajectory_time=plainMessage.trajectory.location.timestamp;
+        std::string trajectory_timestamp=std::to_string(trajectory_time);
+        size_t trajectory_timestamp_string_size=trajectory_timestamp.size();
+        uint8_t string_trajectory_timestamp[trajectory_timestamp_string_size];
+        for(size_t i=0;i<trajectory_timestamp_string_size;i++)
         {
-            string_content_timestamp[i]=timestamp[i];
+            string_trajectory_timestamp[i]=trajectory_timestamp[i];
         }
-        trajectory_location->timestamp.buf=string_content_timestamp;
-        trajectory_location->timestamp.size=string_size;
+        trajectory_location->timestamp.buf=string_trajectory_timestamp;
+        trajectory_location->timestamp.size=trajectory_timestamp_string_size;
         message->value.choice.TestMessage00.body.trajectoryStart=trajectory_location;
 
             //trajectory offsets
-        auto offset_count=plainMessage.trajectory.offsets.size();
+        size_t offset_count=plainMessage.trajectory.offsets.size();
         
         if(offset_count>MAX_POINTS_IN_MESSAGE){
             ROS_WARN_STREAM("offset count greater than 60.");
@@ -474,10 +476,20 @@ namespace cpp_message
 
         MobilityLocationOffsets* offsets_list;
         offsets_list=(MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets));
+        if(!offsets_list)
+        {
+            ROS_WARN_STREAM("Cannot allocate mem for offsets list encoding");
+            return boost::optional<std::vector<uint8_t>>{};
+        }
 
         MobilityECEFOffset* Offsets;    
-        for(int i=0;i<offset_count;i++){
+        for(size_t i=0;i<offset_count;i++){
             Offsets=(MobilityECEFOffset*)calloc(1,sizeof(MobilityECEFOffset));
+            if(!Offsets)
+            {
+                ROS_WARN_STREAM("Cannot allocate mem for Offsets encoding");
+                return boost::optional<std::vector<uint8_t>>{};
+            }
             Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
             Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
             Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;
@@ -487,30 +499,40 @@ namespace cpp_message
         message->value.choice.TestMessage00.body.trajectory=offsets_list;
 
         // //expiration
-        // uint64_t expiration_time=plainMessage.expiration;
-        // std::string expiration_string=std::to_string(expiration_time);
-        // size_t expiration_string_size=expiration_string.size();
-        // uint8_t expiration_array[expiration_string_size];  
-        // for(size_t i=0;i<expiration_string_size ;i++)
-        // {
-        //     expiration_array[i]=expiration_string[i];
-        // }
-        // message->value.choice.TestMessage00.body.expiration->size=expiration_string_size;
-        // message->value.choice.TestMessage00.body.expiration->buf=expiration_array;
+        uint64_t expiration_message=plainMessage.expiration;
+        std::string expiration_string=std::to_string(expiration_message);
+        size_t expiration_string_size=expiration_string.size();
+        uint8_t expiration_array[expiration_string_size];  
+        for(size_t i=0;i<expiration_string_size ;i++)
+        {
+            expiration_array[i]=expiration_string[i];
+        }
+
+        MobilityTimestamp_t* expiration_time;
+        expiration_time=(MobilityTimestamp_t*)calloc(1,sizeof(MobilityTimestamp_t));
+        if(!expiration_time)
+        {
+            ROS_WARN_STREAM("Cannot allocate mem for expiration message encoding");
+            return boost::optional<std::vector<uint8_t>>{};
+        }
+        expiration_time->size=expiration_string_size;
+        expiration_time->buf=expiration_array;
+        message->value.choice.TestMessage00.body.expiration=expiration_time;
+
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
-        if(ec.encoded==-1){
+        if(ec.encoded==-1){;
             return boost::optional<std::vector<uint8_t>>{}; 
-        }
+        }     
         //copy to byte array msg
-        auto array_length=ec.encoded/8;
+        size_t array_length=ec.encoded/8;
         std::vector<uint8_t> b_array(array_length);
-        for(auto i = 0; i < array_length; i++) 
+        for(size_t i = 0; i < array_length; i++) 
         {
             b_array[i] = buffer[i];
-            //std::cout<<int(b_array[i])<<",";
         }
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }
+
 }

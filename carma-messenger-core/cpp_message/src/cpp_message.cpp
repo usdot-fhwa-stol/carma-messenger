@@ -44,6 +44,8 @@ namespace cpp_message
         mobility_response_message_sub_=nh_->subscribe("outgoing_plain_mobility_response_message",5, &Message::outbound_mobility_response_message_callback,this);
         mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("inbound_mobility_path_message",5);
         mobility_path_message_sub_=nh_->subscribe("outgoing_plain_mobility_path_message",5, &Message::outbound_mobility_path_message_callback,this);
+        mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("inbound_mobility_request_message",5);
+        mobility_request_message_sub_=nh_->subscribe("outgoing_plain_mobility_request_message",5, &Message::outbound_mobility_request_message_callback,this);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -117,6 +119,21 @@ namespace cpp_message
             else
             {
                 ROS_WARN_STREAM("Cannot decode Mobility Path message");
+            }
+             
+        }
+        else if(msg->messageType=="MobilityRequest")   
+        {
+            std::vector<uint8_t> array=msg->content;
+            Mobility_Request decode;
+            auto output=decode.decode_mobility_request_message(array);
+            if(output)
+            {
+                mobility_request_message_pub_.publish(output.get());
+            }
+            else
+            {
+                ROS_WARN_STREAM("Cannot decode Mobility Request message");
             }
              
         }
@@ -224,7 +241,26 @@ namespace cpp_message
             ROS_WARN_STREAM("Cannot encode mobility path message.");
         }
     }
-
+    void Message::outbound_mobility_request_message_callback(const cav_msgs::MobilityRequest& msg)
+    {//encode and publish as outbound binary message
+        Mobility_Request encode;
+        auto res=encode.encode_mobility_request_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityRequest";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility request message.");
+        }
+    }
 boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
     {
         j2735_msgs::TrafficControlMessage output;
