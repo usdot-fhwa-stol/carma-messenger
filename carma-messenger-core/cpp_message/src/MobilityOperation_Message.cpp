@@ -35,9 +35,7 @@ namespace cpp_message
         size_t len=binary_array.size();    
         
         uint8_t buf[len];             
-        for(size_t i=0;i < len;i++){
-            buf[i]=binary_array[i];
-        }
+        std::copy(binary_array.begin(),binary_array.end(),buf);
         //use asn1c lib to decode
         
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
@@ -135,6 +133,7 @@ namespace cpp_message
 
             return boost::optional<cav_msgs::MobilityOperation>(output);
         }
+        ROS_WARN_STREAM("mobility operation decoding failed");
         return boost::optional<cav_msgs::MobilityOperation>{};
 
     }
@@ -155,7 +154,7 @@ namespace cpp_message
         }
         
         //set message type to TestMessage03
-        message->messageId=MOBILITYOPERATION_TEST_ID;  
+        message->messageId=MOBILITY_OPERATION_TEST_ID;  
         message->value.present=MessageFrame__value_PR_TestMessage03;    
 
         //convert host_id string to char array

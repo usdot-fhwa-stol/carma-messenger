@@ -32,10 +32,10 @@ namespace cpp_message
         MessageFrame_t* message=nullptr;
 
         //copy from vector to array         
-        auto len=binary_array.size();
+        size_t len=binary_array.size();
 
         uint8_t buf[len];             
-        for(auto i=0;i < len;i++){
+        for(size_t i=0;i < len;i++){
             buf[i]=binary_array[i];
         }   
         //use asn1c lib to decode
@@ -106,10 +106,10 @@ namespace cpp_message
             output.header=header;
 
             //get urgency from long to uint16
-            long tmp=0;
-            tmp=message->value.choice.TestMessage01.body.urgency;
-            if(tmp>INT16_MAX){
-                tmp=0;
+            long tmp=message->value.choice.TestMessage01.body.urgency;
+            if(tmp>URGENCY_MAX || tmp<URGENCY_MIN){
+                ROS_WARN_STREAM("Urgency message out of range");
+                return boost::optional<cav_msgs::MobilityResponse>{};
             }
             output.urgency=tmp;
             //get isaccepted bool
@@ -119,7 +119,7 @@ namespace cpp_message
         }
         //else return an empty object
         ROS_WARN_STREAM("Decoding mobility response message failed");
-        return boost::optional<cav_msgs::MobilityResponse>(output);
+        return boost::optional<cav_msgs::MobilityResponse>{};
     }
 
     boost::optional<std::vector<uint8_t>> Mobility_Response::encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage)
@@ -137,7 +137,7 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
         //set message type to TestMessage01
-        message->messageId=MOBILITYRESPONSE_TEST_ID; 
+        message->messageId=MOBILITY_RESPONSE_TEST_ID; 
         message->value.present=MessageFrame__value_PR_TestMessage01;
 
         //convert host_id string to char array
@@ -205,11 +205,11 @@ namespace cpp_message
         }
         
         //copy to byte array msg
-        auto array_length=ec.encoded / 8;
+        size_t array_length=ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
-        for(auto i=0;i<array_length;i++)b_array[i]=buffer[i];
+        for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
         
-        //for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }

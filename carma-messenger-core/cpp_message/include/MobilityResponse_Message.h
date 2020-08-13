@@ -28,7 +28,9 @@ namespace cpp_message
             const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
             std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
             const int GUID_LENGTH=GUID_DEFAULT.length();
-            static const int MOBILITYRESPONSE_TEST_ID=241;
+            static const int MOBILITY_RESPONSE_TEST_ID=241;
+            static const int URGENCY_MIN=0;
+            static const int URGENCY_MAX=1000;
 
             public:
             /**

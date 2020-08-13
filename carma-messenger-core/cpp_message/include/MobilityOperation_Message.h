@@ -31,7 +31,7 @@ namespace cpp_message
             const int GUID_LENGTH=GUID_DEFAULT.length();
             static const int STRATEGY_MAX_LENGTH=50;
             static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
-            static const int MOBILITYOPERATION_TEST_ID=243;
+            static const int MOBILITY_OPERATION_TEST_ID=243;
         
         public:
         /**

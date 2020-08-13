@@ -289,10 +289,20 @@ namespace cpp_message
 
         MobilityLocationOffsets* offsets_list;
         offsets_list=(MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets));
+        if(!offsets_list)
+        {
+            ROS_WARN_STREAM("Cannot allocate mem for offsets list");
+            return boost::optional<std::vector<uint8_t>>{}; 
+        }
 
         MobilityECEFOffset* Offsets;    
         for(size_t i=0;i<offset_count;i++){
             Offsets=(MobilityECEFOffset*)calloc(1,sizeof(MobilityECEFOffset));
+            if(!Offsets)
+            {
+                ROS_WARN_STREAM("Cannot allocate mem for offsets");
+                return boost::optional<std::vector<uint8_t>>{};
+            }
             Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
             Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
             Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;

@@ -26,8 +26,15 @@ TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
     cpp_message::Mobility_Response worker;
     boost::optional<cav_msgs::MobilityResponse> res;
     res = worker.decode_mobility_response_message(binary_input);
-    cav_msgs::MobilityResponse to_read=res.get();
     if(res){
+        cav_msgs::MobilityResponse to_read=res.get();
+        // std::cout<<to_read.header.sender_id<<std::endl;
+        // std::cout<<to_read.header.recipient_id<<std::endl;
+        // std::cout<<to_read.header.sender_bsm_id<<std::endl;
+        // std::cout<<to_read.header.plan_id<<std::endl;
+        // std::cout<<to_read.header.timestamp<<std::endl;
+        // std::cout<<to_read.urgency<<std::endl;
+        // std::cout<<int(to_read.is_accepted)<<std::endl;
         if(to_read.header.plan_id=="11111111-2222-3333-AAAA-111111111111" && to_read.urgency==50 ) {
             EXPECT_TRUE(true);
         }

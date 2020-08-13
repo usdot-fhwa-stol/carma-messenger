@@ -36,6 +36,7 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
         // std::cout<<to_read.trajectory.location.ecef_x<<std::endl;
         // std::cout<<to_read.trajectory.location.ecef_y<<std::endl;
         // std::cout<<to_read.trajectory.location.ecef_z<<std::endl;
+        // std::cout<<to_read.trajectory.location.timestamp<<std::endl;
         // for(int i=0;i<to_read.trajectory.offsets.size();i++) std::cout<<to_read.trajectory.offsets[i]<<" ";
         
         if(to_read.header.sender_id=="USDOT-45100" && to_read.trajectory.location.ecef_z==2) EXPECT_TRUE(true);
