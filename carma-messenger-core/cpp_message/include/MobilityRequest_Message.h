@@ -51,13 +51,13 @@ namespace cpp_message
         /**
          * @brief Mobility Request message decoding function.
          * @param binary_array Container with binary input.
-         * @return decoded ros message, returns null if decoding fails. 
+         * @return decoded ros message, returns an empty optional if decoding fails. 
          */         
         boost::optional<cav_msgs::MobilityRequest> decode_mobility_request_message(std::vector<uint8_t>& binary_array);
         /**
          * helper functions for Mobility Request message encoding.
          * @param plainMessage contains mobility request ros message to be encoded as byte array.
-         * @return encoded byte array returns null if encoding fails. 
+         * @return encoded byte array returns an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_request_message(cav_msgs::MobilityRequest plainMessage);
     };

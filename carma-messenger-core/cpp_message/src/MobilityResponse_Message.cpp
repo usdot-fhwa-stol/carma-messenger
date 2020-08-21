@@ -34,10 +34,8 @@ namespace cpp_message
         //copy from vector to array         
         size_t len=binary_array.size();
 
-        uint8_t buf[len];             
-        for(size_t i=0;i < len;i++){
-            buf[i]=binary_array[i];
-        }   
+        uint8_t buf[len];        
+        std::copy(binary_array.begin(),binary_array.end(),buf);
         //use asn1c lib to decode
         
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);

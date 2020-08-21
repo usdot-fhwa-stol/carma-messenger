@@ -20,6 +20,7 @@
 
 #include "MobilityRequest_Message.h"
 #include "MobilityHeader_Message.h"
+#include <algorithm>
 
 namespace cpp_message
 {
@@ -36,9 +37,7 @@ namespace cpp_message
         size_t len=binary_array.size();
 
         uint8_t buf[len];
-        for(size_t i=0;i<len;i++){
-            buf[i]=binary_array[i];
-        }
+        std::copy(binary_array.begin(),binary_array.end(),buf);
         
         //use asn1c lib to decode
         rval=uper_decode(0, &asn_DEF_MessageFrame, (void **) &message,buf, len,0,0);
@@ -97,10 +96,11 @@ namespace cpp_message
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage00.header.timestamp.size;
             timestamp=0;
+            char timestamp_ch[str_len];
             for(size_t i=0;i<str_len;i++){
-                timestamp*=10;
-                timestamp+=int(message->value.choice.TestMessage00.header.timestamp.buf[i])-'0';
+                timestamp_ch[i]=message->value.choice.TestMessage00.header.timestamp.buf[i];
             }
+            timestamp=atoll(timestamp_ch);
             header.timestamp=timestamp;
 
             output.header=header;
@@ -123,29 +123,8 @@ namespace cpp_message
             //plan type   
             MobilityPlanType_t type;
             type=message->value.choice.TestMessage00.body.planType;
-            enum plan {UNKNOWN=0,CHANGE_LANE_LEFT=1,CHANGE_LANE_RIGHT=2,JOIN_PLATOON_AT_REAR=3,PLATOON_FOLLOWER_JOIN=4};
-            //plan plan_type;
-            uint8_t plan_type;
-            switch(type){
-                case 0:  
-                    plan_type=UNKNOWN;
-                    break;
-                case 1:
-                    plan_type=CHANGE_LANE_LEFT;
-                    break;
-                case 2:
-                    plan_type=CHANGE_LANE_RIGHT;
-                    break;
-                case 3:
-                    plan_type=JOIN_PLATOON_AT_REAR;
-                    break;
-                case 4:
-                    plan_type=PLATOON_FOLLOWER_JOIN;
-                    break;
-                default:plan_type=UNKNOWN;
-           }
-            output.plan_type.type=plan_type;
 
+            output.plan_type.type=message->value.choice.TestMessage00.body.planType;
             //urgency
             long tmp=message->value.choice.TestMessage00.body.urgency;
             if(tmp>URGENCY_MIN){
@@ -182,10 +161,11 @@ namespace cpp_message
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage00.body.location.timestamp.size;
             uint64_t location_timestamp=0;
+            char location_timestamp_ch[str_len];
             for(size_t i=0;i<str_len;i++){
-                location_timestamp*=10;
-                location_timestamp+=int(message->value.choice.TestMessage00.body.location.timestamp.buf[i])-'0';
+                location_timestamp_ch[i]=message->value.choice.TestMessage00.body.location.timestamp.buf[i];
             }
+            location_timestamp=atoll(location_timestamp_ch);
             location.timestamp=location_timestamp;
 
             output.location=location;    
@@ -228,17 +208,18 @@ namespace cpp_message
             //convert location timestamp from string in asn1 to uint64 for ros message
             str_len=message->value.choice.TestMessage00.body.trajectoryStart->timestamp.size;
             uint64_t trajectory_timestamp=0;
+            char trajectory_timestamp_ch[str_len];
             for(size_t i=0;i<str_len;i++){
-                trajectory_timestamp*=10;
-                trajectory_timestamp+=int(message->value.choice.TestMessage00.body.trajectoryStart->timestamp.buf[i])-'0';
+                trajectory_timestamp_ch[i]=message->value.choice.TestMessage00.body.trajectoryStart->timestamp.buf[i];
             }
+            trajectory_timestamp=atoll(trajectory_timestamp_ch);
             trajectory_start.timestamp=trajectory_timestamp;
 
             trajectory.location=trajectory_start;
 
             //Trajectory-offset
             int offset_count=message->value.choice.TestMessage00.body.trajectory->list.count;
-            
+
             if(offset_count>MAX_POINTS_IN_MESSAGE){
             ROS_WARN_STREAM("offset count greater than 60.");
             return boost::optional<cav_msgs::MobilityRequest>{};
@@ -247,13 +228,14 @@ namespace cpp_message
             for(size_t i=0;i<offset_count;i++){
                 cav_msgs::LocationOffsetECEF Offsets;
                 Offsets.offset_x=message->value.choice.TestMessage00.body.trajectory->list.array[i]->offsetX;
-                if(Offsets.offset_x<OFFSET_MIN || Offsets.offset_x>OFFSET_MAX)Offsets.offset_x=OFFSET_UNAVAILABLE;
-       
+                if(Offsets.offset_x<OFFSET_MIN || Offsets.offset_x>OFFSET_MAX)  Offsets.offset_x=OFFSET_UNAVAILABLE;
+
                 Offsets.offset_y=message->value.choice.TestMessage00.body.trajectory->list.array[i]->offsetY;
-                if(Offsets.offset_y<OFFSET_MIN || Offsets.offset_y>OFFSET_MAX)Offsets.offset_y=OFFSET_UNAVAILABLE;
+                if(Offsets.offset_y<OFFSET_MIN || Offsets.offset_y>OFFSET_MAX)  Offsets.offset_y=OFFSET_UNAVAILABLE;
 
                 Offsets.offset_z=message->value.choice.TestMessage00.body.trajectory->list.array[i]->offsetZ;
-                if(Offsets.offset_z<OFFSET_MIN || Offsets.offset_z>OFFSET_MAX)Offsets.offset_z=OFFSET_UNAVAILABLE;
+                if(Offsets.offset_z<OFFSET_MIN || Offsets.offset_z>OFFSET_MAX)  Offsets.offset_z=OFFSET_UNAVAILABLE;
+
                 trajectory.offsets.push_back(Offsets);
             }
 
@@ -261,10 +243,11 @@ namespace cpp_message
             // //expiration time
             str_len=message->value.choice.TestMessage00.body.expiration->size;
             uint64_t expiration=0;
+            char expiration_ch[str_len];
             for(size_t i=0;i<str_len;i++){
-                expiration*=10;
-                expiration+=int(message->value.choice.TestMessage00.body.expiration->buf[i])-'0';
+                expiration_ch[i]=message->value.choice.TestMessage00.body.expiration->buf[i];
             }
+            expiration=atoll(expiration_ch);
             output.expiration=expiration;
 
             return boost::optional<cav_msgs::MobilityRequest>(output);
@@ -277,15 +260,14 @@ namespace cpp_message
         uint8_t buffer[512];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message=(MessageFrame_t*)calloc(1,sizeof(MessageFrame_t));
+        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
-        if(!message)
+        if(!message_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for MobilityRequest message encoding");
             return boost::optional<std::vector<uint8_t>>{};            
         }
-        
+        MessageFrame_t* message=message_shared.get();
         message->messageId=MOBILITY_REQUEST_TEST_ID_;
         message->value.present=MessageFrame__value_PR_TestMessage00;
 
@@ -350,30 +332,8 @@ namespace cpp_message
         message->value.choice.TestMessage00.body.strategy.size=string_size;
 
         //plantype
-        MobilityPlanType_t type;
-            enum plan {UNKNOWN=0,CHANGE_LANE_LEFT=1,CHANGE_LANE_RIGHT=2,JOIN_PLATOON_AT_REAR=3,PLATOON_FOLLOWER_JOIN=4};
-            //plan plan_type;
-            uint8_t plan_type=plainMessage.plan_type.type;
-            switch(plan_type){
-                case 0:  
-                    type=UNKNOWN;
-                    break;
-                case 1:
-                    type=CHANGE_LANE_LEFT;
-                    break;
-                case 2:
-                    type=CHANGE_LANE_RIGHT;
-                    break;
-                case 3:
-                    type=JOIN_PLATOON_AT_REAR;
-                    break;
-                case 4:
-                    type=PLATOON_FOLLOWER_JOIN;
-                    break;
-                default:type=UNKNOWN;
-           }
             
-        message->value.choice.TestMessage00.body.planType=type;
+        message->value.choice.TestMessage00.body.planType=plainMessage.plan_type.type;
 
         //urgency
         message->value.choice.TestMessage00.body.urgency=plainMessage.urgency;
@@ -424,16 +384,16 @@ namespace cpp_message
         
         //Trajectory
             //trajectoryStart
-        MobilityLocation* trajectory_location;
-        trajectory_location=(MobilityLocation*)calloc(1,sizeof(MobilityLocation));
-        if(!trajectory_location)
+        std::shared_ptr<MobilityLocation>trajectory_location_shared(new MobilityLocation);
+        if(!trajectory_location_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for trajectory.location encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
+        MobilityLocation* trajectory_location=trajectory_location_shared.get();
         long trajectory_start;
         trajectory_start=plainMessage.trajectory.location.ecef_x;
-        if(trajectory_start> LOCATION_MAX || location_val<LOCATION_MIN){
+        if(trajectory_start> LOCATION_MAX || trajectory_start<LOCATION_MIN){
             ROS_WARN_STREAM("Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
@@ -474,17 +434,16 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
 
-        MobilityLocationOffsets* offsets_list;
-        offsets_list=(MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets));
-        if(!offsets_list)
+        std::shared_ptr <MobilityLocationOffsets>offsets_list_shared ((MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets)),free);
+        if(!offsets_list_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for offsets list encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-
+        MobilityLocationOffsets* offsets_list=offsets_list_shared.get();
         MobilityECEFOffset* Offsets;    
         for(size_t i=0;i<offset_count;i++){
-            Offsets=(MobilityECEFOffset*)calloc(1,sizeof(MobilityECEFOffset));
+            Offsets=new MobilityECEFOffset;
             if(!Offsets)
             {
                 ROS_WARN_STREAM("Cannot allocate mem for Offsets encoding");
@@ -495,7 +454,7 @@ namespace cpp_message
             Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;
             asn_sequence_add(&offsets_list->list,Offsets);
         }
-        
+
         message->value.choice.TestMessage00.body.trajectory=offsets_list;
 
         // //expiration
@@ -508,20 +467,20 @@ namespace cpp_message
             expiration_array[i]=expiration_string[i];
         }
 
-        MobilityTimestamp_t* expiration_time;
-        expiration_time=(MobilityTimestamp_t*)calloc(1,sizeof(MobilityTimestamp_t));
-        if(!expiration_time)
+        std::shared_ptr<MobilityTimestamp_t>expiration_time_shared(new MobilityTimestamp_t);
+        if(!expiration_time_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for expiration message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
+        MobilityTimestamp_t* expiration_time=expiration_time_shared.get();
         expiration_time->size=expiration_string_size;
         expiration_time->buf=expiration_array;
         message->value.choice.TestMessage00.body.expiration=expiration_time;
 
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
-        if(ec.encoded==-1){;
+        if(ec.encoded==-1){
             return boost::optional<std::vector<uint8_t>>{}; 
         }     
         //copy to byte array msg
@@ -531,6 +490,9 @@ namespace cpp_message
         {
             b_array[i] = buffer[i];
         }
+        //delete unsafe memory
+        delete Offsets;
+
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }
