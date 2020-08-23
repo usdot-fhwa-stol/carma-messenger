@@ -47,7 +47,6 @@ namespace cpp_message
         static const int OFFSET_UNAVAILABLE=501;
 
         public:
-         //helper functions for message decode/encode
         /**
          * @brief Mobility Request message decoding function.
          * @param binary_array Container with binary input.
@@ -55,10 +54,15 @@ namespace cpp_message
          */         
         boost::optional<cav_msgs::MobilityRequest> decode_mobility_request_message(std::vector<uint8_t>& binary_array);
         /**
-         * helper functions for Mobility Request message encoding.
+         * @brief Mobility Request message encoding function.
          * @param plainMessage contains mobility request ros message to be encoded as byte array.
          * @return encoded byte array returns an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_request_message(cav_msgs::MobilityRequest plainMessage);
+        /**
+         * @brief function for deleting unsafely allocated offset messages.
+         * @param Offsets is a vector of pointers to MobilityECEFOffset messages, passed by reference.
+         */
+        void delete_unsafe_mem(std::vector<MobilityECEFOffset_t*> &Offsets);
     };
 }

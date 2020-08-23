@@ -441,9 +441,12 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
         MobilityLocationOffsets* offsets_list=offsets_list_shared.get();
-        MobilityECEFOffset* Offsets;    
+
+        //vector to store unsafe pointers for deleting later
+        std::vector<MobilityECEFOffset*> Offset_ptrs;    
+        
         for(size_t i=0;i<offset_count;i++){
-            Offsets=new MobilityECEFOffset;
+            MobilityECEFOffset* Offsets=new MobilityECEFOffset;
             if(!Offsets)
             {
                 ROS_WARN_STREAM("Cannot allocate mem for Offsets encoding");
@@ -453,6 +456,7 @@ namespace cpp_message
             Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
             Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;
             asn_sequence_add(&offsets_list->list,Offsets);
+            Offset_ptrs.push_back(Offsets);
         }
 
         message->value.choice.TestMessage00.body.trajectory=offsets_list;
@@ -470,6 +474,7 @@ namespace cpp_message
         std::shared_ptr<MobilityTimestamp_t>expiration_time_shared(new MobilityTimestamp_t);
         if(!expiration_time_shared)
         {
+            delete_unsafe_mem(Offset_ptrs);
             ROS_WARN_STREAM("Cannot allocate mem for expiration message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
@@ -481,6 +486,7 @@ namespace cpp_message
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
         if(ec.encoded==-1){
+            delete_unsafe_mem(Offset_ptrs);
             return boost::optional<std::vector<uint8_t>>{}; 
         }     
         //copy to byte array msg
@@ -490,11 +496,17 @@ namespace cpp_message
         {
             b_array[i] = buffer[i];
         }
-        //delete unsafe memory
-        delete Offsets;
 
+        delete_unsafe_mem(Offset_ptrs);
         return boost::optional<std::vector<uint8_t>>(b_array);
 
+    }
+
+    void Mobility_Request::delete_unsafe_mem(std::vector<MobilityECEFOffset_t*> &Offsets)
+    {
+        for(size_t i=0;i<Offsets.size();i++){
+            delete Offsets[i];
+        }
     }
 
 }
