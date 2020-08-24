@@ -440,11 +440,8 @@ namespace cpp_message
             ROS_WARN_STREAM("Cannot allocate mem for offsets list encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        MobilityLocationOffsets* offsets_list=offsets_list_shared.get();
+        MobilityLocationOffsets* offsets_list=offsets_list_shared.get();    
 
-        //vector to store unsafe pointers for deleting later
-        std::vector<MobilityECEFOffset*> Offset_ptrs;    
-        
         for(size_t i=0;i<offset_count;i++){
             MobilityECEFOffset* Offsets=new MobilityECEFOffset;
             if(!Offsets)
@@ -474,7 +471,6 @@ namespace cpp_message
         std::shared_ptr<MobilityTimestamp_t>expiration_time_shared(new MobilityTimestamp_t);
         if(!expiration_time_shared)
         {
-            delete_unsafe_mem(Offset_ptrs);
             ROS_WARN_STREAM("Cannot allocate mem for expiration message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
@@ -486,7 +482,6 @@ namespace cpp_message
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
         if(ec.encoded==-1){
-            delete_unsafe_mem(Offset_ptrs);
             return boost::optional<std::vector<uint8_t>>{}; 
         }     
         //copy to byte array msg
@@ -497,15 +492,15 @@ namespace cpp_message
             b_array[i] = buffer[i];
         }
 
-        delete_unsafe_mem(Offset_ptrs);
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }
 
-    void Mobility_Request::delete_unsafe_mem(std::vector<MobilityECEFOffset_t*> &Offsets)
-    {
-        for(size_t i=0;i<Offsets.size();i++){
-            delete Offsets[i];
+    Mobility_Request::~Mobility_Request(){
+        if(!Offset_ptrs.empty()){
+            for(size_t i=0;i<Offset_ptrs.size();i++){
+                delete Offset_ptrs[i];
+            }
         }
     }
 
