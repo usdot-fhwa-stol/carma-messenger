@@ -38,13 +38,13 @@ namespace cpp_message
         /**
          * @brief Mobility Path message decoding function.
          * @param binary_array Container with binary input.
-         * @return decoded ros message, returns ROS warning and empty message if decoding fails. 
+         * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
         boost::optional<cav_msgs::MobilityPath> decode_mobility_path_message(std::vector<uint8_t>& binary_array);
             /**
          * @brief Mobility Path message encoding function.
          * @param plainMessage Container with MobilityPath ros message.
-         * @return decoded ros message, returns ROS warning and empty array if encoding fails. 
+         * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_path_message(cav_msgs::MobilityPath plainMessage);
 
