@@ -1,0 +1,62 @@
+#
+# Copyright (C) 2018-2020 LEIDOS.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy of
+# the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under
+# the License.
+#
+
+##############################################################################
+# CMake
+##############################################################################
+
+cmake_minimum_required(VERSION 2.8.3)
+project(rosjava_utils)
+
+##############################################################################
+# Catkin
+##############################################################################
+
+find_package(catkin REQUIRED
+	rosjava_build_tools
+        rosjava_messages
+        cav_msgs
+        cav_srvs
+        j2735_msgs
+)
+
+# Set the gradle targets you want catkin's make to run by default, e.g.
+#   catkin_rosjava_setup(installApp)
+# Note that the catkin_create_rosjava_xxx scripts will usually automatically
+# add tasks to this for you when you create subprojects.
+catkin_rosjava_setup(install publish)
+
+
+# make sure messages get built first if genjava is enabled
+add_dependencies(gradle-${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+
+catkin_package(
+  CATKIN_DEPENDS rosjava_build_tools rosjava_messages cav_msgs cav_srvs j2735_msgs
+)
+
+##############################################################################
+# Installation
+##############################################################################
+
+# Change this to match the maven group name you have specified in the
+# allprojects closure the root build.gradle
+install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_MAVEN_DESTINATION}/gov/dot/fhwa/saxton/carma/
+        DESTINATION ${CATKIN_GLOBAL_MAVEN_DESTINATION}/gov/dot/fhwa/saxton/carma)
+
+# Instal Binaries from Gradle Build folder
+install(DIRECTORY
+        rosjava_utils/build
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/rosjava_utils)
