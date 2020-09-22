@@ -32,6 +32,10 @@
   <!-- Generate log name configuration file -->
   <param name="log_name" type="str" command="$(find carma-messenger)/scripts/generate_log_name.sh"/>
 
+  <!-- Topic name remaps -->
+  <remap from="outbound_binary_msg" to="comms/outbound_binary_msg"/>
+  <remap from="inbound_binary_msg" to="comms/inbound_binary_msg"/>
+
   <!-- ROS Bag -->
   <node if="$(arg use_rosbag)" pkg="rosbag" type="record" name="rosbag_node" args="record -o /opt/carma/logs/ --lz4 -a -x '/rosout(.*)'" />
 
@@ -43,12 +47,12 @@
     <remap from="outgoing_bsm" to="bsm_outbound"/>
   </node>
   
-  <!-- Message Consumer Node -->
+  <!-- Message Consumer Node 
   <node pkg="message" type="message" name="message_consumer" args="gov.dot.fhwa.saxton.carma.message.MessageConsumer">
     <rosparam command="load" file="$(find message)/message/config/MessageParams.yaml"/>
     <remap from="outbound_binary_msg" to="comms/outbound_binary_msg"/>
     <remap from="inbound_binary_msg" to="comms/inbound_binary_msg"/>
-  </node>
+  </node> -->
 
   <!-- System Alert Publisher to publish simulated DRIVERS_READY status -->
   <node pkg="rostopic" type="rostopic" name="drivers_ready_rostopic_pub"

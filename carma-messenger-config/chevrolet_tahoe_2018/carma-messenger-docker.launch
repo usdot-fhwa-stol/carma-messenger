@@ -28,7 +28,7 @@
 
   <!-- Rosbag Flag -->
   <arg name="use_rosbag" default="true"/>
-
+  <remap from ="/outbound_binary_msg" to ="/comms/outbound_binary_msg">
   <!-- Include the detailed launch file and pass in new arguments -->
   <include file="$(find carma-messenger)/launch/carma-messenger.launch" pass_all_args="true"/>
 </launch>
