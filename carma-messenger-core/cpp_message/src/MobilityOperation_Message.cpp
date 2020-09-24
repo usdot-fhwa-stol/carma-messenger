@@ -141,8 +141,13 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> Mobility_Operation::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
     {
         //encode result placeholder
+        constexpr size_t BUFFER_LEN = 1472;
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
+        
+        ROS_ERROR_STREAM("Buffer count: " << BUFFER_LEN);
+        ROS_ERROR_STREAM("Buffer size: " << buffer_size);
+        
         asn_enc_rval_t ec;
         MessageFrame_t* message;
         message=(MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
@@ -238,9 +243,13 @@ namespace cpp_message
         }
         
         //copy to byte array msg
+         ROS_ERROR_STREAM("Encoded: " << ec.encoded);
         size_t array_length=ec.encoded / 8;
+        ROS_ERROR_STREAM("ArrayLength: " << array_length);
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
+        
+        ROS_ERROR_STREAM("b_array length: " << b_array.size());
         
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
