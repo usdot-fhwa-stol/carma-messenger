@@ -167,10 +167,10 @@ public class MessageConsumer extends SaxtonBaseNode {
 		//initialize Pubs
 		bsmPub_ = connectedNode_.newPublisher("incoming_j2735_bsm", BSM._TYPE);
 		outboundPub_ = connectedNode_.newPublisher("outbound_binary_msg", ByteArray._TYPE);
-		mobilityReqPub_ = connectedNode_.newPublisher("incoming_mobility_request", MobilityRequest._TYPE);
-		mobilityPathPub_ = connectedNode_.newPublisher("incoming_mobility_path", MobilityPath._TYPE);
-		mobilityResponsePub_ = connectedNode_.newPublisher("incoming_mobility_response", MobilityResponse._TYPE);
-		mobilityOperationPub_ = connectedNode_.newPublisher("incoming_mobility_operation", MobilityOperation._TYPE);
+		mobilityReqPub_ = connectedNode_.newPublisher("deprecated_java_incoming_mobility_request", MobilityRequest._TYPE);
+		mobilityPathPub_ = connectedNode_.newPublisher("deprecated_java_incoming_mobility_path", MobilityPath._TYPE);
+		mobilityResponsePub_ = connectedNode_.newPublisher("deprecated_java_incoming_mobility_response", MobilityResponse._TYPE);
+		mobilityOperationPub_ = connectedNode_.newPublisher("deprecated_java_incoming_mobility_operation", MobilityOperation._TYPE);
 		mapPub_ = connectedNode_.newPublisher("incoming_j2735_map", MapData._TYPE);
 		spatPub_ = connectedNode_.newPublisher("incoming_j2735_spat", SPAT._TYPE);
 		if(bsmPub_ == null || outboundPub_ == null || mobilityReqPub_ == null ||
@@ -192,10 +192,10 @@ public class MessageConsumer extends SaxtonBaseNode {
 		//initialize Subs
 		bsmSub_ = connectedNode_.newSubscriber("outgoing_j2735_bsm", BSM._TYPE);
 		inboundSub_ = connectedNode_.newSubscriber("inbound_binary_msg", ByteArray._TYPE);
-		mobilityReqSub_ = connectedNode_.newSubscriber("outgoing_mobility_request", MobilityRequest._TYPE);
-		mobilityPathSub_ = connectedNode_.newSubscriber("outgoing_mobility_path", MobilityPath._TYPE);
-		mobilityResponseSub_ = connectedNode_.newSubscriber("outgoing_mobility_response", MobilityResponse._TYPE);
-		mobilityOperationSub_ = connectedNode_.newSubscriber("outgoing_mobility_operation", MobilityOperation._TYPE);
+		mobilityReqSub_ = connectedNode_.newSubscriber("deprecated_java_outgoing_mobility_request", MobilityRequest._TYPE);
+		mobilityPathSub_ = connectedNode_.newSubscriber("deprecated_java_outgoing_mobility_path", MobilityPath._TYPE);
+		mobilityResponseSub_ = connectedNode_.newSubscriber("deprecated_java_outgoing_mobility_response", MobilityResponse._TYPE);
+		mobilityOperationSub_ = connectedNode_.newSubscriber("deprecated_java_outgoing_mobility_operation", MobilityOperation._TYPE);
 		if(bsmSub_ == null || inboundSub_ == null || mobilityReqSub_ == null ||
 		   mobilityPathSub_ == null || mobilityResponseSub_ == null || mobilityOperationSub_ == null) {
 		    log_.error("Cannot initialize necessary subscribers.");
