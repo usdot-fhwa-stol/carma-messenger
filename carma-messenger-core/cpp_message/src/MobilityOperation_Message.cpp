@@ -49,7 +49,7 @@ namespace cpp_message
             uint64_t timestamp;
             //get sender id
             size_t str_len=message->value.choice.TestMessage03.header.hostStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len>=Header_constant.STATIC_ID_MIN_LENGTH && str_len<=Header_constant.STATIC_ID_MAX_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     sender_id +=message->value.choice.TestMessage03.header.hostStaticId.buf[i];
@@ -61,7 +61,7 @@ namespace cpp_message
 
             //get recepient id
             str_len=message->value.choice.TestMessage03.header.targetStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len>=Header_constant.STATIC_ID_MIN_LENGTH && str_len<=Header_constant.STATIC_ID_MAX_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     recipient_id +=message->value.choice.TestMessage03.header.targetStaticId.buf[i];
@@ -98,37 +98,35 @@ namespace cpp_message
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage03.header.timestamp.size;
             timestamp=0;
+            char timestamp_ch[str_len];
             for(size_t i=0;i<str_len;i++){
-                timestamp*=10;
-                timestamp+=int(message->value.choice.TestMessage03.header.timestamp.buf[i])-'0';
+                timestamp_ch[i]=message->value.choice.TestMessage03.header.timestamp.buf[i];
             }
+            timestamp=atoll(timestamp_ch);
             header.timestamp=timestamp;
             output.header=header;
 
             //get strategy
             str_len=message->value.choice.TestMessage03.body.strategy.size;
-            if(str_len<=STRATEGY_MAX_LENGTH && str_len!=0)
+            if(str_len>=STRATEGY_MIN_LENGTH && str_len<=STRATEGY_MAX_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     strategy +=message->value.choice.TestMessage03.body.strategy.buf[i];
                 }
             }
-            else strategy="";
-
-            if(strategy==STRING_DEFAULT){
-                strategy="";
-            }
+            else strategy=Header_constant.STRING_DEFAULT;
             
             output.strategy=strategy;
             
             //get strategy params
             str_len=message->value.choice.TestMessage03.body.operationParams.size;
-            for(size_t i=0;i<str_len;i++){
-                strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
+            if(str_len>=STRATEGY_PARAMS_MIN_LENGTH && str_len<=STRATEGY_MAX_LENGTH){
+                for(size_t i=0;i<str_len;i++){
+                    strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
+                }
             }
-            if(strategy_params==STRING_DEFAULT){
-                strategy_params="";
-            }
+            else strategy_params=Header_constant.STRING_DEFAULT;
+            
             output.strategy_params=strategy_params;
 
             return boost::optional<cav_msgs::MobilityOperation>(output);
@@ -158,40 +156,65 @@ namespace cpp_message
         message->value.present=MessageFrame__value_PR_TestMessage03;    
 
         //convert host_id string to char array
-        size_t string_size=plainMessage.header.sender_id.size();
+        std::string sender_id=plainMessage.header.sender_id;
+        Mobility_Header Header;
+        size_t string_size=sender_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable host id value, changing to default");
+            sender_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_hostId[i]=plainMessage.header.sender_id[i];
+            string_content_hostId[i]=sender_id[i];
         }
         message->value.choice.TestMessage03.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage03.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        string_size=plainMessage.header.recipient_id.size();
+        std::string recipient_id=plainMessage.header.recipient_id;
+        string_size=recipient_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable recipient id value, changing to default");
+            recipient_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_targetId[i]=plainMessage.header.recipient_id[i];
+            string_content_targetId[i]=recipient_id[i];
         }
         message->value.choice.TestMessage03.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage03.header.targetStaticId.size=string_size;
         
          //convert bsm_id string to char array
-        string_size=plainMessage.header.sender_bsm_id.size();
+        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+        string_size=sender_bsm_id.size();
+        if(string_size!=Header.BSM_ID_DEFAULT.size()){
+            ROS_WARN("Unacceptable BSM ID, changing to default");
+            sender_bsm_id=Header.BSM_ID_DEFAULT;
+            string_size=Header.BSM_ID_DEFAULT.size();
+        }
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_BSMId[i]=plainMessage.header.sender_bsm_id[i];
+            string_content_BSMId[i]=sender_bsm_id[i];
         }
         message->value.choice.TestMessage03.header.hostBSMId.buf=string_content_BSMId;
         message->value.choice.TestMessage03.header.hostBSMId.size=string_size;
         
          //convert plan_id string to char array
-        string_size=plainMessage.header.plan_id.size();
+        std::string plan_id=plainMessage.header.plan_id;
+        string_size=plan_id.size();
+        if(string_size!=Header.GUID_DEFAULT.size()){
+            ROS_WARN("Unacceptable GUID, changing to default");
+            plan_id=Header.GUID_DEFAULT;
+            string_size=Header.GUID_DEFAULT.size();
+        }
         uint8_t string_content_planId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_planId[i]=plainMessage.header.plan_id[i];
+            string_content_planId[i]=plan_id[i];
         }
         message->value.choice.TestMessage03.header.planId.buf=string_content_planId;
         message->value.choice.TestMessage03.header.planId.size=string_size;
@@ -199,31 +222,50 @@ namespace cpp_message
         uint64_t time=plainMessage.header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
-        uint8_t string_content_timestamp[string_size];
-        for(size_t i=0;i<string_size;i++)
+        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
+            timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(timestamp);
+        }
+        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
+            ROS_WARN("Unacceptable timestamp value, changing to default");
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
+        }
+        uint8_t string_content_timestamp[Header.TIMESTAMP_MESSAGE_LENGTH];
+        for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
         {
             string_content_timestamp[i]=timestamp[i];
         }
         message->value.choice.TestMessage03.header.timestamp.buf=string_content_timestamp;
-        message->value.choice.TestMessage03.header.timestamp.size=string_size;
+        message->value.choice.TestMessage03.header.timestamp.size=Header.TIMESTAMP_MESSAGE_LENGTH;
 
         //convert strategy string to char array
-        string_size=plainMessage.strategy.size();
+        std::string strategy=plainMessage.strategy;
+        string_size=strategy.size();
+        if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
+            ROS_WARN("Unacceptable strategy_params value, changing to default");
+            strategy=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }        
         uint8_t string_content_strategy[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_strategy[i]=plainMessage.strategy[i];
+            string_content_strategy[i]=strategy[i];
         }
         message->value.choice.TestMessage03.body.strategy.buf=string_content_strategy;
         message->value.choice.TestMessage03.body.strategy.size=string_size;
         
 
         //convert parameters string to char array
-        string_size=plainMessage.strategy_params.size();
+        std::string strategy_params=plainMessage.strategy_params;
+        string_size=strategy_params.size();
+        if(string_size<STRATEGY_PARAMS_MIN_LENGTH || string_size>STRATEGY_PARAMS_MAX_LENGTH){
+            ROS_WARN("Unacceptable strategy_params value, changing to default");
+            strategy_params=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_params[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_params[i]=plainMessage.strategy_params[i];
+            string_content_params[i]=strategy_params[i];
         }
         message->value.choice.TestMessage03.body.operationParams.buf=string_content_params;
         message->value.choice.TestMessage03.body.operationParams.size=string_size;
@@ -242,7 +284,6 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
         
-        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 }
