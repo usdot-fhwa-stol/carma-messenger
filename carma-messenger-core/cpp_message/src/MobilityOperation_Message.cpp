@@ -139,8 +139,9 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> Mobility_Operation::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
     {
         //encode result placeholder
-        uint8_t buffer[512];
+        uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
+        
         asn_enc_rval_t ec;
         MessageFrame_t* message;
         message=(MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
@@ -283,7 +284,8 @@ namespace cpp_message
         size_t array_length=ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
-        
+                
+        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 }

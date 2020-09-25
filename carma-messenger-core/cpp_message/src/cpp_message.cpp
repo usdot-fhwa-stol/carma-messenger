@@ -38,14 +38,14 @@ namespace cpp_message
         inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::TrafficControlRequest>("incoming_j2735_geofence_request", 5);
         outbound_geofence_control_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_control", 5, &Message::outbound_control_message_callback, this);
         inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::TrafficControlMessage>("incoming_j2735_geofence_control", 5);
-        mobility_operation_message_pub_=nh_->advertise<cav_msgs::MobilityOperation>("incoming_mobility_operation_message_decoded",5);
-        mobility_operation_message_sub_=nh_->subscribe("outgoing_plain_mobility_operation_message",5, &Message::outbound_mobility_operation_message_callback,this);
-        mobility_response_message_pub_=nh_->advertise<cav_msgs::MobilityResponse>("incoming_mobility_response_message_decoded",5);
-        mobility_response_message_sub_=nh_->subscribe("outgoing_plain_mobility_response_message",5, &Message::outbound_mobility_response_message_callback,this);
-        mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("inbound_mobility_path_message",5);
-        mobility_path_message_sub_=nh_->subscribe("outgoing_plain_mobility_path_message",5, &Message::outbound_mobility_path_message_callback,this);
-        mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("inbound_mobility_request_message",5);
-        mobility_request_message_sub_=nh_->subscribe("outgoing_plain_mobility_request_message",5, &Message::outbound_mobility_request_message_callback,this);
+        mobility_operation_message_pub_=nh_->advertise<cav_msgs::MobilityOperation>("incoming_mobility_operation",5);
+        mobility_operation_message_sub_=nh_->subscribe("outgoing_mobility_operation",5, &Message::outbound_mobility_operation_message_callback,this);
+        mobility_response_message_pub_=nh_->advertise<cav_msgs::MobilityResponse>("incoming_mobility_response",5);
+        mobility_response_message_sub_=nh_->subscribe("outgoing_mobility_response",5, &Message::outbound_mobility_response_message_callback,this);
+        mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("incoming_mobility_path",5);
+        mobility_path_message_sub_=nh_->subscribe("outgoing_mobility_path",5, &Message::outbound_mobility_path_message_callback,this);
+        mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("incoming_mobility_request",5);
+        mobility_request_message_sub_=nh_->subscribe("outgoing_mobility_request",5, &Message::outbound_mobility_request_message_callback,this);
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
