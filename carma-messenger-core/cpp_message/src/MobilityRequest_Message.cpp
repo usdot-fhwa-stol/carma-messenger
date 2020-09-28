@@ -307,11 +307,14 @@ namespace cpp_message
         //convert bsm_id string to char array
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
         string_size=sender_bsm_id.size();
-        if(string_size!=Header.BSM_ID_DEFAULT.size()){
+        if(string_size<Header.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header.BSM_ID_DEFAULT.size()-string_size),'0').append(sender_bsm_id);
+        }
+        else if(string_size>Header.BSM_ID_DEFAULT.size()){
             ROS_WARN("Unacceptable BSM ID, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
-            string_size=Header.BSM_ID_DEFAULT.size();
         }
+        string_size=Header.BSM_ID_DEFAULT.size();
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -346,18 +349,19 @@ namespace cpp_message
             ROS_WARN("Unacceptable timestamp value, changing to default");
             timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
+        string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_content_timestamp[Header.TIMESTAMP_MESSAGE_LENGTH];
         for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
         {
             string_content_timestamp[i]=timestamp[i];
         }
         message->value.choice.TestMessage03.header.timestamp.buf=string_content_timestamp;
-        message->value.choice.TestMessage03.header.timestamp.size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        message->value.choice.TestMessage03.header.timestamp.size=string_size;
         //strategy
         std::string strategy=plainMessage.strategy;
         string_size=strategy.size();
         if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
-            ROS_WARN("Unacceptable strategy_params value, changing to default");
+            ROS_WARN("Unacceptable strategy value, changing to default");
             strategy=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }        
@@ -412,13 +416,14 @@ namespace cpp_message
             ROS_WARN("Unacceptable location timestamp value, changing to default");
             location_timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
+        location_timestamp_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_content_location_timestamp[location_timestamp_string_size];
         for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
         {
             string_content_location_timestamp[i]=location_timestamp[i];
         }
         message->value.choice.TestMessage00.body.location.timestamp.buf=string_content_location_timestamp;
-        message->value.choice.TestMessage00.body.location.timestamp.size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        message->value.choice.TestMessage00.body.location.timestamp.size=location_timestamp_string_size;
 
         //strategyParams
         std::string params_string=plainMessage.strategy_params;
@@ -479,13 +484,14 @@ namespace cpp_message
             ROS_WARN("Unacceptable trajectory timestamp value, changing to default");
             trajectory_timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
+        trajectory_timestamp_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_trajectory_timestamp[trajectory_timestamp_string_size];
         for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
         {
             string_trajectory_timestamp[i]=trajectory_timestamp[i];
         }
         trajectory_location->timestamp.buf=string_trajectory_timestamp;
-        trajectory_location->timestamp.size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        trajectory_location->timestamp.size=trajectory_timestamp_string_size;
         message->value.choice.TestMessage00.body.trajectoryStart=trajectory_location;
 
             //trajectory offsets
@@ -525,12 +531,13 @@ namespace cpp_message
         std::string expiration_string=std::to_string(expiration_message);
         size_t expiration_string_size=expiration_string.size();
         if(expiration_string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
-            expiration_string=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-expiration_string_size),'0').append(timestamp);
+            expiration_string=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-expiration_string_size),'0').append(expiration_string);
         }
         else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
             ROS_WARN("Unacceptable expiration time value, changing to default");
-            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
+            expiration_string=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
+        expiration_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t expiration_array[expiration_string_size];  
         for(size_t i=0;i<expiration_string_size ;i++)
         {
