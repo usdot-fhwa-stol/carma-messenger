@@ -47,7 +47,7 @@ namespace cpp_message
             uint64_t timestamp;
             //get sender id
             size_t str_len=message->value.choice.TestMessage00.header.hostStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     sender_id +=message->value.choice.TestMessage00.header.hostStaticId.buf[i];
@@ -59,7 +59,7 @@ namespace cpp_message
 
             //get recepient id
             str_len=message->value.choice.TestMessage00.header.targetStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     recipient_id +=message->value.choice.TestMessage00.header.targetStaticId.buf[i];
@@ -77,7 +77,13 @@ namespace cpp_message
                     sender_bsm_id +=message->value.choice.TestMessage00.header.hostBSMId.buf[i];
                 }
             }
-            else sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            else if(str_len<Header_constant.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header_constant.BSM_ID_DEFAULT.size()-str_len),'0').append(sender_bsm_id);
+            }
+            else{
+                ROS_WARN("BSM ID -size greater than limit, changing to default");
+                sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            }
             
             header.sender_bsm_id=sender_bsm_id;
 
@@ -116,9 +122,6 @@ namespace cpp_message
             }
             else strategy="";
 
-            if(strategy==Header_constant.STRING_DEFAULT){
-                strategy="";
-            }
             output.strategy=strategy;
             //plan type   
             MobilityPlanType_t type;
@@ -176,9 +179,7 @@ namespace cpp_message
             for(size_t i=0;i<str_len;i++){
                 strategy_params +=message->value.choice.TestMessage00.body.strategyParams.buf[i];
             }
-            if(strategy_params==Header_constant.STRING_DEFAULT){
-                strategy_params="";
-            }
+
             output.strategy_params=strategy_params;   
 
             //Trajectory
@@ -257,7 +258,7 @@ namespace cpp_message
 
     boost::optional<std::vector<uint8_t>> Mobility_Request::encode_mobility_request_message(cav_msgs::MobilityRequest plainMessage)
     {
-        uint8_t buffer[512];
+        uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
         std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
@@ -355,8 +356,8 @@ namespace cpp_message
         {
             string_content_timestamp[i]=timestamp[i];
         }
-        message->value.choice.TestMessage03.header.timestamp.buf=string_content_timestamp;
-        message->value.choice.TestMessage03.header.timestamp.size=string_size;
+        message->value.choice.TestMessage00.header.timestamp.buf=string_content_timestamp;
+        message->value.choice.TestMessage00.header.timestamp.size=string_size;
         //strategy
         std::string strategy=plainMessage.strategy;
         string_size=strategy.size();
@@ -370,8 +371,8 @@ namespace cpp_message
         {
             string_content_strategy[i]=strategy[i];
         }
-        message->value.choice.TestMessage03.body.strategy.buf=string_content_strategy;
-        message->value.choice.TestMessage03.body.strategy.size=string_size;
+        message->value.choice.TestMessage00.body.strategy.buf=string_content_strategy;
+        message->value.choice.TestMessage00.body.strategy.size=string_size;
 
         //plantype
             
