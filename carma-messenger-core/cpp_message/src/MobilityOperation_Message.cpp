@@ -79,7 +79,13 @@ namespace cpp_message
                     sender_bsm_id +=message->value.choice.TestMessage03.header.hostBSMId.buf[i];
                 }
             }
-            else sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            else if(str_len<Header_constant.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header_constant.BSM_ID_DEFAULT.size()-str_len),'0').append(sender_bsm_id);
+            }
+            else{
+                ROS_WARN("BSM ID -size greater than limit, changing to default");
+                sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            }
             
             header.sender_bsm_id=sender_bsm_id;
 
@@ -190,11 +196,14 @@ namespace cpp_message
          //convert bsm_id string to char array
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
         string_size=sender_bsm_id.size();
-        if(string_size!=Header.BSM_ID_DEFAULT.size()){
-            ROS_WARN("Unacceptable BSM ID, changing to default");
-            sender_bsm_id=Header.BSM_ID_DEFAULT;
-            string_size=Header.BSM_ID_DEFAULT.size();
+        if(string_size<Header.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header.BSM_ID_DEFAULT.size()-string_size),'0').append(sender_bsm_id);
         }
+        else if(string_size>Header.BSM_ID_DEFAULT.size()){
+            ROS_WARN("BSM ID greater than limit, changing to default");
+            sender_bsm_id=Header.BSM_ID_DEFAULT;
+        }
+        string_size=Header.BSM_ID_DEFAULT.size();
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
