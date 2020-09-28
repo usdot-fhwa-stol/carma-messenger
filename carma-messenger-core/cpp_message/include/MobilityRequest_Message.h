@@ -21,14 +21,8 @@ namespace cpp_message
     {
         private:
         static const int MOBILITY_REQUEST_TEST_ID_=240;
-        static const int STATIC_ID_MAX_LENGTH=16;
-        std::string BSM_ID_DEFAULT="00000000";
-        const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-        std::string STRING_DEFAULT="[]";
-        const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
-        std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-        const int GUID_LENGTH=GUID_DEFAULT.length();
 
+        static const int STRATEGY_MIN_LENGTH=2;
         static const int STRATEGY_MAX_LENGTH=50;
         //Urgency min and max
         static const int URGENCY_MIN=0;
@@ -39,6 +33,7 @@ namespace cpp_message
         //Location Range for z
         static const long LOCATION_MIN_Z=-636225200;
         static const long LOCATION_MAX_Z=636225200;
+        static const int STRATEGY_PARAMS_MIN_LENGTH=2;
         static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
         static const int MAX_POINTS_IN_MESSAGE=60; //The maximum number of points which can be included in a mobility message containing a trajectory over DSRC
         //Trajectory ranges
