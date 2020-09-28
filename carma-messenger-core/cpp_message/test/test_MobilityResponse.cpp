@@ -72,6 +72,35 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
     }
 }
 
+TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
+{
+    cpp_message::Mobility_Response worker;
+    cav_msgs::MobilityHeader header;
+    cav_msgs::MobilityResponse message;     
+    header.sender_id="";
+    header.recipient_id="";
+    header.sender_bsm_id="";
+    header.plan_id="11111111-2222-3333-AAAA-111111111111";
+    header.timestamp = 9223372036854775807;
+    message.header=header;
+    message.urgency=50;
+    message.is_accepted=1;
+    auto res = worker.encode_mobility_response_message(message);
+    std::vector<uint8_t> to_read=res.get();
+    auto len=to_read.size();
+    
+    if(res) {
+        // for(auto i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
+        // std::cout<<"\n";
+        EXPECT_TRUE(true);
+    }
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
 // Run all the tests
 int main(int argc, char **argv)
 {

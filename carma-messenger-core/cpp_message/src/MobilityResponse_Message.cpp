@@ -123,7 +123,7 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> Mobility_Response::encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage)
     {
         //encode result placeholder
-        uint8_t buffer[512];
+        uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
         MessageFrame_t* message;
@@ -139,26 +139,48 @@ namespace cpp_message
         message->value.present=MessageFrame__value_PR_TestMessage01;
 
         //convert host_id string to char array
-        size_t string_size=plainMessage.header.sender_id.size();
+        Mobility_Header Header;
+        std::string sender_id=plainMessage.header.sender_id;
+        size_t string_size=sender_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable host id value, changing to default");
+            sender_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_hostId[i]=plainMessage.header.sender_id[i];
+            string_content_hostId[i]=sender_id[i];
         }
         message->value.choice.TestMessage01.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage01.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        string_size=plainMessage.header.recipient_id.size();
+        std::string recipient_id=plainMessage.header.recipient_id;
+        string_size=recipient_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable recipient id value, changing to default");
+            recipient_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_targetId[i]=plainMessage.header.recipient_id[i];
+            string_content_targetId[i]=recipient_id[i];
         }
         message->value.choice.TestMessage01.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage01.header.targetStaticId.size=string_size;
         
          //convert bsm_id string to char array
-        string_size=plainMessage.header.sender_bsm_id.size();
+        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+        string_size=sender_bsm_id.size();
+        if(string_size<Header.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header.BSM_ID_DEFAULT.size()-string_size),'0').append(sender_bsm_id);
+        }
+        else if(string_size>Header.BSM_ID_DEFAULT.size()){
+            ROS_WARN("Unacceptable BSM ID, changing to default");
+            sender_bsm_id=Header.BSM_ID_DEFAULT;
+        }
+        string_size=Header.BSM_ID_DEFAULT.size();
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -168,7 +190,13 @@ namespace cpp_message
         message->value.choice.TestMessage01.header.hostBSMId.size=string_size;
         
          //convert plan_id string to char array
-        string_size=plainMessage.header.plan_id.size();
+        std::string plan_id=plainMessage.header.plan_id;
+        string_size=plan_id.size();
+        if(string_size!=Header.GUID_LENGTH){
+            ROS_WARN("Unacceptable GUID, changing to default");
+            plan_id=Header.GUID_DEFAULT;
+            string_size=Header.GUID_LENGTH;
+        }
         uint8_t string_content_planId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -180,6 +208,14 @@ namespace cpp_message
         uint64_t time=plainMessage.header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
+        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH-string_size,'0').append(timestamp);
+        }
+        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
+            ROS_WARN("Unacceptable timestamp value, changing to default");
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
+        }
+        string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_content_timestamp[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -189,7 +225,9 @@ namespace cpp_message
         message->value.choice.TestMessage01.header.timestamp.size=string_size;
 
         //get urgency
-        message->value.choice.TestMessage01.body.urgency=plainMessage.urgency; 
+        uint16_t urgency=plainMessage.urgency;
+        if(urgency<URGENCY_MIN || urgency> URGENCY_MAX) urgency=URGENCY_UNKNOWN;
+        message->value.choice.TestMessage01.body.urgency=urgency; 
         //get isAccepted
         message->value.choice.TestMessage01.body.isAccepted=plainMessage.is_accepted;
         
