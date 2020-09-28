@@ -120,7 +120,7 @@ namespace cpp_message
             
             //get strategy params
             str_len=message->value.choice.TestMessage03.body.operationParams.size;
-            if(str_len>=STRATEGY_PARAMS_MIN_LENGTH && str_len<=STRATEGY_MAX_LENGTH){
+            if(str_len>=STRATEGY_PARAMS_MIN_LENGTH && str_len<=STRATEGY_PARAMS_MAX_LENGTH){
                 for(size_t i=0;i<str_len;i++){
                     strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
                 }
@@ -143,15 +143,14 @@ namespace cpp_message
         size_t buffer_size=sizeof(buffer);
         
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message=(MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
-        if(!message)
+        if(!message_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for MobilityOperation message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        
+        MessageFrame_t* message=message_shared.get();
         //set message type to TestMessage03
         message->messageId=MOBILITY_OPERATION_TEST_ID;  
         message->value.present=MessageFrame__value_PR_TestMessage03;    
