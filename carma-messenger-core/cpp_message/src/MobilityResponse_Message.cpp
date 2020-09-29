@@ -130,14 +130,14 @@ namespace cpp_message
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message=(MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
-        if(!message)
+        if(!message_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for MobilityResponse message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
+            ROS_WARN_STREAM("Cannot allocate mem for MobilityRequest message encoding");
+            return boost::optional<std::vector<uint8_t>>{};            
         }
+        MessageFrame_t* message=message_shared.get();
         //set message type to TestMessage01
         message->messageId=MOBILITY_RESPONSE_TEST_ID; 
         message->value.present=MessageFrame__value_PR_TestMessage01;
