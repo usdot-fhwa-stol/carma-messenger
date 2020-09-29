@@ -21,11 +21,12 @@ namespace cpp_message
     class Mobility_Header
     {
         public:
+        static const int STATIC_ID_MIN_LENGTH=2;
         static const int STATIC_ID_MAX_LENGTH=16;
         std::string BSM_ID_DEFAULT="00000000";
         const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
         std::string STRING_DEFAULT="[]";
-        const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
+        static const int TIMESTAMP_MESSAGE_LENGTH=19;
         std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
         const int GUID_LENGTH=GUID_DEFAULT.length();
     };
