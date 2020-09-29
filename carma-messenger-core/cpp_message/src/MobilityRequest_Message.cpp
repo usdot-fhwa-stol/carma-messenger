@@ -71,16 +71,14 @@ namespace cpp_message
             
             //get bsm id
             str_len=message->value.choice.TestMessage00.header.hostBSMId.size;
-            if(str_len==Header_constant.BSM_ID_LENGTH)
-            {
-                for(size_t i=0;i<str_len;i++){
-                    sender_bsm_id +=message->value.choice.TestMessage00.header.hostBSMId.buf[i];
-                }
+            for(size_t i=0;i<str_len;i++){
+                sender_bsm_id +=message->value.choice.TestMessage00.header.hostBSMId.buf[i];
             }
-            else if(str_len<Header_constant.BSM_ID_DEFAULT.size()){
-            sender_bsm_id=std::string((Header_constant.BSM_ID_DEFAULT.size()-str_len),'0').append(sender_bsm_id);
+
+            if(str_len<Header_constant.BSM_ID_LENGTH){
+                sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
             }
-            else{
+            else if (str_len>Header_constant.BSM_ID_LENGTH){
                 ROS_WARN("BSM ID -size greater than limit, changing to default");
                 sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
             }
@@ -308,14 +306,14 @@ namespace cpp_message
         //convert bsm_id string to char array
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
         string_size=sender_bsm_id.size();
-        if(string_size<Header.BSM_ID_DEFAULT.size()){
-            sender_bsm_id=std::string((Header.BSM_ID_DEFAULT.size()-string_size),'0').append(sender_bsm_id);
+        if(string_size<Header.BSM_ID_LENGTH){
+            sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
         }
-        else if(string_size>Header.BSM_ID_DEFAULT.size()){
+        else if(string_size>Header.BSM_ID_LENGTH){
             ROS_WARN("Unacceptable BSM ID, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
-        string_size=Header.BSM_ID_DEFAULT.size();
+        string_size=Header.BSM_ID_LENGTH;
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -327,10 +325,10 @@ namespace cpp_message
          //convert plan_id string to char array
         std::string plan_id=plainMessage.header.plan_id;
         string_size=plan_id.size();
-        if(string_size!=Header.GUID_DEFAULT.size()){
+        if(string_size!=Header.GUID_LENGTH){
             ROS_WARN("Unacceptable GUID, changing to default");
             plan_id=Header.GUID_DEFAULT;
-            string_size=Header.GUID_DEFAULT.size();
+            string_size=Header.GUID_LENGTH;
         }
         uint8_t string_content_planId[string_size];
         for(size_t i=0;i<string_size;i++)
@@ -411,7 +409,7 @@ namespace cpp_message
         size_t location_timestamp_string_size=location_timestamp.size();
         //append 0's if size less than required
         if(location_timestamp_string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
-            location_timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(location_timestamp);
+            location_timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-location_timestamp_string_size),'0').append(location_timestamp);
         }
         else if(location_timestamp_string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
             ROS_WARN("Unacceptable location timestamp value, changing to default");
@@ -494,7 +492,6 @@ namespace cpp_message
         trajectory_location->timestamp.buf=string_trajectory_timestamp;
         trajectory_location->timestamp.size=trajectory_timestamp_string_size;
         message->value.choice.TestMessage00.body.trajectoryStart=trajectory_location;
-
             //trajectory offsets
         size_t offset_count=plainMessage.trajectory.offsets.size();
         
