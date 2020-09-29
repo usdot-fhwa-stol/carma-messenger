@@ -80,11 +80,11 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
     header.sender_id="";
     header.recipient_id="";
     header.sender_bsm_id="";
-    header.plan_id="11111111-2222-3333-AAAA-111111111111";
-    header.timestamp = 9223372036854775807;
+    header.plan_id="";
+    header.timestamp = 0;
     message.header=header;
-    message.urgency=50;
-    message.is_accepted=1;
+    message.urgency=0;
+    message.is_accepted=0;
     auto res = worker.encode_mobility_response_message(message);
     std::vector<uint8_t> to_read=res.get();
     auto len=to_read.size();

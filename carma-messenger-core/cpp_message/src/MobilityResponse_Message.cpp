@@ -46,7 +46,7 @@ namespace cpp_message
             uint64_t timestamp;
             //get sender id
             size_t str_len=message->value.choice.TestMessage01.header.hostStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     sender_id +=message->value.choice.TestMessage01.header.hostStaticId.buf[i];
@@ -58,7 +58,7 @@ namespace cpp_message
 
             //get recepient id
             str_len=message->value.choice.TestMessage01.header.targetStaticId.size;
-            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
                 for(size_t i=0;i<str_len;i++){
                     recipient_id +=message->value.choice.TestMessage01.header.targetStaticId.buf[i];
@@ -70,13 +70,17 @@ namespace cpp_message
             
             //get bsm id
             str_len=message->value.choice.TestMessage01.header.hostBSMId.size;
-            if(str_len==Header_constant.BSM_ID_LENGTH)
-            {
-                for(size_t i=0;i<str_len;i++){
-                    sender_bsm_id +=message->value.choice.TestMessage01.header.hostBSMId.buf[i];
-                }
+            for(size_t i=0;i<str_len;i++){
+                sender_bsm_id +=message->value.choice.TestMessage01.header.hostBSMId.buf[i];
             }
-            else sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+
+            if(str_len<Header_constant.BSM_ID_LENGTH){
+                sender_bsm_id=std::string((Header_constant.BSM_ID_DEFAULT.size()-str_len),'0').append(sender_bsm_id);
+            }
+            else if(str_len>Header_constant.BSM_ID_LENGTH){
+                ROS_WARN("BSM ID -size greater than limit, changing to default");
+                sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
+            }
             
             header.sender_bsm_id=sender_bsm_id;
 
@@ -184,7 +188,7 @@ namespace cpp_message
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_BSMId[i]=plainMessage.header.sender_bsm_id[i];
+            string_content_BSMId[i]=sender_bsm_id[i];
         }
         message->value.choice.TestMessage01.header.hostBSMId.buf=string_content_BSMId;
         message->value.choice.TestMessage01.header.hostBSMId.size=string_size;
@@ -200,7 +204,7 @@ namespace cpp_message
         uint8_t string_content_planId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_planId[i]=plainMessage.header.plan_id[i];
+            string_content_planId[i]=plan_id[i];
         }
         message->value.choice.TestMessage01.header.planId.buf=string_content_planId;
         message->value.choice.TestMessage01.header.planId.size=string_size;
