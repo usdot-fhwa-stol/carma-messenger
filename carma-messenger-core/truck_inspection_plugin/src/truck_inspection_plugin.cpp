@@ -51,6 +51,34 @@ namespace truck_inspection_plugin
     {
         cav_msgs::MobilityRequest msg;
         msg.strategy = TruckInspectionPlugin::INSPECTION_STRATEGY;
+        //add header temporarily for ACE testing, will be removed once the mobilityRequest message node is fixed
+        cav_msgs::MobilityHeader msg_out_header;
+        msg_out_header.sender_id =  "USDOT-10003";
+        msg_out_header.recipient_id="USDOT-10003";
+        msg_out_header.sender_bsm_id="10ABCDEF";
+        msg_out_header.plan_id= "11111111-2222-3333-AAAA-111111111111";
+        msg_out_header.timestamp= 9223372036854775807;
+        msg.header = msg_out_header;
+        msg.expiration=1523372036854775807;
+        msg.strategy_params="abs";
+        cav_msgs::PlanType plan_type;
+        plan_type.type=4;
+        msg.plan_type = plan_type;
+        cav_msgs::LocationECEF location;
+        location.ecef_x=0;
+        location.ecef_y=0;
+        location.ecef_z=0;
+        location.timestamp=1223372036854775807; 
+        msg.location=location;
+        location.timestamp= 9023372036854775807;
+        cav_msgs::Trajectory trajectory;
+        trajectory.location=location;
+        cav_msgs::LocationOffsetECEF offset;
+        offset.offset_x=0;
+        offset.offset_y=0;
+        offset.offset_z=0;
+        trajectory.offsets.push_back(offset);
+        msg.trajectory=trajectory;
         mr_pub_.publish(msg);
         // reset safety log
         this->safety_log_ = "";
