@@ -177,36 +177,49 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> Mobility_Path::encode_mobility_path_message(cav_msgs::MobilityPath plainMessage)
     {
         
-        uint8_t buffer[512];
+        uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message=(MessageFrame_t*)calloc(1,sizeof(MessageFrame_t));
+        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
-        if(!message)
+        if(!message_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for MobilityPath message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
+            ROS_WARN_STREAM("Cannot allocate mem for MobilityRequest message encoding");
+            return boost::optional<std::vector<uint8_t>>{};            
         }
+        MessageFrame_t* message=message_shared.get();
         
         message->messageId=MOBILITYPATH_TEST_ID;
         message->value.present=MessageFrame__value_PR_TestMessage02;
 
+        Mobility_Header Header;
         //convert host_id string to char array
-        size_t string_size=plainMessage.header.sender_id.size();
+        std::string sender_id=plainMessage.header.sender_id;
+        size_t string_size=sender_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable host id value, changing to default");
+            sender_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_hostId[i]=plainMessage.header.sender_id[i];
+            string_content_hostId[i]=sender_id[i];
         }
         message->value.choice.TestMessage02.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage02.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        string_size=plainMessage.header.recipient_id.size();
+        std::string recipient_id=plainMessage.header.recipient_id;
+        string_size=recipient_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size> Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable recipient id value, changing to default");
+            recipient_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_targetId[i]=plainMessage.header.recipient_id[i];
+            string_content_targetId[i]=recipient_id[i];
         }
         message->value.choice.TestMessage02.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage02.header.targetStaticId.size=string_size;
