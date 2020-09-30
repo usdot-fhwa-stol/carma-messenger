@@ -14,7 +14,8 @@
   This file is used to launch a truck inspection plugin node.
 -->
 <launch>
-    
+    <remap from="mobility_operation_inbound" to="incoming_mobility_operation"/>
+    <remap from="mobility_request_outbound" to="outgoing_mobility_request"/>
     <node name="truck_inspection_plugin" pkg="truck_inspection_plugin" type="truck_inspection_plugin" output="screen">
       <rosparam command="load" file="$(find truck_inspection_plugin)/config/parameters.yaml"/>
     </node>
