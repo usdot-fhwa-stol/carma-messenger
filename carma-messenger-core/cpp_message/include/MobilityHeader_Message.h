@@ -21,7 +21,7 @@ namespace cpp_message
     class Mobility_Header
     {
         public:
-        static const int STATIC_ID_MIN_LENGTH=16;
+        static const int STATIC_ID_MIN_LENGTH=2;
         static const int STATIC_ID_MAX_LENGTH=16;
         std::string BSM_ID_DEFAULT="00000000";
         const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
