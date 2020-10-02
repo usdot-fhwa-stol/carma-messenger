@@ -21,6 +21,7 @@ namespace cpp_message
     class Mobility_Response
     {
             private:
+            std::string RESPONSE_STRING_DEFAULT="UNKNOWN";
             static const int MOBILITY_RESPONSE_TEST_ID=241;
             static const int URGENCY_MIN=0;
             static const int URGENCY_MAX=1000;

@@ -52,7 +52,7 @@ namespace cpp_message
                     sender_id +=message->value.choice.TestMessage01.header.hostStaticId.buf[i];
                 }
             }
-            else sender_id=Header_constant.STRING_DEFAULT;
+            else sender_id=RESPONSE_STRING_DEFAULT;
 
             header.sender_id=sender_id;
 
@@ -64,7 +64,7 @@ namespace cpp_message
                     recipient_id +=message->value.choice.TestMessage01.header.targetStaticId.buf[i];
                 }
             }
-            else recipient_id=Header_constant.STRING_DEFAULT;
+            else recipient_id=RESPONSE_STRING_DEFAULT;
 
             header.recipient_id=recipient_id;
             
@@ -134,7 +134,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for MobilityRequest message encoding");
+            ROS_WARN_STREAM("Cannot allocate mem for MobilityResponse message encoding");
             return boost::optional<std::vector<uint8_t>>{};            
         }
         MessageFrame_t* message=message_shared.get();
@@ -148,8 +148,8 @@ namespace cpp_message
         size_t string_size=sender_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
             ROS_WARN("Unacceptable host id value, changing to default");
-            sender_id=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
+            sender_id=RESPONSE_STRING_DEFAULT;
+            string_size=RESPONSE_STRING_DEFAULT.size();
         }
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
@@ -163,8 +163,8 @@ namespace cpp_message
         string_size=recipient_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
             ROS_WARN("Unacceptable recipient id value, changing to default");
-            recipient_id=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
+            recipient_id=RESPONSE_STRING_DEFAULT;
+            string_size=RESPONSE_STRING_DEFAULT.size();
         }
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
