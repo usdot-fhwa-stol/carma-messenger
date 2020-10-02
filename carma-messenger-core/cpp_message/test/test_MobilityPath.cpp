@@ -102,6 +102,55 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
     }
 }
 
+TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
+{
+    //Mobility_Operation::Mobility_Operation_Message worker;
+    cpp_message::Mobility_Path worker;
+    cav_msgs::MobilityHeader header;
+    cav_msgs::MobilityPath message;     
+    header.sender_id="";
+    header.recipient_id="";
+    header.sender_bsm_id="";
+    header.plan_id="";
+    header.timestamp = 0;
+    message.header=header;
+    
+    //body-location and trajectory- for encoding provide ros message
+    //start location
+    cav_msgs::Trajectory trajectory;
+    cav_msgs::LocationECEF starting_location;
+    starting_location.ecef_x=0;
+    starting_location.ecef_y=0;
+    starting_location.ecef_z=0;
+    starting_location.timestamp=0;
+    
+    trajectory.location=starting_location;
+    //offsets
+    cav_msgs::LocationOffsetECEF offset1;
+    offset1.offset_x=0;
+    offset1.offset_y=0;
+    offset1.offset_z=0;
+
+    trajectory.offsets.push_back(offset1);
+    
+    message.trajectory=trajectory;
+    auto res = worker.encode_mobility_path_message(message);
+    
+    // std::vector<uint8_t> to_read=res.get();
+    // size_t len=to_read.size();
+    // std::cout<<"Encoded Values:"<<std::endl;
+    // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
+    // std::cout<<"\n";
+    if(res) { 
+        EXPECT_TRUE(true);
+    }
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
 // Run all the tests
 int main(int argc, char **argv)
 {
