@@ -126,6 +126,70 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
     }
 }
 
+TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
+{
+    cpp_message::Mobility_Request worker;
+    cav_msgs::MobilityHeader header;
+    cav_msgs::MobilityRequest message;
+    header.sender_id="";
+    header.recipient_id="";
+    header.sender_bsm_id="";
+    header.plan_id="";
+    header.timestamp = 0;
+    message.header=header;   
+
+    //body
+    message.strategy="";
+    message.plan_type.type=0;
+    message.urgency=0;
+    
+        //location
+    cav_msgs::LocationECEF starting_location;
+    starting_location.ecef_x=0;
+    starting_location.ecef_y=0;
+    starting_location.ecef_z=0;
+    starting_location.timestamp=0;
+
+    message.location=starting_location;
+        //strategy_params
+    message.strategy_params="";
+        //trajectory
+    cav_msgs::Trajectory trajectory;
+    cav_msgs::LocationECEF trajectory_start;
+    trajectory_start.ecef_x=0;
+    trajectory_start.ecef_y=0;
+    trajectory_start.ecef_z=0;
+    trajectory_start.timestamp=0;
+    trajectory.location=trajectory_start;
+
+            //offsets
+    cav_msgs::LocationOffsetECEF offset1;
+    offset1.offset_x=0;
+    offset1.offset_y=0;
+    offset1.offset_z=0;
+
+    trajectory.offsets.push_back(offset1);
+ 
+
+    message.trajectory=trajectory;
+    //expiration
+    message.expiration=0;
+    boost::optional<std::vector<uint8_t>> res = worker.encode_mobility_request_message(message);
+    
+    if(res)
+    {
+        // std::vector<uint8_t> to_read=res.get();
+        // for(size_t i=0;i<to_read.size();i++)std::cout<<int(to_read[i])<<",";
+        // std::cout<<"\n";
+        EXPECT_TRUE(true);
+    }
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
 
 
 // Run all the tests
