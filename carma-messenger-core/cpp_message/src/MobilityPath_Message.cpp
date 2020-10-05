@@ -267,14 +267,14 @@ namespace cpp_message
         uint64_t time=plainMessage.header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
-        if(string_size<Header.TIMESTAMP_LENGTH){
-            timestamp=std::string((Header.TIMESTAMP_LENGTH-string_size),'0').append(timestamp);
+        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
+            timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(timestamp);
         }
-        else if(string_size>Header.TIMESTAMP_LENGTH){
+        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
             ROS_WARN("Unacceptable timestamp, changing to default");
-            timestamp=std::string(Header.TIMESTAMP_LENGTH,'0');
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
-        string_size=Header.TIMESTAMP_LENGTH;
+        string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_content_timestamp[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -312,14 +312,14 @@ namespace cpp_message
         time=plainMessage.trajectory.location.timestamp;
         timestamp=std::to_string(time);
         string_size=timestamp.size();
-        if(string_size<Header.TIMESTAMP_LENGTH){
-            timestamp=std::string(Header.TIMESTAMP_LENGTH-string_size,'0').append(timestamp);
+        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH-string_size,'0').append(timestamp);
         }
-        else if(string_size>Header.TIMESTAMP_LENGTH){
+        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
             ROS_WARN("Unacceptable timestamp, changing to default");
-            timestamp=std::string(Header.TIMESTAMP_LENGTH,'0');
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
-        string_size=Header.TIMESTAMP_LENGTH;
+        string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_location_timestamp[string_size];
         for(size_t i=0;i<string_size;i++)
         {
