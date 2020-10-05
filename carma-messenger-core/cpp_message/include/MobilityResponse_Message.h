@@ -21,16 +21,11 @@ namespace cpp_message
     class Mobility_Response
     {
             private:
-            static const int STATIC_ID_MAX_LENGTH=16;
-            std::string BSM_ID_DEFAULT="00000000";
-            const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-            std::string STRING_DEFAULT="[]";
-            const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
-            std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-            const int GUID_LENGTH=GUID_DEFAULT.length();
+            std::string RESPONSE_STRING_DEFAULT="UNKNOWN";
             static const int MOBILITY_RESPONSE_TEST_ID=241;
             static const int URGENCY_MIN=0;
             static const int URGENCY_MAX=1000;
+            static const int URGENCY_UNKNOWN=0;
 
             public:
             /**
