@@ -22,14 +22,9 @@ namespace cpp_message
     {
         private:
         //constants
-            static const int STATIC_ID_MAX_LENGTH=16;
-            std::string BSM_ID_DEFAULT="00000000";
-            const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-            std::string STRING_DEFAULT="[]";
-            const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
-            std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-            const int GUID_LENGTH=GUID_DEFAULT.length();
+            static const int STRATEGY_MIN_LENGTH=2;
             static const int STRATEGY_MAX_LENGTH=50;
+            static const int STRATEGY_PARAMS_MIN_LENGTH=2;
             static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
             static const int MOBILITY_OPERATION_TEST_ID=243;
         
