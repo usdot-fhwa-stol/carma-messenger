@@ -27,6 +27,7 @@ namespace cpp_message
             static const int STRATEGY_PARAMS_MIN_LENGTH=2;
             static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
             static const int MOBILITY_OPERATION_TEST_ID=243;
+            std::string STRATEGY_PARAMS_STRING_DEFAULT="[]";
         
         public:
         /**

@@ -22,7 +22,6 @@ namespace cpp_message
         private:
         static const int MOBILITY_REQUEST_TEST_ID_=240;
 
-        std::string REQUEST_STRING_DEFAULT="UNKNOWN";
         static const int STRATEGY_MIN_LENGTH=2;
         static const int STRATEGY_MAX_LENGTH=50;
         //Urgency min and max

@@ -21,7 +21,6 @@ namespace cpp_message
     class Mobility_Path
     {
         private:
-        std::string PATH_STRING_DEFAULT="UNKNOWN";
         static const int MAX_POINTS_IN_MESSAGE=60; //The maximum number of points which can be included in a mobility message containing a trajectory over DSRC
         //Location Range for x and y
         static const long LOCATION_MIN=-638363700;

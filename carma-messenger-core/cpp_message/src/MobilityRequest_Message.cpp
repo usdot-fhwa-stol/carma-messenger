@@ -53,7 +53,7 @@ namespace cpp_message
                     sender_id +=message->value.choice.TestMessage00.header.hostStaticId.buf[i];
                 }
             }
-            else sender_id=REQUEST_STRING_DEFAULT;
+            else sender_id=Header_constant.STRING_DEFAULT;
 
             header.sender_id=sender_id;
 
@@ -65,7 +65,7 @@ namespace cpp_message
                     recipient_id +=message->value.choice.TestMessage00.header.targetStaticId.buf[i];
                 }
             }
-            else recipient_id=REQUEST_STRING_DEFAULT;
+            else recipient_id=Header_constant.STRING_DEFAULT;
 
             header.recipient_id=recipient_id;
             
@@ -118,7 +118,7 @@ namespace cpp_message
                     strategy +=message->value.choice.TestMessage00.body.strategy.buf[i];
                 }
             }
-            else strategy=REQUEST_STRING_DEFAULT;
+            else strategy=Header_constant.STRING_DEFAULT;
 
             output.strategy=strategy;
             //plan type   
@@ -277,8 +277,8 @@ namespace cpp_message
         size_t string_size=sender_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
             ROS_WARN("Unacceptable host id value, changing to default");
-            sender_id=REQUEST_STRING_DEFAULT;
-            string_size=REQUEST_STRING_DEFAULT.size();
+            sender_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
         }
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
@@ -292,8 +292,8 @@ namespace cpp_message
         string_size=recipient_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
             ROS_WARN("Unacceptable recipient id value, changing to default");
-            recipient_id=REQUEST_STRING_DEFAULT;
-            string_size=REQUEST_STRING_DEFAULT.size();
+            recipient_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
         }
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
@@ -361,8 +361,8 @@ namespace cpp_message
         string_size=strategy.size();
         if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
             ROS_WARN("Unacceptable strategy value, changing to default");
-            strategy=REQUEST_STRING_DEFAULT;
-            string_size=REQUEST_STRING_DEFAULT.size();
+            strategy=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
         }        
         uint8_t string_content_strategy[string_size];
         for(size_t i=0;i<string_size;i++)
@@ -429,8 +429,8 @@ namespace cpp_message
         size_t params_string_size=params_string.size();
         if(params_string_size<STRATEGY_PARAMS_MIN_LENGTH || params_string_size>STRATEGY_PARAMS_MAX_LENGTH){
             ROS_WARN("Unacceptable strategy_params value, changing to default");
-            params_string=REQUEST_STRING_DEFAULT;
-            params_string_size=REQUEST_STRING_DEFAULT.size();
+            params_string=Header.STRING_DEFAULT;
+            params_string_size=Header.STRING_DEFAULT.size();
         }
         uint8_t string_content_params[params_string_size];
         for(size_t i=0;i<params_string_size;i++)
