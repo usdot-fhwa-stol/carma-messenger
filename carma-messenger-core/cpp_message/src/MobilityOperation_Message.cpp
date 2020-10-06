@@ -128,7 +128,7 @@ namespace cpp_message
                     strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
                 }
             }
-            else strategy_params=Header_constant.STRING_DEFAULT;
+            else strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
             
             output.strategy_params=strategy_params;
 
@@ -265,8 +265,8 @@ namespace cpp_message
         string_size=strategy_params.size();
         if(string_size<STRATEGY_PARAMS_MIN_LENGTH || string_size>STRATEGY_PARAMS_MAX_LENGTH){
             ROS_WARN("Unacceptable strategy_params value, changing to default");
-            strategy_params=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
+            strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
+            string_size=STRATEGY_PARAMS_STRING_DEFAULT.size();
         }
         uint8_t string_content_params[string_size];
         for(size_t i=0;i<string_size;i++)

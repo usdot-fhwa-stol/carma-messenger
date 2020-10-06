@@ -25,7 +25,7 @@ namespace cpp_message
         static const int STATIC_ID_MAX_LENGTH=16;
         std::string BSM_ID_DEFAULT="00000000";
         const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-        std::string STRING_DEFAULT="[]";
+        std::string STRING_DEFAULT="UNSET";
         static const int TIMESTAMP_MESSAGE_LENGTH=19;
         std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
         const int GUID_LENGTH=GUID_DEFAULT.length();
