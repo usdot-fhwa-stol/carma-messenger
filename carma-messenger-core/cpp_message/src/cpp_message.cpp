@@ -23,6 +23,7 @@
 #include "MobilityResponse_Message.h"
 #include "MobilityPath_Message.h"
 #include "MobilityRequest_Message.h"
+#include "BSM_Message.h"
 
 namespace cpp_message
 {
@@ -46,6 +47,10 @@ namespace cpp_message
         mobility_path_message_sub_=nh_->subscribe("outgoing_mobility_path",5, &Message::outbound_mobility_path_message_callback,this);
         mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("incoming_mobility_request",5);
         mobility_request_message_sub_=nh_->subscribe("outgoing_mobility_request",5, &Message::outbound_mobility_request_message_callback,this);
+        mobility_request_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
+        mobility_request_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
+
+
     }
 
     void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
@@ -261,7 +266,27 @@ namespace cpp_message
             ROS_WARN_STREAM("Cannot encode mobility request message.");
         }
     }
-boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
+    void Message::outbound_bsm_message_callback(const j2735_msgs::BSM& msg)
+    {//encode and publish as outbound binary message
+        BSM_Message encode;
+        auto res=encode.encode_bsm_message(msg);
+        if(res)
+        {
+            //copy to byte array msg
+            cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="MobilityRequest";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_.publish(output);
+        }
+        else
+        {
+            ROS_WARN_STREAM("Cannot encode mobility request message.");
+        }
+    }
+    boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
     {
         j2735_msgs::TrafficControlMessage output;
         // decode results
