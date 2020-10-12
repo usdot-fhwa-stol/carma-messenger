@@ -47,8 +47,8 @@ namespace cpp_message
         mobility_path_message_sub_=nh_->subscribe("outgoing_mobility_path",5, &Message::outbound_mobility_path_message_callback,this);
         mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("incoming_mobility_request",5);
         mobility_request_message_sub_=nh_->subscribe("outgoing_mobility_request",5, &Message::outbound_mobility_request_message_callback,this);
-        mobility_request_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
-        mobility_request_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
+        bsm_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
+        bsm_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
 
 
     }
@@ -139,6 +139,21 @@ namespace cpp_message
             else
             {
                 ROS_WARN_STREAM("Cannot decode Mobility Request message");
+            }
+             
+        }
+        else if(msg->messageType=="BSM")   
+        {
+            std::vector<uint8_t> array=msg->content;
+            BSM_Message decode;
+            auto output=decode.decode_bsm_message(array);
+            if(output)
+            {
+                bsm_message_pub_.publish(output.get());
+            }
+            else
+            {
+                ROS_WARN_STREAM("Cannot decode BSM message");
             }
              
         }
@@ -276,14 +291,14 @@ namespace cpp_message
             cav_msgs::ByteArray output;
             output.header.frame_id="0";
             output.header.stamp=ros::Time::now();
-            output.messageType="MobilityRequest";
+            output.messageType="BSM";
             output.content=res.get();
             //publish result
             outbound_binary_message_pub_.publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode mobility request message.");
+            ROS_WARN_STREAM("Cannot encode BSM message.");
         }
     }
     boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
