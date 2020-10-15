@@ -77,7 +77,7 @@ namespace cpp_message
 
     }
 
-    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(j2735_msgs::BSM plain_msg)
+    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_msgs::BSM& plain_msg)
     {
         //encode result placeholder
         uint8_t buffer[128];

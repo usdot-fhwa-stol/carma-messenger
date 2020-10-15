@@ -22,13 +22,7 @@ namespace cpp_message
     {
         private:
         //constants 
-        //TODO check this
-            static const int STRATEGY_MIN_LENGTH=2;
-            static const int STRATEGY_MAX_LENGTH=50;
-            static const int STRATEGY_PARAMS_MIN_LENGTH=2;
-            static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
-            static const int BSM_TEST_ID=20;
-            std::string STRATEGY_PARAMS_STRING_DEFAULT="[]";
+        static const int BSM_TEST_ID=20;
         
         public:
         /**
@@ -42,6 +36,6 @@ namespace cpp_message
          * @param plainMessage contains BSM ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
-        boost::optional<std::vector<uint8_t>> encode_bsm_message(j2735_msgs::BSM plainMessage);
+        boost::optional<std::vector<uint8_t>> encode_bsm_message(const j2735_msgs::BSM& plainMessage);
     };
 }
