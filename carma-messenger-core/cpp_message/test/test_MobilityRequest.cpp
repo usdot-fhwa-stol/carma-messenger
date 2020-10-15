@@ -17,7 +17,7 @@
 #include<gtest/gtest.h>
 #include<ros/ros.h>
 
-TEST(MobilityRequestMessageTest, testDecodeMobilityRequestMsg)
+TEST(MobilityRequestMessageTest, DISABLED_testDecodeMobilityRequestMsg)
 {
     std::vector<uint8_t> binary_input={0,240,129,225,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,126,116,60,60,182,225,95,67,102,30,155,247,238,211,187,58,6,73,131,42,13,19,6,84,26,166,12,168,54,98,201,147,54,109,217,48,102,217,195,86,141,219,181,112,193,186,183,219,78,235,251,186,237,197,151,147,166,49,170,202,143,34,37,102,16,230,66,160,225,195,54,139,54,105,199,151,119,60,183,248,108,195,211,43,168,147,234,45,98,193,131,6,107,49,225,229,203,78,94,87,247,97,219,149,213,61,59,59,101,228,130,167,46,184,245,160,141,34,188,20,21,35,72,165,13,102,60,60,185,105,203,202,254,156,142,170,211,137,62,162,6,12,24,48,96,193,138,206,249,116,231,209,209,210,204,57,57,223,231,191,55,78,248,121,101,191,219,47,46,122,119,238,117,79,207,62,153,118,160,173,151,151,61,59,247,32,171,187,94,237,253,247,44,201,135,166,91,251,243,95,217,135,159,75,252,250,97,233,150,254,157,220,248,101,199,211,78,253,206,172,217,179,101,108,217,171,98,68,89,147,15,76,183,247,230,191,179,15,62,151,240,228,231,127,30,29,154,113,114,195,211,78,253,206,172,217,179,101,108,217,171,98,68,89,195,150,91,253,57,105,225,127,14,78,119,244,101,195,179,166,139,248,244,101,199,173,212,126,89,114,238,89,135,39,59,252,250,97,233,215,155,170,89,114,44,211,207,157,254,120,247,242,202,233,163,149,156,50,242,219,167,165,254,89,120,245,211,203,46,71,76,22,116,211,183,47,62,152,118,240,116,197,171,134,174,25,182,110,205,139,134,45,19,6,84,28,166,12,168,53,76,25,80,108,229,131,38,108,219,178,96,205,179,134,173,27,183,106,225,131,112,159,87,213,245,125,159,103,217,139,86,76,217,183,100,193,155,103,13,90,55,110,213,195,6,224};
     cpp_message::Mobility_Request worker;
@@ -55,8 +55,7 @@ TEST(MobilityRequestMessageTest, testDecodeMobilityRequestMsg)
     else EXPECT_TRUE(false);
 }
 
-
-TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
+TEST(MobilityRequestMessageTest, DISABLED_testEncodeMobilityRequestMsg)
 {
     cpp_message::Mobility_Request worker;
     cav_msgs::MobilityHeader header;
@@ -126,7 +125,7 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
     }
 }
 
-TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
+TEST(MobilityRequestMessageTest, DISABLED_testEncodeMobilityRequestMsg_base_case)
 {
     cpp_message::Mobility_Request worker;
     cav_msgs::MobilityHeader header;
@@ -190,13 +189,5 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
     }
 }
 
-
-
-// Run all the tests
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
 
 

@@ -20,7 +20,7 @@
 #include <ros/ros.h>
 
 
-TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
+TEST(MobilityResponseMessageTest, DISABLED_testDecodeMobilityResponseMsg)
 {
     std::vector<uint8_t> binary_input = {0,241,77,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,112,202};
     cpp_message::Mobility_Response worker;
@@ -43,7 +43,7 @@ TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
     else EXPECT_TRUE(false);
 }
 
-TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
+TEST(MobilityResponseMessageTest, DISABLED_testEncodeMobilityResponseMsg)
 {
     cpp_message::Mobility_Response worker;
     cav_msgs::MobilityHeader header;
@@ -72,7 +72,7 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
     }
 }
 
-TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
+TEST(MobilityResponseMessageTest, DISABLED_testEncodeMobilityResponseMsg_base_case)
 {
     cpp_message::Mobility_Response worker;
     cav_msgs::MobilityHeader header;
@@ -99,11 +99,4 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
         std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
-}
-
-// Run all the tests
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

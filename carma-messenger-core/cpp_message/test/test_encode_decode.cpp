@@ -18,7 +18,7 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(CppMessageTest, testDecodeControlMsgPackage)
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgPackage)
 {
     std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                                                     0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -46,7 +46,7 @@ TEST(CppMessageTest, testDecodeControlMsgPackage)
     
 }
 
-TEST(CppMessageTest, testDecodeControlMsgParams)
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgParams)
 {
     std::vector<uint8_t> binar_input_params_only = {0, 245, 67, 40, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0,
                                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 56, 0, 47, 0, 0, 0, 1, 226,
@@ -73,7 +73,7 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, testDecodeControlMsgGeometry)
+TEST(CppMessageTest, DISABLED_testDecodeControlMsgGeometry)
 {
     std::vector<uint8_t> binar_input_geometry_only = {0, 245, 120, 36, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 
                                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 57, 206, 154, 52, 243, 65, 
@@ -104,7 +104,7 @@ TEST(CppMessageTest, testDecodeControlMsgGeometry)
 }
 
 
-TEST(CppMessageTest, testEncodeControlMsg1)
+TEST(CppMessageTest, DISABLED_testEncodeControlMsg1)
 {
     cpp_message::Message worker;
 
@@ -119,7 +119,7 @@ TEST(CppMessageTest, testEncodeControlMsg1)
     }
 }
 
-TEST(CppMessageTest, testEncodeControlMsg2)
+TEST(CppMessageTest, DISABLED_testEncodeControlMsg2)
 {
     cpp_message::Message worker;
     // ControlMessage START
@@ -245,7 +245,7 @@ TEST(CppMessageTest, testEncodeControlMsg2)
 
 
 
-TEST(CppMessageTest, testDecodeRequestMsg1)
+TEST(CppMessageTest, DISABLED_testDecodeRequestMsg1)
 {
     std::vector<uint8_t> binar_input = {0, 244, 1, 0};
     cpp_message::Message worker;
@@ -255,7 +255,7 @@ TEST(CppMessageTest, testDecodeRequestMsg1)
 }
 
 
-TEST(CppMessageTest, testDecodeRequestMsg2)
+TEST(CppMessageTest, DISABLED_testDecodeRequestMsg2)
 {
     std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
     cpp_message::Message worker;
@@ -270,7 +270,7 @@ TEST(CppMessageTest, testDecodeRequestMsg2)
     else EXPECT_TRUE(false);
 }
 
-TEST(CppMessageTest, testEncodeRequestMsg1)
+TEST(CppMessageTest, DISABLED_testEncodeRequestMsg1)
 {
     cpp_message::Message worker;
 
@@ -285,7 +285,7 @@ TEST(CppMessageTest, testEncodeRequestMsg1)
     }
 }
 
-TEST(CppMessageTest, testEncodeRequestMsg2)
+TEST(CppMessageTest, DISABLED_testEncodeRequestMsg2)
 {
     cpp_message::Message worker;
 

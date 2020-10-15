@@ -79,34 +79,46 @@ namespace cpp_message
 
     boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_msgs::BSM& plain_msg)
     {
+        FILE *fp;
+        fp = fopen("/home/misheel/Desktop/log_C.txt", "w");
+        fprintf(fp, "encodeBSM function is called\n");
+        
         //encode result placeholder
-        uint8_t buffer[128];
+        uint8_t buffer[544];
         size_t buffer_size=sizeof(buffer);
+        ROS_WARN_STREAM("size" << sizeof(MessageFrame_t));
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
+        MessageFrame_t* message;
+        message = (MessageFrame_t*) calloc(1, sizeof(MessageFrame_t));
+        ROS_WARN_STREAM("size" << sizeof(message));
+
         //if mem allocation fails
-        if(!message_shared)
+        if(!message)
         {
             ROS_WARN_STREAM("Cannot allocate mem for BasicSafetyMessage encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        MessageFrame_t* message = message_shared.get();
+
         //set message type to BasicSafetyMessage
-        message->messageId = BSM_TEST_ID;  
-        message->value.present = MessageFrame__value_PR_BasicSafetyMessage;    
-        
+        message->messageId = 20;  
+        message->value.present = MessageFrame__value_PR_BasicSafetyMessage;
+
+        BasicSafetyMessage* bsm_msg;
+        bsm_msg = (BasicSafetyMessage*) calloc(1, sizeof(BasicSafetyMessage));
+
         // Encode coreData
         BSMcoreData_t* core_data;
         core_data = (BSMcoreData_t*) calloc(1, sizeof(BSMcoreData_t));
         core_data->msgCnt = plain_msg.core_data.msg_count;
         // Set the fields
-        uint8_t id_content[4];
+        uint8_t id_content[4] = {0};
         for(auto i = 0; i < 4; i++)
         {
-            id_content[i] = plain_msg.core_data.id[i];
+            id_content[i] = (char) plain_msg.core_data.id[i];
+            ROS_WARN_STREAM("added" << (int)plain_msg.core_data.id[i]);
         }
+        core_data->id.buf = id_content; 
         core_data->id.size = 4;
-        core_data->id.buf = id_content;    
         core_data->secMark = plain_msg.core_data.sec_mark;
 
         core_data->lat = plain_msg.core_data.latitude;
@@ -134,11 +146,13 @@ namespace cpp_message
 
         BrakeSystemStatus_t* brakes;
         brakes = (BrakeSystemStatus_t*) calloc(1, sizeof(BrakeSystemStatus_t));
-        uint8_t wheel_break_content[1] = {16};
+        uint8_t* wheel_break_content;
+        wheel_break_content = (uint8_t*) calloc(1, sizeof(uint8_t));
         wheel_break_content[0] = plain_msg.core_data.brakes.wheelBrakes.brake_applied_status;
-        brakes->wheelBrakes.bits_unused = 3;
+        ROS_WARN_STREAM("Brake:" << (int)wheel_break_content[0]);
         brakes->wheelBrakes.buf = wheel_break_content;
         brakes->wheelBrakes.size = 1;
+        brakes->wheelBrakes.bits_unused = 3;
         brakes->traction = plain_msg.core_data.brakes.traction.traction_control_status;
         brakes->abs = plain_msg.core_data.brakes.abs.anti_lock_brake_status;
         brakes->scs = plain_msg.core_data.brakes.scs.stability_control_status;
@@ -152,14 +166,16 @@ namespace cpp_message
         vehicle_size->width = plain_msg.core_data.size.vehicle_width;
         core_data->size = *vehicle_size;
 
-        message->value.choice.BasicSafetyMessage.coreData = *core_data;
+        bsm_msg->coreData = *core_data;
+        message->value.choice.BasicSafetyMessage = *bsm_msg;
 
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-         
+        asn_fprint(fp, &asn_DEF_MessageFrame, message);
         //log a warning if that fails
         if(ec.encoded == -1) {
             ROS_WARN_STREAM("Encoding for BasicSafetyMessage has failed");
+            std::cout << "Failed: " << ec.failed_type->name << std::endl;
             return boost::optional<std::vector<uint8_t>>{};
         }
         
@@ -169,7 +185,7 @@ namespace cpp_message
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
                 
         //Debugging/Unit Testing
-        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 } 

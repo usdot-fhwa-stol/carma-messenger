@@ -142,7 +142,7 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> Mobility_Operation::encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage)
     {
         //encode result placeholder
-        uint8_t buffer[1472];
+        uint8_t buffer[512] = {0};
         size_t buffer_size=sizeof(buffer);
         
         asn_enc_rval_t ec;
