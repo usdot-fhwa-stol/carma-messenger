@@ -15,7 +15,7 @@
  */
 
 /**
- * CPP File containing Mobility Operation Message method implementations
+ * CPP File containing BSM Message method implementations
  */
 
 #include "BSM_Message.h"
@@ -24,11 +24,10 @@ namespace cpp_message
 {
     boost::optional<j2735_msgs::BSM> BSM_Message::decode_bsm_message(std::vector<uint8_t>& binary_array){
         
-        cav_msgs::MobilityHeader header;
-        cav_msgs::MobilityOperation output;
+        j2735_msgs::BSM output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
-        MessageFrame_t* message=nullptr;
+        MessageFrame_t* message = nullptr;
         
         //copy from vector to array         
         size_t len=binary_array.size();    
@@ -40,247 +39,127 @@ namespace cpp_message
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
          
         //if decode success
-        if(rval.code==RC_OK){
-           
-            //convert strategy from char array to string (TestMessage03 for MobilityOperation)
-            Mobility_Header Header_constant;
-            std::string sender_id, recipient_id, sender_bsm_id, plan_id,timestamp_string, strategy,strategy_params;
-            uint64_t timestamp;
-            //get sender id
-            size_t str_len=message->value.choice.TestMessage03.header.hostStaticId.size;
-            if(str_len>=Header_constant.STATIC_ID_MIN_LENGTH && str_len<=Header_constant.STATIC_ID_MAX_LENGTH)
+        if(rval.code==RC_OK)
+        {
+            BSMcoreData_t core_data_msg = message->value.choice.BasicSafetyMessage.coreData;
+            auto id_len = core_data_msg.id.size;
+            for(auto i = 0; i < id_len; i++)
             {
-                for(size_t i=0;i<str_len;i++){
-                    sender_id +=message->value.choice.TestMessage03.header.hostStaticId.buf[i];
-                }
+                output.core_data.id[i] = core_data_msg.id.buf[i];
             }
-            else sender_id=Header_constant.STRING_DEFAULT;
-
-            header.sender_id=sender_id;
-
-            //get recepient id
-            str_len=message->value.choice.TestMessage03.header.targetStaticId.size;
-            if(str_len>=Header_constant.STATIC_ID_MIN_LENGTH && str_len<=Header_constant.STATIC_ID_MAX_LENGTH)
-            {
-                for(size_t i=0;i<str_len;i++){
-                    recipient_id +=message->value.choice.TestMessage03.header.targetStaticId.buf[i];
-                }
-            }
-            else recipient_id=Header_constant.STRING_DEFAULT;
-
-            header.recipient_id=recipient_id;
+            output.core_data.latitude = core_data_msg.lat;
+            output.core_data.longitude = core_data_msg.Long; 
+            output.core_data.elev = core_data_msg.elev;
+            output.core_data.accuracy.orientation = core_data_msg.accuracy.orientation;
+            output.core_data.accuracy.semiMajor = core_data_msg.accuracy.semiMajor;
+            output.core_data.accuracy.semiMinor = core_data_msg.accuracy.semiMinor;
+            output.core_data.transmission.transmission_state = core_data_msg.transmission;
+            output.core_data.speed = core_data_msg.speed;
+            output.core_data.heading = core_data_msg.heading;
+            output.core_data.angle = core_data_msg.angle;
+            output.core_data.accelSet.lateral = core_data_msg.accelSet.lat;
+            output.core_data.accelSet.longitudinal =core_data_msg.accelSet.Long;
+            output.core_data.accelSet.vert = core_data_msg.accelSet.vert;
+            output.core_data.accelSet.yaw_rate = core_data_msg.accelSet.yaw;
+            output.core_data.brakes.wheelBrakes.brake_applied_status = core_data_msg.brakes.wheelBrakes.buf[0];
+            output.core_data.brakes.traction.traction_control_status = core_data_msg.brakes.traction;
+            output.core_data.brakes.abs.anti_lock_brake_status = core_data_msg.brakes.abs;
+            output.core_data.brakes.scs.stability_control_status = core_data_msg.brakes.scs;
+            output.core_data.brakes.brakeBoost.brake_boost_applied = core_data_msg.brakes.brakeBoost;
+            output.core_data.brakes.auxBrakes.auxiliary_brake_status = core_data_msg.brakes.auxBrakes;            
+            output.core_data.size.vehicle_length = core_data_msg.size.length;
+            output.core_data.size.vehicle_width = core_data_msg.size.width;
             
-            //get bsm id
-            str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
-            for(size_t i=0;i<str_len;i++){
-                sender_bsm_id +=message->value.choice.TestMessage03.header.hostBSMId.buf[i];
-            }
-            if(str_len<Header_constant.BSM_ID_LENGTH){
-                sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
-            }
-            else if(str_len>Header_constant.BSM_ID_LENGTH){
-                ROS_WARN("BSM ID -size greater than limit, changing to default");
-                sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
-            }
-            
-            header.sender_bsm_id=sender_bsm_id;
-
-            //get plan id
-            str_len=message->value.choice.TestMessage03.header.planId.size;
-            if(str_len==Header_constant.GUID_LENGTH)
-            {
-                for(size_t i=0;i<str_len;i++){
-                    plan_id +=message->value.choice.TestMessage03.header.planId.buf[i];
-                }
-            }
-            else plan_id=Header_constant.GUID_DEFAULT;
-
-            header.plan_id=plan_id;
-            
-            //recover uint64_t timestamp from string
-            str_len=message->value.choice.TestMessage03.header.timestamp.size;
-            timestamp=0;
-            char timestamp_ch[str_len];
-            for(size_t i=0;i<str_len;i++){
-                timestamp_ch[i]=message->value.choice.TestMessage03.header.timestamp.buf[i];
-            }
-            timestamp=atoll(timestamp_ch);
-            header.timestamp=timestamp;
-            output.header=header;
-
-            //get strategy
-            str_len=message->value.choice.TestMessage03.body.strategy.size;
-            if(str_len>=STRATEGY_MIN_LENGTH && str_len<=STRATEGY_MAX_LENGTH)
-            {
-                for(size_t i=0;i<str_len;i++){
-                    strategy +=message->value.choice.TestMessage03.body.strategy.buf[i];
-                }
-            }
-            else strategy=Header_constant.STRING_DEFAULT;
-            
-            output.strategy=strategy;
-            
-            //get strategy params
-            str_len=message->value.choice.TestMessage03.body.operationParams.size;
-            if(str_len>=STRATEGY_PARAMS_MIN_LENGTH && str_len<=STRATEGY_PARAMS_MAX_LENGTH){
-                for(size_t i=0;i<str_len;i++){
-                    strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
-                }
-            }
-            else strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
-            
-            output.strategy_params=strategy_params;
-
-            return boost::optional<cav_msgs::MobilityOperation>(output);
+            return boost::optional<j2735_msgs::BSM>(output);
         }
-        ROS_WARN_STREAM("mobility operation decoding failed");
-        return boost::optional<cav_msgs::MobilityOperation>{};
+        ROS_WARN_STREAM("BasicSafetyMessage decoding failed");
+        return boost::optional<j2735_msgs::BSM>{};
 
     }
 
-    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(j2735_msgs::BSM plainMessage)
+    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(j2735_msgs::BSM plain_msg)
     {
         //encode result placeholder
-        uint8_t buffer[1472];
+        uint8_t buffer[128];
         size_t buffer_size=sizeof(buffer);
-        
         asn_enc_rval_t ec;
         std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
         if(!message_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for MobilityOperation message encoding");
+            ROS_WARN_STREAM("Cannot allocate mem for BasicSafetyMessage encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        MessageFrame_t* message=message_shared.get();
-        //set message type to TestMessage03
-        message->messageId=MOBILITY_OPERATION_TEST_ID;  
-        message->value.present=MessageFrame__value_PR_TestMessage03;    
+        MessageFrame_t* message = message_shared.get();
+        //set message type to BasicSafetyMessage
+        message->messageId = BSM_TEST_ID;  
+        message->value.present = MessageFrame__value_PR_BasicSafetyMessage;    
+        
+        // Encode coreData
+        BSMcoreData_t* core_data;
+        core_data = (BSMcoreData_t*) calloc(1, sizeof(BSMcoreData_t));
+        core_data->msgCnt = plain_msg.core_data.msg_count;
+        // Set the fields
+        uint8_t id_content[4];
+        for(auto i = 0; i < 4; i++)
+        {
+            id_content[i] = plain_msg.core_data.id[i];
+        }
+        core_data->id.size = 4;
+        core_data->id.buf = id_content;    
+        core_data->secMark = plain_msg.core_data.sec_mark;
 
-        //convert host_id string to char array
-        std::string sender_id=plainMessage.header.sender_id;
-        Mobility_Header Header;
-        size_t string_size=sender_id.size();
-        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            ROS_WARN("Unacceptable host id value, changing to default");
-            sender_id=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
-        }
-        uint8_t string_content_hostId[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_hostId[i]=sender_id[i];
-        }
-        message->value.choice.TestMessage03.header.hostStaticId.buf=string_content_hostId;
-        message->value.choice.TestMessage03.header.hostStaticId.size=string_size;
-        //convert target_id string to char array
-        std::string recipient_id=plainMessage.header.recipient_id;
-        string_size=recipient_id.size();
-        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            ROS_WARN("Unacceptable recipient id value, changing to default");
-            recipient_id=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
-        }
-        uint8_t string_content_targetId[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_targetId[i]=recipient_id[i];
-        }
-        message->value.choice.TestMessage03.header.targetStaticId.buf=string_content_targetId;
-        message->value.choice.TestMessage03.header.targetStaticId.size=string_size;
-        
-         //convert bsm_id string to char array
-        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
-        string_size=sender_bsm_id.size();
-        if(string_size<Header.BSM_ID_LENGTH){
-            sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
-        }
-        else if(string_size>Header.BSM_ID_LENGTH){
-            ROS_WARN("BSM ID greater than limit, changing to default");
-            sender_bsm_id=Header.BSM_ID_DEFAULT;
-        }
-        string_size=Header.BSM_ID_LENGTH;
-        uint8_t string_content_BSMId[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_BSMId[i]=sender_bsm_id[i];
-        }
-        message->value.choice.TestMessage03.header.hostBSMId.buf=string_content_BSMId;
-        message->value.choice.TestMessage03.header.hostBSMId.size=string_size;
-        
-         //convert plan_id string to char array
-        std::string plan_id=plainMessage.header.plan_id;
-        string_size=plan_id.size();
-        if(string_size!=Header.GUID_LENGTH){
-            ROS_WARN("Unacceptable GUID, changing to default");
-            plan_id=Header.GUID_DEFAULT;
-            string_size=Header.GUID_LENGTH;
-        }
-        uint8_t string_content_planId[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_planId[i]=plan_id[i];
-        }
-        message->value.choice.TestMessage03.header.planId.buf=string_content_planId;
-        message->value.choice.TestMessage03.header.planId.size=string_size;
-        //get timestamp and convert to char array
-        uint64_t time=plainMessage.header.timestamp;
-        std::string timestamp=std::to_string(time);
-        string_size=timestamp.size();
-        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
-            timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(timestamp);
-        }
-        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            ROS_WARN("Unacceptable timestamp value, changing to default");
-            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
-        }
-        uint8_t string_content_timestamp[Header.TIMESTAMP_MESSAGE_LENGTH];
-        for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
-        {
-            string_content_timestamp[i]=timestamp[i];
-        }
-        message->value.choice.TestMessage03.header.timestamp.buf=string_content_timestamp;
-        message->value.choice.TestMessage03.header.timestamp.size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        core_data->lat = plain_msg.core_data.latitude;
+        core_data->Long = plain_msg.core_data.longitude;
+        core_data->elev = plain_msg.core_data.elev;
+        PositionalAccuracy_t* pos_acc;
+        pos_acc = (PositionalAccuracy_t*) calloc(1, sizeof(PositionalAccuracy_t));
+        pos_acc->orientation = plain_msg.core_data.accuracy.orientation;
+        pos_acc->semiMajor = plain_msg.core_data.accuracy.semiMajor;
+        pos_acc->semiMinor = plain_msg.core_data.accuracy.semiMinor;
+        core_data->accuracy = *pos_acc;
 
-        //convert strategy string to char array
-        std::string strategy=plainMessage.strategy;
-        string_size=strategy.size();
-        if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
-            ROS_WARN("Unacceptable strategy_params value, changing to default");
-            strategy=Header.STRING_DEFAULT;
-            string_size=Header.STRING_DEFAULT.size();
-        }        
-        uint8_t string_content_strategy[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_strategy[i]=strategy[i];
-        }
-        message->value.choice.TestMessage03.body.strategy.buf=string_content_strategy;
-        message->value.choice.TestMessage03.body.strategy.size=string_size;
-        
+        core_data->transmission = plain_msg.core_data.transmission.transmission_state;
+        core_data->speed = plain_msg.core_data.speed;
+        core_data->heading = plain_msg.core_data.heading;
+        core_data->angle = plain_msg.core_data.angle;
 
-        //convert parameters string to char array
-        std::string strategy_params=plainMessage.strategy_params;
-        string_size=strategy_params.size();
-        if(string_size<STRATEGY_PARAMS_MIN_LENGTH || string_size>STRATEGY_PARAMS_MAX_LENGTH){
-            ROS_WARN("Unacceptable strategy_params value, changing to default");
-            strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
-            string_size=STRATEGY_PARAMS_STRING_DEFAULT.size();
-        }
-        uint8_t string_content_params[string_size];
-        for(size_t i=0;i<string_size;i++)
-        {
-            string_content_params[i]=strategy_params[i];
-        }
-        message->value.choice.TestMessage03.body.operationParams.buf=string_content_params;
-        message->value.choice.TestMessage03.body.operationParams.size=string_size;
+        AccelerationSet4Way_t* accel;
+        accel = (AccelerationSet4Way_t*) calloc(1, sizeof(AccelerationSet4Way_t));
+        accel->lat = plain_msg.core_data.accelSet.lateral;
+        accel->Long = plain_msg.core_data.accelSet.longitudinal;
+        accel->vert= plain_msg.core_data.accelSet.vert;
+        accel->yaw = plain_msg.core_data.accelSet.yaw_rate;
+        core_data->accelSet = *accel;
+
+        BrakeSystemStatus_t* brakes;
+        brakes = (BrakeSystemStatus_t*) calloc(1, sizeof(BrakeSystemStatus_t));
+        uint8_t wheel_break_content[1] = {16};
+        wheel_break_content[0] = plain_msg.core_data.brakes.wheelBrakes.brake_applied_status;
+        brakes->wheelBrakes.bits_unused = 3;
+        brakes->wheelBrakes.buf = wheel_break_content;
+        brakes->wheelBrakes.size = 1;
+        brakes->traction = plain_msg.core_data.brakes.traction.traction_control_status;
+        brakes->abs = plain_msg.core_data.brakes.abs.anti_lock_brake_status;
+        brakes->scs = plain_msg.core_data.brakes.scs.stability_control_status;
+        brakes->brakeBoost = plain_msg.core_data.brakes.brakeBoost.brake_boost_applied;
+        brakes->auxBrakes = plain_msg.core_data.brakes.auxBrakes.auxiliary_brake_status;
+        core_data->brakes = *brakes;
         
+        VehicleSize_t* vehicle_size;
+        vehicle_size = (VehicleSize_t*) calloc(1, sizeof(VehicleSize_t));
+        vehicle_size->length = plain_msg.core_data.size.vehicle_length;
+        vehicle_size->width = plain_msg.core_data.size.vehicle_width;
+        core_data->size = *vehicle_size;
+
+        message->value.choice.BasicSafetyMessage.coreData = *core_data;
+
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
          
         //log a warning if that fails
         if(ec.encoded == -1) {
-            ROS_WARN_STREAM("Encoding for Mobility Operation Message failed");
+            ROS_WARN_STREAM("Encoding for BasicSafetyMessage has failed");
             return boost::optional<std::vector<uint8_t>>{};
         }
         
@@ -289,7 +168,8 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
                 
+        //Debugging/Unit Testing
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
-}
+} 
