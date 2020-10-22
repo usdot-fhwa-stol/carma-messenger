@@ -64,7 +64,6 @@ TEST(BSMTest, testDecodeBSM)
 
 TEST(BSMTest, testEncodeBSM)
 {
-    //Mobility_Operation::bsm_message worker;
     cpp_message::BSM_Message worker;
     j2735_msgs::BSM message;
     message.core_data.msg_count = 1;
@@ -97,27 +96,3 @@ TEST(BSMTest, testEncodeBSM)
         EXPECT_TRUE(false);
     }
 }
-
-// TEST(BSMTest, testEncodeBSM_base_case)
-// {
-//     //Mobility_Operation::bsm_message worker;
-//     cpp_message::BSM_Message worker;
-    
-//     j2735_msgs::BSM message;     
-//     message.strategy="";
-//     message.strategy_params="";
-//     auto res = worker.encode_bsm_message(message);
-
-//     if(res) {
-//         // std::vector<uint8_t> to_read=res.get();
-//         // size_t len=to_read.size();
-//         // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
-//         // std::cout<<"\n";
-//         EXPECT_TRUE(true);
-//     }
-//     else
-//     {
-//         std::cout << "encoding failed!\n";
-//         EXPECT_TRUE(false);
-//     }
-// }

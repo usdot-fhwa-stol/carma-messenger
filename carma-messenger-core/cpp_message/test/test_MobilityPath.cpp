@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-TEST(MobilityPathMessageTest, DISABLED_testDecodeRequestMsg)
+TEST(MobilityPathMessageTest, testDecodeRequestMsg)
 {
     std::vector<uint8_t> binary_input={0,242,112,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,116,193,149,6,137,131,42,13,83,6,84,27,57,100,201,155,54,236,152,51,108,225,171,70,237,218,184,96,220,39,213,245,125,95,103,217,246};
     cpp_message::Mobility_Path worker;
@@ -45,7 +45,7 @@ TEST(MobilityPathMessageTest, DISABLED_testDecodeRequestMsg)
     else EXPECT_TRUE(false);
 }
 
-TEST(MobilityPathMessageTest, DISABLED_testEncodeMobilityPathMsg)
+TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
     cpp_message::Mobility_Path worker;
@@ -101,7 +101,7 @@ TEST(MobilityPathMessageTest, DISABLED_testEncodeMobilityPathMsg)
     }
 }
 
-TEST(MobilityPathMessageTest, DISABLED_testEncodeMobilityPathMsg_base_case)
+TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
     cpp_message::Mobility_Path worker;
