@@ -285,7 +285,7 @@ TEST(CppMessageTest, DISABLED_testEncodeRequestMsg1)
     }
 }
 
-TEST(CppMessageTest, DISABLED_testEncodeRequestMsg2)
+TEST(CppMessageTest, testEncodeRequestMsg2)
 {
     cpp_message::Message worker;
 

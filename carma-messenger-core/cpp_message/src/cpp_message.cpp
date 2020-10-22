@@ -829,6 +829,9 @@ namespace cpp_message
     // structure, while refactoring what is possible (those that don't further call calloc functions)
     boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::TrafficControlMessage control_msg)
     {
+        FILE *fp;
+        fp = fopen("/home/misheel/Desktop/log_C.txt", "w");
+        fprintf(fp, "encodeBSM function is called\n");
         // encode result placeholder
         uint8_t buffer[512] = {0};
         void * buffer_new;
@@ -1144,6 +1147,7 @@ namespace cpp_message
         asn_per_constraints_s *constraints = NULL;
         ssize_t ec_new = uper_encode_to_new_buffer(&asn_DEF_MessageFrame, constraints, message, &buffer_void);
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
+        asn_fprint(fp, &asn_DEF_MessageFrame, message);
         // log a warning if fails
         if(ec.encoded == -1) {
             return boost::optional<std::vector<uint8_t>>{};
