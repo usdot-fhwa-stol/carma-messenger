@@ -21,7 +21,7 @@
 
 TEST(BSMTest, testDecodeBSM)
 {
-    std::vector<uint8_t> binary_input = {0, 20, 37, 0, 64, 64, 128, 193, 0, 0, 90, 210, 116, 128, 53, 164, 233, 0, 8, 0, 0, 0, 0, 0, 128, 0, 0, 0, 126, 125, 7, 208, 127, 128, 0, 2, 170, 0, 128, 8};
+    std::vector<uint8_t> binary_input = {0, 20, 37, 0, 64, 64, 128, 193, 0, 0, 90, 210, 116, 128, 53, 164, 233, 0, 8, 0, 0, 0, 0, 0, 128, 0, 0, 0, 126, 125, 7, 208, 127, 128, 0, 10, 170, 0, 128, 8};
     cpp_message::BSM_Message worker;
     auto res = worker.decode_bsm_message(binary_input);
     j2735_msgs::BSM to_read;
@@ -50,8 +50,7 @@ TEST(BSMTest, testDecodeBSM)
         EXPECT_EQ(to_read.core_data.accelSet.longitudinal, 0);
         EXPECT_EQ(to_read.core_data.accelSet.vert, 0);
         EXPECT_EQ(to_read.core_data.accelSet.yaw_rate, 1); 
-        ROS_WARN_STREAM(">>" << to_read.core_data.brakes.wheelBrakes.brake_applied_status);
-        EXPECT_EQ(to_read.core_data.brakes.wheelBrakes.brake_applied_status, 6); 
+        EXPECT_EQ(to_read.core_data.brakes.wheelBrakes.brake_applied_status, j2735_msgs::BrakeAppliedStatus::RIGHT_REAR); 
         EXPECT_EQ(to_read.core_data.brakes.traction.traction_control_status, 1); 
         EXPECT_EQ(to_read.core_data.brakes.abs.anti_lock_brake_status, 1); 
         EXPECT_EQ(to_read.core_data.brakes.scs.stability_control_status, 1); 
@@ -68,14 +67,12 @@ TEST(BSMTest, testEncodeBSM)
     //Mobility_Operation::bsm_message worker;
     cpp_message::BSM_Message worker;
     j2735_msgs::BSM message;
-    ROS_WARN_STREAM("Mid1");
     message.core_data.msg_count = 1;
     message.core_data.id = {1,2,3,4};
-    ROS_WARN_STREAM("Mid");
     message.core_data.sec_mark = 1;
     message.core_data.longitude = 1;
     message.core_data.accuracy.orientation = 1;
-    message.core_data.brakes.wheelBrakes.brake_applied_status = j2735_msgs::BrakeAppliedStatus::RIGHT_FRONT;
+    message.core_data.brakes.wheelBrakes.brake_applied_status = j2735_msgs::BrakeAppliedStatus::RIGHT_REAR;
     message.core_data.brakes.traction.traction_control_status = 1;
     message.core_data.brakes.abs.anti_lock_brake_status = 1;
     message.core_data.brakes.scs.stability_control_status = 1;
@@ -84,7 +81,6 @@ TEST(BSMTest, testEncodeBSM)
     message.core_data.accelSet.yaw_rate = 1;
     message.core_data.size.vehicle_width = 1;
     message.core_data.size.vehicle_length = 1;
-    ROS_WARN_STREAM("Mid2");
     auto res = worker.encode_bsm_message(message);
 
     if(res) {
