@@ -1152,7 +1152,7 @@ namespace cpp_message
         auto array_length = ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
+        //for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 

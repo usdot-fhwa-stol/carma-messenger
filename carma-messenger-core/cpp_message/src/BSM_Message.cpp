@@ -68,12 +68,6 @@ namespace cpp_message
             uint8_t binary = core_data_msg.brakes.wheelBrakes.buf[0] >> 3;
             unsigned int brake_applied_status_type = 4;
             // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
-            //   BrakeAppliedStatus ::= BIT STRING {
-            //   unavailable (0),  -- When set, the brake applied status is unavailable
-            //   leftFront   (1),  -- Left Front Active
-            //   leftRear    (2),  -- Left Rear Active
-            //   rightFront  (3),  -- Right Front Active
-            //   rightRear   (4)   -- Right Rear Active }
             
             for (int i = 0; i < 4; i ++)
             {
@@ -147,6 +141,7 @@ namespace cpp_message
         temp_id->buf = id_content; 
         temp_id->size = 4;
         core_data->id = *temp_id;
+        free(temp_id);
         core_data->secMark = plain_msg.core_data.sec_mark;
 
         core_data->lat = plain_msg.core_data.latitude;
@@ -158,6 +153,7 @@ namespace cpp_message
         pos_acc->semiMajor = plain_msg.core_data.accuracy.semiMajor;
         pos_acc->semiMinor = plain_msg.core_data.accuracy.semiMinor;
         core_data->accuracy = *pos_acc;
+        free(pos_acc);
         core_data->transmission = plain_msg.core_data.transmission.transmission_state;
         core_data->speed = plain_msg.core_data.speed;
         core_data->heading = plain_msg.core_data.heading;
@@ -169,13 +165,13 @@ namespace cpp_message
         accel->vert= plain_msg.core_data.accelSet.vert;
         accel->yaw = plain_msg.core_data.accelSet.yaw_rate;
         core_data->accelSet = *accel;
-
+        free(accel);
         VehicleSize_t* vehicle_size;
         vehicle_size = (VehicleSize_t*) calloc(1, sizeof(VehicleSize_t));
         vehicle_size->length = plain_msg.core_data.size.vehicle_length;
         vehicle_size->width = plain_msg.core_data.size.vehicle_width;
         core_data->size = *vehicle_size;
-
+        free(vehicle_size);
         BrakeSystemStatus_t* brakes;
         brakes = (BrakeSystemStatus_t*) calloc(1, sizeof(BrakeSystemStatus_t));
     
@@ -192,14 +188,6 @@ namespace cpp_message
 
         // there are 3 unused bits in the end: 0b000
         // which makes every possible encoded value to be multiples of 8: 0b00001000 (8), 0b00010000 (16), 0b00011000 (24) etc
-        // spec at the time of writing this converter:
-        //   BrakeAppliedStatus ::= BIT STRING {
-        //   unavailable (0),  -- When set, the brake applied status is unavailable
-        //   leftFront   (1),  -- Left Front Active
-        //   leftRear    (2),  -- Left Rear Active
-        //   rightFront  (3),  -- Right Front Active
-        //   rightRear   (4)   -- Right Rear Active
-        //   } (SIZE (5))
         // so num in brackets indicate the position in the bit string:
         // unavailable: 0b10000000, leftFront: 0b01000000 etc
         wheel_brake[0] = (char) (8 << (4 - plain_msg.core_data.brakes.wheelBrakes.brake_applied_status)); 
@@ -209,12 +197,14 @@ namespace cpp_message
         brakes->wheelBrakes = *brake_applied_status;
         
         core_data->brakes = *brakes;
+        free(brakes);
         bsm_msg->coreData = *core_data;
+        free(core_data);
         message->value.choice.BasicSafetyMessage = *bsm_msg;
-
+        free(bsm_msg);
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-        
+        free(message);
         // Uncomment below to enable logging in human readable form
         //asn_fprint(fp, &asn_DEF_MessageFrame, message);
         
