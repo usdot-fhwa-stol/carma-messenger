@@ -45,7 +45,6 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
     else EXPECT_TRUE(false);
 }
 
-
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
@@ -149,11 +148,4 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
         std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
-}
-
-// Run all the tests
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

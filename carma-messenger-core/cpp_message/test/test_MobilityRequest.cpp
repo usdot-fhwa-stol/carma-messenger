@@ -55,7 +55,6 @@ TEST(MobilityRequestMessageTest, testDecodeMobilityRequestMsg)
     else EXPECT_TRUE(false);
 }
 
-
 TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
 {
     cpp_message::Mobility_Request worker;
@@ -190,13 +189,5 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
     }
 }
 
-
-
-// Run all the tests
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
 
 

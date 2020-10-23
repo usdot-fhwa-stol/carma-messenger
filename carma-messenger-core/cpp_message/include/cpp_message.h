@@ -27,11 +27,12 @@ extern "C"
 #include <cav_msgs/ByteArray.h>
 #include <j2735_msgs/TrafficControlRequest.h>
 #include <j2735_msgs/TrafficControlMessage.h>
-#include<cav_msgs/MobilityHeader.h>
-#include<cav_msgs/MobilityOperation.h>
-#include<cav_msgs/MobilityResponse.h>
-#include<cav_msgs/MobilityPath.h>
-#include<cav_msgs/MobilityRequest.h>
+#include <cav_msgs/MobilityHeader.h>
+#include <cav_msgs/MobilityOperation.h>
+#include <cav_msgs/MobilityResponse.h>
+#include <cav_msgs/MobilityPath.h>
+#include <cav_msgs/MobilityRequest.h>
+#include <j2735_msgs/BSM.h>
 
 
 namespace cpp_message
@@ -64,6 +65,9 @@ private:
     ros::Subscriber mobility_path_message_sub_;    //outgoing plain mobility path message
     ros::Publisher mobility_request_message_pub_;     //incoming mobility request message after decoded
     ros::Subscriber mobility_request_message_sub_;    //outgoing plain mobility request message
+    ros::Publisher bsm_message_pub_;     //incoming bsm message
+    ros::Subscriber bsm_message_sub_;    //outgoing plain bsm message
+    
 
     /**
      * @brief Initialize pub/sub and params.
@@ -98,6 +102,12 @@ private:
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_mobility_request_message_callback(const cav_msgs::MobilityRequest& msg);
+    /**
+     * @brief function callback when there is an outgoing bsm message.
+     * @param msg container with BSM ros message. Passed to an encoding function in BSM_Message class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_bsm_message_callback(const j2735_msgs::BSM& msg);
     
 public:
 

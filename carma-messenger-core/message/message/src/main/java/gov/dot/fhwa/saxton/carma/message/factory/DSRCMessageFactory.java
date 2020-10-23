@@ -25,7 +25,7 @@ public class DSRCMessageFactory {
     public static IMessage<?> getMessage(String messageType, ConnectedNode node, SaxtonLogger log, MessageFactory factory) {
         switch(messageType) {
         case "BSM":
-            return new BSMMessage(node, log, factory);
+            return null;
         case "MobilityRequest":
             return null;
             //return new MobilityRequestMessage(log, factory);

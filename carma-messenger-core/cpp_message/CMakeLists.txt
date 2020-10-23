@@ -63,7 +63,8 @@ add_library(cpp_message_library src/cpp_message.cpp
             src/MobilityOperation_Message.cpp
 			src/MobilityResponse_Message.cpp
 			src/MobilityPath_Message.cpp
-			src/MobilityRequest_Message.cpp)
+			src/MobilityRequest_Message.cpp
+			src/BSM_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
 
 ## Add cmake target dependencies of the executable
@@ -83,9 +84,6 @@ install(TARGETS cpp_message_node cpp_message_library
 ## Mark cpp header files for installation
 install(DIRECTORY include
 	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-	FILES_MATCHING
-	PATTERN "*.h"
-	PATTERN "*.hpp"
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
@@ -99,17 +97,11 @@ install(DIRECTORY
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gmock(${PROJECT_NAME}-test test/test_encode_decode.cpp)
+catkin_add_gmock(${PROJECT_NAME}-test test/test_encode_decode.cpp
+	test/test_MobilityOperations.cpp
+	test/test_MobilityResponse.cpp
+	test/test_MobilityPath.cpp
+	test/test_MobilityRequest.cpp
+	test/test_BSM.cpp
+)
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
-
-catkin_add_gmock(${PROJECT_NAME}-test_2 test/test_MobilityOperations.cpp)
-target_link_libraries(${PROJECT_NAME}-test_2 cpp_message_library testlib ${catkin_LIBRARIES})
-
-catkin_add_gmock(${PROJECT_NAME}-test_3 test/test_MobilityResponse.cpp)
-target_link_libraries(${PROJECT_NAME}-test_3 cpp_message_library testlib ${catkin_LIBRARIES})
-
-catkin_add_gmock(${PROJECT_NAME}-test_4 test/test_MobilityPath.cpp)
-target_link_libraries(${PROJECT_NAME}-test_4 cpp_message_library testlib ${catkin_LIBRARIES})
-
-catkin_add_gmock(${PROJECT_NAME}-test_5 test/test_MobilityRequest.cpp)
-target_link_libraries(${PROJECT_NAME}-test_5 cpp_message_library testlib ${catkin_LIBRARIES})
