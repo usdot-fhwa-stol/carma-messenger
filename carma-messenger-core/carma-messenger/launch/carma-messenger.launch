@@ -38,13 +38,6 @@
   <node pkg="j2735_convertor" type="j2735_convertor_node" name="j2735_convertor">
     <remap from="outgoing_bsm" to="bsm_outbound"/>
   </node>
-  
-  <!-- Message Consumer Node -->
-  <node pkg="message" type="message" name="message_consumer" args="gov.dot.fhwa.saxton.carma.message.MessageConsumer">
-    <rosparam command="load" file="$(find message)/message/config/MessageParams.yaml"/>
-    <remap from="outbound_binary_msg" to="comms/outbound_binary_msg"/>
-    <remap from="inbound_binary_msg" to="comms/inbound_binary_msg"/>
-  </node>
 
   <!-- System Alert Publisher to publish simulated DRIVERS_READY status -->
   <node pkg="rostopic" type="rostopic" name="drivers_ready_rostopic_pub"
