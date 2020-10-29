@@ -20,8 +20,8 @@ As shown in the diagram, any given piece of functionality may require client nod
 The carma-messenger system is meant to be run using docker. The configuration of carma-messanger is similar, though not identical, to configuring the CARMA Platform following the process described in the document [CARMA Platform Detailed Design - Parameter and Launch Standards for Different Vehicle Configurations.docx](https://usdot-carma.atlassian.net/wiki/spaces/CAR/pages/216006666/CARMA3+Developer+Guides). At the moment, the user does not need to configure any folders on the host vehicle except ensuring that the logging directories ```/opt/carma/logs``` and ```/opt/carma/.ros``` exist and are writeable. In addition, the user should utilize the [carma script](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/master/engineering_tools/carma) and [__carma_autocomplete file](https://github.com/usdot-fhwa-stol/CARMAPlatform/blob/master/engineering_tools/__carma_autocomplete) to launch and manage the system. The carma script can be placed under ```/usr/bin``` and the autocomplete file under ```/etc/bash_completion.d/``` (Ubuntu 16.04). 
 
 ```
-curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/carma >> /usr/bin/carma
-curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/__carma_autocomplete >> /etc/bash_completion.d/__carma_autocomplete
+curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/carma > /usr/bin/carma
+curl -L https://raw.githubusercontent.com/usdot-fhwa-stol/CARMAPlatform/master/engineering_tools/__carma_autocomplete > /etc/bash_completion.d/__carma_autocomplete
 ```
 <br>
 
