@@ -24,11 +24,6 @@
   <!-- C++ Logging -->
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find carma-messenger)/log-config/roscpp_log.config"/>
 
-  <!-- Java Logging -->
-  <arg name="log_config" default="$(find carma-messenger)/log-config/log-config.properties" doc="The location of the logging configuration file"/>
-  <arg name="JVM_LOG_OPTS" value="-Djava.util.logging.config.file=$(arg log_config)"/>
-  <!-- Apply logging properties to all java nodes using JAVA_OPTS-->
-  <env name="JAVA_OPTS" value="$(arg JVM_LOG_OPTS)"/>
   <!-- Generate log name configuration file -->
   <param name="log_name" type="str" command="$(find carma-messenger)/scripts/generate_log_name.sh"/>
     <remap from="outbound_binary_msg" to="comms/outbound_binary_msg"/>
@@ -42,13 +37,6 @@
   <!-- j2735 Convertor Node -->
   <node pkg="j2735_convertor" type="j2735_convertor_node" name="j2735_convertor">
     <remap from="outgoing_bsm" to="bsm_outbound"/>
-  </node>
-  
-  <!-- Message Consumer Node -->
-  <node pkg="message" type="message" name="message_consumer" args="gov.dot.fhwa.saxton.carma.message.MessageConsumer">
-    <rosparam command="load" file="$(find message)/message/config/MessageParams.yaml"/>
-    <remap from="outbound_binary_msg" to="comms/outbound_binary_msg"/>
-    <remap from="inbound_binary_msg" to="comms/inbound_binary_msg"/>
   </node>
 
   <!-- System Alert Publisher to publish simulated DRIVERS_READY status -->
