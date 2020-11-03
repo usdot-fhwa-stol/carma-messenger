@@ -559,7 +559,7 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{}; 
         }     
         //copy to byte array msg
-        size_t array_length=ec.encoded/8;
+        size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i = 0; i < array_length; i++) 
         {
