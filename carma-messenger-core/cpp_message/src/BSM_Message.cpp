@@ -204,9 +204,9 @@ namespace cpp_message
         free(bsm_msg);
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-        free(message);
         // Uncomment below to enable logging in human readable form
         //asn_fprint(fp, &asn_DEF_MessageFrame, message);
+        free(message);
         
         //log a warning if that fails
         if(ec.encoded == -1) {
