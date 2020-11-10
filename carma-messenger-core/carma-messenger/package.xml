@@ -25,6 +25,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>j2735_convertor</depend>
+  <depend>cpp_message</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
