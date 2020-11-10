@@ -19,10 +19,11 @@
  */
 
 #include "MobilityResponse_Message.h"
+#include "MobilityHeader_Message.h"
 
 namespace cpp_message
 {
-    cav_msgs::MobilityResponse Mobility_Response::decode_mobility_response_message(std::vector<uint8_t>& binary_array)
+    boost::optional<cav_msgs::MobilityResponse> Mobility_Response::decode_mobility_response_message(std::vector<uint8_t>& binary_array)
     {
         cav_msgs::MobilityHeader header;
         cav_msgs::MobilityResponse output;
@@ -31,164 +32,179 @@ namespace cpp_message
         MessageFrame_t* message=nullptr;
 
         //copy from vector to array         
-        auto len=binary_array.size();
+        size_t len=binary_array.size();
 
-        uint8_t buf[len];             
-        for(auto i=0;i < len;i++){
-            buf[i]=binary_array[i];
-        }   
+        uint8_t buf[len];        
+        std::copy(binary_array.begin(),binary_array.end(),buf);
         //use asn1c lib to decode
         
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
         if(rval.code==RC_OK){
             
-            std::string sender_id, recipient_id, sender_bsm_id, plan_id, timestamp_string;
+            Mobility_Header Header_constant;
+            std::string sender_id, recipient_id, sender_bsm_id, plan_id;
             uint64_t timestamp;
-            auto str_len=message->value.choice.TestMessage01.header.hostStaticId.size;
-            if(str_len<=STATIC_ID_MAX_LENGTH && str_len!=0)
+            //get sender id
+            size_t str_len=message->value.choice.TestMessage01.header.hostStaticId.size;
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
-                for(auto i=0;i<str_len;i++){
+                for(size_t i=0;i<str_len;i++){
                     sender_id +=message->value.choice.TestMessage01.header.hostStaticId.buf[i];
                 }
             }
-            else
-            {
-                sender_id=STRING_DEFAULT;
-            }
+            else sender_id=Header_constant.STRING_DEFAULT;
+
             header.sender_id=sender_id;
 
             //get recepient id
             str_len=message->value.choice.TestMessage01.header.targetStaticId.size;
-            if(str_len<=STATIC_ID_MAX_LENGTH && str_len!=0)
+            if(str_len<=Header_constant.STATIC_ID_MAX_LENGTH && str_len>=Header_constant.STATIC_ID_MIN_LENGTH)
             {
-                for(auto i=0;i<str_len;i++){
+                for(size_t i=0;i<str_len;i++){
                     recipient_id +=message->value.choice.TestMessage01.header.targetStaticId.buf[i];
                 }
             }
-            else
-            {
-                recipient_id=STRING_DEFAULT;
-            }
+            else recipient_id=Header_constant.STRING_DEFAULT;
 
             header.recipient_id=recipient_id;
             
             //get bsm id
-            str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
-            if(str_len==BSM_ID_LENGTH)
-            {
-                for(auto i=0;i<str_len;i++){
-                    sender_bsm_id +=message->value.choice.TestMessage01.header.hostBSMId.buf[i];
-                }
+            str_len=message->value.choice.TestMessage01.header.hostBSMId.size;
+            for(size_t i=0;i<str_len;i++){
+                sender_bsm_id +=message->value.choice.TestMessage01.header.hostBSMId.buf[i];
             }
-            else
-            {
-                sender_bsm_id=BSM_ID_DEFAULT;
+
+            if(str_len<Header_constant.BSM_ID_LENGTH){
+                sender_bsm_id=std::string((Header_constant.BSM_ID_DEFAULT.size()-str_len),'0').append(sender_bsm_id);
+            }
+            else if(str_len>Header_constant.BSM_ID_LENGTH){
+                ROS_WARN("BSM ID -size greater than limit, changing to default");
+                sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
             }
             
             header.sender_bsm_id=sender_bsm_id;
 
             //get plan id
             str_len=message->value.choice.TestMessage01.header.planId.size;
-            if(str_len==GUID_LENGTH)
+            if(str_len==Header_constant.GUID_LENGTH)
             {
-                for(auto i=0;i<str_len;i++){
+                for(size_t i=0;i<str_len;i++){
                     plan_id +=message->value.choice.TestMessage01.header.planId.buf[i];
                 }
             }
-            else
-            {
-                plan_id=GUID_DEFAULT;
-            }
+            else plan_id=Header_constant.GUID_DEFAULT;
+
             header.plan_id=plan_id;
             
             //recover uint64_t timestamp from string
             str_len=message->value.choice.TestMessage01.header.timestamp.size;
             timestamp=0;
-            for(auto i=0;i<str_len;i++){
+            for(size_t i=0;i<str_len;i++){
                 timestamp*=10;
                 timestamp+=int(message->value.choice.TestMessage01.header.timestamp.buf[i])-'0';
             }
-               header.timestamp=timestamp;
+            header.timestamp=timestamp;
 
             output.header=header;
 
             //get urgency from long to uint16
-            long tmp=0;
-            tmp=message->value.choice.TestMessage01.body.urgency;
-            if(tmp>INT16_MAX){
-                tmp=0;
+            long tmp=message->value.choice.TestMessage01.body.urgency;
+            if(tmp>URGENCY_MAX || tmp<URGENCY_MIN){
+                ROS_WARN_STREAM("Urgency message out of range");
+                return boost::optional<cav_msgs::MobilityResponse>{};
             }
             output.urgency=tmp;
             //get isaccepted bool
             bool isAccepted=message->value.choice.TestMessage01.body.isAccepted;
             output.is_accepted=isAccepted;
-            return output;
+            return boost::optional<cav_msgs::MobilityResponse>(output);
         }
         //else return an empty object
-        header.sender_id="";
-        header.recipient_id="";
-        header.sender_bsm_id="";
-        header.plan_id="";
-        header.timestamp=0;
-        output.header=header;
-        output.urgency=0;
-        output.is_accepted=0;
-        return output;
+        ROS_WARN_STREAM("Decoding mobility response message failed");
+        return boost::optional<cav_msgs::MobilityResponse>{};
     }
 
     boost::optional<std::vector<uint8_t>> Mobility_Response::encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage)
     {
         //encode result placeholder
-        uint8_t buffer[512];
+        uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message=(MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
         //if mem allocation fails
-        if(!message)
+        if(!message_shared)
         {
             ROS_WARN_STREAM("Cannot allocate mem for MobilityResponse message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
+            return boost::optional<std::vector<uint8_t>>{};            
         }
+        MessageFrame_t* message=message_shared.get();
         //set message type to TestMessage01
-        message->messageId=241;  //From J2735 spec file
+        message->messageId=MOBILITY_RESPONSE_TEST_ID; 
         message->value.present=MessageFrame__value_PR_TestMessage01;
 
         //convert host_id string to char array
-        auto string_size=plainMessage.header.sender_id.size();
+        Mobility_Header Header;
+        std::string sender_id=plainMessage.header.sender_id;
+        size_t string_size=sender_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable host id value, changing to default");
+            sender_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_hostId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
-            string_content_hostId[i]=plainMessage.header.sender_id[i];
+            string_content_hostId[i]=sender_id[i];
         }
         message->value.choice.TestMessage01.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage01.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        string_size=plainMessage.header.recipient_id.size();
+        std::string recipient_id=plainMessage.header.recipient_id;
+        string_size=recipient_id.size();
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+            ROS_WARN("Unacceptable recipient id value, changing to default");
+            recipient_id=Header.STRING_DEFAULT;
+            string_size=Header.STRING_DEFAULT.size();
+        }
         uint8_t string_content_targetId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
-            string_content_targetId[i]=plainMessage.header.recipient_id[i];
+            string_content_targetId[i]=recipient_id[i];
         }
         message->value.choice.TestMessage01.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage01.header.targetStaticId.size=string_size;
         
          //convert bsm_id string to char array
-        string_size=plainMessage.header.sender_bsm_id.size();
+        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+        string_size=sender_bsm_id.size();
+        if(string_size<Header.BSM_ID_DEFAULT.size()){
+            sender_bsm_id=std::string((Header.BSM_ID_DEFAULT.size()-string_size),'0').append(sender_bsm_id);
+        }
+        else if(string_size>Header.BSM_ID_DEFAULT.size()){
+            ROS_WARN("Unacceptable BSM ID, changing to default");
+            sender_bsm_id=Header.BSM_ID_DEFAULT;
+        }
+        string_size=Header.BSM_ID_DEFAULT.size();
         uint8_t string_content_BSMId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
-            string_content_BSMId[i]=plainMessage.header.sender_bsm_id[i];
+            string_content_BSMId[i]=sender_bsm_id[i];
         }
         message->value.choice.TestMessage01.header.hostBSMId.buf=string_content_BSMId;
         message->value.choice.TestMessage01.header.hostBSMId.size=string_size;
         
          //convert plan_id string to char array
-        string_size=plainMessage.header.plan_id.size();
+        std::string plan_id=plainMessage.header.plan_id;
+        string_size=plan_id.size();
+        if(string_size!=Header.GUID_LENGTH){
+            ROS_WARN("Unacceptable GUID, changing to default");
+            plan_id=Header.GUID_DEFAULT;
+            string_size=Header.GUID_LENGTH;
+        }
         uint8_t string_content_planId[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
-            string_content_planId[i]=plainMessage.header.plan_id[i];
+            string_content_planId[i]=plan_id[i];
         }
         message->value.choice.TestMessage01.header.planId.buf=string_content_planId;
         message->value.choice.TestMessage01.header.planId.size=string_size;
@@ -196,8 +212,16 @@ namespace cpp_message
         uint64_t time=plainMessage.header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
+        if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH-string_size,'0').append(timestamp);
+        }
+        else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
+            ROS_WARN("Unacceptable timestamp value, changing to default");
+            timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
+        }
+        string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_content_timestamp[string_size];
-        for(auto i=0;i<string_size;i++)
+        for(size_t i=0;i<string_size;i++)
         {
             string_content_timestamp[i]=timestamp[i];
         }
@@ -205,7 +229,9 @@ namespace cpp_message
         message->value.choice.TestMessage01.header.timestamp.size=string_size;
 
         //get urgency
-        message->value.choice.TestMessage01.body.urgency=plainMessage.urgency; 
+        uint16_t urgency=plainMessage.urgency;
+        if(urgency<URGENCY_MIN || urgency> URGENCY_MAX) urgency=URGENCY_UNKNOWN;
+        message->value.choice.TestMessage01.body.urgency=urgency; 
         //get isAccepted
         message->value.choice.TestMessage01.body.isAccepted=plainMessage.is_accepted;
         
@@ -219,11 +245,11 @@ namespace cpp_message
         }
         
         //copy to byte array msg
-        auto array_length=ec.encoded / 8;
+        size_t array_length=ec.encoded / 8;
         std::vector<uint8_t> b_array(array_length);
-        for(auto i=0;i<array_length;i++)b_array[i]=buffer[i];
+        for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
         
-        //for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }

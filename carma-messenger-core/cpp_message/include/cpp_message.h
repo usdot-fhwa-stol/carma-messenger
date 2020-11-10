@@ -27,9 +27,12 @@ extern "C"
 #include <cav_msgs/ByteArray.h>
 #include <j2735_msgs/TrafficControlRequest.h>
 #include <j2735_msgs/TrafficControlMessage.h>
-#include<cav_msgs/MobilityHeader.h>
-#include<cav_msgs/MobilityOperation.h>
-#include<cav_msgs/MobilityResponse.h>
+#include <cav_msgs/MobilityHeader.h>
+#include <cav_msgs/MobilityOperation.h>
+#include <cav_msgs/MobilityResponse.h>
+#include <cav_msgs/MobilityPath.h>
+#include <cav_msgs/MobilityRequest.h>
+#include <j2735_msgs/BSM.h>
 
 
 namespace cpp_message
@@ -38,7 +41,6 @@ namespace cpp_message
  * @class Message
  * @brief Is the class responsible for DSRC message encoding and decoding
  * 
- * It currently only supports Geofence message type.
  */
 class Message
 {
@@ -59,6 +61,13 @@ private:
     ros::Publisher mobility_response_message_pub_;     //incoming mobility response message after decoded
     ros::Subscriber mobility_operation_message_sub_; //outgoing plain mobility operation message 
     ros::Subscriber mobility_response_message_sub_; //outgoing plain mobility response message
+    ros::Publisher mobility_path_message_pub_;     //incoming mobility path message after decoded
+    ros::Subscriber mobility_path_message_sub_;    //outgoing plain mobility path message
+    ros::Publisher mobility_request_message_pub_;     //incoming mobility request message after decoded
+    ros::Subscriber mobility_request_message_sub_;    //outgoing plain mobility request message
+    ros::Publisher bsm_message_pub_;     //incoming bsm message
+    ros::Subscriber bsm_message_sub_;    //outgoing plain bsm message
+    
 
     /**
      * @brief Initialize pub/sub and params.
@@ -70,17 +79,35 @@ private:
     void outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg);
     void outbound_control_request_callback(const j2735_msgs::TrafficControlRequestConstPtr& msg);
     /**
-     * @brief function callback when there is an incoming mobility operation message. .
+     * @brief function callback when there is an outgoing mobility operation message. .
      * @param msg container with Mobility Operation ros message. Passed to an encoding function in Mobility_Operation class.
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg);  
     /**
-     * @brief function callback when there is an incoming mobility response message. .
+     * @brief function callback when there is an outgoing mobility response message. .
      * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg);
+    /**
+     * @brief function callback when there is an outgoing mobility path message. .
+     * @param msg container with Mobility path ros message. Passed to an encoding function in Mobility_Path class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_path_message_callback(const cav_msgs::MobilityPath& msg);
+    /**
+     * @brief function callback when there is an outgoing mobility request message. .
+     * @param msg container with Mobility request ros message. Passed to an encoding function in Mobility_Request class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_mobility_request_message_callback(const cav_msgs::MobilityRequest& msg);
+    /**
+     * @brief function callback when there is an outgoing bsm message.
+     * @param msg container with BSM ros message. Passed to an encoding function in BSM_Message class.
+     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+     */
+    void outbound_bsm_message_callback(const j2735_msgs::BSM& msg);
     
 public:
 

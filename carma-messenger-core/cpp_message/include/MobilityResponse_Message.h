@@ -21,26 +21,22 @@ namespace cpp_message
     class Mobility_Response
     {
             private:
-            static const int STATIC_ID_MAX_LENGTH=16;
-            std::string BSM_ID_DEFAULT="00000000";
-            const int BSM_ID_LENGTH=BSM_ID_DEFAULT.length();
-            std::string STRING_DEFAULT="[]";
-            const int TIMESTAMP_LENGTH=std::to_string(INT64_MAX).length();
-            std::string GUID_DEFAULT= "00000000-0000-0000-0000-000000000000";
-            const int GUID_LENGTH=GUID_DEFAULT.length();
+            static const int MOBILITY_RESPONSE_TEST_ID=241;
+            static const int URGENCY_MIN=0;
+            static const int URGENCY_MAX=1000;
+            static const int URGENCY_UNKNOWN=0;
 
             public:
-             //helper functions for message decode/encode
             /**
-             * \brief helper function for Mobility Response message decoding.
+             * @brief Mobility Response message decoding function.
              * @param binary_array Container with binary input.
-             * @return decoded ros message, returns null if decoding fails. 
+             * @return decoded ros message, returns ROS warning and an empty message if decoding fails. 
              */
-            cav_msgs::MobilityResponse decode_mobility_response_message(std::vector<uint8_t>& binary_array);
+            boost::optional<cav_msgs::MobilityResponse> decode_mobility_response_message(std::vector<uint8_t>& binary_array);
             /**
-             * helper functions for Mobility Response message encoding.
+             * @brief Mobility Response message encoding function.
              * @param plainMessage contains mobility response ros message to be encoded as byte array.
-             * @return encoded byte array returns null if encoding fails. 
+             * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
              */
             boost::optional<std::vector<uint8_t>> encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage);
 

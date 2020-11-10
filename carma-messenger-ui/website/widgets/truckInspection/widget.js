@@ -36,13 +36,13 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                             let key = rawElement[0].trim().toUpperCase();
                             let value=rawElement[1].trim().toUpperCase();
                             console.log(value);
-                            if(key == "VIN_NUMBER"){
+                            if(key == "VIN_NUMBER" || key == "V"){
                                 vin_number=value;
                             }
-                            if(key=="LICENSE_PLATE"){
+                            if(key=="LICENSE_PLATE" || key=="L"){
                                 license_plate=value;
                             } 
-                            if(key=="STATE_SHORT_NAME"){
+                            if(key=="STATE_SHORT_NAME" || key=="S"){
                                 state=value;
                             }               
                         });
@@ -124,7 +124,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             if(value==null || value.length==0 || value== ""){
                 value="--";
             }
-            if(key=="TIMESTAMP"){
+            if(key=="TIMESTAMP" || key=="M"){
                 let logTimetamp = new Date(parseInt(value, 10));
                 if(document.getElementById('SystemDateTimeSpanId')!=null)
                 {
@@ -135,40 +135,40 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                     document.getElementById('SystemDateTimeSpanId').style.display="";
                 }
             }
-            if(key=="VIN_NUMBER"){
+            if(key=="VIN_NUMBER" || key=="V"){
                 document.getElementById('VINTextId')!=null ? document.getElementById('VINTextId').innerHTML=value:"";
                 document.getElementById('truckImgId')!=null ? document.getElementById('truckImgId').src="../../images/truck_"+value+".jpg":"";                        
             }
-            if(key=="CARRIER_NAME"){
+            if(key=="CARRIER_NAME" || key=="N"){
                 document.getElementById('CarrierNameTextId')!=null ? document.getElementById('CarrierNameTextId').innerHTML=value:"";
             }
-            if(key=="DATE_OF_LAST_STATE_INSPECTION"){
+            if(key=="DATE_OF_LAST_STATE_INSPECTION" || key=="F" ){
                 value=value.replace(/\./g,'-');
                 document.getElementById('InspectionTextId')!=null ? document.getElementById('InspectionTextId').innerHTML=value:"";
             }
-            if(key=="DATE_OF_LAST_ADS_CALIBRATION"){
+            if(key=="DATE_OF_LAST_ADS_CALIBRATION" || key=="A"){
                 value=value.replace(/\./g,'-');
                 document.getElementById('CalibrationTextId')!=null ? document.getElementById('CalibrationTextId').innerHTML=value:"";
             }
-            if(key=="LICENSE_PLATE"){                
+            if(key=="LICENSE_PLATE" || key=="L"){                
                 license_plate=value;
             } 
-            if(key=="STATE_SHORT_NAME"){                
+            if(key=="STATE_SHORT_NAME" || key=="S"){                
                 state=value;
             }
-            if(key=="WEIGHT"){
+            if(key=="WEIGHT" || key=="W"){
                     value=value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g,'$1,'); 
                     //value=value.length>3?value[0]+","+value.substring(1,value.length):value;
                 document.getElementById('WeightTextId')!=null ? document.getElementById('WeightTextId').innerHTML=value:"";
             }
-            if(key=="CARRIER_ID"){
+            if(key=="CARRIER_ID" || key=="C"){
                 document.getElementById('CarrierTextId')!=null ? document.getElementById('CarrierTextId').innerHTML=value:"";
             }
-            if(key=="PERMIT_REQUIRED"){
+            if(key=="PERMIT_REQUIRED" || key=="P"){
                 value = (value ==0 ? "No":"Yes");
                 document.getElementById('PermitTextId')!=null ? document.getElementById('PermitTextId').innerHTML=value:"";
             }
-            if(key=="ISS_SCORE"){
+            if(key=="ISS_SCORE" || key=="I"){
                 value = parseInt(value,10);
                 let color="";
 
@@ -185,13 +185,13 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                 document.getElementById('ISSTextId')!=null ? document.getElementById('ISSTextId').innerHTML=value:"";
                 document.getElementById('ISSTextId')!=null ? document.getElementById('ISSTextId').style.color=color:"";
             }
-            if(key=="ADS_SOFTWARE_VERSION"){
+            if(key=="ADS_SOFTWARE_VERSION" || key=="O"){
                 document.getElementById('ADSSoftwareVersionTextId')!=null ? document.getElementById('ADSSoftwareVersionTextId').innerHTML=value:"";
             }
-            if(key=="PRE_TRIP_ADS_HEALTH_CHECK" && value.toLowerCase().trim() == "green" && document.getElementById('PreADSHealthCheckTextId')!=null){
+            if((key=="PRE_TRIP_ADS_HEALTH_CHECK" || key=="R")&& value.toLowerCase().trim() == "green" && document.getElementById('PreADSHealthCheckTextId')!=null){
                 document.getElementById('PreADSHealthCheckTextId').classList.replace("RedBkColor","GreenBkColor");
             }              
-            if(key=="ADS_AUTO_STATUS"  && document.getElementById('ADSAutoStatusTextIdImg') != null){
+            if((key=="ADS_AUTO_STATUS" ||key=="U") && document.getElementById('ADSAutoStatusTextIdImg') != null){
                 console.log("ADS_AUTO_STATUS: "+value);
                 if(value.toUpperCase() == "ENGAGED" || value == "engaged"){
                     document.getElementById('ADSAutoStatusTextIdImg')!=null ? document.getElementById('ADSAutoStatusTextIdImg').src="../../images/ads_auto_status_wheel_green.png":"";
@@ -200,7 +200,7 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
                     document.getElementById('ADSAutoStatusTextIdImg')!=null ? document.getElementById('ADSAutoStatusTextIdImg').src="../../images/ads_auto_status_wheel_grey.png":"";
                 }                
             }
-            if(key=="ADS_HEALTH_STATUS" && document.getElementById('ADSHealthStatusTextId') != null){
+            if((key=="ADS_HEALTH_STATUS" || key=="H") && document.getElementById('ADSHealthStatusTextId') != null){
                 console.log("ADS_HEALTH: "+value);
                 //remove all "ADS Health Status" color css
                 $("#ADSHealthStatusTextId").removeClass("BlackBkColor RedBkColor GreenBkColor OrangeBkColor GreyBkColor GreenBkColor");
