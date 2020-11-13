@@ -1,0 +1,11 @@
+# Closed lane detailes in string
+closed_lane: '[1]'
+
+# Down track distance in meters
+down_track: 50.0
+
+# Uptrack distance in meters
+up_track: 50.0
+
+# Sender id in string
+sender_id: 'USDOT-49096'
