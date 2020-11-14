@@ -21,7 +21,6 @@
 #include <carma_utils/CARMAUtils.h>
 #include <functional>
 #include <string>
-
 #include "traffic_incident_worker.h"
 
 namespace traffic{
@@ -49,7 +48,7 @@ class TrafficIncidentNode
   */
    void initialize();
 
-   //ROS Params
+  //ROS Params
   std::string sender_id_; 
   std::string closed_lane_;
   double down_track_;
@@ -57,18 +56,18 @@ class TrafficIncidentNode
 
  public:
   
-   /*! \fn TrafficIncidentNode()
+  /*! \fn TrafficIncidentNode()
     \brief TrafficIncidentNode constructor 
-   */
+  */
   TrafficIncidentNode();
 
-     /*! \fn publishTrafficIncidentMobilityOperation()
+  /*! \fn publishTrafficIncidentMobilityOperation()
     \brief Publish mobility operation message
-   */
+  */
   void publishTrafficIncidentMobilityOperation(const cav_msgs::MobilityOperation& traffic_msg);
 
   /*!fn run()
-  \brief General starting point to run this node
+    \brief General starting point to run this node
   */
   void run();
   

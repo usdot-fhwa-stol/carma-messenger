@@ -37,19 +37,18 @@ class TrafficIncidentWorker
   /*!
    * \brief Constructor
    */
-
   TrafficIncidentWorker(PublishTrafficCallback traffic_pub);
     
-    /*! \fn pinpointDriverCallback(const gps_common::GPSFix &pinpoint_msg)
+  /*! \fn pinpointDriverCallback(const gps_common::GPSFix &pinpoint_msg)
     \brief pinpointDriverCallback populates lat lon heading from pinpoint driver.
     \param  gps_common::GPSFix.
-    */
+  */
 
   void pinpointDriverCallback(const gps_common::GPSFix &pinpoint_msg);
 
   /*! \fn anytypeToString(T value)
-  \brief anytypeToString converts anytype to string value
-  \param  value which gets converted.
+    \brief anytypeToString converts anytype to string value
+    \param  value which gets converted.
   */
   template<class T>
   std::string anytypeToString(T value);
@@ -60,18 +59,24 @@ class TrafficIncidentWorker
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
 
+  // Generate mobility message
+  cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
+
+
+  
+
  private:
 
   // local copy of external object publihsers
 
   PublishTrafficCallback traffic_pub_;
-
-  // Prediction parameters
+ 
+ // Prediction parameters
   std::string sender_id_ = "USDOT-49096";
   std::string closed_lane_= "[1]";
   double down_track_= 50.0;
   double up_track_= 50.0;
-  
+
 };
 
 }//traffic

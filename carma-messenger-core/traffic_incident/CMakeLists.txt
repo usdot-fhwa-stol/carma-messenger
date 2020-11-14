@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(traffic_incident)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+## Compile as C++14, supported in ROS Kinetic and newer
+add_compile_options(-std=c++14)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -85,4 +85,4 @@ catkin_add_gmock(${PROJECT_NAME}-test
   test/test_traffic.cpp
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test # Add test directory as working directory for unit tests
 )
-target_link_libraries(${PROJECT_NAME}-test traffic_incident ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}-test traffic_incident_worker_lib ${catkin_LIBRARIES})

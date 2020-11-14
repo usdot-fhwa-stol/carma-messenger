@@ -19,11 +19,8 @@
   namespace traffic{
 
   using std::placeholders::_1;
- // using std::placeholders::_3;
 
   TrafficIncidentNode::TrafficIncidentNode(): pnh_("~"), traffic_worker_(std::bind(&TrafficIncidentNode::publishTrafficIncidentMobilityOperation, this, _1)){}
-
- // TrafficIncidentNode::TrafficIncidentNode(): pnh_("~"), traffic_worker_(std::bind(&TrafficIncidentNode::publishTrafficIncidentMobilityOperation, this, _1,_2,_3)){}
 
   void TrafficIncidentNode::initialize()
   {
@@ -46,7 +43,7 @@
 
   void TrafficIncidentNode::publishTrafficIncidentMobilityOperation(const cav_msgs::MobilityOperation& traffic_msg)
   {
-  traffic_mobility_operation_pub_.publish(traffic_msg);
+  	traffic_mobility_operation_pub_.publish(traffic_msg);
   }
 
   void TrafficIncidentNode::run()
