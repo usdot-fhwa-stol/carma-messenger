@@ -42,7 +42,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(traffic_incident_node src/main.cpp src/traffic_incident_node.cpp src/traffic_incident_worker.cpp)
+add_executable(traffic_incident_node src/main.cpp src/traffic_incident_node.cpp)
 
 add_library(traffic_incident_worker_lib src/traffic_incident_worker.cpp)
 add_dependencies(traffic_incident_worker_lib ${catkin_EXPORTED_TARGETS})
@@ -64,8 +64,6 @@ install(TARGETS traffic_incident_node
 ## Mark cpp header files for installation
 install(DIRECTORY include/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN ".svn" EXCLUDE
 )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
