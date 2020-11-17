@@ -51,7 +51,12 @@ class TrafficIncidentWorker
     \param  value which gets converted.
   */
   template<class T>
-  std::string anytypeToString(T value);
+  std::string anytypeToString(T value)
+  {
+    std::stringstream ss;
+    ss<<value;
+    return ss.str();
+  }
 
   // Setters for the prediction parameters
   void setSenderId(std::string sender_id);

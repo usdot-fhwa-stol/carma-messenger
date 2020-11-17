@@ -41,15 +41,7 @@ namespace traffic
   
     return traffic_mobility_msg;
   }
-
-  template<class T>
-  std::string TrafficIncidentWorker::anytypeToString(T value)
-  {
-    std::stringstream ss;
-    ss<<value;
-    return ss.str();
-  }
-
+  
   void TrafficIncidentWorker::setSenderId(std::string sender_id)
   {
     sender_id_= sender_id;
