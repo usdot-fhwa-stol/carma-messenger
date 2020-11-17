@@ -40,7 +40,7 @@ include_directories(
 add_library(testlib SHARED IMPORTED)
 
 ## Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
-set(ASN1C_INSTALL_PATH "/opt/carma/install")
+set(ASN1C_INSTALL_PATH "/opt/carma/install/asn1c")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)

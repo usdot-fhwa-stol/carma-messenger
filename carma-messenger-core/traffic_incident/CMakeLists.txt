@@ -55,7 +55,7 @@ target_link_libraries(traffic_incident_node traffic_incident_worker_lib ${catkin
 #############
 
 ## Mark executables for installation
-install(TARGETS traffic_incident_node
+install(TARGETS traffic_incident_node traffic_incident_worker_lib
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
