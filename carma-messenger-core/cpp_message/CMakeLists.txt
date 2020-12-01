@@ -11,7 +11,6 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
 	cav_msgs
-	cav_srvs
 	j2735_msgs
 	bondcpp
 	roscpp

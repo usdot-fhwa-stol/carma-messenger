@@ -29,7 +29,6 @@ find_package(catkin REQUIRED
 	rosjava_build_tools
         rosjava_messages #genjava was here
         cav_msgs
-        cav_srvs
         j2735_msgs
         rosjava_utils
 )
