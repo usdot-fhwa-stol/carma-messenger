@@ -9,7 +9,6 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 ## Find catkin macros and libraries
 set(DEPS
   cav_msgs
-  cav_srvs
   j2735_msgs
   roscpp
   carma_utils

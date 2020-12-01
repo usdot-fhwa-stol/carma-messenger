@@ -29,7 +29,6 @@ find_package(catkin REQUIRED
 	rosjava_build_tools
         rosjava_messages
         cav_msgs
-        cav_srvs
         j2735_msgs
 )
 
@@ -44,7 +43,7 @@ catkin_rosjava_setup(install publish)
 add_dependencies(gradle-${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 catkin_package(
-  CATKIN_DEPENDS rosjava_build_tools rosjava_messages cav_msgs cav_srvs j2735_msgs
+  CATKIN_DEPENDS rosjava_build_tools rosjava_messages cav_msgs j2735_msgs
 )
 
 ##############################################################################
