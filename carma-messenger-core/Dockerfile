@@ -19,8 +19,11 @@ COPY --chown=carma . /home/carma/src/
 RUN ~/src/docker/checkout.bash
 
 RUN cd ~/ && \
-    wget https://services.gradle.org/distributions/gradle-4.10.2-all.zip && \
-    sudo chmod 777 ~/gradle-4.10.2-all.zip
+    wget https://services.gradle.org/distributions/gradle-4.10.2-bin.zip && \
+    sudo chmod 777 ~/gradle-4.10.2-bin.zip && \
+    mkdir -p /home/carma/.gradle/wrapper/dists/gradle-4.10.2-bin/cghg6c4gf4vkiutgsab8yrnwv/ && \
+    mv ~/gradle-4.10.2-bin.zip /home/carma/.gradle/wrapper/dists/gradle-4.10.2-bin/cghg6c4gf4vkiutgsab8yrnwv/gradle-4.10.2-bin.zip
+
 
 RUN ~/src/docker/install.sh
 FROM usdotfhwastol/carma-base:3.7.0
