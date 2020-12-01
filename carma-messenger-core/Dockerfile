@@ -24,6 +24,12 @@ RUN cd ~/ && \
     mkdir -p /home/carma/.gradle/wrapper/dists/gradle-4.10.2-bin/cghg6c4gf4vkiutgsab8yrnwv/ && \
     mv ~/gradle-4.10.2-bin.zip /home/carma/.gradle/wrapper/dists/gradle-4.10.2-bin/cghg6c4gf4vkiutgsab8yrnwv/gradle-4.10.2-bin.zip
 
+RUN cd ~/ && \
+    wget https://services.gradle.org/distributions/gradle-2.14.1-bin.zip && \
+    sudo chmod 777 ~/gradle-2.14.1-bin.zip && \
+    mkdir -p /home/carma/.gradle/wrapper/dists/gradle-2.14.1-bin/ && \
+    mv ~/gradle-2.14.1-bin.zip /home/carma/.gradle/wrapper/dists/gradle-2.14.1-bin/gradle-2.14.1-bin.zip
+
 
 RUN ~/src/docker/install.sh
 FROM usdotfhwastol/carma-base:3.7.0
