@@ -17,6 +17,11 @@ FROM usdotfhwastol/carma-base:3.7.0 as setup
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
 RUN ~/src/docker/checkout.bash
+
+RUN cd ~/ && \
+    wget https://services.gradle.org/distributions/gradle-4.10.2-all.zip && \
+    sudo chmod 777 ~/gradle-4.10.2-all.zip
+
 RUN ~/src/docker/install.sh
 FROM usdotfhwastol/carma-base:3.7.0
 
