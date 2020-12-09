@@ -322,10 +322,10 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
     var IsValidVINNumber = function(vin_number)
     {
         let isValid = false;
+        console.log("Check VIN: " + vin_number);
         let valid_truck_vin_numbers = CarmaJS.Config.getValidTruckVINNumber();
         valid_truck_vin_numbers.forEach((valid_vin)=>{
             console.log("Valid VIN: " + valid_vin);
-            console.log("Check VIN: " + vin_number);
             if(valid_vin.trim() == vin_number.trim()){
                 console.log("Found a valid VIN");
                 isValid = true;
