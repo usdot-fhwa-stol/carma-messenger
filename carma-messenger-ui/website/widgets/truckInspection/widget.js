@@ -137,7 +137,12 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             }
             if(key=="VIN_NUMBER" || key=="V"){
                 document.getElementById('VINTextId')!=null ? document.getElementById('VINTextId').innerHTML=value:"";
-                document.getElementById('truckImgId')!=null ? document.getElementById('truckImgId').src="../../images/truck_"+value+".jpg":"";                        
+                console.log(IsValidVINNumber(value));
+                //Check whether the received VIN number is valid before display images
+                if(IsValidVINNumber(value))
+                    document.getElementById('truckImgId')!=null ? document.getElementById('truckImgId').src="../../images/truck_"+value+".jpg":""; 
+                else
+                    document.getElementById('truckImgId')!=null ? document.getElementById('truckImgId').src="../../images/truck_unavailable.jpg":"";                          
             }
             if(key=="CARRIER_NAME" || key=="N"){
                 document.getElementById('CarrierNameTextId')!=null ? document.getElementById('CarrierNameTextId').innerHTML=value:"";
@@ -312,6 +317,22 @@ CarmaJS.WidgetFramework.truckInspection = (function () {
             $(container).append(SystemDateTimeSpan);
 
             console.log("truckInspectionSafetyLogPerVIN element is created");
+    }
+
+    var IsValidVINNumber = function(vin_number)
+    {
+        let isValid = false;
+        let valid_truck_vin_numbers = CarmaJS.Config.getValidTruckVINNumber();
+        valid_truck_vin_numbers.forEach((valid_vin)=>{
+            console.log("Valid VIN: " + valid_vin);
+            console.log("Check VIN: " + vin_number);
+            if(valid_vin.trim() == vin_number.trim()){
+                console.log("Found a valid VIN");
+                isValid = true;
+            }
+               
+        });
+        return isValid;
     }
     /***
        * Custom widgets using JQuery Widget Framework.

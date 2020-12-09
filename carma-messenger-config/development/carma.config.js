@@ -45,6 +45,7 @@ CarmaJS.Config = (function () {
         var refresh_interval = 30; //30 seconds 
         var ros_connect_wait = 10000; //miliseconds to wait for platform to launch and ros to connect.
         var ros_connect_retry = 3; //# of times to wait
+        var valid_truck_vin_numbers = ["1FUJGBDV8CLBP8898","1FUJGHDV0CLBP8834","1FUJGHDV0CLBP8896","1FUJGHDV9CLBP8833"];
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {
@@ -59,11 +60,15 @@ CarmaJS.Config = (function () {
         var getRosConnectionRetry = function() {
             return ros_connect_retry;
         };
+        var getValidTruckVINNumber = function() {
+            return valid_truck_vin_numbers;
+        }
         //Public API
         return {
             getIP: getIP,
             getRefreshInterval: getRefreshInterval,
             getRosConnectionWaitTime:getRosConnectionWaitTime,
-            getRosConnectionRetry:getRosConnectionRetry
+            getRosConnectionRetry:getRosConnectionRetry,
+            getValidTruckVINNumber: getValidTruckVINNumber
         };
 })();
