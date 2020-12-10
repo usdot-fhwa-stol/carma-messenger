@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CARMA Messenger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+    <!--START: Thirdparty-->
+    <link rel="stylesheet" type="text/css" href="thirdparty/fontawesome-free-5.13.0-web/css/all.css" />
+    <link rel="stylesheet" type="text/css" href="thirdparty/bootstrap-4.4.1-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="thirdparty/bootstrap-switch-button-1.1.0/css/bootstrap-switch-button.min.css">
+    <script src="thirdparty/jquery/jquery-1.12.4.min.js"></script>
+    <script src="thirdparty/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxloader.js"></script>
+    <script type="text/javascript" src="thirdparty/jqwidgets/jqxbuttons.js"></script>
+    <script src="thirdparty/bootstrap-4.4.1-dist/js/bootstrap.min.js"></script> 
+    <script src="thirdparty/bootstrap-switch-button-1.1.0/dist/bootstrap-switch-button.min.js"></script>
+    <script src="thirdparty/ros/eventemitter2.min.js"></script>
+    <script src="thirdparty/ros/roslib.min.js"></script>
+
+    <!--START: custom css-->
+    <link rel="stylesheet" type="text/css" href="styles/index.css" />
+    <link rel="stylesheet" href="thirdparty/jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link rel="stylesheet" href="thirdparty/jquery-ui-1.12.1/jquery-ui.css" type="text/css" />
+    <!--END: custom css-->
+
+    <!--START: CUSTOM scripts-->
+    <script src="scripts/carma.config.js"></script>
+    <script src="scripts/index.js"></script>
+     <!--END: CUSTOM scripts-->
+
+</head>
+
+<body>
+    <noscript>
+        <h2 style="color: #ff0000">
+            Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable Javascript and reload this page!
+        </h2>
+    </noscript>
+
+   <div id="messenger-index-div">
+        <!--Messenger Title Div--> 
+        <div class="MessengerTitleFrame">
+            <div class="MessengerTitleRec">     
+            <div class="messenger-logo-div">
+                <img class="logo" src="images/C_Messenger@2x.png" />
+            </div>
+            </div>
+        </div>
+        <div id="messenger-index-content">   
+            <!--Messenger Launching Div--> 
+            <div id="messenger-index-start-div">  
+
+                <!-- Messenger Banner -->
+                <div class="alert alert-success alert-custom-splash" role="alertdialog">
+                    CARMA Messenger is a standalone research platform which is aimed to deploy on non-automated entities who participate in the transportation system, including first responders, transit vehicles, law enforcement vehicles, and pedestrians. 
+                    It helps other vehicles or travelers communicate with CARMA Platform vehicles, sharing information and performing cooperative operations to improve transportation efficiency and safety. 
+                    To access this system, click "Start Messenger" button:
+                </div>
+
+                <!--Form: Launching Messenger-->
+                <form id="start-messenger-form" >
+                    <!-- Start Messenger Button-->     
+                    <div class="form-group" >
+                        <input id="btnStart" type="submit" title="Click to start CARMA Messenger" value=" Start Messenger"/>   
+                       <div style="width: fit-content;margin: 10px auto;">
+                        <div id="messenger-connection-fail-alert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;" >
+                            <strong>Sorry, unable to connect to ROS. Please try again.</strong>
+                        </div>    
+                       </div>
+                                  
+                    </div>
+                
+                    <!--  Messenger Options Description/Help Info Modal -->
+                    <div class="modal fade" id="MessengerOptionsModal" tabindex="-1" role="dialog" aria-labelledby="MessengerOptionsModalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLongTitle"  style="text-align: left;">
+                                    <strong>Messenger Options</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="text-align: left;"> 
+                                <p>"Launch Platform" provides the option to launch the messenger backend services when clicking the "Start Messenger" button.</p>    
+                                <p>"Record ROSbag" option enables or disables logging when the platform backend services are running.</p>                                                             
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>   
+
+                    <!-- Messenger Options Card -->        
+                    <div class="card" id="messenger-option-card" >
+                        <div class="card-header" style="text-align: left;padding-bottom: 0px;">
+                            Messenger Options 
+                            <span style="float: right; color: limegreen; font-size: 160%; margin:0px" id="messenger-option-description" title="Click me for more information" data-toggle="modal" data-target="#MessengerOptionsModal">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        <div class="card-body" style="text-align: left;">
+                            <div style="margin: 5px auto;">
+                                <input type="checkbox" data-toggle="switchbutton" data-onstyle="success" data-size="lg" 
+                                    onchange="document.getElementById('rosBagEnabler').disabled = !this.checked;" 
+                                    id="cbLaunchplatform" name="launchplatform" checked="checked" />
+                                <label for="cbLaunchplatform"  class="card-text">Launch Platform</label>
+                            </div>     
+                            <div style="margin: 5px auto;">
+                                <input type="checkbox"   data-toggle="switchbutton" data-onstyle="success" data-size="lg" id="rosBagEnabler" name="rosbagrecorder"   />
+                                <label for="rosBagEnabler" class="card-text">Record ROSbag </label>
+                            </div >     
+                        </div>                       
+                    </div>               
+                    <div id="jqxLoader"></div><!--Loading-->
+                </form> 
+        </div><!--END: messenger-index-start-div-->
+    </div><!--END: messenger-index-content-->
+    
+     <!-- Messenger Root  -->  
+    <div class="footerPanel">
+        <div class="SystemDateTime " >
+            <img src="images/FHWALogo_2.png" class="FHWALogo"/>
+        </div>
+        <div class="systemversion" ></div>
+        <div class="copyright">Copyright &copy LEIDOS  <script>document.write( new Date().getFullYear() );</script> </div>
+    </div>
+
+   </div><!--END: messenger-index-div-->
+</body>
+</html>

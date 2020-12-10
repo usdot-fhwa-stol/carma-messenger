@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>j2735_convertor</name>
+  <version>3.3.0</version>
+  <description>The j2735_convertor package</description>
+  <maintainer email="carma@todo.todo">carma</maintainer>
+  <license>BSD</license>
+  <author email="carma@todo.todo">carma</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>cav_msgs</depend>
+  <depend>j2735_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>carma_utils</depend>
+  
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>
