@@ -39,4 +39,6 @@ LABEL org.label-schema.build-date=${BUILD_DATE}
 COPY --from=setup /home/carma/install /opt/carma/install
 RUN sudo chmod -R +x /opt/carma/install
 
+RUN pip install future
+
 CMD  [ "wait-for-it.sh", "localhost:11311", "--", "roslaunch", "carma-messenger", "carma-messenger.launch"]
