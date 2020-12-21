@@ -6,7 +6,7 @@ if [[ "$SOURCE_BRANCH" = "develop" ]]; then
         carma-messenger-core/Dockerfile
 elif [[ "$SOURCE_BRANCH" =~ ^release/.*$ ]]; then
     # swap checkout branch in checkout.bash to release branch
-    sed -i "s|usdotfhwastol|usdotfhwastolcandidate|g; s|usdotfhwastoldev|usdotfhwastolcandidate|g; s|:[0-9]*\.[0-9]*\.[0-9]*|:candidate|g; s|CARMA[a-zA-Z]*_[0-9]*\.[0-9]*\.[0-9]*|candidate|g; s|carma-[a-zA-Z]*-[0-9]*\.[0-9]*\.[0-9]*|candidate|g; s|develop|candidate|g" \
+    sed -i "s|usdotfhwastoldev|usdotfhwastolcandidate|g; s|usdotfhwastol|usdotfhwastolcandidate|g; s|:[0-9]*\.[0-9]*\.[0-9]*|:candidate|g; s|CARMA[a-zA-Z]*_[0-9]*\.[0-9]*\.[0-9]*|candidate|g; s|carma-[a-zA-Z]*-[0-9]*\.[0-9]*\.[0-9]*|candidate|g; s|develop|candidate|g" \
         carma-messenger-core/Dockerfile
     sed -i "s|CARMA[a-zA-Z]*_[0-9]*\.[0-9]*\.[0-9]*|$SOURCE_BRANCH|g; s|carma-[a-zA-Z]*-[0-9]*\.[0-9]*\.[0-9]*|$SOURCE_BRANCH|g" \
         carma-messenger-core/docker/checkout.bash
