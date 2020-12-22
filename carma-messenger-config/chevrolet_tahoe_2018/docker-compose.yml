@@ -17,39 +17,39 @@ version: '2'
 
 services:
   roscore:
-    image: usdotfhwastol/carma-base:CARMASystem_3.3.0
+    image: usdotfhwastoldev/carma-base:develop
     network_mode: host
     container_name: roscore
     volumes_from:
       - container:carma-config:ro
     environment:
-      - ROS_IP=192.168.0.100
+      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/.ros:/opt/carma/.ros
     restart: always
     command: roscore
 
   messenger:
-    image: usdotfhwastol/carma-messenger-core:1.0.0
+    image: usdotfhwastoldev/carma-messenger-core:develop
     network_mode: host
     container_name: carma-messenger-core
     volumes_from:
       - container:carma-config:ro
     environment:
-      - ROS_IP=192.168.0.100
+      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
   cohda_dsrc_driver:
-    image: usdotfhwastol/carma-cohda-dsrc-driver:CARMASystem_3.3.0
+    image: usdotfhwastoldev/carma-cohda-dsrc-driver:develop
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
       - container:carma-config:ro
     environment:
-      - ROS_IP=192.168.0.100
+      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros

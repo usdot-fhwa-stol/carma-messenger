@@ -12,13 +12,16 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-FROM usdotfhwastol/carma-base:3.7.0 as setup
+FROM usdotfhwastoldev/carma-base:develop as setup
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
 RUN ~/src/docker/checkout.bash
+
+
 RUN ~/src/docker/install.sh
-FROM usdotfhwastol/carma-base:3.7.0
+
+FROM usdotfhwastoldev/carma-base:develop
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
@@ -36,5 +39,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE}
 
 COPY --from=setup /home/carma/install /opt/carma/install
 RUN sudo chmod -R +x /opt/carma/install
+
+RUN pip install future
 
 CMD  [ "wait-for-it.sh", "localhost:11311", "--", "roslaunch", "carma-messenger", "carma-messenger.launch"]
