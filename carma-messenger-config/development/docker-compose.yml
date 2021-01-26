@@ -17,7 +17,7 @@ version: '2'
 
 services:
   roscore:
-    image: usdotfhwastoldev/carma-base:develop
+    image: usdotfhwastolcandidate/carma-base:vanden-plas
     network_mode: host
     container_name: roscore
     volumes_from:
@@ -28,7 +28,7 @@ services:
     command: roscore
 
   messenger:
-    image: usdotfhwastoldev/carma-messenger-core:develop
+    image: usdotfhwastolcandidate/carma-messenger-core:vanden-plas
     network_mode: host
     container_name: carma-messenger-core
     volumes_from:
@@ -39,7 +39,7 @@ services:
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
   cohda_dsrc_driver:
-    image: usdotfhwastoldev/carma-cohda-dsrc-driver:develop
+    image: usdotfhwastolcandidate/carma-cohda-dsrc-driver:vanden-plas
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
