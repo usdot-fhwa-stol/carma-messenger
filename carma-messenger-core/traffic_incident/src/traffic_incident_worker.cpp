@@ -37,7 +37,7 @@ namespace traffic
 
     traffic_mobility_msg.strategy="carma3/Incident_Use_Case";
 
-    traffic_mobility_msg.strategy_params="lat:"+anytypeToString(pinpoint_msg.latitude)+","+"lon:"+anytypeToString(pinpoint_msg.longitude)+"," +","+"downtrack:"+anytypeToString(down_track_)+","+"uptrack:"+anytypeToString(up_track_) +"," +"min_gap:"+ anytypeToString(min_gap_);
+    traffic_mobility_msg.strategy_params="lat:"+anytypeToString(pinpoint_msg.latitude)+","+"lon:"+anytypeToString(pinpoint_msg.longitude) +","+"downtrack:"+anytypeToString(down_track_)+","+"uptrack:"+anytypeToString(up_track_) +"," +"min_gap:"+ anytypeToString(min_gap_);
   
     return traffic_mobility_msg;
   }

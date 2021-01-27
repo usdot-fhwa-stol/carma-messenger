@@ -35,15 +35,17 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
     std::string closed_lane="[1]";
     double down_track=50.1;
     double up_track=50.1;
+    double min_gap=4.1;
     
     traffic_worker.setSenderId(sender_id);
-    traffic_worker.setClosedLane(closed_lane);
     traffic_worker.setDownTrack(down_track);
     traffic_worker.setUpTrack(up_track);
+    traffic_worker.setMinGap(min_gap);
+
 
     cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
  
-    EXPECT_EQ(traffic_msg.strategy_params,"lat:57.1,lon:155.79,closed_lanes:[1],downtrack:50.1,uptrack:50.1");
+    EXPECT_EQ(traffic_msg.strategy_params,"lat:57.1,lon:155.79,downtrack:50.1,uptrack:50.1,min_gap:4.1");
   
   }
 
@@ -62,9 +64,10 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
     std::string closed_lane="[1]";
     double down_track=50.1;
     double up_track=50.1;
+    double min_gap=4.1;
     
     traffic_worker.setSenderId(sender_id);
-    traffic_worker.setClosedLane(closed_lane);
+    traffic_worker.setMinGap(min_gap);
     traffic_worker.setDownTrack(down_track);
     traffic_worker.setUpTrack(up_track);
 
@@ -89,9 +92,10 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
     std::string closed_lane="[1]";
     double down_track=50.1;
     double up_track=50.1;
-    
+    double min_gap=4.1;
+
     traffic_worker.setSenderId(sender_id);
-    traffic_worker.setClosedLane(closed_lane);
+    traffic_worker.setMinGap(min_gap);
     traffic_worker.setDownTrack(down_track);
     traffic_worker.setUpTrack(up_track);
 
