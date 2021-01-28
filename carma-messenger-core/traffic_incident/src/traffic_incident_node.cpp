@@ -25,15 +25,15 @@
   void TrafficIncidentNode::initialize()
   {
 
-	pnh_.getParam("sender_id", sender_id_);
-  	pnh_.getParam("closed_lane", closed_lane_);
+	  pnh_.getParam("sender_id", sender_id_);
     pnh_.getParam("down_track", down_track_);
-    pnh_.getParam("up_track", up_track_); 
+    pnh_.getParam("up_track", up_track_);
+    pnh_.getParam("min_gap", min_gap_); 
 
     traffic_worker_.setSenderId(sender_id_);
-    traffic_worker_.setClosedLane(closed_lane_);
     traffic_worker_.setDownTrack(down_track_);
     traffic_worker_.setUpTrack(up_track_);
+    traffic_worker_.setMinGap(min_gap_);
 
 
     // Setup pub/sub

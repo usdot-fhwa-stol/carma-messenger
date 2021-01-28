@@ -60,9 +60,9 @@ class TrafficIncidentWorker
 
   // Setters for the prediction parameters
   void setSenderId(std::string sender_id);
-  void setClosedLane(std::string closed_lane);
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
+  void setMinGap(double min_gap);
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
@@ -81,6 +81,7 @@ class TrafficIncidentWorker
   std::string closed_lane_= "[1]";
   double down_track_= 50.0;
   double up_track_= 50.0;
+  double min_gap_= 4.0;
 
 };
 
