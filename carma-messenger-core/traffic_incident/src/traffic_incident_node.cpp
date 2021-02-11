@@ -67,44 +67,38 @@
         
           while (ros::ok())
           {
-            //construct local mobilityOperation msg
-            cav_msgs::MobilityOperation traffic_mobility_msg;
-            traffic_mobility_msg.header.timestamp = traffic_worker_.getPinPoint().header.stamp.sec*1000;
-            traffic_mobility_msg.header.sender_id = traffic_worker_.getSenderId();
-            traffic_mobility_msg.strategy = "carma3/Incident_Use_Case";
+              //construct local mobilityOperation msg
+              cav_msgs::MobilityOperation traffic_mobility_msg;
+              traffic_mobility_msg.header.timestamp = traffic_worker_.getPinPoint().header.stamp.sec*1000;
+              traffic_mobility_msg.header.sender_id = traffic_worker_.getSenderId();
+              traffic_mobility_msg.strategy = traffic_worker_.USE_CASE_NAME_;
 
-            if(traffic_worker_.getDownTrack()>0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0) 
-            {
-                
-                traffic_mobility_msg.strategy_params = "lat:" + traffic_worker_.anytypeToString(traffic_worker_.getPinPoint().latitude) + ","
-                                                      +"lon:" + traffic_worker_.anytypeToString(traffic_worker_.getPinPoint().longitude) + ","
-                                                      +"downtrack:" + traffic_worker_.anytypeToString(traffic_worker_.getDownTrack())+ ","
-                                                      +"uptrack:" + traffic_worker_.anytypeToString(traffic_worker_.getUpTrack()) + ","
-                                                      +"min_gap:"+ traffic_worker_.anytypeToString(traffic_worker_.getMinGap()) +","
-                                                      +"advisory_speed:"+ traffic_worker_.anytypeToString(traffic_worker_.getAdvisorySpeed());
-               //start constantly broadcasting mobilityOperation msg
-              traffic_mobility_operation_pub_.publish(traffic_mobility_msg);
+              if(traffic_worker_.getDownTrack()>0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0) 
+              {
+                  
+                  traffic_mobility_msg.strategy_params = "lat:" + traffic_worker_.anytypeToString(traffic_worker_.getPinPoint().latitude) + ","
+                                                        +"lon:" + traffic_worker_.anytypeToString(traffic_worker_.getPinPoint().longitude) + ","
+                                                        +"downtrack:" + traffic_worker_.anytypeToString(traffic_worker_.getDownTrack())+ ","
+                                                        +"uptrack:" + traffic_worker_.anytypeToString(traffic_worker_.getUpTrack()) + ","
+                                                        +"min_gap:"+ traffic_worker_.anytypeToString(traffic_worker_.getMinGap()) +","
+                                                        +"advisory_speed:"+ traffic_worker_.anytypeToString(traffic_worker_.getAdvisorySpeed());
+                //start constantly broadcasting mobilityOperation msg
+                traffic_mobility_operation_pub_.publish(traffic_mobility_msg);
+
+                //return service response true 
+                resp.success=true;
+              }
+
               ros::spinOnce();
-              // ros::Duration(1).sleep();
-            }
-            else
-            {
-              //stop broadcasting mobilityOperation msg
-              ros::spinOnce();
-              // ros::Duration(1).sleep();
-            }
-
-            //return service response true 
-            resp.success=true;
-
+              ros::Duration(1).sleep();
           }
           return true;
 
-    }catch(...){
-          //in case any exception
-          resp.success = false;
-          return false;
-    }    
+        }catch(...){
+              //in case any exception
+              resp.success = false;
+              return false;
+        }    
   }
 
  /*****

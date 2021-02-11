@@ -36,7 +36,7 @@ namespace traffic
     traffic_mobility_msg.header.timestamp=pinpoint_msg.header.stamp.sec*1000;
     traffic_mobility_msg.header.sender_id=sender_id_;
 
-    traffic_mobility_msg.strategy="carma3/Incident_Use_Case";
+    traffic_mobility_msg.strategy=USE_CASE_NAME_;
 
     traffic_mobility_msg.strategy_params="lat:"+anytypeToString(pinpoint_msg.latitude)+","+"lon:"+anytypeToString(pinpoint_msg.longitude) +","+"downtrack:"+anytypeToString(down_track_)+","+"uptrack:"+anytypeToString(up_track_) +"," +"min_gap:"+ anytypeToString(min_gap_);
   
@@ -74,26 +74,33 @@ namespace traffic
       this->advisory_speed_ = advisory_speed;
   }
 
-  std::string  TrafficIncidentWorker::getSenderId(){
-    return this->sender_id_;
+  std::string TrafficIncidentWorker::getSenderId()
+  {
+      return this->sender_id_;
   }
   
-  double TrafficIncidentWorker::getDownTrack(){
+  double TrafficIncidentWorker::getDownTrack()
+  {
       return this->down_track_;
   }
 
-  double TrafficIncidentWorker::getUpTrack(){
+  double TrafficIncidentWorker::getUpTrack()
+  {
     return this->up_track_;
   }
-  double TrafficIncidentWorker::getMinGap(){
+
+  double TrafficIncidentWorker::getMinGap()
+  {
       return  this->min_gap_;
   }
 
-  gps_common::GPSFix  TrafficIncidentWorker::getPinPoint(){
+  gps_common::GPSFix  TrafficIncidentWorker::getPinPoint()
+  {
     return this->pinpoint_msg_;
   }
 
-  double TrafficIncidentWorker::getAdvisorySpeed(){
+  double TrafficIncidentWorker::getAdvisorySpeed()
+  {
     return this->advisory_speed_;
   }
 

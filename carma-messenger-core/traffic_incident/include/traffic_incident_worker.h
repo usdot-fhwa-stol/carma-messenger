@@ -79,6 +79,8 @@ class TrafficIncidentWorker
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
 
+  //public constant variables
+  const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
 
  private:
 
