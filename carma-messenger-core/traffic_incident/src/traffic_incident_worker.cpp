@@ -43,6 +43,29 @@ namespace traffic
     return traffic_mobility_msg;
   }
   
+  cav_msgs::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& pinpoint_msg,double advisory_speed )
+  {
+    cav_msgs::MobilityOperation traffic_mobility_msg;
+
+    traffic_mobility_msg.header.timestamp = pinpoint_msg.header.stamp.sec*1000;
+    traffic_mobility_msg.header.sender_id = sender_id;
+
+    traffic_mobility_msg.strategy = USE_CASE_NAME_;
+
+    traffic_mobility_msg.strategy_params = printTrafficIncident(sender_id,down_track,up_track,min_gap,pinpoint_msg,advisory_speed);
+    return traffic_mobility_msg;
+  }
+  
+  std::string TrafficIncidentWorker::printTrafficIncident(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& pinpoint_msg,double advisory_speed )
+  {
+     return "lat:" + anytypeToString(pinpoint_msg.latitude) + ","
+            +"lon:" + anytypeToString(pinpoint_msg.longitude) + ","
+            +"downtrack:" + anytypeToString(down_track)+ ","
+            +"uptrack:" + anytypeToString(up_track) + ","
+            +"min_gap:"+ anytypeToString(min_gap) +","
+            +"advisory_speed:"+ anytypeToString(advisory_speed);
+  }
+
   void TrafficIncidentWorker::setSenderId(std::string sender_id)
   {
     this->sender_id_= sender_id;

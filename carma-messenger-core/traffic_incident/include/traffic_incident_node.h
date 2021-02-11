@@ -19,6 +19,8 @@
 
 #include <ros/ros.h>
 #include <carma_utils/CARMAUtils.h>
+#include <std_srvs/Trigger.h>
+#include <cav_srvs/SetTrafficEvent.h>
 #include <functional>
 #include <string>
 #include "traffic_incident_worker.h"

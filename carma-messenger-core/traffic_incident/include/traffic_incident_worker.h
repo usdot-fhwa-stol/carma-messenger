@@ -18,8 +18,6 @@
 #define TRAFFIC_INCIDENT_WORKER_H
 
 #include <ros/ros.h>
-#include <std_srvs/Trigger.h>
-#include <cav_srvs/SetTrafficEvent.h>
 #include <cav_msgs/MobilityOperation.h>
 #include <gps_common/GPSFix.h>
 #include <functional>
@@ -78,6 +76,10 @@ class TrafficIncidentWorker
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
+  cav_msgs::MobilityOperation mobilityMessageGenerator(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& msg,double advisory_speed );
+  
+  //print instance variables
+  std::string printTrafficIncident(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& pinpoint_msg,double advisory_speed);
 
   //public constant variables
   const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
