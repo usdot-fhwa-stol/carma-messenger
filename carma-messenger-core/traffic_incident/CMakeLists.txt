@@ -25,6 +25,7 @@ add_compile_options(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   carma_utils
   cav_msgs
+  cav_srvs
   gps_common
   roscpp
 )

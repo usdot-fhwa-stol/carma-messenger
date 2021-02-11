@@ -18,6 +18,8 @@
 #define TRAFFIC_INCIDENT_WORKER_H
 
 #include <ros/ros.h>
+#include <std_srvs/Trigger.h>
+#include <cav_srvs/SetTrafficEvent.h>
 #include <cav_msgs/MobilityOperation.h>
 #include <gps_common/GPSFix.h>
 #include <functional>
@@ -63,12 +65,20 @@ class TrafficIncidentWorker
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
   void setMinGap(double min_gap);
+  void setPinPoint(gps_common::GPSFix pinpoint_msg );
+  void setAdvisorySpeed(double advisory_speed );
+
+ // Getter for the prediction parameters
+  std::string  getSenderId();
+  double  getDownTrack();
+  double getUpTrack();
+  double getMinGap();
+  gps_common::GPSFix  getPinPoint();
+  double getAdvisorySpeed();
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
 
-
-  
 
  private:
 
@@ -82,6 +92,8 @@ class TrafficIncidentWorker
   double down_track_= 50.0;
   double up_track_= 50.0;
   double min_gap_= 4.0;
+  double advisory_speed_ = 0;
+  gps_common::GPSFix pinpoint_msg_ ;
 
 };
 

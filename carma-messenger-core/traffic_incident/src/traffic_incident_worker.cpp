@@ -26,6 +26,7 @@ namespace traffic
 
   cav_msgs::MobilityOperation traffic_mobility_msg=mobilityMessageGenerator(pinpoint_msg);
   traffic_pub_(traffic_mobility_msg);
+  setPinPoint(pinpoint_msg);
   }
 
   cav_msgs::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(const gps_common::GPSFix& pinpoint_msg)
@@ -44,22 +45,56 @@ namespace traffic
   
   void TrafficIncidentWorker::setSenderId(std::string sender_id)
   {
-    sender_id_= sender_id;
+    this->sender_id_= sender_id;
   }
 
   void TrafficIncidentWorker::setMinGap(double min_gap)
   {
-    min_gap_= min_gap;
+   this->min_gap_= min_gap;
   }
 
   void TrafficIncidentWorker::setDownTrack(double down_track)
   {
-    down_track_= down_track;
+    this->down_track_= down_track;
   }
 
   void TrafficIncidentWorker::setUpTrack(double up_track)
   {
-    up_track_= up_track;
+    this->up_track_= up_track;
+  }
+
+
+  void TrafficIncidentWorker::setPinPoint(gps_common::GPSFix pinpoint_msg )
+  {
+    this->pinpoint_msg_ = pinpoint_msg;
+  }
+
+
+  void TrafficIncidentWorker::setAdvisorySpeed(double advisory_speed ){
+      this->advisory_speed_ = advisory_speed;
+  }
+
+  std::string  TrafficIncidentWorker::getSenderId(){
+    return this->sender_id_;
+  }
+  
+  double TrafficIncidentWorker::getDownTrack(){
+      return this->down_track_;
+  }
+
+  double TrafficIncidentWorker::getUpTrack(){
+    return this->up_track_;
+  }
+  double TrafficIncidentWorker::getMinGap(){
+      return  this->min_gap_;
+  }
+
+  gps_common::GPSFix  TrafficIncidentWorker::getPinPoint(){
+    return this->pinpoint_msg_;
+  }
+
+  double TrafficIncidentWorker::getAdvisorySpeed(){
+    return this->advisory_speed_;
   }
 
 }//traffic
