@@ -63,12 +63,26 @@ class TrafficIncidentWorker
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
   void setMinGap(double min_gap);
+  void setPinPoint(gps_common::GPSFix pinpoint_msg );
+  void setAdvisorySpeed(double advisory_speed );
+
+ // Getter for the prediction parameters
+  std::string  getSenderId();
+  double  getDownTrack();
+  double getUpTrack();
+  double getMinGap();
+  gps_common::GPSFix  getPinPoint();
+  double getAdvisorySpeed();
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
-
-
+  cav_msgs::MobilityOperation mobilityMessageGenerator(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& msg,double advisory_speed );
   
+  //print instance variables
+  std::string printTrafficIncident(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& pinpoint_msg,double advisory_speed);
+
+  //public constant variables
+  const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
 
  private:
 
@@ -82,6 +96,8 @@ class TrafficIncidentWorker
   double down_track_= 50.0;
   double up_track_= 50.0;
   double min_gap_= 4.0;
+  double advisory_speed_ = 0;
+  gps_common::GPSFix pinpoint_msg_ ;
 
 };
 

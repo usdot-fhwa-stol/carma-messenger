@@ -19,6 +19,8 @@
 
 #include <ros/ros.h>
 #include <carma_utils/CARMAUtils.h>
+#include <std_srvs/Trigger.h>
+#include <cav_srvs/SetTrafficEvent.h>
 #include <functional>
 #include <string>
 #include "traffic_incident_worker.h"
@@ -39,6 +41,10 @@ class TrafficIncidentNode
 
   //publisher
   ros::Publisher traffic_mobility_operation_pub_;
+
+  //services
+  ros::ServiceServer start_broadcast_request_service_server;
+  ros::ServiceServer stop_broadcast_request_service_server;
   
   //TrafficIncidentWorker class object
   TrafficIncidentWorker traffic_worker_;
@@ -65,6 +71,10 @@ class TrafficIncidentNode
     \brief Publish mobility operation message
   */
   void publishTrafficIncidentMobilityOperation(const cav_msgs::MobilityOperation& traffic_msg);
+  
+  // Service callback
+  bool startTrafficBroadcastCallback(cav_srvs::SetTrafficEventRequest& req, cav_srvs::SetTrafficEventResponse& resp);
+  bool stopTrafficBroadcastCallback(std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& resp);
 
   /*!fn run()
     \brief General starting point to run this node
