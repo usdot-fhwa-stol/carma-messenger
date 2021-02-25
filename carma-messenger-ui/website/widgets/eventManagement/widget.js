@@ -34,6 +34,11 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             {
                 $('#eventBroadcastBtn').val('Stop broadcasting');
                 $('#eventBroadcastBtn').css('background-color','red');
+                $('#BroadcastingFrequencySpan').text(BC_FQ_10HZ);
+                $('#BroadcastingFrequencySpan').removeClass('hide');
+                $('#BroadcastingFrequencyLabelTitle').removeClass('hide');
+                $('#BroadcastingFrequencySpan').addClass('show');
+                $('#BroadcastingFrequencyLabelTitle').addClass('show');
             }
             if( EventSessionFormFields !=null &&  EventSessionFormFields.upTrack !=null)
             {
