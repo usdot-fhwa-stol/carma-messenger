@@ -1,0 +1,85 @@
+.margin-bottom-20px {
+    margin-bottom: 20px;
+}
+
+.inline-block-div{
+    display: inline-block !important;
+}
+
+.padding-left-5{
+    padding-left: 5px;
+}
+.padding-left-10{
+    padding-left: 10px;
+}
+.float-left{
+    float:left;
+}
+
+fieldset{
+    min-width: 100%;
+    border: 1px solid lightgray;
+    width: 90%;
+    float: left;
+    padding: 10px;
+    margin: -50px 10px 10px 10px;
+}
+
+legend{
+   background-color: lightgray;
+   width: auto;
+
+}
+
+.text-align-left{
+    text-align: left;
+}
+.font-strong{
+    font-weight: bolder;
+}
+.text-align-right{
+    text-align: right;
+}
+
+.btn-success{
+    background-color: #8bc34a;
+    border-color: #8bc34a;
+}
+
+.btn-success:hover,.btn-success:active,.btn-success:not(:hover){
+    background-color: #7fb83d;
+    border-color: #8bc34a;
+}
+
+.margin-left-minus-10{
+    margin-left: -30px;
+}
+
+.success-text{
+    font-weight: bold;
+    color: #8bc34a;
+}
+.row.actionWrapper{
+    margin-top: 50px;
+}
+.img-notes{
+    width: 120px;
+    height: 100px;
+    position: absolute;
+    top: -60px;
+    right: 0px;
+}
+.margin-right-100px{
+    margin-right: 100px;
+}
+.show{
+    display: inline-block !important;
+}
+
+.hide{
+    display: none !important;
+}
+.margin-bottom-50px
+{
+    margin-bottom: 50px;
+}
