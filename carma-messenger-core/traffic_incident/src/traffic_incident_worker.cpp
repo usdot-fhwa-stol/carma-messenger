@@ -25,7 +25,8 @@ namespace traffic
   {
 
   cav_msgs::MobilityOperation traffic_mobility_msg=mobilityMessageGenerator(pinpoint_msg);
-  traffic_pub_(traffic_mobility_msg);
+  //comment out this for now since we are not broadcasting upon receiving GPS signal
+  //traffic_pub_(traffic_mobility_msg);
   setPinPoint(pinpoint_msg);
   }
 
