@@ -21,7 +21,7 @@
 
 TEST(BSMTest, testDecodeBSM)
 {
-    std::vector<uint8_t> binary_input = {0, 20, 37, 0, 64, 64, 128, 193, 0, 0, 90, 210, 116, 128, 53, 164, 233, 0, 8, 0, 0, 0, 0, 0, 128, 0, 0, 0, 126, 125, 7, 208, 127, 128, 0, 10, 170, 0, 128, 8};
+    std::vector<uint8_t> binary_input = {0,20,37,0,64,64,128,193,0,0,90,210,116,128,53,164,233,0,8,0,0,0,0,0,128,0,0,0,126,125,7,208,127,128,0,10,170,0,128,8};
     cpp_message::BSM_Message worker;
     auto res = worker.decode_bsm_message(binary_input);
     j2735_msgs::BSM to_read;
@@ -83,10 +83,10 @@ TEST(BSMTest, testEncodeBSM)
     auto res = worker.encode_bsm_message(message);
 
     if(res) {
-        // std::vector<uint8_t> to_read=res.get();
-        // size_t len=to_read.size();
-        // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
-        // std::cout<<"\n";
+        std::vector<uint8_t> to_read=res.get();
+        size_t len=to_read.size();
+        for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
+        std::cout<<"\n";
         
         EXPECT_TRUE(true);
     }

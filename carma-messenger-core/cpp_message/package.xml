@@ -13,6 +13,7 @@
   <depend>cav_msgs</depend>
   <depend>carma_utils</depend>
   <depend>j2735_msgs</depend>
+  <depend>asn1c</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

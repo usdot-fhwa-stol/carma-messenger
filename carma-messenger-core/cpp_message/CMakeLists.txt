@@ -9,33 +9,38 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
+set(DEPS_CATKIN
 	cav_msgs
 	j2735_msgs
-	bondcpp
 	roscpp
 	carma_utils
+	asn1c
+)
+find_package(catkin REQUIRED COMPONENTS
+  ${DEPS_CATKIN}
 )
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system thread)
 
 catkin_package(
+   CATKIN_DEPENDS ${DEPS_CATKIN}
+   DEPENDS Boost
 )
 
 ###########
 ## Build ##
 ###########
 include_directories(
-	${catkin_INCLUDE_DIRS}
 	include
 	include/generated
+	${catkin_INCLUDE_DIRS}
 )
 
 add_library(testlib SHARED IMPORTED)
 
 ## Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
-set(ASN1C_INSTALL_PATH "/opt/carma/install")
+set(ASN1C_INSTALL_PATH "/opt/carma/install/asn1c")
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)
