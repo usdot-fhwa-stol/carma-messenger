@@ -9,3 +9,9 @@ min_gap: 4.0
 
 # Sender id in string
 sender_id: 'USDOT-49096'
+
+# Event reason in string
+event_reason: 'MOVE OVER LAW'
+
+# Event type in string
+event_type: 'CLOSED'

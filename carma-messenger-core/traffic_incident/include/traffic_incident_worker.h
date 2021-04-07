@@ -60,14 +60,19 @@ class TrafficIncidentWorker
 
   // Setters for the prediction parameters
   void setSenderId(std::string sender_id);
+  void setEventReason(std::string event_reason);
+  void setEventType(std::string event_type);
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
   void setMinGap(double min_gap);
   void setPinPoint(gps_common::GPSFix pinpoint_msg );
   void setAdvisorySpeed(double advisory_speed );
 
+
  // Getter for the prediction parameters
   std::string  getSenderId();
+  std::string getEventReason();
+  std::string getEventType();
   double  getDownTrack();
   double getUpTrack();
   double getMinGap();
@@ -76,11 +81,7 @@ class TrafficIncidentWorker
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
-  cav_msgs::MobilityOperation mobilityMessageGenerator(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& msg,double advisory_speed );
-  
-  //print instance variables
-  std::string printTrafficIncident(std::string sender_id,double down_track,double up_track,double min_gap,const gps_common::GPSFix& pinpoint_msg,double advisory_speed);
-
+ 
   //public constant variables
   const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
 
@@ -93,6 +94,8 @@ class TrafficIncidentWorker
  // Prediction parameters
   std::string sender_id_ = "USDOT-49096";
   std::string closed_lane_= "[1]";
+  std::string event_reason_="";
+  std::string event_type_="OPEN";
   double down_track_= 50.0;
   double up_track_= 50.0;
   double min_gap_= 4.0;
