@@ -56,6 +56,8 @@ class TrafficIncidentNode
 
   //ROS Params
   std::string sender_id_; 
+  std::string event_reason_;
+  std::string event_type_;
   double down_track_;
   double up_track_;
   double min_gap_;  

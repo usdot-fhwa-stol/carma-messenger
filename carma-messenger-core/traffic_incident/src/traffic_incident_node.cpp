@@ -25,16 +25,19 @@
   void TrafficIncidentNode::initialize()
   {
 
-	  pnh_.getParam("sender_id", sender_id_);
+	pnh_.getParam("sender_id", sender_id_);
     pnh_.getParam("down_track", down_track_);
     pnh_.getParam("up_track", up_track_);
     pnh_.getParam("min_gap", min_gap_); 
+    pnh_.getParam("event_reason", event_reason_);
+    pnh_.getParam("event_type", event_type_);
 
     traffic_worker_.setSenderId(sender_id_);
     traffic_worker_.setDownTrack(down_track_);
     traffic_worker_.setUpTrack(up_track_);
     traffic_worker_.setMinGap(min_gap_);
-
+    traffic_worker_.setEventReason(event_reason_);
+    traffic_worker_.setEventType(event_type_);
 
     // Setup pub/sub
     pinpoint_driver_sub_=nh_.subscribe("gps_common_fix",10,&TrafficIncidentWorker::pinpointDriverCallback,&traffic_worker_);
@@ -68,7 +71,7 @@
           while (ros::ok())
           {
               //construct local mobilityOperation msg
-              cav_msgs::MobilityOperation traffic_mobility_msg = traffic_worker_.mobilityMessageGenerator(traffic_worker_.getSenderId(),traffic_worker_.getDownTrack(),traffic_worker_.getUpTrack(),traffic_worker_.getMinGap(),traffic_worker_.getPinPoint(),traffic_worker_.getAdvisorySpeed() );
+              cav_msgs::MobilityOperation traffic_mobility_msg = traffic_worker_.mobilityMessageGenerator(traffic_worker_.getPinPoint());
               
               if(traffic_worker_.getDownTrack()>0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0) 
               {
@@ -100,7 +103,7 @@
           traffic_worker_.setMinGap(0);
           traffic_worker_.setDownTrack(0);
           traffic_worker_.setUpTrack(0);
-          traffic_worker_.setUpTrack(0);
+          traffic_worker_.setAdvisorySpeed(0);
 
           resp.success = true;
           resp.message = "stop broadcasting";
