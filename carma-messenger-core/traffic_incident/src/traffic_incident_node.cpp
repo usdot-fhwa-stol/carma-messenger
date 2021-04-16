@@ -67,7 +67,7 @@
           traffic_worker_.setDownTrack(req.down_track);
           traffic_worker_.setUpTrack(req.up_track);
           traffic_worker_.setAdvisorySpeed(req.advisory_speed);
-        
+          ros::Rate loop_rate(10);
           while (ros::ok())
           {
               //construct local mobilityOperation msg
@@ -83,6 +83,7 @@
               }
 
               ros::spinOnce();
+              loop_rate.sleep();
           }
           return true;
 
