@@ -24,6 +24,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 namespace traffic{
 
@@ -57,6 +58,8 @@ class TrafficIncidentWorker
     ss<<value;
     return ss.str();
   }
+
+  std::string doubleToString(double value);
 
   // Setters for the prediction parameters
   void setSenderId(std::string sender_id);
@@ -96,9 +99,9 @@ class TrafficIncidentWorker
   std::string closed_lane_= "[1]";
   std::string event_reason_="";
   std::string event_type_="OPEN";
-  double down_track_= 50.0;
-  double up_track_= 50.0;
-  double min_gap_= 4.0;
+  double down_track_= 0;
+  double up_track_= 0;
+  double min_gap_= 0;
   double advisory_speed_ = 0;
   gps_common::GPSFix pinpoint_msg_ ;
 
