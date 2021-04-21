@@ -79,6 +79,10 @@
       traffic_worker_.setDownTrack(req.down_track);
       traffic_worker_.setUpTrack(req.up_track);
       traffic_worker_.setAdvisorySpeed(req.advisory_speed);
+      
+      //return service response true 
+      resp.success = true;
+      return true;
   }
 
  /*****
