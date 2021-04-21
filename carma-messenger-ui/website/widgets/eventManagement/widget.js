@@ -417,7 +417,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               newInputAdvisorySpeed.id = 'AdvisorySpeed';
 
               var newLabelAdvisorySpeedUnit=document.createElement('label');
-              newLabelAdvisorySpeedUnit.innerHTML = "(Meter)";
+              newLabelAdvisorySpeedUnit.innerHTML = "(MPH)";
               newLabelAdvisorySpeedUnit .className="col-1";
 
               var divAdvisorySpeed = document.createElement('div');
