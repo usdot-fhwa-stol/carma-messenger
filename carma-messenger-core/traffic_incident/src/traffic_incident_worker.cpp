@@ -39,9 +39,18 @@ namespace traffic
 
     traffic_mobility_msg.strategy=USE_CASE_NAME_;
 
-    traffic_mobility_msg.strategy_params="lat:"+anytypeToString(pinpoint_msg.latitude)+","+"lon:"+anytypeToString(pinpoint_msg.longitude) +","+"downtrack:"+anytypeToString(down_track_)+","+"uptrack:"+anytypeToString(up_track_)+","+"min_gap:"+ anytypeToString(min_gap_)+","+"advisory_speed:"+ anytypeToString(advisory_speed_)+","+"event_reason:"+event_reason_+","+"event_type:"+event_type_;
+    traffic_mobility_msg.strategy_params="lat:"+doubleToString(pinpoint_msg.latitude)+","+"lon:"+doubleToString(pinpoint_msg.longitude) +","+"downtrack:"+anytypeToString(down_track_)+","+"uptrack:"+anytypeToString(up_track_)+","+"min_gap:"+ anytypeToString(min_gap_)+","+"advisory_speed:"+ anytypeToString(advisory_speed_)+","+"event_reason:"+event_reason_+","+"event_type:"+event_type_;
   
     return traffic_mobility_msg;
+  }
+
+
+  std::string TrafficIncidentWorker::doubleToString(double value)
+  {
+    std::ostringstream ss;
+    ss << std::setprecision(10);
+    ss << value;
+    return ss.str();
   }
 
   void TrafficIncidentWorker::setSenderId(std::string sender_id)

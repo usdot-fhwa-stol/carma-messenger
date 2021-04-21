@@ -25,7 +25,7 @@
   void TrafficIncidentNode::initialize()
   {
 
-	pnh_.getParam("sender_id", sender_id_);
+	  pnh_.getParam("sender_id", sender_id_);
     pnh_.getParam("down_track", down_track_);
     pnh_.getParam("up_track", up_track_);
     pnh_.getParam("min_gap", min_gap_); 
@@ -46,7 +46,20 @@
     //setup services
     start_broadcast_request_service_server = nh_.advertiseService("start_broadcasting_traffic_event", &TrafficIncidentNode::startTrafficBroadcastCallback, this);
     stop_broadcast_request_service_server = nh_.advertiseService("stop_broadcasting_traffic_event", &TrafficIncidentNode::stopTrafficBroadcastCallback, this);
- 
+
+    //spin loop
+    ros::CARMANodeHandle::setSpinCallback([this]() -> bool {
+            if(traffic_worker_.getDownTrack() >0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0 && traffic_worker_.getAdvisorySpeed() > 0) 
+              {
+                //construct local mobilityOperation msg
+                cav_msgs::MobilityOperation traffic_mobility_msg = traffic_worker_.mobilityMessageGenerator(traffic_worker_.getPinPoint());      
+                
+                //start constantly broadcasting mobilityOperation msg
+                traffic_mobility_operation_pub_.publish(traffic_mobility_msg);
+              }
+            return true;
+        });
+    ROS_INFO_STREAM("Traffic Incident node is initialized...");
   }
 
   void TrafficIncidentNode::publishTrafficIncidentMobilityOperation(const cav_msgs::MobilityOperation& traffic_msg)
@@ -61,37 +74,11 @@
    * **/
   bool TrafficIncidentNode::startTrafficBroadcastCallback(cav_srvs::SetTrafficEventRequest& req, cav_srvs::SetTrafficEventResponse& resp)
   {
-    try{
-          //update instance variables with incoming request params
-          traffic_worker_.setMinGap(req.minimum_gap);
-          traffic_worker_.setDownTrack(req.down_track);
-          traffic_worker_.setUpTrack(req.up_track);
-          traffic_worker_.setAdvisorySpeed(req.advisory_speed);
-          ros::Rate loop_rate(10);
-          while (ros::ok())
-          {
-              //construct local mobilityOperation msg
-              cav_msgs::MobilityOperation traffic_mobility_msg = traffic_worker_.mobilityMessageGenerator(traffic_worker_.getPinPoint());
-              
-              if(traffic_worker_.getDownTrack()>0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0) 
-              {
-                //start constantly broadcasting mobilityOperation msg
-                traffic_mobility_operation_pub_.publish(traffic_mobility_msg);
-
-                //return service response true 
-                resp.success=true;
-              }
-
-              ros::spinOnce();
-              loop_rate.sleep();
-          }
-          return true;
-
-        }catch(...){
-              //in case any exception
-              resp.success = false;
-              return false;
-        }    
+      //update instance variables with incoming request params
+      traffic_worker_.setMinGap(req.minimum_gap);
+      traffic_worker_.setDownTrack(req.down_track);
+      traffic_worker_.setUpTrack(req.up_track);
+      traffic_worker_.setAdvisorySpeed(req.advisory_speed);
   }
 
  /*****
