@@ -167,7 +167,10 @@ namespace cpp_message
         if(res) {
             // copy to byte array msg
             cav_msgs::ByteArray output;
-            output.content = res.get();
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="TrafficControlRequest";
+            output.content = res.get();            
             // publish result
             outbound_binary_message_pub_.publish(output);
         } else
@@ -184,6 +187,9 @@ namespace cpp_message
         if(res) {
             // copy to byte array msg
             cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="TrafficControlMessage";
             output.content = res.get();
             // publish result
             outbound_binary_message_pub_.publish(output);
