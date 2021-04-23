@@ -60,9 +60,8 @@
               }
             return true;
         });
-    
-    ros::CARMANodeHandle::spin();
     ROS_INFO_STREAM("Traffic Incident node is initialized...");
+    ros::CARMANodeHandle::spin();
   }
 
   void TrafficIncidentNode::publishTrafficIncidentMobilityOperation(const cav_msgs::MobilityOperation& traffic_msg)
@@ -117,7 +116,6 @@
   void TrafficIncidentNode::run()
   {
     initialize();
-   // nh_.setSpinRate(10);
   }
 
 }//traffic
