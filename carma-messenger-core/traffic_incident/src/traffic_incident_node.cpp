@@ -48,6 +48,7 @@
     stop_broadcast_request_service_server = nh_.advertiseService("stop_broadcasting_traffic_event", &TrafficIncidentNode::stopTrafficBroadcastCallback, this);
 
     //spin loop
+    ros::CARMANodeHandle::setSpinRate(10.0);
     ros::CARMANodeHandle::setSpinCallback([this]() -> bool {
             if(traffic_worker_.getDownTrack() >0  && traffic_worker_.getUpTrack()>0 && traffic_worker_.getMinGap() > 0 && traffic_worker_.getAdvisorySpeed() > 0) 
               {
@@ -59,6 +60,8 @@
               }
             return true;
         });
+    
+    ros::CARMANodeHandle::spin();
     ROS_INFO_STREAM("Traffic Incident node is initialized...");
   }
 
@@ -114,8 +117,7 @@
   void TrafficIncidentNode::run()
   {
     initialize();
-    nh_.setSpinRate(10);
-    nh_.spin();
+   // nh_.setSpinRate(10);
   }
 
 }//traffic
