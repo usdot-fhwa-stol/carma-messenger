@@ -49,3 +49,13 @@ services:
       - /opt/carma/.ros:/opt/carma/.ros
     command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=dsrc_driver'
 
+  torc-pinpoint-driver:
+    image: usdotfhwastoldev/carma-torc-pinpoint-driver:develop
+    container_name: carma-torc-pinpoint-driver
+    network_mode: host
+    volumes_from:
+      - container:carma-config:ro
+    volumes:
+      - /opt/carma/logs:/opt/carma/logs
+      - /opt/carma/.ros:/opt/carma/.ros
+    command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=pinpoint_driver'
