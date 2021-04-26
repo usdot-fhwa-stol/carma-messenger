@@ -154,7 +154,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         console.log('subscribe_gps_common_fix called');
          var listenerGPS = new ROSLIB.Topic({
             ros: ros,
-            name: '/gps_common_fix',
+            name: '/position/gps_common_fix',
             messageType: 'gps_common/GPSFix'
         });
 
