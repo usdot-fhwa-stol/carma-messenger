@@ -15,6 +15,7 @@
 -->
 
 <launch>
+  <remap from ="gps_common_fix" to="/position/gps_common_fix"/>
   <node name="traffic_incident" pkg="traffic_incident" type="traffic_incident_node">
     <rosparam command="load" file="$(find traffic_incident)/config/parameters.yaml"/>
   </node>
