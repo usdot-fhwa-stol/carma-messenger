@@ -48,6 +48,23 @@ CarmaJS.Config = (function () {
         var ros_connect_wait = 10000; //miliseconds to wait for platform to launch and ros to connect.
         var ros_connect_retry = 3; //# of times to wait
         var valid_truck_vin_numbers = ["1FUJGBDV8CLBP8898","1FUJGHDV0CLBP8834","1FUJGHDV0CLBP8896","1FUJGHDV9CLBP8833"];
+        var UpTrackRange = {
+            "MAX": 1000,
+            "MIN": 1
+        };
+        var DownTrackRange = {
+            "MAX": 1000,
+            "MIN": 1
+        };
+        var MinGapRange = {
+            "MAX": 250,
+            "MIN": 1
+        };
+        var AdvisorySpeedRange = {
+            "MAX": 80,
+            "MIN": 1
+        };
+
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {
@@ -65,12 +82,30 @@ CarmaJS.Config = (function () {
         var getValidTruckVINNumber = function() {
             return valid_truck_vin_numbers;
         }
+        var getUpTrackRange  = function()
+        {
+            return UpTrackRange;
+        }
+        var getDownTrackRange = function(){
+            return DownTrackRange;
+        }
+        var getMinGapRange  = function(){
+            return MinGapRange;
+        }
+        var getAdvisorySpeedRange = function()
+        {
+            return AdvisorySpeedRange;
+        }
         //Public API
         return {
             getIP: getIP,
             getRefreshInterval: getRefreshInterval,
             getRosConnectionWaitTime:getRosConnectionWaitTime,
             getRosConnectionRetry:getRosConnectionRetry,
-            getValidTruckVINNumber: getValidTruckVINNumber
+            getValidTruckVINNumber: getValidTruckVINNumber,
+            getUpTrackRange:getUpTrackRange,
+            getDownTrackRange:getDownTrackRange,
+            getMinGapRange:getMinGapRange,
+            getAdvisorySpeedRange:getAdvisorySpeedRange
         };
 })();

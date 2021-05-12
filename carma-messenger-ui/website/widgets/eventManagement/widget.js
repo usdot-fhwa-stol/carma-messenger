@@ -112,23 +112,32 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var DownTrackValue =  $('#DownTrack').val();
         var MinGapValue =  $('#MinGap').val();
         var AdvisorySpeedValue =  $('#AdvisorySpeed').val();
-        if(UpTrackValue==""){
-            alert("Up Track value is required and should be greater than 0.");
+        if(UpTrackValue=="" || isNaN(UpTrackValue) 
+            || UpTrackValue > CarmaJS.Config.getUpTrackRange().MAX 
+            || UpTrackValue < CarmaJS.Config.getUpTrackRange().MIN)
+        {
+            alert("Up Track value is required, should be greater than or equal to "+CarmaJS.Config.getUpTrackRange().MIN+" and less than or equal to "+ CarmaJS.Config.getUpTrackRange().MAX);
             return false;
         }
 
-        if(DownTrackValue==""){
-            alert("Down Track value  is required and should be greater than 0.");
+        if(DownTrackValue=="" || isNaN(DownTrackValue) 
+        || DownTrackValue > CarmaJS.Config.getDownTrackRange().MAX 
+        || DownTrackValue < CarmaJS.Config.getDownTrackRange().MIN){
+            alert("Down Track value  is required and should be greater than or equal to "+CarmaJS.Config.getDownTrackRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getDownTrackRange().MAX);
             return false;
         }
 
-        if(MinGapValue==""){
-            alert("Minimum Gap value  is required and should be greater than 0.");
+        if(MinGapValue==""|| isNaN(MinGapValue) 
+        || MinGapValue > CarmaJS.Config.getMinGapRange().MAX 
+        || MinGapValue < CarmaJS.Config.getMinGapRange().MIN){
+            alert("Minimum Gap value  is required and should be greater than or equal to "+CarmaJS.Config.getMinGapRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getMinGapRange().MAX);
             return false;
         }
 
-        if(AdvisorySpeedValue==""){
-            alert("Advisory Speed value  is required and should be greater than 0.");
+        if(AdvisorySpeedValue==""|| isNaN(AdvisorySpeedValue) 
+        || AdvisorySpeedValue > CarmaJS.Config.getAdvisorySpeedRange().MAX 
+        || AdvisorySpeedValue < CarmaJS.Config.getAdvisorySpeedRange().MIN){
+            alert("Advisory Speed value  is required and should be greater than or equal to "+CarmaJS.Config.getAdvisorySpeedRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getAdvisorySpeedRange().MAX);
             return false;
         }
 
@@ -299,6 +308,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               newInputUpTrack.name = 'UpTrack';
               newInputUpTrack.className="form-control col-2";
               newInputUpTrack.id = 'UpTrack';
+              newInputUpTrack.type = "number";
 
               var newLabelUpTrackUnit = document.createElement('label');
               newLabelUpTrackUnit.innerHTML = "(Meter)";
@@ -337,6 +347,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               var newInputDownTrack = document.createElement('input');
               newInputDownTrack.name = 'DownTrack';
               newInputDownTrack.id = 'DownTrack';
+              newInputDownTrack.type  = "number";
               newInputDownTrack.className="form-control col-2";
 
               var newLabelDownTrackUnit=document.createElement('label');
@@ -377,6 +388,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               newInputMinGap.name = 'MinGap';
               newInputMinGap.className="form-control  col-2";
               newInputMinGap.id = 'MinGap';
+              newInputMinGap.type = 'number';
 
               var newLabelDownTrackUnit=document.createElement('label');
               newLabelDownTrackUnit.innerHTML = "(Meter)";
@@ -415,6 +427,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               newInputAdvisorySpeed.name = 'AdvisorySpeed';
               newInputAdvisorySpeed.className="form-control col-2";
               newInputAdvisorySpeed.id = 'AdvisorySpeed';
+              newInputAdvisorySpeed.type = 'number';
 
               var newLabelAdvisorySpeedUnit=document.createElement('label');
               newLabelAdvisorySpeedUnit.innerHTML = "(MPH)";
