@@ -130,7 +130,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         if(MinGapValue==""|| isNaN(MinGapValue) 
         || MinGapValue > CarmaJS.Config.getMinGapRange().MAX 
         || MinGapValue < CarmaJS.Config.getMinGapRange().MIN){
-            alert("Minimum Gap value  is required and should be greater than"+CarmaJS.Config.getMinGapRange().MIN+" and less than "+ CarmaJS.Config.getMinGapRange().MAX);
+            alert("Minimum Gap value  is required and should be greater than "+CarmaJS.Config.getMinGapRange().MIN+" and less than "+ CarmaJS.Config.getMinGapRange().MAX);
             return false;
         }
 
