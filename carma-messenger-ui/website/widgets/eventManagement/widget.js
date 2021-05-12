@@ -113,31 +113,31 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var MinGapValue =  $('#MinGap').val();
         var AdvisorySpeedValue =  $('#AdvisorySpeed').val();
         if(UpTrackValue=="" || isNaN(UpTrackValue) 
-            || UpTrackValue > CarmaJS.Config.getUpTrackRange().MAX 
-            || UpTrackValue < CarmaJS.Config.getUpTrackRange().MIN)
+            || UpTrackValue >= CarmaJS.Config.getUpTrackRange().MAX 
+            || UpTrackValue <= CarmaJS.Config.getUpTrackRange().MIN)
         {
-            alert("Up Track value is required, should be greater than "+CarmaJS.Config.getUpTrackRange().MIN+" and less than "+ CarmaJS.Config.getUpTrackRange().MAX);
+            alert("Up Track value is required, should be greater than or equal to "+CarmaJS.Config.getUpTrackRange().MIN+" and less than or equal to "+ CarmaJS.Config.getUpTrackRange().MAX);
             return false;
         }
 
         if(DownTrackValue=="" || isNaN(DownTrackValue) 
-        || DownTrackValue > CarmaJS.Config.getDownTrackRange().MAX 
-        || DownTrackValue < CarmaJS.Config.getDownTrackRange().MIN){
-            alert("Down Track value  is required and should be greater than "+CarmaJS.Config.getDownTrackRange().MIN+" and less than "+ CarmaJS.Config.getDownTrackRange().MAX);
+        || DownTrackValue >= CarmaJS.Config.getDownTrackRange().MAX 
+        || DownTrackValue <= CarmaJS.Config.getDownTrackRange().MIN){
+            alert("Down Track value  is required and should be greater than or equal to "+CarmaJS.Config.getDownTrackRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getDownTrackRange().MAX);
             return false;
         }
 
         if(MinGapValue==""|| isNaN(MinGapValue) 
-        || MinGapValue > CarmaJS.Config.getMinGapRange().MAX 
-        || MinGapValue < CarmaJS.Config.getMinGapRange().MIN){
-            alert("Minimum Gap value  is required and should be greater than "+CarmaJS.Config.getMinGapRange().MIN+" and less than "+ CarmaJS.Config.getMinGapRange().MAX);
+        || MinGapValue >= CarmaJS.Config.getMinGapRange().MAX 
+        || MinGapValue <= CarmaJS.Config.getMinGapRange().MIN){
+            alert("Minimum Gap value  is required and should be greater than or equal to "+CarmaJS.Config.getMinGapRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getMinGapRange().MAX);
             return false;
         }
 
         if(AdvisorySpeedValue==""|| isNaN(AdvisorySpeedValue) 
-        || AdvisorySpeedValue > CarmaJS.Config.getAdvisorySpeedRange().MAX 
-        || AdvisorySpeedValue < CarmaJS.Config.getAdvisorySpeedRange().MIN){
-            alert("Advisory Speed value  is required and should be greater than "+CarmaJS.Config.getAdvisorySpeedRange().MIN+" and less than "+ CarmaJS.Config.getAdvisorySpeedRange().MAX);
+        || AdvisorySpeedValue >= CarmaJS.Config.getAdvisorySpeedRange().MAX 
+        || AdvisorySpeedValue <= CarmaJS.Config.getAdvisorySpeedRange().MIN){
+            alert("Advisory Speed value  is required and should be greater than or equal to "+CarmaJS.Config.getAdvisorySpeedRange().MIN+" and less than  or equal to "+ CarmaJS.Config.getAdvisorySpeedRange().MAX);
             return false;
         }
 
@@ -427,6 +427,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               newInputAdvisorySpeed.name = 'AdvisorySpeed';
               newInputAdvisorySpeed.className="form-control col-2";
               newInputAdvisorySpeed.id = 'AdvisorySpeed';
+              newInputAdvisorySpeed.type = 'number';
 
               var newLabelAdvisorySpeedUnit=document.createElement('label');
               newLabelAdvisorySpeedUnit.innerHTML = "(MPH)";
