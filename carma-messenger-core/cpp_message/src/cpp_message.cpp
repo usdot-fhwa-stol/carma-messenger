@@ -909,7 +909,7 @@ namespace cpp_message
             // encode updated
             // recover an 8-bit array from a long value 
             uint8_t updated_val[8] = {0};
-            for(auto k = 7; k >= 0; k--) {
+            for(int k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
             }
             output_v01->updated.buf = updated_val;
@@ -996,7 +996,7 @@ namespace cpp_message
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
                 uint8_t start_val[8] = {0};
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     start_val[7 - k] = msg_schedule.start >> (k * 8);
                 }
                 EpochMins_t* start_p;
@@ -1009,7 +1009,7 @@ namespace cpp_message
                 if (msg_schedule.end_exists)
                 {
                     uint8_t end_val[8] = {0};
-                    for(auto k = 7; k >= 0; k--) {
+                    for(int k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
                     EpochMins_t* end_p;
@@ -1085,7 +1085,7 @@ namespace cpp_message
                 output_geometry->datum.size = datum_size;
                 
                 uint8_t reftime_val[8] = {0};
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
                 }
 
@@ -1504,7 +1504,7 @@ namespace cpp_message
                 bounds_p->offsets = *offsets;
                 //convert a long value to an 8-bit array of length 8
                 uint8_t oldest_val[8];
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     oldest_val[7-k] = request_msg.tcrV01.bounds[i].oldest >> (k * 8);
                 }
                 bounds_p->oldest.size = 8;
