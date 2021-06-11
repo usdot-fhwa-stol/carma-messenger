@@ -17,7 +17,7 @@ version: '2'
 
 services:
   roscore:
-    image: usdotfhwastol/carma-base:carma-system-3.6.0
+    image: usdotfhwastoldev/carma-base:develop
     network_mode: host
     container_name: roscore
     volumes_from:
@@ -28,7 +28,7 @@ services:
     command: roscore
 
   messenger:
-    image: usdotfhwastol/carma-messenger-core:carma-system-3.6.0
+    image: usdotfhwastoldev/carma-messenger-core:develop
     network_mode: host
     container_name: carma-messenger-core
     volumes_from:
@@ -39,7 +39,7 @@ services:
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
   cohda_dsrc_driver:
-    image: usdotfhwastol/carma-cohda-dsrc-driver:carma-system-3.6.0
+    image: usdotfhwastoldev/carma-cohda-dsrc-driver:develop
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
@@ -50,7 +50,7 @@ services:
     command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=dsrc_driver'
 
   torc-pinpoint-driver:
-    image: usdotfhwastol/carma-torc-pinpoint-driver:carma-system-3.6.0
+    image: usdotfhwastoldev/carma-torc-pinpoint-driver:develop
     container_name: carma-torc-pinpoint-driver
     network_mode: host
     volumes_from:

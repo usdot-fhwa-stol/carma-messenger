@@ -20,7 +20,6 @@
 
 #include "MobilityOperation_Message.h"
 #include "MobilityHeader_Message.h"
-#include <boost/algorithm/string/replace.hpp>
 
 namespace cpp_message
 {
@@ -128,7 +127,6 @@ namespace cpp_message
                 for(size_t i=0;i<str_len;i++){
                     strategy_params +=message->value.choice.TestMessage03.body.operationParams.buf[i];
                 }
-                boost::replace_all(strategy_params, "&quot;", "\"");
             }
             else strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
             
