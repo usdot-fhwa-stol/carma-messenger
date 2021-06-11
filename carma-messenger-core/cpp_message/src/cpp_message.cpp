@@ -536,9 +536,15 @@ namespace cpp_message
         j2735_msgs::DayOfWeek output;
         
         size_t dow_size= message.size;
-        for (auto i = 0; i < dow_size; i++)
+        uint8_t tmp_binary=0;
+        for (auto i = 0; i < dow_size; i++) // size is 1 as 8 bits are sufficient for bit-wise encoding of 7 days 
         {
-            output.dow[i] = message.buf[i];
+            tmp_binary = message.buf[0] >> 1; // 7 days in a week, while there are 8 entries
+            for (int j = output.dow.size() - 1; j >= 0; j --) // NOTE: Do not use size_t for i type here as -- with > 0 will result in overflow
+            {
+                output.dow[j] = tmp_binary % 2;
+                tmp_binary = tmp_binary >> 1;
+            }
         }
         return output;
     } 
@@ -1367,11 +1373,12 @@ namespace cpp_message
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
         
         uint8_t* dow_val;
-        dow_val = (uint8_t*)calloc(msg.dow.size(), sizeof(uint8_t));
+        dow_val = (uint8_t*)calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
+        uint8_t tmp_binary;
         for (auto i = 0; i < msg.dow.size(); i++)
         {
-            dow_val[i] = msg.dow[i];
-
+            tmp_binary |= msg.dow[i];
+            tmp_binary = tmp_binary << 1;
         }
         output->buf = dow_val;
         output->size = msg.dow.size();
