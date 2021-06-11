@@ -535,9 +535,8 @@ namespace cpp_message
     {
         j2735_msgs::DayOfWeek output;
         
-        size_t dow_size= message.size;
         uint8_t tmp_binary=0;
-        for (auto i = 0; i < dow_size; i++) // size is 1 as 8 bits are sufficient for bit-wise encoding of 7 days 
+        if (message.size > 0) // size is default 1 as 8 bits are sufficient for bit-wise encoding of 7 days 
         {
             tmp_binary = message.buf[0] >> 1; // 7 days in a week, while there are 8 entries
             for (int j = output.dow.size() - 1; j >= 0; j --) // NOTE: Do not use size_t for i type here as -- with > 0 will result in overflow
