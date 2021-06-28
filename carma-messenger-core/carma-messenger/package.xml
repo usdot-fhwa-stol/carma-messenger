@@ -15,12 +15,10 @@
   the License.
 -->
 <package format="3">
-  <name>carma-messenger</name>
+  <name>carma_messenger</name>
   <version>1.0.0</version>
   <description>Meta-package for launching a full carma-messenger instance</description>
-
   <maintainer email="carma@todo.todo">carma</maintainer>
-
   <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
