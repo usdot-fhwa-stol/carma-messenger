@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2020 LEIDOS.
+ * Copyright (C) 2019-2021 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,6 +24,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 namespace traffic{
 
@@ -58,17 +59,34 @@ class TrafficIncidentWorker
     return ss.str();
   }
 
+  std::string doubleToString(double value);
+
   // Setters for the prediction parameters
   void setSenderId(std::string sender_id);
-  void setClosedLane(std::string closed_lane);
+  void setEventReason(std::string event_reason);
+  void setEventType(std::string event_type);
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
+  void setMinGap(double min_gap);
+  void setPinPoint(gps_common::GPSFix pinpoint_msg );
+  void setAdvisorySpeed(double advisory_speed );
+
+
+ // Getter for the prediction parameters
+  std::string  getSenderId();
+  std::string getEventReason();
+  std::string getEventType();
+  double  getDownTrack();
+  double getUpTrack();
+  double getMinGap();
+  gps_common::GPSFix  getPinPoint();
+  double getAdvisorySpeed();
 
   // Generate mobility message
   cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
-
-
-  
+ 
+  //public constant variables
+  const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
 
  private:
 
@@ -79,8 +97,13 @@ class TrafficIncidentWorker
  // Prediction parameters
   std::string sender_id_ = "USDOT-49096";
   std::string closed_lane_= "[1]";
-  double down_track_= 50.0;
-  double up_track_= 50.0;
+  std::string event_reason_="";
+  std::string event_type_="OPEN";
+  double down_track_= 0;
+  double up_track_= 0;
+  double min_gap_= 0;
+  double advisory_speed_ = 0;
+  gps_common::GPSFix pinpoint_msg_ ;
 
 };
 

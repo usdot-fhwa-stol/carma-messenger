@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2020 LEIDOS.
+ * Copyright (C) 2019-2021 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,6 +30,8 @@ namespace truck_inspection_plugin
         content_pub_ = nh_->advertise<std_msgs::String>("truck_safety_info", 5);
         mo_sub_ = nh_->subscribe("mobility_operation_inbound", 5, &TruckInspectionPlugin::mobilityOperationCallback, this);
         inspection_request_service_server_ = nh_->advertiseService("send_inspection_request", &TruckInspectionPlugin::inspectionRequestCallback, this);
+        
+        ros::CARMANodeHandle::setSpinRate(20.0);
         ros::CARMANodeHandle::setSpinCallback([this]() -> bool {
             if(!this->safety_log_.empty()) {
                 std_msgs::String msg_content;

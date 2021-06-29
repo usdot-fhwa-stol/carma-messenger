@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 LEIDOS.
+ * Copyright (C) 2020-2021 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -167,7 +167,10 @@ namespace cpp_message
         if(res) {
             // copy to byte array msg
             cav_msgs::ByteArray output;
-            output.content = res.get();
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="TrafficControlRequest";
+            output.content = res.get();            
             // publish result
             outbound_binary_message_pub_.publish(output);
         } else
@@ -184,6 +187,9 @@ namespace cpp_message
         if(res) {
             // copy to byte array msg
             cav_msgs::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=ros::Time::now();
+            output.messageType="TrafficControlMessage";
             output.content = res.get();
             // publish result
             outbound_binary_message_pub_.publish(output);
@@ -529,10 +535,15 @@ namespace cpp_message
     {
         j2735_msgs::DayOfWeek output;
         
-        size_t dow_size= message.size;
-        for (auto i = 0; i < dow_size; i++)
+        uint8_t tmp_binary=0;
+        if (message.size > 0) // size is default 1 as 8 bits are sufficient for bit-wise encoding of 7 days 
         {
-            output.dow[i] = message.buf[i];
+            tmp_binary = message.buf[0] >> 1; // 7 days in a week, while there are 8 entries
+            for (int j = output.dow.size() - 1; j >= 0; j --) // NOTE: Do not use size_t for i type here as -- with > 0 will result in overflow
+            {
+                output.dow[j] = tmp_binary % 2;
+                tmp_binary = tmp_binary >> 1;
+            }
         }
         return output;
     } 
@@ -897,7 +908,7 @@ namespace cpp_message
             // encode updated
             // recover an 8-bit array from a long value 
             uint8_t updated_val[8] = {0};
-            for(auto k = 7; k >= 0; k--) {
+            for(int k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
             }
             output_v01->updated.buf = updated_val;
@@ -984,7 +995,7 @@ namespace cpp_message
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
                 uint8_t start_val[8] = {0};
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     start_val[7 - k] = msg_schedule.start >> (k * 8);
                 }
                 EpochMins_t* start_p;
@@ -997,7 +1008,7 @@ namespace cpp_message
                 if (msg_schedule.end_exists)
                 {
                     uint8_t end_val[8] = {0};
-                    for(auto k = 7; k >= 0; k--) {
+                    for(int k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
                     EpochMins_t* end_p;
@@ -1073,7 +1084,7 @@ namespace cpp_message
                 output_geometry->datum.size = datum_size;
                 
                 uint8_t reftime_val[8] = {0};
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
                 }
 
@@ -1361,11 +1372,12 @@ namespace cpp_message
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
         
         uint8_t* dow_val;
-        dow_val = (uint8_t*)calloc(msg.dow.size(), sizeof(uint8_t));
+        dow_val = (uint8_t*)calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
+        uint8_t tmp_binary;
         for (auto i = 0; i < msg.dow.size(); i++)
         {
-            dow_val[i] = msg.dow[i];
-
+            tmp_binary |= msg.dow[i];
+            tmp_binary = tmp_binary << 1;
         }
         output->buf = dow_val;
         output->size = msg.dow.size();
@@ -1491,7 +1503,7 @@ namespace cpp_message
                 bounds_p->offsets = *offsets;
                 //convert a long value to an 8-bit array of length 8
                 uint8_t oldest_val[8];
-                for(auto k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) {
                     oldest_val[7-k] = request_msg.tcrV01.bounds[i].oldest >> (k * 8);
                 }
                 bounds_p->oldest.size = 8;

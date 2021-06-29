@@ -1,4 +1,4 @@
-#  Copyright (C) 2018-2020 LEIDOS.
+#  Copyright (C) 2018-2021 LEIDOS.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #  use this file except in compliance with the License. You may obtain a copy of
@@ -17,7 +17,7 @@ version: '2'
 
 services:
   roscore:
-    image: usdotfhwastol/carma-base:carma-system-3.5.0
+    image: usdotfhwastol/carma-base:carma-system-3.6.0
     network_mode: host
     container_name: roscore
     volumes_from:
@@ -28,7 +28,7 @@ services:
     command: roscore
 
   messenger:
-    image: usdotfhwastol/carma-messenger-core:carma-system-3.5.0
+    image: usdotfhwastol/carma-messenger-core:carma-system-3.6.0
     network_mode: host
     container_name: carma-messenger-core
     volumes_from:
@@ -39,7 +39,7 @@ services:
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
   cohda_dsrc_driver:
-    image: usdotfhwastol/carma-cohda-dsrc-driver:carma-system-3.5.0
+    image: usdotfhwastol/carma-cohda-dsrc-driver:carma-system-3.6.0
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
@@ -49,3 +49,13 @@ services:
       - /opt/carma/.ros:/opt/carma/.ros
     command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=dsrc_driver'
 
+  torc-pinpoint-driver:
+    image: usdotfhwastol/carma-torc-pinpoint-driver:carma-system-3.6.0
+    container_name: carma-torc-pinpoint-driver
+    network_mode: host
+    volumes_from:
+      - container:carma-config:ro
+    volumes:
+      - /opt/carma/logs:/opt/carma/logs
+      - /opt/carma/.ros:/opt/carma/.ros
+    command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=pinpoint_driver'

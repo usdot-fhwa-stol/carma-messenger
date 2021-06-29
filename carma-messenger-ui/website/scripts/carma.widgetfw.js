@@ -34,7 +34,7 @@ CarmaJS.WidgetFramework = (function () {
         };
 
         /*
-            loads the widgets onto the Driver View.Part of impelmentation truck inspection plugin
+            loads the widgets onto the Driver View.Part of implementation truck inspection plugin
         */
         var loadWidgets = function(){
                 var cssFilePath = 'widgets/truckInspection/widget.css';
@@ -78,10 +78,53 @@ CarmaJS.WidgetFramework = (function () {
             $('#divWidgetArea').empty();
             console.log("closeWidgets is called");
         };
+
+        var loadEventManagementWidgets = function(){
+                var cssFilePath = 'widgets/eventManagement/widget.css';
+                var jsFilePath = 'widgets/eventManagement/widget.js';
+                $.ajax({
+                     url: jsFilePath,
+                     type:'HEAD',
+                     error: function()
+                     {
+                         //file not exists
+                         //TODO: In chrome, even with statusCode or error handling, the HTTP 404 (Failed to Load) error still shows separately
+                         console.log('loadEventManagementWidgets: Widget file does NOT exist: ' + jsFilePath );
+                         return false;
+                     },
+                     success: function()
+                     {
+                        //console.log('cssFilePath: ' + cssFilePath);
+                        //1) Load css
+                        var link = document.createElement('link');
+                        link.setAttribute('rel', 'stylesheet');
+                        link.setAttribute('type', 'text/css');
+                        link.setAttribute('href', cssFilePath);
+                        document.getElementsByTagName('head')[0].appendChild(link);
+
+                        //2) Load JS
+                        //console.log('jsFilePath1: ' + jsFilePath);
+                        scriptLoader([jsFilePath],function()
+                        {
+                             // now you can use the code from loaded script files.
+                            eval('CarmaJS.WidgetFramework.eventManagement' + '.loadCustomWidget($("#divWidgetAreaEventManagement"));');
+                        });
+
+                        return true;
+                     }
+                });
+        };
+
+        var closeEventManagementWidgets = function () {
+            $('#divWidgetAreaEventManagement').empty();
+            console.log("closeEventManagementWidgets is called");
+        };
     
         //Public API
         return {
             loadWidgets: loadWidgets,
-            closeWidgets: closeWidgets
+            loadEventManagementWidgets: loadEventManagementWidgets,
+            closeWidgets: closeWidgets,
+            closeEventManagementWidgets: closeEventManagementWidgets
         };
 })();
