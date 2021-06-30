@@ -83,7 +83,8 @@ add_library(cpp_message_library src/cpp_message.cpp
 			src/MobilityResponse_Message.cpp
 			src/MobilityPath_Message.cpp
 			src/MobilityRequest_Message.cpp
-			src/BSM_Message.cpp)
+			src/BSM_Message.cpp
+			src/SPAT_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
 
 ## Add cmake target dependencies of the executable
