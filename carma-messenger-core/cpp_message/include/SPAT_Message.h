@@ -23,6 +23,9 @@ namespace cpp_message
         private:
         //constants 
         int DEFAULT_MINUTE_OF_YEAR_ = 527040;
+        std::string DEFAULT_STRING_ = "";
+        int SIGNAL_GROUP_UNAVAILBALE_ = 0;
+        int ADVISORY_SPEED_TYPE_NONE_ = 0;
         
         public:
         /**
