@@ -69,7 +69,6 @@ private:
     ros::Publisher bsm_message_pub_;     //incoming bsm message
     ros::Subscriber bsm_message_sub_;    //outgoing plain bsm message
     ros::Publisher spat_message_pub_;    //incoming spat message
-    ros::Subscriber spat_message_sub_;   //outgoing spat message
     
 
     /**
@@ -111,12 +110,6 @@ private:
      * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
      */
     void outbound_bsm_message_callback(const j2735_msgs::BSM& msg);
-    /**
-     * @brief function callback when there is an outgoing SPAT message.
-     * @param msg container with SPAT ros message. Passed to an encoding function in SPAT_Message class.
-     * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
-     */
-    void outbound_spat_message_callback(const j2735_msgs::SPAT& msg);
     
 public:
 
