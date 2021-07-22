@@ -26,6 +26,14 @@ namespace cpp_message
         std::string DEFAULT_STRING_ = "";
         int SIGNAL_GROUP_UNAVAILBALE_ = 0;
         int ADVISORY_SPEED_TYPE_NONE_ = 0;
+
+        int DEFAULT_TIME_STAMP_ = 527040;
+
+        int SPAT_TEST_ID = 19;
+        //Encoding
+        int DEFAULT_SIGNAL_GROUP_  = 0;
+        int DEFAULT_TIME_MARK_  = 36001;
+        int DEFAULT_QUEUE_LENGTH_ = 0;  //Maneuver Assist List ConnectionManeuverAssist Queuelength default
         
         public:
         /**
@@ -40,5 +48,10 @@ namespace cpp_message
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_spat_message(const j2735_msgs::SPAT& plainMessage);
+
+        //encode_movement_list
+        //MovementEventList_t  encode_movement_list(j2735_msgs::MovementList input_movement_list);
+
+
     };
 }
