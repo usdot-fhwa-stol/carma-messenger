@@ -119,11 +119,11 @@ install(DIRECTORY
 ## Add gtest based cpp test target and link libraries
 catkin_add_gmock(${PROJECT_NAME}-test 
 # test/test_encode_decode.cpp
-	# test/test_MobilityOperations.cpp
-	# test/test_MobilityResponse.cpp
-	# test/test_MobilityPath.cpp
-	# test/test_MobilityRequest.cpp
-	# test/test_BSM.cpp
+	test/test_MobilityOperations.cpp
+	test/test_MobilityResponse.cpp
+	test/test_MobilityPath.cpp
+	test/test_MobilityRequest.cpp
+	test/test_BSM.cpp
 	test/test_SPAT.cpp
 )
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
