@@ -79,7 +79,7 @@ namespace cpp_message
             j2735_msgs::IntersectionStateList intersections;
 
             //IntersectionStateList is an array of intersectionState - of size 1-32
-            for (size_t i = 0; i < message->value.choice.SPAT.intersections.list.size; i++)
+            for (size_t i = 0; i < message->value.choice.SPAT.intersections.list.count; i++)
             {
                 if(!message->value.choice.SPAT.intersections.list.array[i]){
                     continue;
@@ -122,7 +122,7 @@ namespace cpp_message
                 intersection.revision = state->revision;
 
                 //Decode status
-                int bit_assigned = 9; //Default to enum state OFF, see definition for IntersectionStatusObject
+                int bit_assigned = 0; 
                 for(size_t t = 0;t< state->status.size;t++){
                     if(state->status.buf[i] == 1){
                         bit_assigned = t;
@@ -166,7 +166,7 @@ namespace cpp_message
                 {
                     enabled_lanes_exists = true;
                     j2735_msgs::EnabledLaneList enabled_lanes_list;
-                    for (size_t j = 0; j < state->enabledLanes->list.size; j++)
+                    for (size_t j = 0; j < state->enabledLanes->list.count; j++)
                     {
                         LaneID_t *enabled_lane_id = new LaneID_t;
                         enabled_lane_id = state->enabledLanes->list.array[j];
@@ -182,7 +182,7 @@ namespace cpp_message
                 //MovementList
                 j2735_msgs::MovementList movement_states;
                 //movement states is an array of Movement states
-                for (size_t j = 0; j < state->states.list.size; j++)
+                for (size_t j = 0; j < state->states.list.count; j++)
                 {
                     if(!state->states.list.array[j]){
                         continue;
@@ -210,7 +210,7 @@ namespace cpp_message
 
                     //State Time Speed Movement Event List
                     j2735_msgs::MovementEventList movement_event_list;
-                    for (int k = 0; k < state->states.list.array[j]->state_time_speed.list.size; k++)
+                    for (int k = 0; k < state->states.list.array[j]->state_time_speed.list.count; k++)
                     {
                         if(!state->states.list.array[j]->state_time_speed.list.array[k]){
                             continue;
@@ -286,7 +286,7 @@ namespace cpp_message
                         {
                             movement_event.speeds_exists = true;
                             j2735_msgs::AdvisorySpeedList advisory_speed_list;
-                            for (size_t l = 0; l < state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.size; l++)
+                            for (size_t l = 0; l < state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.count; l++)
                             {
                                 j2735_msgs::AdvisorySpeed advisory_speed;
 
