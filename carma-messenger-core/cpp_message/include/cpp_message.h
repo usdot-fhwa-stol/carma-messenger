@@ -34,6 +34,7 @@ extern "C"
 #include <cav_msgs/MobilityRequest.h>
 #include <j2735_msgs/BSM.h>
 #include <j2735_msgs/SPAT.h>
+#include <j2735_msgs/MapData.h>
 
 
 namespace cpp_message
