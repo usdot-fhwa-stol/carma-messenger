@@ -24,6 +24,7 @@
 #include "MobilityPath_Message.h"
 #include "MobilityRequest_Message.h"
 #include "BSM_Message.h"
+#include "SPAT_Message.h"
 
 namespace cpp_message
 {
@@ -49,6 +50,7 @@ namespace cpp_message
         mobility_request_message_sub_=nh_->subscribe("outgoing_mobility_request",5, &Message::outbound_mobility_request_message_callback,this);
         bsm_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
         bsm_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
+        spat_message_pub_ = nh_->advertise<j2735_msgs::SPAT>("incoming_j2735_spat", 5);
 
 
     }
@@ -156,6 +158,19 @@ namespace cpp_message
                 ROS_WARN_STREAM("Cannot decode BSM message");
             }
              
+        }
+        else if(msg->messageType=="SPAT")
+        {
+            std::vector<uint8_t> array=msg->content;
+            SPAT_Message decode;
+            auto output = decode.decode_spat_message(array);
+            if(output)
+            {
+                spat_message_pub_.publish(output.get());
+            }
+            else{
+                ROS_WARN_STREAM("Cannot decode SPAT message");
+            }
         }
     }
 
