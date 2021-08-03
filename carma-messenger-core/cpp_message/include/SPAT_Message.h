@@ -46,11 +46,9 @@ namespace cpp_message
          * @brief helper functions for SPAT message encoding.
          * @param plainMessage contains SPAT ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
+         * TODO- Fix implementation for encoding spat message
          */
         boost::optional<std::vector<uint8_t>> encode_spat_message(const j2735_msgs::SPAT& plainMessage);
-
-        //encode_movement_list
-        //MovementEventList_t  encode_movement_list(j2735_msgs::MovementList input_movement_list);
 
 
     };
