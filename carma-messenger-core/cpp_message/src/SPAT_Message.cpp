@@ -117,6 +117,7 @@ namespace cpp_message
                 {
                     id.region_exists = false;
                     id.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
+                    ROS_DEBUG_STREAM("Intersection ID doesn't exist, set to Region Unavailable");
                 }
 
                 intersection.id = id;
@@ -148,6 +149,7 @@ namespace cpp_message
                 {
                     intersection.moy_exists = false;
                     intersection.moy = j2735_msgs::IntersectionState::MOY_INVALID;
+                    ROS_DEBUG_STREAM("Intersection moy doesn't exis, set to MOY_INVALID");
                 }
                 //Time stamp
                 if (state->timeStamp)
@@ -161,6 +163,7 @@ namespace cpp_message
                 {
                     intersection.time_stamp = j2735_msgs::IntersectionState::TIME_STAMP_UNAVAILABLE;
                     intersection.time_stamp_exists = false;
+                    ROS_DEBUG_STREAM("Intersection time stamp doesn't exist, value set to TIME_STAMP_UNAVAILABLE");
                 }
                 //Enabled lanes list
                 
@@ -226,6 +229,7 @@ namespace cpp_message
                         }
                         else{
                             movement_event.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::UNAVAILABLE;
+                            ROS_DEBUG_STREAM("Movement event - event state, value doesn't exist. Set to default UNAVAILABLE");
                         }
 
                         //2. TimeChangeDetails
@@ -287,20 +291,12 @@ namespace cpp_message
                         if (state->states.list.array[j]->state_time_speed.list.array[k]->speeds)
                         {
                             movement_event.speeds_exists = true;
-                            j2735_msgs::AdvisorySpeedList advisory_speed_list;
+                            
                             for (size_t l = 0; l < state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.count; l++)
                             {
                                 j2735_msgs::AdvisorySpeed advisory_speed;
 
-                                if (state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.array[l]->type)
-                                {
-                                    advisory_speed.type.advisory_speed_type = state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.array[l]->type;
-                                }
-                                else
-                                {
-                                    advisory_speed.type.advisory_speed_type = ADVISORY_SPEED_TYPE_NONE_;
-                                    ROS_DEBUG_STREAM("Speed Advisory type doesn't exist, assigned default type NONE");
-                                }
+                                advisory_speed.type.advisory_speed_type = state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.array[l]->type;
 
                                 advisory_speed.speed_exists = false;
                                 if (state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.array[l]->speed)
@@ -313,6 +309,7 @@ namespace cpp_message
                                 else
                                 {
                                     advisory_speed.speed = j2735_msgs::AdvisorySpeed::SPEED_UNAVAILABLE;
+                                    ROS_DEBUG_STREAM("Advisory speed- speed doesn't exist, assigned default value speed_unavailable");
                                 }
 
                                 SpeedConfidence_t *confidence = new SpeedConfidence_t;
@@ -330,6 +327,7 @@ namespace cpp_message
                                 else
                                 {
                                     advisory_speed.distance = j2735_msgs::AdvisorySpeed::DISTANCE_UNKNOWN;
+                                    ROS_DEBUG_STREAM("Advisory speed - distance, value doesn't exist, set to default distance_unknown");
                                 }
 
                                 // RESTRICTION CLASS ID not DEFINED in incoming state message
