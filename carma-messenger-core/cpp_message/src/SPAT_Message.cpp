@@ -55,6 +55,7 @@ namespace cpp_message
             {
                 is_time_stamp_exists = false;
                 *minute_of_the_year = DEFAULT_MINUTE_OF_YEAR_;
+                ROS_DEBUG_STREAM("Minute of the year value doesn't exist, set to Default");
             }
 
             output.time_stamp_exists = is_time_stamp_exists;
@@ -69,6 +70,7 @@ namespace cpp_message
                 {
                     name += message->value.choice.SPAT.name->buf[i];
                 }
+                output.name_exists = true;
                 output.name = name;
             }
             else{
@@ -101,6 +103,7 @@ namespace cpp_message
                 {
                     intersection.name_exists = false;
                     intersection.name = DEFAULT_STRING_;
+                    ROS_DEBUG_STREAM("Intersection name doesn't exist, set to Default");
                 }
                 //Decode id
                 j2735_msgs::IntersectionReferenceID id;
@@ -175,7 +178,7 @@ namespace cpp_message
                     intersection.enabled_lanes = enabled_lanes_list;
                 }
                 else{
-                    
+                    intersection.enabled_lanes_exists = false;
                 }
                 intersection.enabled_lanes_exists = enabled_lanes_exists;
 
@@ -192,7 +195,7 @@ namespace cpp_message
                     if (state->states.list.array[j]->movementName)
                     {
                         movement_state.movement_name_exists = true;
-                        //movement_state.movement_name = state->states.list.array[j]->movementName;
+
                         size_t len = state->states.list.array[j]->movementName->size;
                         for (int k = 0; k < len; k++)
                         {
@@ -202,7 +205,7 @@ namespace cpp_message
                     }
 
                     //Signal Group ID
-                    movement_state.signal_group = SIGNAL_GROUP_UNAVAILBALE_;
+                    movement_state.signal_group = SIGNAL_GROUP_UNAVAILABLE_;
                     if (state->states.list.array[j]->signalGroup)
                     {
                         movement_state.signal_group = state->states.list.array[j]->signalGroup;
@@ -216,7 +219,6 @@ namespace cpp_message
                             continue;
                         }
                         j2735_msgs::MovementEvent movement_event;
-                        //movement_event.event_state = state->states.list.array[j]->state_time_speed.list.array[j]->eventState;
                         //Decode movement event
                         //1. MovementPhaseState
                         if(state->states.list.array[j]->state_time_speed.list.array[k]->eventState){
@@ -297,6 +299,7 @@ namespace cpp_message
                                 else
                                 {
                                     advisory_speed.type.advisory_speed_type = ADVISORY_SPEED_TYPE_NONE_;
+                                    ROS_DEBUG_STREAM("Speed Advisory type doesn't exist, assigned default type NONE");
                                 }
 
                                 advisory_speed.speed_exists = false;
