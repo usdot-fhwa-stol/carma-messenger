@@ -39,8 +39,6 @@ namespace cpp_message
         if(rval.code == RC_OK)
         {
 
-            //MapData_t map_msg = message->value.choice.MapData;
-            //MapData_t *map_msg = new MapData_t;
             auto map_msg = message->value.choice.MapData;
 
             IntersectionGeometry_t *map_msg_intersections = new IntersectionGeometry_t;
@@ -605,5 +603,296 @@ namespace cpp_message
 
 
     }
+
+
+    boost::optional<std::vector<uint8_t>>Map_Message::encode_map_message(const j2735_msgs::MapData& plainMessage)
+    {
+        
+            //encode result placeholder
+            uint8_t buffer[544];
+            size_t buffer_size=sizeof(buffer);
+            asn_enc_rval_t ec;
+            MessageFrame_t* message;
+            message = (MessageFrame_t*) calloc(1, sizeof(MessageFrame_t));
+
+            uint8_t id_content[4] = {0};
+        for(auto i = 0; i < 4; i++)
+        {
+            id_content[i] = (char) plainMessage.layer_id;
+        }
+        
+
+            //if mem allocation fails
+            if(!message)
+            {
+                ROS_WARN_STREAM("Cannot allocate mem for MapData encoding");
+                return boost::optional<std::vector<uint8_t>>{};
+            }
+
+            //set message type to MapData
+            //message->messageId = ;  
+
+            message->value.present = MessageFrame__value_PR_MapData;
+
+            MapData_t *map_data;
+
+            map_data = (MapData_t*) calloc(1, sizeof(MapData_t));
+
+            //Encode timestamp
+            MinuteOfTheYear_t* timestamp = new MinuteOfTheYear_t;
+            if(plainMessage.time_stamp_exists)
+            {
+                *timestamp = plainMessage.time_stamp;
+            }
+            else{
+                    ROS_DEBUG_STREAM("Encoding, Assigning default timestamp");
+                    //*timestamp = DEFAULT_TIME_STAMP;
+                }
+            map_data->timeStamp = timestamp;
+
+            IntersectionGeometry_t* intersection;
+            if(plainMessage.intersections_exists)
+            {
+                for(size_t i =0; i< plainMessage.intersections.size(); i++)
+                {
+                    intersection->id.id = plainMessage.intersections[i].id.id;
+                
+                    if(plainMessage.intersections[i].id.region_exists)
+                    {
+                        for(size_t b =0; b < plainMessage.intersections.size(); b++)
+                        {
+                            *intersection->id.region = plainMessage.intersections[b].id.region;
+                        }
+                    }
+                    else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection id region does not exist");
+                        }
+
+                    //Lane List
+                    for(size_t j = 0; j < plainMessage.intersections[i].lane_set.lane_list.size(); j++)
+                    {
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].egress_approach_exists)
+                        {
+                            *intersection->laneSet.list.array[j]->egressApproach = plainMessage.intersections[i].lane_set.lane_list[j].egress_approach;
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection  Lane List egress approach does not exist");
+                        }
+
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].ingress_approach_exists)
+                        {
+                            *intersection->laneSet.list.array[j]->ingressApproach = plainMessage.intersections[i].lane_set.lane_list[j].ingress_approach_exists;
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection Lane List ingress approach does not exist");
+                        }
+
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].maneuvers_exists)
+                        {
+                            intersection->laneSet.list.array[j]->maneuvers->buf[j] = plainMessage.intersections[i].lane_set.lane_list[j].maneuvers.allowed_maneuvers;
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection Lane List name does not exist");
+                        }
+
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].name_exists)
+                        {
+                            std::string name = plainMessage.intersections[i].lane_set.lane_list[j].name;
+                             uint8_t string_content[name.size()];
+                            for(size_t k = 0; k < name.size(); k++){
+                                string_content[k] = name[k];
+                            }
+
+                            intersection->laneSet.list.array[j]->name->buf = string_content;
+                            intersection->laneSet.list.array[j]->name->size = name.size();
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection Lane List name does not exist");
+                        }
+
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].connects_to_exists)
+                        {
+                            //Connection_t *ctl;
+                            //ctl = (Connection_t) calloc(1, sizeof(Connection_t));
+                            for(size_t k = 0; k < plainMessage.intersections[i].lane_set.lane_list[j].connects_to.connect_to_list.size(); k++)
+                            {
+                               auto ctl = plainMessage.intersections[i].lane_set.lane_list[j].connects_to.connect_to_list[k];
+                                intersection->laneSet.list.array[j]->connectsTo->list.array[k]->connectingLane.lane = ctl.connecting_lane.lane;
+
+                                if(ctl.connecting_lane.maneuver_exists)
+                                {
+                                    auto man = ctl.connecting_lane.maneuver;
+                                    intersection->laneSet.list.array[j]->connectsTo->list.array[k]->connectingLane.maneuver->buf[0] = man.allowed_maneuvers;//COMEBACKTOTHIS
+                                }
+                                else
+                                {
+                                    ROS_DEBUG_STREAM("Encoding, Intersection ConnectTo Lane Maneuvers does not exist");
+                                }
+
+                            }
+                            
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection ConnectTo does not exist");
+                        }//end ConnectTo
+
+                        if(plainMessage.intersections[i].lane_set.lane_list[j].overlay_lane_list_exists)
+                        {
+                            for(size_t k = 0; k < plainMessage.intersections[i].lane_set.lane_list[j].overlay_lane_list.overlay_lane_list.size(); k++)
+                            {
+                                auto elem = plainMessage.intersections[i].lane_set.lane_list[j].overlay_lane_list.overlay_lane_list[k];
+
+                                *intersection->laneSet.list.array[j]->overlays->list.array[k] = elem;
+                            }
+                        }
+                        else
+                        {
+                            ROS_DEBUG_STREAM("Encoding, Intersection Overlay Lane List does not exist");
+                        }//end Overlay Lane List
+                        
+                        
+                    }//end Lane List
+
+
+                    if(plainMessage.intersections[i].lane_width_exists)
+                    {
+                        *intersection->laneWidth = plainMessage.intersections[i].lane_width;
+                    }
+                    else
+                    {
+                        ROS_DEBUG_STREAM("Encoding, Lane Width does not exist");
+                    }
+
+                   if(plainMessage.intersections[i].preempt_priority_data_exists)
+                   {
+                       ROS_DEBUG_STREAM("Encoding, Preempt Priority has not been implemented yet");
+                   }
+                   else
+                   {
+                       ROS_DEBUG_STREAM("Encoding, Preempt Priority has not been implemented yet");
+                   }
+
+                   if(plainMessage.intersections[i].ref_point.elevation_exists)
+                   {
+                       *intersection->refPoint.elevation = plainMessage.intersections[i].ref_point.elevation;
+                       intersection->refPoint.lat = plainMessage.intersections[i].ref_point.latitude;
+                       intersection->refPoint.Long = plainMessage.intersections[i].ref_point.longitude;
+                   }
+                   else
+                    {
+                        ROS_DEBUG_STREAM("Encoding, Reference Point Elevation does not exist");
+                    }
+
+                  if (plainMessage.intersections[i].speed_limits_exists)
+                  {
+                    for(size_t k = 0; k < plainMessage.intersections[i].speed_limits.speed_limits.size(); k++)
+                    {
+                        auto elem = plainMessage.intersections[i].speed_limits.speed_limits[k];
+                        intersection->speedLimits->list.array[k]->speed = elem.speed;
+                        intersection->speedLimits->list.array[k]->type = elem.type.speed_limit_type;
+                    }
+                  }
+                  else
+                    {
+                        ROS_DEBUG_STREAM("Encoding, Intersection Speed Limits do not exist");
+                    }
+
+                    intersection->revision = plainMessage.intersections[i].revision;
+
+                    map_data->intersections->list.array[i] = intersection;
+                }
+
+
+            }//End Intersections
+
+            //LayerID
+            if(plainMessage.layer_id_exists)
+             {
+                LayerID_t *lid;
+                *lid = plainMessage.layer_id;
+
+                map_data->layerID = lid;
+             }
+             else
+             {
+                 ROS_DEBUG_STREAM("Encoding, layer ID does not exist");
+             }//End LayerID
+             
+            //LayerType
+            LayerType_t * type;
+            *type = plainMessage.layer_type.layer_type;
+            map_data->layerType = type;
+
+
+            //Restriction List
+            RestrictionClassAssignment_t* rca;
+            rca = (RestrictionClassAssignment_t*) calloc(1, sizeof(RestrictionClassAssignment_t));
+            for(size_t i = 0; i < plainMessage.restriction_list.restriction_class_list.size(); i++)
+            {
+                rca->id = plainMessage.restriction_list.restriction_class_list.at(i).id;
+                map_data->restrictionList->list.array[i] = rca;
+            }
+            free(rca);
+
+            RoadSegment_t *rs;
+            rs = (RoadSegment_t*) calloc(1, sizeof(RoadSegment_t));
+            plainMessage.road_segments.road_segment_list;
+            for(size_t i = 0; i < plainMessage.road_segments.road_segment_list.size(); i++)
+            {
+                rs->id.id = plainMessage.road_segments.road_segment_list.at(i).id.id;
+                //rs->id.region = plainMessage.road_segments.road_segment_list.at(i).id.region;
+                 uint8_t string_content[plainMessage.road_segments.road_segment_list[i].name.size()];
+                for(size_t j = 0; j < plainMessage.road_segments.road_segment_list[i].name.size(); j++)
+                {
+                    string_content[j] = plainMessage.road_segments.road_segment_list[i].name[j];
+                }
+
+                rs->name->buf = string_content;
+                rs->name->size = plainMessage.road_segments.road_segment_list[i].name.size();
+
+                map_data->roadSegments->list.array[i]->id.id = rs->id.id;
+                map_data->roadSegments->list.array[i]->id.region = rs->id.region;
+                
+            }
+            map_data->msgIssueRevision = plainMessage.msg_issue_revision;
+
+
+ 
+            message->value.choice.MapData = *map_data;
+            free(map_data);
+        
+            //encode message
+            ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
+            // Uncomment below to enable logging in human readable form
+            //asn_fprint(fp, &asn_DEF_MessageFrame, message);
+            free(message);
+        
+            //log a warning if that fails
+            if(ec.encoded == -1)
+            {
+                ROS_WARN_STREAM("Encoding for MapMessage has failed");
+                std::cout << "Failed: " << ec.failed_type->name << std::endl;
+                return boost::optional<std::vector<uint8_t>>{};
+            }
+        
+            //copy to byte array msg
+            size_t array_length=(ec.encoded + 7) / 8;
+            std::vector<uint8_t> b_array(array_length);
+            for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
+                
+            //Debugging/Unit Testing
+            //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+            return boost::optional<std::vector<uint8_t>>(b_array);
+
+
+
+    }
+
 
 }
