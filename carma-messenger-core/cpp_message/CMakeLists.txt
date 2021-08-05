@@ -84,7 +84,8 @@ add_library(cpp_message_library src/cpp_message.cpp
 			src/MobilityPath_Message.cpp
 			src/MobilityRequest_Message.cpp
 			src/BSM_Message.cpp
-			src/SPAT_Message.cpp)
+			src/SPAT_Message.cpp
+			src/Map_Message.cpp)
 add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
 
 ## Add cmake target dependencies of the executable
@@ -124,6 +125,7 @@ catkin_add_gmock(${PROJECT_NAME}-test
 	test/test_MobilityPath.cpp
 	test/test_MobilityRequest.cpp
 	test/test_BSM.cpp
+	test/test_MapMessage.cpp
 	test/test_SPAT.cpp
 	test/MapMessage.cpp
 )
