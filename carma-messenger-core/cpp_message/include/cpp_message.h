@@ -34,6 +34,7 @@ extern "C"
 #include <cav_msgs/MobilityRequest.h>
 #include <j2735_msgs/BSM.h>
 #include <j2735_msgs/MapData.h>
+#include <j2735_msgs/SPAT.h>
 
 
 namespace cpp_message
@@ -68,6 +69,7 @@ private:
     ros::Subscriber mobility_request_message_sub_;    //outgoing plain mobility request message
     ros::Publisher bsm_message_pub_;     //incoming bsm message
     ros::Subscriber bsm_message_sub_;    //outgoing plain bsm message
+    ros::Publisher spat_message_pub_;    //incoming spat message
     
 
     /**
