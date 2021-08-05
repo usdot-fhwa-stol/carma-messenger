@@ -122,5 +122,6 @@ catkin_add_gmock(${PROJECT_NAME}-test test/test_encode_decode.cpp
 	test/test_MobilityPath.cpp
 	test/test_MobilityRequest.cpp
 	test/test_BSM.cpp
+	test/MapMessage.cpp
 )
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
