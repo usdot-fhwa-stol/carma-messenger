@@ -23,9 +23,12 @@ TEST(MapMessageTest, testDecodeMapMessage)
 {
     std::vector<uint8_t> binary_input = {0,20,37,0,64,64,128,193,0,0,90,210,116,128,53,164,233,0,8,0,0,0,0,0,128,0,0,0,126,125,7,208,127,128,0,10,170,0,128,8};
     cpp_message::Map_Message worker;
+            ROS_WARN_STREAM("TEST0");
+
     auto res = worker.decode_map_message(binary_input);
     j2735_msgs::MapData to_read;
 
+        ROS_WARN_STREAM("TEST1");
 
 
     if(res)
@@ -38,7 +41,7 @@ TEST(MapMessageTest, testDecodeMapMessage)
 
         EXPECT_EQ(to_read.layer_id, (uint8_t)1);
         EXPECT_EQ(to_read.layer_id_exists, true);
-
+        ROS_WARN_STREAM("TEST");
         EXPECT_EQ(to_read.layer_type.layer_type,j2735_msgs::LayerType::NONE );
         EXPECT_EQ(to_read.msg_issue_revision,(uint8_t)1);
         EXPECT_EQ(to_read.restriction_list_exists, true);
