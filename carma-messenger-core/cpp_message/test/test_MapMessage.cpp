@@ -70,12 +70,8 @@ TEST(MapMessageTest, testDecodeMapMessage)
         }
 
     cpp_message::Map_Message worker;
-            ROS_WARN_STREAM("TEST0");
 
     auto res = worker.decode_map_message(new_binary_input_int);
-    //j2735_msgs::MapData to_read;
-
-        ROS_WARN_STREAM("TEST1");
 
 
     if(res)
@@ -143,56 +139,6 @@ TEST(MapMessageTest, testDecodeMapMessage)
 
 }
 
-TEST(MapMessageTest, DISABLED_testEncodeMapMessage)
-{
 
-    cpp_message::Map_Message worker;
-
-    j2735_msgs::MapData message;
-
-    j2735_msgs::IntersectionGeometry intersection;
-
-    intersection.id.id = 1;
-    intersection.id.region_exists = false;
-    intersection.id.region = 0;
-
-    j2735_msgs::GenericLane lane;
-    lane.connects_to_exists = false;
-    lane.egress_approach = 122;
-    lane.egress_approach_exists = false;
-    lane.ingress_approach_exists = false;
-    lane.lane_attributes.directional_use.lane_direction= 2;
-    lane.lane_attributes.laneType.bikeLane.lane_attributes_bike = 1;
-    lane.lane_attributes.laneType.choice = 2;
-
-    lane.lane_attributes.shared_with.lane_sharing = 1;
-
-    lane.lane_id = 808;
-    lane.maneuvers_exists = false;
-    lane.maneuvers.allowed_maneuvers = j2735_msgs::AllowedManeuvers::LANE_CHANGE;
-    lane.name_exists = false;
-    lane.name = "NEWLane1";
-    lane.node_list.choice = 1;
-    lane.overlay_lane_list_exists = false;
-    lane.overlay_lane_list.overlay_lane_list.push_back(12);
-    
-
-    intersection.lane_set.lane_list.push_back(lane);
-
-    message.intersections.push_back(intersection);
-    message.intersections_exists = true;
-    message.layer_id_exists = false;
-    message.layer_id = 123;
-    message.layer_type.layer_type= j2735_msgs::LayerType::ROADWAY_SECTION_DATA;
-    message.msg_issue_revision = 0;
-    message.restriction_list_exists = false;
-    message.road_segments_exists = false;
-    message.time_stamp_exists = false;
-    message.time_stamp = 12121;
-    ROS_INFO_STREAM("TEST");
-    auto res = worker.encode_map_message(message);
-
-
-}
 
 }
