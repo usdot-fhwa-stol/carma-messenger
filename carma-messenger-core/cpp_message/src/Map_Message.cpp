@@ -22,7 +22,6 @@ namespace cpp_message
     boost::optional<j2735_msgs::MapData> Map_Message::decode_map_message(std::vector<uint8_t>& binary_array)
     {
         j2735_msgs::MapData output;
-        ROS_ERROR_STREAM("TEST1");
 
         // decode results
         asn_dec_rval_t rval;
@@ -36,27 +35,18 @@ namespace cpp_message
         //use asn1c lib to decode
         
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
-        ROS_ERROR_STREAM("TEST2");
-
         if(rval.code == RC_OK)
         {
 
-            ROS_ERROR_STREAM("TEST3");
 
             auto map_msg = message->value.choice.MapData;
-                    ROS_ERROR_STREAM("TEST4");
 
             IntersectionGeometry_t *map_msg_intersections = new IntersectionGeometry_t;
-                                ROS_ERROR_STREAM("TEST5");
-
-            //size_t int_list_size = map_msg.intersections->list.count;
-                                ROS_ERROR_STREAM("TEST6 ");
 
 
             //Intersection Handling
             if(map_msg.intersections)
              {   
-                    ROS_ERROR_STREAM("TEST7");
 
                 output.intersections_exists = true;
                 auto v = map_msg.intersections;
@@ -291,12 +281,9 @@ namespace cpp_message
             {
                 output.intersections_exists = false;
             }
-            ROS_ERROR_STREAM("THISISANOTHERTEST");
-
 
 
             output.layer_type.layer_type = *map_msg.layerType;
-                        ROS_ERROR_STREAM("THISISANOTHERTEST2");
 
             //Layer ID
             if(map_msg.layerID)
@@ -309,7 +296,6 @@ namespace cpp_message
             {
                 output.layer_id_exists = false;
             }
-                                    ROS_ERROR_STREAM("THISISANOTHERTEST3");
 
             //Restriction List
             if(map_msg.restrictionList)
@@ -332,17 +318,14 @@ namespace cpp_message
                 output.restriction_list_exists = false;
             }
 
-                                    ROS_ERROR_STREAM("THISISANOTHERTEST4");
 
             //Road Segment
             if(map_msg.roadSegments)
             {
-                                                    ROS_ERROR_STREAM("THISISANOTHERTEST5");
 
                 output.road_segments_exists = true;
 
                 RoadSegment_t *rseg = new RoadSegment_t;
-                                                    ROS_ERROR_STREAM("THISISANOTHERTEST6");
 
                 for(size_t i = 0; i< map_msg.roadSegments->list.size;i++)
                 {
@@ -605,8 +588,6 @@ namespace cpp_message
             {
                 output.data_parameters_exists = false;
             }
-                                    ROS_ERROR_STREAM("THISISANOTHERTEST6");
-
 
             if(map_msg.timeStamp)
             {
@@ -637,7 +618,6 @@ namespace cpp_message
             asn_enc_rval_t ec;
             MessageFrame_t* message;
             message = (MessageFrame_t*) calloc(1, sizeof(MessageFrame_t));
-    ROS_INFO_STREAM("TEST1");
 
             uint8_t id_content[4] = {0};
         for(auto i = 0; i < 4; i++)
@@ -657,7 +637,6 @@ namespace cpp_message
             //message->messageId = ;  
 
             message->value.present = MessageFrame__value_PR_MapData;
-    ROS_INFO_STREAM("TEST2");
 
             MapData_t *map_data;
 
@@ -674,19 +653,16 @@ namespace cpp_message
                     //*timestamp = DEFAULT_TIME_STAMP;
                 }
             map_data->timeStamp = timestamp;
-    ROS_INFO_STREAM("TEST3");
 
             IntersectionGeometry_t* intersection = new IntersectionGeometry_t;
 
             if(plainMessage.intersections_exists)
             {
-                                            ROS_INFO_STREAM("TEST3a");
 
                 for(size_t i =0; i< plainMessage.intersections.size(); i++)
                 {
 
                     intersection->id.id = plainMessage.intersections[i].id.id;
-                                                                ROS_INFO_STREAM("TEST3b");
 
                     if(plainMessage.intersections[i].id.region_exists)
                     {
@@ -712,7 +688,6 @@ namespace cpp_message
                         {
                             ROS_DEBUG_STREAM("Encoding, Intersection  Lane List egress approach does not exist");
                         }
-                                                    ROS_INFO_STREAM("TEST3b");
 
 
                         if(plainMessage.intersections[i].lane_set.lane_list[j].ingress_approach_exists)
@@ -723,7 +698,6 @@ namespace cpp_message
                         {
                             ROS_DEBUG_STREAM("Encoding, Intersection Lane List ingress approach does not exist");
                         }
-                            ROS_INFO_STREAM("TEST3c");
 
                         if(plainMessage.intersections[i].lane_set.lane_list[j].maneuvers_exists)
                         {
@@ -733,7 +707,6 @@ namespace cpp_message
                         {
                             ROS_DEBUG_STREAM("Encoding, Intersection Lane List name does not exist");
                         }
-                            ROS_INFO_STREAM("TEST3d");
 
                         if(plainMessage.intersections[i].lane_set.lane_list[j].name_exists)
                         {
@@ -742,12 +715,10 @@ namespace cpp_message
                             for(size_t k = 0; k < name.size(); k++){
                                 string_content[k] = name[k];
                             }
-                                                        ROS_INFO_STREAM("TEST3d1");
 
                             //LOAD NAME VALUES INTO BUF
                             intersection->laneSet.list.array[j]->name->buf = string_content;
                             intersection->laneSet.list.array[j]->name->size = name.size();
-                                                        ROS_INFO_STREAM("TEST3d2");
 
                         }
                         else
@@ -850,8 +821,7 @@ namespace cpp_message
 
 
             }//End Intersections
-    ROS_INFO_STREAM("TEST4");
-
+            
             //LayerID
             if(plainMessage.layer_id_exists)
              {
