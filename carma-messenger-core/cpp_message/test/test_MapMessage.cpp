@@ -118,7 +118,7 @@ TEST(MapMessageTest, testDecodeMapMessage)
         EXPECT_EQ(res.get().layer_type.layer_type,j2735_msgs::LayerType::INTERSECTION_DATA);
 
         //Msg Issue Revision
-        EXPECT_EQ(res.get().msg_issue_revision,0);
+        EXPECT_EQ(res.get().msg_issue_revision,3);
 
         //Restriction List
         EXPECT_EQ(res.get().restriction_list_exists, false);
