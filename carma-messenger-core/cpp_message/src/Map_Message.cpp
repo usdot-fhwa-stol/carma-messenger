@@ -54,7 +54,18 @@ namespace cpp_message
                     map_msg_intersections = map_msg.intersections->list.array[i];
                     j2735_msgs::IntersectionGeometry new_intersection;
                     new_intersection.id.id = map_msg_intersections->id.id;
-                    new_intersection.id.region_exists = true;
+
+                    if(map_msg_intersections->id.region)
+                    {
+                        new_intersection.id.region_exists = true; //TODO: Implement intersection ID Region
+                        new_intersection.id.region = *map_msg_intersections->id.region;
+                    }
+                    else
+                    {
+                        new_intersection.id.region_exists = false;
+                    }
+                    
+
 
                     //Lane Set 
                     for(size_t l = 0; l < 0; l++)
@@ -413,7 +424,7 @@ namespace cpp_message
                     {
                         g_lane = rseg->roadLaneSet.list.array[i];
                         j2735_msgs::GenericLane gl;
-                        ////////
+                        //Egress Approach
                         if(g_lane->egressApproach)
                         {
                             gl.egress_approach_exists = true;
@@ -424,6 +435,7 @@ namespace cpp_message
                             gl.egress_approach_exists = false;
                         }
 
+                        //Ingress Approach
                         if(g_lane->ingressApproach)
                         {
                             gl.ingress_approach_exists = true;
@@ -551,7 +563,7 @@ namespace cpp_message
             }//end Road Segments
 
 
-
+            //Data Parameters
             if(map_msg.dataParameters)
             {
                 output.data_parameters_exists = true;
@@ -587,6 +599,7 @@ namespace cpp_message
                 output.data_parameters_exists = false;
             }
 
+            //Time Stamp
             if(map_msg.timeStamp)
             {
                 output.time_stamp_exists = true;
@@ -598,7 +611,7 @@ namespace cpp_message
                 output.time_stamp_exists = false;
             }
             output.msg_issue_revision = map_msg.msgIssueRevision;
-
+            
             return boost::optional<j2735_msgs::MapData>(output);
 
 
