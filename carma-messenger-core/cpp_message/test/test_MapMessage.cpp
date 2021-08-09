@@ -82,7 +82,7 @@ TEST(MapMessageTest, testDecodeMapMessage)
 
         //IntersectionID
         EXPECT_EQ(res.get().intersections[0].id.id, 9709);
-        EXPECT_EQ(res.get().intersections[0].id.region_exists, true);
+        EXPECT_EQ(res.get().intersections[0].id.region_exists, false);
         EXPECT_EQ(res.get().intersections[0].id.region, 0);
 
         //Intersection Lane Set
