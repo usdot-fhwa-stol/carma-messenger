@@ -51,7 +51,7 @@ namespace cpp_message
                 //Map Intersections
                 for(size_t i = 0; i < map_msg.intersections->list.count; i++)
                 {
-                    map_msg_intersections = message->value.choice.MapData.intersections->list.array[i];
+                    map_msg_intersections = map_msg.intersections->list.array[i];
                     j2735_msgs::IntersectionGeometry new_intersection;
                     new_intersection.id.id = map_msg_intersections->id.id;
                     new_intersection.id.region_exists = true;
