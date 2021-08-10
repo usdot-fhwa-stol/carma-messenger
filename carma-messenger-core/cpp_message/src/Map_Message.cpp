@@ -265,9 +265,7 @@ namespace cpp_message
                     if(map_msg_intersections->refPoint.elevation) 
                     {
                         new_intersection.ref_point.elevation_exists = true;
-                        new_intersection.ref_point.latitude = map_msg_intersections->refPoint.lat;
-                        new_intersection.ref_point.longitude = map_msg_intersections->refPoint.Long;
-
+                        
 
                         DSRC_Elevation_t *dsrc_el = new DSRC_Elevation_t;
                         dsrc_el = map_msg_intersections->refPoint.elevation;
@@ -278,6 +276,9 @@ namespace cpp_message
                     {
                         new_intersection.ref_point.elevation_exists = false;
                     }
+                    new_intersection.ref_point.latitude = map_msg_intersections->refPoint.lat;
+                    new_intersection.ref_point.longitude = map_msg_intersections->refPoint.Long;
+
 
                     new_intersection.revision = map_msg_intersections->revision;
                 
@@ -410,13 +411,14 @@ namespace cpp_message
                     {
                         rs.ref_point.elevation_exists = true;
                         rs.ref_point.elevation = *rseg->refPoint.elevation;
-                        rs.ref_point.latitude = rseg->refPoint.lat;
-                        rs.ref_point.longitude = rseg->refPoint.Long;
+                       
                     }
                     else
                     {
                         rs.ref_point.elevation_exists = false;
-                    }
+                    } 
+                    rs.ref_point.latitude = rseg->refPoint.lat;
+                    rs.ref_point.longitude = rseg->refPoint.Long;
 
                     //RLS
                     GenericLane_t *g_lane = new GenericLane_t;
