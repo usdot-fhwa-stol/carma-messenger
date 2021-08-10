@@ -100,7 +100,24 @@ namespace cpp_message
                         if(lane->maneuvers)
                         {
                             ln.maneuvers_exists = true;
-                            ln.maneuvers.allowed_maneuvers = lane->maneuvers->buf[l];
+
+                             uint16_t binary = lane->maneuvers->buf[0] >> 4;
+                            unsigned int maneuver_type = 4;
+                             // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
+            
+                            for (int m = 0; m < lane->maneuvers->size; m ++)
+                            {
+                                if ((int)binary == 1) 
+                                {
+                                    ln.maneuvers.allowed_maneuvers = maneuver_type;
+                                    break;
+                                }
+                                else
+                                {
+                                    maneuver_type -= 1;
+                                    binary = binary >> 1;
+                                }
+                            }
                         }
                         else
                         {
@@ -133,8 +150,23 @@ namespace cpp_message
                                 entry.connecting_lane.lane = ct->connectingLane.lane;
                                 if(ct->connectingLane.maneuver)
                                 {
-                                    entry.connecting_lane.maneuver_exists = true;
-                                    entry.connecting_lane.maneuver.allowed_maneuvers = ct->connectingLane.maneuver->buf[c];
+                                     uint16_t binary = ct->connectingLane.maneuver->buf[0] >> 4;
+                                    unsigned int maneuver_type = 4;
+                                    // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
+            
+                                    for (int m = 0; m < ct->connectingLane.maneuver->size; m ++)
+                                    {
+                                        if ((int)binary == 1) 
+                                        {
+                                            entry.connecting_lane.maneuver.allowed_maneuvers = maneuver_type;
+                                            break;
+                                        }
+                                        else
+                                            {
+                                                maneuver_type -= 1;
+                                                binary = binary >> 1;
+                                            }
+                                    }
                                 }
                                 else
                                 {
