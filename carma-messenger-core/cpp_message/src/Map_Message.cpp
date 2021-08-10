@@ -63,6 +63,7 @@ namespace cpp_message
                     else
                     {
                         new_intersection.id.region_exists = false;
+                        new_intersection.id.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
                     }
                     
 
@@ -154,6 +155,7 @@ namespace cpp_message
                                     else
                                     {
                                         entry.remote_intersection.region_exists = false;
+                                        entry.remote_intersection.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
                                     }
 
                                     entry.remote_intersection.id = ct->remoteIntersection->id;
@@ -189,7 +191,7 @@ namespace cpp_message
                         }
                         else
                         {
-                            ln.egress_approach_exists = false;
+                            ln.connects_to_exists = false;
                         }
 
                         new_intersection.lane_set.lane_list.push_back(ln);
@@ -198,10 +200,18 @@ namespace cpp_message
                     if(map_msg_intersections->name)
                     {
                         new_intersection.name_exists=true;
-                        for (size_t n = 0 ; n < map_msg_intersections->name->size; n++)
+
+                        DescriptiveName_t *nm = new DescriptiveName_t;
+
+                        nm = map_msg_intersections->name;
+                        std::string n;
+                        
+                        for (size_t x = 0; x < nm->size;x++)
                         {
-                            new_intersection.name.push_back(n);
+                            n.push_back(nm->buf[x]);
                         }
+                        new_intersection.name = n;
+
                     }
                     else
                     {
@@ -211,8 +221,7 @@ namespace cpp_message
                     if(map_msg_intersections->laneWidth)
                     {
                         new_intersection.lane_width_exists = true;
-                        auto width = map_msg_intersections->laneWidth;
-                        new_intersection.lane_width = *width;
+                        new_intersection.lane_width = *map_msg_intersections->laneWidth;
                     }
                     else
                     {
@@ -372,17 +381,6 @@ namespace cpp_message
                         rs.name_exists = false;
                     }
 
-                    if (rseg->laneWidth)
-                    {
-                        rs.lane_width_exists = true;
-
-                        rs.lane_width = *rseg->laneWidth;
-                    }
-                    else
-                    {
-                        rs.lane_width_exists = false;
-                    }
-
                     if(rseg->speedLimits)
                     {
                         rs.speed_limits_exists = true;
@@ -450,15 +448,29 @@ namespace cpp_message
                         {
                             gl.maneuvers_exists = true;
 
-                            AllowedManeuvers_t *al = new AllowedManeuvers_t;
+                            uint16_t binary = g_lane->maneuvers->buf[0] >> 4;
+                            unsigned int maneuver_type = 4;
+                             // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
+            
+                            for (int m = 0; m < g_lane->maneuvers->size; m ++)
+                            {
+                                if ((int)binary == 1) 
+                                {
+                                    gl.maneuvers.allowed_maneuvers = maneuver_type;
+                                    break;
+                                }
+                                else
+                                {
+                                    maneuver_type -= 1;
+                                    binary = binary >> 1;
+                                }
+                            }
 
-                            al = g_lane->maneuvers;
-                            j2735_msgs::AllowedManeuvers a;
-                            gl.maneuvers.allowed_maneuvers =  g_lane->maneuvers->buf[i];
                         }
                         else
                         {
                             gl.maneuvers_exists = false;
+                            gl.maneuvers.allowed_maneuvers = 0;
                         }
 
                         if(g_lane->connectsTo)
@@ -488,11 +500,30 @@ namespace cpp_message
                                 if(ct->connectingLane.maneuver)
                                 {
                                     entry.connecting_lane.maneuver_exists = true;
-                                    entry.connecting_lane.maneuver.allowed_maneuvers = ct->connectingLane.maneuver->buf[c];
+                                    uint16_t binary = ct->connectingLane.maneuver->buf[0] >> 4;
+                                    unsigned int maneuver_type = 4;
+                                     // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
+            
+                                    for (int m = 0; m < ct->connectingLane.maneuver->size; m ++)
+                                    {
+                                        if ((int)binary == 1) 
+                                        {
+                                            entry.connecting_lane.maneuver.allowed_maneuvers = maneuver_type;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            maneuver_type -= 1;
+                                            binary = binary >> 1;
+                                        }
+                                    }
+
+
                                 }
                                 else
                                 {
                                     entry.connecting_lane.maneuver_exists=false;
+                                    entry.connecting_lane.maneuver.allowed_maneuvers = 0;
                                 }
                                 
                                 //Remote Intersection
@@ -509,6 +540,7 @@ namespace cpp_message
                                     else
                                     {
                                         entry.remote_intersection.region_exists = false;
+                                        entry.remote_intersection.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
                                     }
 
                                     entry.remote_intersection.id = ct->remoteIntersection->id;
