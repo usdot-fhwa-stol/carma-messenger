@@ -264,9 +264,7 @@ namespace cpp_message
 
                     if(map_msg_intersections->refPoint.elevation) 
                     {
-                        new_intersection.ref_point.elevation_exists = true;
-                        
-
+                        new_intersection.ref_point.elevation_exists = true;                        
                         DSRC_Elevation_t *dsrc_el = new DSRC_Elevation_t;
                         dsrc_el = map_msg_intersections->refPoint.elevation;
 
