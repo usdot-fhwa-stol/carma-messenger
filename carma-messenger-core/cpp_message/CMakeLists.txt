@@ -127,6 +127,6 @@ catkin_add_gmock(${PROJECT_NAME}-test
 	test/test_BSM.cpp
 	test/test_MapMessage.cpp
 	test/test_SPAT.cpp
-	test/MapMessage.cpp
+	test/test_MapMessage.cpp
 )
 target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})
