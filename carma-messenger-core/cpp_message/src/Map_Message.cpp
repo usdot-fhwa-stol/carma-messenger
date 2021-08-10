@@ -99,7 +99,7 @@ namespace cpp_message
                         if(lane->maneuvers)
                         {
                             ln.maneuvers_exists = true;
-                            ln.maneuvers.allowed_maneuvers = *lane->maneuvers->buf;
+                            ln.maneuvers.allowed_maneuvers = lane->maneuvers->buf[l];
                         }
                         else
                         {
@@ -133,7 +133,7 @@ namespace cpp_message
                                 if(ct->connectingLane.maneuver)
                                 {
                                     entry.connecting_lane.maneuver_exists = true;
-                                    entry.connecting_lane.maneuver.allowed_maneuvers = *ct->connectingLane.maneuver->buf;
+                                    entry.connecting_lane.maneuver.allowed_maneuvers = ct->connectingLane.maneuver->buf[c];
                                 }
                                 else
                                 {
@@ -449,7 +449,12 @@ namespace cpp_message
                         if(g_lane->maneuvers)
                         {
                             gl.maneuvers_exists = true;
-                            gl.maneuvers.allowed_maneuvers = *g_lane->maneuvers->buf;
+
+                            AllowedManeuvers_t *al = new AllowedManeuvers_t;
+
+                            al = g_lane->maneuvers;
+                            j2735_msgs::AllowedManeuvers a;
+                            gl.maneuvers.allowed_maneuvers =  g_lane->maneuvers->buf[i];
                         }
                         else
                         {
@@ -483,7 +488,7 @@ namespace cpp_message
                                 if(ct->connectingLane.maneuver)
                                 {
                                     entry.connecting_lane.maneuver_exists = true;
-                                    entry.connecting_lane.maneuver.allowed_maneuvers = *ct->connectingLane.maneuver->buf;
+                                    entry.connecting_lane.maneuver.allowed_maneuvers = ct->connectingLane.maneuver->buf[c];
                                 }
                                 else
                                 {
@@ -537,6 +542,217 @@ namespace cpp_message
                             }//end connects to
 
                         }
+                        if (g_lane->laneID)
+                        {
+                            gl.lane_id = g_lane->laneID;
+                        }
+
+                        //Node List
+                        gl.node_list.choice = g_lane->nodeList.present;
+                        gl.node_list.computed.offset_x_axis.large = g_lane->nodeList.choice.computed.offsetXaxis.choice.large;
+                        gl.node_list.computed.offset_x_axis.small = g_lane->nodeList.choice.computed.offsetXaxis.choice.small;
+
+                        gl.node_list.computed.offset_y_axis.large = g_lane->nodeList.choice.computed.offsetYaxis.choice.large;
+                        gl.node_list.computed.offset_y_axis.small = g_lane->nodeList.choice.computed.offsetYaxis.choice.small;
+
+                        //NodeList Scale Axis
+                        if(g_lane->nodeList.choice.computed.scaleXaxis)
+                        {
+                            gl.node_list.computed.scale_x_axis_exists = true;
+                            gl.node_list.computed.scale_x_axis = *g_lane->nodeList.choice.computed.scaleXaxis;
+
+                        }
+                        if(g_lane->nodeList.choice.computed.scaleYaxis)
+                        {
+                            gl.node_list.computed.scale_y_axis_exists = true;
+                            gl.node_list.computed.scale_y_axis = *g_lane->nodeList.choice.computed.scaleYaxis;
+
+                        }
+
+                        //Rotate XY
+                        if(g_lane->nodeList.choice.computed.rotateXY)
+                        {
+                            gl.node_list.computed.rotatexy_exists = true;
+                            gl.node_list.computed.rotateXY = *g_lane->nodeList.choice.computed.rotateXY;
+
+                        }
+                        
+                        //Scale Axis
+                        if(g_lane->nodeList.choice.computed.scaleXaxis)
+                        {
+                            gl.node_list.computed.scale_x_axis_exists = true;
+                            gl.node_list.computed.scale_x_axis = *g_lane->nodeList.choice.computed.scaleXaxis;
+
+                        }
+                        if(g_lane->nodeList.choice.computed.scaleYaxis)
+                        {
+                            gl.node_list.computed.scale_y_axis_exists = true;
+                            gl.node_list.computed.scale_y_axis = *g_lane->nodeList.choice.computed.scaleYaxis;
+
+                        }
+
+                        gl.node_list.computed.reference_lane_id = g_lane->nodeList.choice.computed.referenceLaneId;
+                        //Nodes
+                        for(size_t n =0;n< g_lane->nodeList.choice.nodes.list.size; n++)
+                        {
+                            j2735_msgs::NodeXY node;
+
+                            //Attributes
+                            if(g_lane->nodeList.choice.nodes.list.array[n]->attributes)
+                            {
+                                auto attributes = g_lane->nodeList.choice.nodes.list.array[n]->attributes;
+                                node.attributes_exists = true;
+                                
+                                //Attribute Data
+                                if(attributes->data)
+                                {
+                                    node.attributes.data_exists = true;
+                                    j2735_msgs::LaneDataAttribute data;
+                                    for(size_t d =0; d< attributes->data->list.size; d++)
+                                    {
+                                        data.lane_angle = attributes->data->list.array[d]->choice.laneAngle;
+                                        data.lane_crown_point_center = attributes->data->list.array[d]->choice.laneCrownPointCenter;
+                                        data.lane_crown_point_left = attributes->data->list.array[d]->choice.laneCrownPointLeft;
+                                        data.lane_crown_point_right = attributes->data->list.array[d]->choice.laneCrownPointRight;
+                                        data.path_end_point_angle = attributes->data->list.array[d]->choice.pathEndPointAngle;
+
+                                        for(size_t sl = 0; sl < attributes->data->list.array[d]->choice.speedLimits.list.size; sl++)
+                                        {
+                                            j2735_msgs::RegulatorySpeedLimit speedLimit;
+                                            speedLimit.speed = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->speed;
+                                            speedLimit.type.speed_limit_type = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->type;
+                                             data.speed_limits.speed_limits.push_back(speedLimit);
+                                        }
+                                        
+                                        node.attributes.data.lane_attribute_list.push_back(data);
+                                    }
+                                }
+                                else
+                                {
+                                    node.attributes.data_exists = false;
+                                }//end Attribute Data
+
+                                //Attribute DElevation
+                                if(attributes->dElevation)
+                                {
+                                    node.attributes.dElevation_exists = true;
+                                    node.attributes.dElevation = *attributes->dElevation;
+
+                                }
+                                else
+                                {
+                                    node.attributes.dElevation_exists = false;
+                                }//end Attribute DElevation
+
+                                //Attributes Disabled
+                                if(attributes->disabled)
+                                {
+                                    node.attributes.disabled_exists = true;
+                                    SegmentAttributeXY_t *sa_xy = new SegmentAttributeXY_t;
+                                    for(size_t sa = 0; sa < attributes->disabled->list.size; sa++)
+                                    {
+                                        sa_xy = attributes->disabled->list.array[sa];
+                                        j2735_msgs::SegmentAttributeXY sxy;
+                                        sxy.segment_attribute_xy = *sa_xy;
+                                        node.attributes.disabled.segment_attribute_xy.push_back(sxy);
+                                    }
+                                }
+                                else
+                                {
+                                    node.attributes.disabled_exists = false;
+                                    
+                                }//end Attributes Disabled
+
+                                //Attributes DWidth
+                                if(attributes->dWidth)
+                                {
+                                    node.attributes.dWitdh_exists = true;
+                                    node.attributes.dWitdh = *attributes->dWidth;
+                                }
+                                else
+                                {
+                                    node.attributes.dWitdh_exists = false;
+                                }//end Attributes DWidth
+
+                                //Attributes Enabled
+                                if(attributes->enabled)
+                                {
+                                    node.attributes.enabled_exists = true;
+                                    
+                                    SegmentAttributeXY_t *sa_xy = new SegmentAttributeXY_t;
+                                    for(size_t en = 0; en < attributes->enabled->list.size; en++)
+                                    {
+                                        sa_xy = attributes->enabled->list.array[en];
+
+                                        j2735_msgs::SegmentAttributeXY enabled;
+                                        enabled.segment_attribute_xy = *sa_xy;
+                                        node.attributes.enabled.segment_attribute_xy.push_back(enabled);
+                                    }
+                                }
+                                else
+                                {
+                                    node.attributes.enabled_exists = false;
+                                }//end Attributes Enabled
+
+
+                                //Attribute Local Node
+                                if(attributes->localNode)
+                                {
+                                    node.attributes.local_node_exists = true;
+
+                                    NodeAttributeXY_t *na = new NodeAttributeXY_t;
+
+                                    for(size_t ln = 0; ln < attributes->localNode->list.size; ln++)
+                                    {
+                                        j2735_msgs::NodeAttributeXY n_att;
+                                        na = attributes->localNode->list.array[ln];
+                                        n_att.node_attribute_xy = *na;
+                                        node.attributes.local_node.node_attribute_xy_List.push_back(n_att);
+                                        
+                                    }
+                                }
+                                else
+                                {
+                                    node.attributes.local_node_exists = false;
+                                }//end Attribute Local Node
+
+                            }
+                            else
+                            {
+                                node.attributes_exists = false;
+                            } //end Attributes
+
+                            //Node Delta Handling
+                            for(size_t no = 0; no < g_lane->nodeList.choice.nodes.list.size; no++)
+                            {
+                                //Node Delta
+                                node.delta.node_latlon.latitude = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_LatLon.lat;
+                                node.delta.node_latlon.longitude = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_LatLon.lon;
+
+                                node.delta.node_xy1.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY1.x;
+                                node.delta.node_xy1.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY1.y;
+
+                                node.delta.node_xy2.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY2.x;
+                                node.delta.node_xy2.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY2.y;
+
+                                node.delta.node_xy3.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY3.x;
+                                node.delta.node_xy3.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY3.y;
+
+                                node.delta.node_xy4.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY4.x;
+                                node.delta.node_xy4.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY4.y;
+
+                                node.delta.node_xy5.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY5.x;
+                                node.delta.node_xy5.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY5.y;
+
+                                node.delta.node_xy6.x = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY6.x;
+                                node.delta.node_xy6.y = g_lane->nodeList.choice.nodes.list.array[no]->delta.choice.node_XY6.y;
+
+                                gl.node_list.nodes.node_set_xy.push_back(node);
+                            }//end Node Delta Handling
+                            
+                        }
+
+
                         if (g_lane->overlays)
                         {
                             gl.overlay_lane_list_exists = true;
