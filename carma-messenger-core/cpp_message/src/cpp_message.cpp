@@ -25,6 +25,7 @@
 #include "MobilityRequest_Message.h"
 #include "BSM_Message.h"
 #include "SPAT_Message.h"
+#include "Map_Message.h"
 
 namespace cpp_message
 {
@@ -51,6 +52,7 @@ namespace cpp_message
         bsm_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
         bsm_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
         spat_message_pub_ = nh_->advertise<j2735_msgs::SPAT>("incoming_j2735_spat", 5);
+        map_message_pub_ = nh_->advertise<j2735_msgs::MapData>("incoming_j2375_map", 5);
 
 
     }
@@ -170,6 +172,20 @@ namespace cpp_message
             }
             else{
                 ROS_WARN_STREAM("Cannot decode SPAT message");
+            }
+        }
+        else if(msg->messageType=="MapData")
+        {
+            std::vector<uint8_t> array=msg->content;
+            Map_Message decode;
+            auto output = decode.decode_map_message(array);
+            if(output)
+            {
+                map_message_pub_.publish(output.get());
+            }
+            else
+            {
+                ROS_WARN_STREAM("Cannot decode MapData Message");
             }
         }
     }

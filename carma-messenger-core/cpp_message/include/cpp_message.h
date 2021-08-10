@@ -35,7 +35,6 @@ extern "C"
 #include <j2735_msgs/BSM.h>
 #include <j2735_msgs/MapData.h>
 #include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
 
 
 namespace cpp_message
@@ -71,7 +70,7 @@ private:
     ros::Publisher bsm_message_pub_;     //incoming bsm message
     ros::Subscriber bsm_message_sub_;    //outgoing plain bsm message
     ros::Publisher spat_message_pub_;    //incoming spat message
-    
+    ros::Publisher map_message_pub_; //incoming map message
 
     /**
      * @brief Initialize pub/sub and params.
