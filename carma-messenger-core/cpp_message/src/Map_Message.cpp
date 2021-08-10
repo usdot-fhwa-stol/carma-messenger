@@ -41,6 +41,35 @@ namespace cpp_message
 
             auto map_msg = message->value.choice.MapData;
 
+            //Time Stamp
+            if(map_msg.timeStamp)
+            {
+                output.time_stamp_exists = true;
+
+                output.time_stamp = *map_msg.timeStamp;
+            }
+            else
+            {
+                output.time_stamp_exists = false;
+            }
+
+            output.msg_issue_revision = map_msg.msgIssueRevision;
+
+            output.layer_type.layer_type = *map_msg.layerType;
+
+            
+            //Layer ID
+            if(map_msg.layerID)
+            {
+                output.layer_id_exists = true;
+                output.layer_id = *map_msg.layerID;
+
+            }//end layer ID
+            else
+            {
+                output.layer_id_exists = false;
+            }
+
             IntersectionGeometry_t *map_msg_intersections = new IntersectionGeometry_t;
 
             //Intersection Handling
@@ -330,43 +359,6 @@ namespace cpp_message
             {
                 output.intersections_exists = false;
             }
-
-
-            output.layer_type.layer_type = *map_msg.layerType;
-
-            //Layer ID
-            if(map_msg.layerID)
-            {
-                output.layer_id_exists = true;
-                output.layer_id = *map_msg.layerID;
-
-            }//end layer ID
-            else
-            {
-                output.layer_id_exists = false;
-            }
-
-            //Restriction List
-            if(map_msg.restrictionList)
-            {
-                output.restriction_list_exists = true;
-
-                RestrictionClassAssignment_t *rca = new RestrictionClassAssignment_t;
-
-                for(size_t i = 0; i < map_msg.restrictionList->list.size; i++)
-                {
-                    rca = map_msg.restrictionList->list.array[i];
-
-                    j2735_msgs::RestrictionClassAssignment rclass;
-                    rclass.id = rca->id;
-                    output.restriction_list.restriction_class_list.push_back(rclass);
-                }
-            }//end Restriction List
-            else
-            {
-                output.restriction_list_exists = false;
-            }
-
 
             //Road Segment
             if(map_msg.roadSegments)
@@ -878,30 +870,34 @@ namespace cpp_message
 
 
             }
-
             else
             {
                 output.data_parameters_exists = false;
             }
 
-            //Time Stamp
-            if(map_msg.timeStamp)
+            //Restriction List
+            if(map_msg.restrictionList)
             {
-                output.time_stamp_exists = true;
+                output.restriction_list_exists = true;
 
-                output.time_stamp = *map_msg.timeStamp;
-            }
+                RestrictionClassAssignment_t *rca = new RestrictionClassAssignment_t;
+
+                for(size_t i = 0; i < map_msg.restrictionList->list.size; i++)
+                {
+                    rca = map_msg.restrictionList->list.array[i];
+
+                    j2735_msgs::RestrictionClassAssignment rclass;
+                    rclass.id = rca->id;
+                    output.restriction_list.restriction_class_list.push_back(rclass);
+                }
+            }//end Restriction List
             else
             {
-                output.time_stamp_exists = false;
+                output.restriction_list_exists = false;
             }
-            output.msg_issue_revision = map_msg.msgIssueRevision;
-            
-            return boost::optional<j2735_msgs::MapData>(output);
-
 
         }
-
+        return boost::optional<j2735_msgs::MapData>(output);
 
     }
 
