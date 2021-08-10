@@ -541,9 +541,14 @@ namespace cpp_message
 
                                 gl.connects_to.connect_to_list.push_back(entry);
 
-                            }//end connects to
+                            }
 
                         }
+                        else
+                        {
+                            gl.connects_to_exists = false;
+                        }//end connects to
+                        
                         if (g_lane->laneID)
                         {
                             gl.lane_id = g_lane->laneID;
