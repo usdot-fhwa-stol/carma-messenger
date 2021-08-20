@@ -7,7 +7,7 @@
             },
             "includePath": [
                 "/home/carma/carma-messenger-ws/devel/include/**",
-                "/opt/ros/kinetic/include/**",
+                "/opt/ros/noetic/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/carma_utils/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/cav_driver_utils/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-messenger/carma-messenger-core/cpp_message/include/**",
