@@ -17,7 +17,7 @@ version: '2'
 
 services:
   carma-messenger-ui:
-    image: usdotfhwastoldev/carma-messenger-ui:noetic-develop
+    image: usdotfhwastoldev/carma-messenger-ui:elise
     network_mode: host
     container_name: carma-messenger-ui
     volumes_from: 
