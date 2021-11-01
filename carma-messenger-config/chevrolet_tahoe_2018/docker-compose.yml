@@ -17,7 +17,7 @@ version: '2'
 
 services:
   roscore:
-    image: usdotfhwastolcandidate/carma-base:elise
+    image: usdotfhwastoldev/carma-base:develop
     network_mode: host
     container_name: roscore
     volumes_from:
