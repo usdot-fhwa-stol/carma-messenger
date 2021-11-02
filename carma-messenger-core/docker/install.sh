@@ -13,6 +13,6 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations under
 #  the License.
-source /opt/ros/kinetic/setup.bash
+source /opt/ros/noetic/setup.bash
 cd ~/
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

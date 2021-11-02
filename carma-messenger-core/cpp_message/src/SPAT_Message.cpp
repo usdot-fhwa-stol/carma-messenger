@@ -657,7 +657,7 @@ namespace cpp_message
                             *connection_assist->pedBicycleDetect = plainMessage.intersections.intersection_state_list[i].states.movement_list[j].maneuver_assist_list.connection_maneuver_assist_list[k].ped_bicycle_detect;
                         }
                         else{
-                            connection_assist->pedBicycleDetect = false;
+                            *connection_assist->pedBicycleDetect = false;
                         }
 
                         asn_sequence_add(&maneuver_assist_list->list, connection_assist);
