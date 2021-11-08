@@ -27,6 +27,8 @@
   <depend>j2735_convertor</depend>
   <depend>cpp_message</depend>
 
+  <build_depend>carma_cmake_common</build_depend>
+
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

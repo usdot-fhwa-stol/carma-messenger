@@ -29,4 +29,6 @@
   <depend>cav_msgs</depend>
   <depend>carma_utils</depend>
   <depend>rosunit</depend>
+
+  <build_depend>carma_cmake_common</build_depend>
 </package>
