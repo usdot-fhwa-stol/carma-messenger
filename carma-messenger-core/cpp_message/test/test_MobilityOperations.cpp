@@ -44,7 +44,8 @@ TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg)
     cav_msgs::MobilityOperation message;     
     header.sender_id="USDOT-45100";
     header.recipient_id="USDOT-45095";
-    header.sender_bsm_id="10ABCDEF";
+    ROS_ERROR_STREAM("TEST");
+    header.sender_bsm_id="10ABCEFGH";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
     message.header=header;

@@ -168,7 +168,7 @@ namespace cpp_message
         free(accel);
         VehicleSize_t* vehicle_size;
         vehicle_size = (VehicleSize_t*) calloc(1, sizeof(VehicleSize_t));
-        vehicle_size->length = plain_msg.core_data.size.vehicle_length;
+        vehicle_size->length = plain_msg.core_data.size.vehicle_length * 0.01; //BSM vehicle length data converted to centimeters
         vehicle_size->width = plain_msg.core_data.size.vehicle_width;
         core_data->size = *vehicle_size;
         free(vehicle_size);
