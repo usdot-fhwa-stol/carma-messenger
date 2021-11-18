@@ -19,6 +19,7 @@
  */
 #include "MobilityPath_Message.h"
 #include "MobilityHeader_Message.h"
+#include <iostream>
 
 namespace cpp_message
 {
@@ -201,16 +202,18 @@ namespace cpp_message
         
         message->messageId=MOBILITYPATH_TEST_ID;
         message->value.present=MessageFrame__value_PR_TestMessage02;
-
+                
         Mobility_Header Header;
         //convert host_id string to char array
         std::string sender_id=plainMessage.header.sender_id;
         size_t string_size=sender_id.size();
-        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH)
+        {
             ROS_WARN("Unacceptable host id value, changing to default");
             sender_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
-        }
+        }                
+
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -226,6 +229,8 @@ namespace cpp_message
             recipient_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
+            
+
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -233,21 +238,26 @@ namespace cpp_message
         }
         message->value.choice.TestMessage02.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage02.header.targetStaticId.size=string_size;
-        
+            
          //convert bsm_id string to char array
         //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
         //Since we're encoding this into a binary value, the transition would be from HEX -> Binary
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
         string_size=sender_bsm_id.size();
-        if(string_size<Header.BSM_ID_LENGTH){
+        if(string_size<Header.BSM_ID_LENGTH)
+        {
             sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
         }
-        else if(string_size>Header.BSM_ID_LENGTH){
+        else if(string_size>Header.BSM_ID_LENGTH)
+        {
             ROS_WARN_STREAM("Unacceptable bsm id, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
-        auto  binary_bsm_id = hex2bytes(sender_bsm_id);
+        ROS_INFO_STREAM("String_Size " << string_size);
+        auto  binary_bsm_id = hex2bin(sender_bsm_id);
+        ROS_INFO_STREAM("Binary BSM Size " << binary_bsm_id.size());
+        
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -291,7 +301,6 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.timestamp.buf=string_content_timestamp;
         message->value.choice.TestMessage02.header.timestamp.size=string_size;
 
-        
         //location
         cav_msgs::LocationECEF starting_location;
         long location_val;
@@ -367,7 +376,7 @@ namespace cpp_message
         }
 
         message->value.choice.TestMessage02.body.trajectory=*offsets_list;
-        
+
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
         //log a warning if it fails
         if(ec.encoded==-1){
@@ -378,28 +387,90 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        
+
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
     std::string Mobility_Path::bin2hex(std::string digits)
     {
-       std::bitset<8> set(digits);  
+        ROS_WARN_STREAM("INPUT: "<< digits);
        std::stringstream res;
-       res << std::hex << std::uppercase << set.to_ulong(); 
-
-       return res.str();
+       res << std::hex << digits; 
+       unsigned n;
+       res >> n;
+       std::bitset<8> set(n);
+       return set.to_string();
     }
-    std::vector<char> Mobility_Path::hex2bytes(const std::string& hex)
+
+    std::string Mobility_Path::hex2bin(std::string hex_string)
     {
-        std::vector<char> bytes;
+        std::string binary_string;
 
-        for (unsigned int i = 0; i < hex.length(); i += 2) {
-        std::string byteString = hex.substr(i, 2);
-        char byte = (char) strtol(byteString.c_str(), NULL, 16);
-        bytes.push_back(byte);
+        for(size_t i = 0; i < hex_string.size(); i++)
+        {
+            switch (hex_string[i])
+            {
+                case '0':
+                
+                    binary_string.append("0000");
+                    break;
+                
+                case '1':
+                    binary_string.append("0001");
+                    break;
+                case '2':
+                    binary_string.append("0010");
+                break;
+                case '3':
+                    binary_string.append("0011");
+                break;
+                case '4':
+                    binary_string.append("0100");
+                break;
+                case '5':
+                    binary_string.append("0101");
+                break;
+                case '6':
+                    binary_string.append("0110");
+                break;
+                case '7':
+                    binary_string.append("0111");
+                break;
+                case '8':
+                    binary_string.append("1000");
+                break;
+                case '9':
+                    binary_string.append("1001");
+                break;
+                case 'A':
+                case 'a':
+                    binary_string.append("1010");
+                break;
+                case 'B':
+                case 'b':
+                    binary_string.append("1011");
+                break;
+                case 'C':
+                case 'c':
+                    binary_string.append("1100");
+                break;
+                case 'D':
+                case 'd':
+                    binary_string.append("1101");
+                break;
+                case 'E':
+                case 'e':
+                    binary_string.append("1110");
+                break;
+                case 'F':
+                case 'f':
+                    binary_string.append("1111");
+                break;
+                default:
+                    break;
+            }
         }
-
-        return bytes;
+        ROS_INFO_STREAM("Binary String: " << binary_string);
+        return binary_string;
     }
 }

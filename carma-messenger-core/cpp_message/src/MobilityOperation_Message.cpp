@@ -209,7 +209,7 @@ namespace cpp_message
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
-        auto  binary_bsm_id = Hex2Bytes(sender_bsm_id);
+        auto  binary_bsm_id = hextobin(sender_bsm_id);
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -305,22 +305,85 @@ namespace cpp_message
 
     std::string Mobility_Operation::bintohex(std::string digits)
     {
-       std::bitset<8> set(digits);  
        std::stringstream res;
-       res << std::hex << std::uppercase << set.to_ulong(); 
-
-       return res.str();
+       res << std::hex << digits; 
+       unsigned n;
+       res >> n;
+       std::bitset<8> set(n);
+       return set.to_string();
     }
-    std::vector<char> Mobility_Operation::Hex2Bytes(const std::string& hex)
+    
+    std::string Mobility_Operation::hextobin(std::string hex_string)
     {
-        std::vector<char> bytes;
+        std::string binary_string;
 
-        for (unsigned int i = 0; i < hex.length(); i += 2) {
-        std::string byteString = hex.substr(i, 2);
-        char byte = (char) strtol(byteString.c_str(), NULL, 16);
-        bytes.push_back(byte);
+        for(size_t i = 0; i < hex_string.size(); i++)
+        {
+            switch (hex_string[i])
+            {
+                case '0':
+                
+                    binary_string.append("0000");
+                    break;
+                
+                case '1':
+                    binary_string.append("0001");
+                    break;
+                case '2':
+                    binary_string.append("0010");
+                break;
+                case '3':
+                    binary_string.append("0011");
+                break;
+                case '4':
+                    binary_string.append("0100");
+                break;
+                case '5':
+                    binary_string.append("0101");
+                break;
+                case '6':
+                    binary_string.append("0110");
+                break;
+                case '7':
+                    binary_string.append("0111");
+                break;
+                case '8':
+                    binary_string.append("1000");
+                break;
+                case '9':
+                    binary_string.append("1001");
+                break;
+                case 'A':
+                case 'a':
+                    binary_string.append("1010");
+                break;
+                case 'B':
+                case 'b':
+                    binary_string.append("1011");
+                break;
+                case 'C':
+                case 'c':
+                    binary_string.append("1100");
+                break;
+                case 'D':
+                case 'd':
+                    binary_string.append("1101");
+                break;
+                case 'E':
+                case 'e':
+                    binary_string.append("1110");
+                break;
+                case 'F':
+                case 'f':
+                    binary_string.append("1111");
+                break;
+                default:
+                    break;
+            }
         }
-
-        return bytes;
+        ROS_INFO_STREAM("Binary String: " << binary_string);
+        return binary_string;
     }
+
+
 }
