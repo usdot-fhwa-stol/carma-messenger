@@ -194,6 +194,10 @@ namespace cpp_message
         
          //convert bsm_id string to char array
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+        unsigned long bsm_decimal = std::stoll(sender_bsm_id);  // std::string sender_bsm_id
+        std::stringstream ss_bsm;
+        ss_bsm << std::setw(8) << std::setfill('0')  << std::hex << bsm_decimal;
+        std::string sender_bsm_id_str = ss_bsm.str();
         string_size=sender_bsm_id.size();
         if(string_size<Header.BSM_ID_LENGTH){
             sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
