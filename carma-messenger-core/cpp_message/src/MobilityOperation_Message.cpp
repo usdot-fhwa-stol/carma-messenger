@@ -197,20 +197,20 @@ namespace cpp_message
         unsigned long bsm_decimal = std::stoll(sender_bsm_id);  // std::string sender_bsm_id
         std::stringstream ss_bsm;
         ss_bsm << std::setw(8) << std::setfill('0')  << std::hex << bsm_decimal;
-        std::string sender_bsm_id_str = ss_bsm.str();
-        string_size=sender_bsm_id.size();
+        std::string sender_bsm_id_hex_str  = ss_bsm.str();
+        string_size=sender_bsm_id_hex_str .size();
         if(string_size<Header.BSM_ID_LENGTH){
-            sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
+            sender_bsm_id_hex_str =std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id_hex_str );
         }
         else if(string_size>Header.BSM_ID_LENGTH){
             ROS_WARN("BSM ID greater than limit, changing to default");
-            sender_bsm_id=Header.BSM_ID_DEFAULT;
+            sender_bsm_id_hex_str =Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_BSMId[i]=sender_bsm_id[i];
+            string_content_BSMId[i]=sender_bsm_id_hex_str[i];
         }
         message->value.choice.TestMessage03.header.hostBSMId.buf=string_content_BSMId;
         message->value.choice.TestMessage03.header.hostBSMId.size=string_size;
