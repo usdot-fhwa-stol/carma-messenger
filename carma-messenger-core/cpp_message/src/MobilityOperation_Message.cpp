@@ -80,7 +80,6 @@ namespace cpp_message
             for(size_t i=0;i<str_len;i++){
                 temp +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
             }
-            sender_bsm_id = bintohex(temp);
             if(str_len<Header_constant.BSM_ID_LENGTH){
                 sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
             }
@@ -209,11 +208,10 @@ namespace cpp_message
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
-        auto  binary_bsm_id = hextobin(sender_bsm_id);
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
-            string_content_BSMId[i]=binary_bsm_id[i];
+            string_content_BSMId[i]=sender_bsm_id[i];
         }
         message->value.choice.TestMessage03.header.hostBSMId.buf=string_content_BSMId;
         message->value.choice.TestMessage03.header.hostBSMId.size=string_size;
