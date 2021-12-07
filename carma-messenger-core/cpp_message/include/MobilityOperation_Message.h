@@ -44,19 +44,6 @@ namespace cpp_message
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage);
 
-        /**
-         * @brief MobilityOperation Binary to Hex String Conversion Function
-         * @param digits Binary input string
-         * @return converted binary string into hexadecimal format
-        */        
-        std::string bintohex(std::string digits);
-
-        /**
-         * @brief MobilityOperation Hex String to Binary String Conversion Function
-         * @param hex_string Hex string input
-         * @return converted hexadecimal string into binary
-        */
-        std::string hextobin(std::string hex_string);
 
     };
 }

@@ -49,22 +49,7 @@ namespace cpp_message
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_path_message(cav_msgs::MobilityPath plainMessage);
-        
-        /**
-         * @brief MobilityPath Binary to Hex String Conversion Function
-         * @param digits Binary input string
-         * @return converted binary string into hexadecimal format
-        */
-        std::string bin2hex(std::string digits);
-
-        /**
-         * @brief MobilityPath Hex String to Binary String Conversion Function
-         * @param hex_string Hex string input
-         * @return converted hexadecimal string into binary
-        */
-        std::string hex2bin(std::string hex_string);
-
-
+    
 
 
 
