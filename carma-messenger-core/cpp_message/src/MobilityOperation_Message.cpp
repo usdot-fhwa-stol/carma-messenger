@@ -78,7 +78,7 @@ namespace cpp_message
             str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
             std::string temp;
             for(size_t i=0;i<str_len;i++){
-                temp +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
+                temp +=message->value.choice.TestMessage03.header.hostBSMId.buf[i];
             }
             if(str_len<Header_constant.BSM_ID_LENGTH){
                 sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
