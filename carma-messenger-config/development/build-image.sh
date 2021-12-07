@@ -38,7 +38,7 @@ while [[ $# -gt 0 ]]; do
     case $arg in
         -d|--develop)
             USERNAME=usdotfhwastoldev
-            COMPONENT_VERSION_STRING=noetic-develop
+            COMPONENT_VERSION_STRING=develop
             shift
             ;;
     esac
