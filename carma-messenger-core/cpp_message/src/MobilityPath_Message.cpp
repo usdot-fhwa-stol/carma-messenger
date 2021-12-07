@@ -70,11 +70,9 @@ namespace cpp_message
             
             //get bsm id
             //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
-            //Since we're decoding this from a binary value to a MobilityHeader value, the transition would be from Binary to Hex
             str_len=message->value.choice.TestMessage02.header.hostBSMId.size;
-            std::string temp;
             for(size_t i=0;i<str_len;i++){
-                temp +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
+                sender_bsm_id +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
             }
            
             if(str_len<Header_constant.BSM_ID_LENGTH)
@@ -240,7 +238,6 @@ namespace cpp_message
             
          //convert bsm_id string to char array
         //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
-        //Since we're encoding this into a binary value, the transition would be from HEX -> Binary
         std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
         string_size=sender_bsm_id.size();
         if(string_size<Header.BSM_ID_LENGTH)
