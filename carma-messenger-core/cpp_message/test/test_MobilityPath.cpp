@@ -39,7 +39,7 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
         // std::cout<<to_read.trajectory.location.timestamp<<std::endl;
         // for(int i=0;i<to_read.trajectory.offsets.size();i++) std::cout<<to_read.trajectory.offsets[i]<<" ";
         
-        if(to_read.header.sender_id=="USDOT-45100" && to_read.trajectory.location.ecef_z==2) EXPECT_TRUE(true);
+        if(to_read.m_header.sender_id=="USDOT-45100" && to_read.trajectory.location.ecef_z==2) EXPECT_TRUE(true);
         else EXPECT_TRUE(false);
     }
     else EXPECT_TRUE(false);
@@ -56,7 +56,7 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
     header.sender_bsm_id="10ABCDEF";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
-    message.header=header;
+    message.m_header=header;
     
     //body-location and trajectory- for encoding provide ros message
     //start location
@@ -112,7 +112,7 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
     header.sender_bsm_id="";
     header.plan_id="";
     header.timestamp = 0;
-    message.header=header;
+    message.m_header=header;
     
     //body-location and trajectory- for encoding provide ros message
     //start location

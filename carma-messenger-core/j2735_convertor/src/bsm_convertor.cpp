@@ -60,14 +60,14 @@ void BSMConvertor::convert(const j2735_msgs::AccelerationSet4Way& in_msg, cav_ms
 
 void BSMConvertor::convert(const j2735_msgs::PositionalAccuracy& in_msg, cav_msgs::PositionalAccuracy& out_msg)
 {
-  // Convert semiMajor Axis
-  out_msg.semiMajor = ValueConvertor::valueJ2735ToCav<float_t>(
-      in_msg.semiMajor, units::TWENTIETH_M_PER_M, out_msg.presence_vector,
+  // Convert semi_major Axis
+  out_msg.semi_major = ValueConvertor::valueJ2735ToCav<float_t>(
+      in_msg.semi_major, units::TWENTIETH_M_PER_M, out_msg.presence_vector,
       cav_msgs::PositionalAccuracy::ACCURACY_AVAILABLE, j2735_msgs::PositionalAccuracy::ACCURACY_UNAVAILABLE);
 
-  // Convert semiMinor Axis
-  out_msg.semiMinor = ValueConvertor::valueJ2735ToCav<float_t>(
-      in_msg.semiMinor, units::TWENTIETH_M_PER_M, out_msg.presence_vector,
+  // Convert semi_minor Axis
+  out_msg.semi_minor = ValueConvertor::valueJ2735ToCav<float_t>(
+      in_msg.semi_minor, units::TWENTIETH_M_PER_M, out_msg.presence_vector,
       cav_msgs::PositionalAccuracy::ACCURACY_AVAILABLE, j2735_msgs::PositionalAccuracy::ACCURACY_UNAVAILABLE);
 
   // Convert Orientation
@@ -121,7 +121,7 @@ void BSMConvertor::convert(const j2735_msgs::BSMCoreData& in_msg, cav_msgs::BSMC
   out_msg.transmission = in_msg.transmission;
   out_msg.brakes = in_msg.brakes;
   convert(in_msg.accuracy, out_msg.accuracy);
-  convert(in_msg.accelSet, out_msg.accelSet);
+  convert(in_msg.accel_set, out_msg.accel_set);
   convert(in_msg.size, out_msg.size);
 }
 
@@ -173,14 +173,14 @@ void BSMConvertor::convert(const cav_msgs::AccelerationSet4Way& in_msg, j2735_ms
 
 void BSMConvertor::convert(const cav_msgs::PositionalAccuracy& in_msg, j2735_msgs::PositionalAccuracy& out_msg)
 {
-  // Convert semiMajor Axis
-  out_msg.semiMajor = ValueConvertor::valueCavToJ2735<uint8_t>(
-      in_msg.semiMajor, units::TWENTIETH_M_PER_M, in_msg.presence_vector,
+  // Convert semi_major Axis
+  out_msg.semi_major = ValueConvertor::valueCavToJ2735<uint8_t>(
+      in_msg.semi_major, units::TWENTIETH_M_PER_M, in_msg.presence_vector,
       cav_msgs::PositionalAccuracy::ACCURACY_AVAILABLE, j2735_msgs::PositionalAccuracy::ACCURACY_UNAVAILABLE);
 
-  // Convert semiMinor Axis
-  out_msg.semiMinor = ValueConvertor::valueCavToJ2735<uint8_t>(
-      in_msg.semiMinor, units::TWENTIETH_M_PER_M, in_msg.presence_vector,
+  // Convert semi_minor Axis
+  out_msg.semi_minor = ValueConvertor::valueCavToJ2735<uint8_t>(
+      in_msg.semi_minor, units::TWENTIETH_M_PER_M, in_msg.presence_vector,
       cav_msgs::PositionalAccuracy::ACCURACY_AVAILABLE, j2735_msgs::PositionalAccuracy::ACCURACY_UNAVAILABLE);
 
   // Convert Orientation
@@ -233,7 +233,7 @@ void BSMConvertor::convert(const cav_msgs::BSMCoreData& in_msg, j2735_msgs::BSMC
   out_msg.transmission = in_msg.transmission;
   out_msg.brakes = in_msg.brakes;
   convert(in_msg.accuracy, out_msg.accuracy);
-  convert(in_msg.accelSet, out_msg.accelSet);
+  convert(in_msg.accel_set, out_msg.accel_set);
   convert(in_msg.size, out_msg.size);
 }
 

@@ -49,7 +49,7 @@ TEST(MobilityRequestMessageTest, testDecodeMobilityRequestMsg)
         // std::cout<<"trajectory_offsets1_y:"<<to_read.trajectory.offsets[1].offset_y<<std::endl;
         // std::cout<<"trajectory_offsets1_z:"<<to_read.trajectory.offsets[1].offset_z<<std::endl;
         // std::cout<<"expiration:"<<to_read.expiration<<std::endl;
-        if(to_read.header.sender_bsm_id=="10ABCDEF" && to_read.trajectory.location.ecef_x==5) EXPECT_TRUE(true);
+        if(to_read.m_header.sender_bsm_id=="10ABCDEF" && to_read.trajectory.location.ecef_x==5) EXPECT_TRUE(true);
         else EXPECT_TRUE(false);
     }
     else EXPECT_TRUE(false);
@@ -65,7 +65,7 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
     header.sender_bsm_id="10ABCDEF";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
-    message.header=header;   
+    message.m_header=header;   
 
     //body
     message.strategy="Carma/Platooning";
@@ -135,7 +135,7 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
     header.sender_bsm_id="";
     header.plan_id="";
     header.timestamp = 0;
-    message.header=header;   
+    message.m_header=header;   
 
     //body
     message.strategy="";

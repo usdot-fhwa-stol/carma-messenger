@@ -634,7 +634,7 @@ namespace cpp_message
                         if(g_lane->nodeList.choice.computed.rotateXY)
                         {
                             gl.node_list.computed.rotatexy_exists = true;
-                            gl.node_list.computed.rotateXY = *g_lane->nodeList.choice.computed.rotateXY;
+                            gl.node_list.computed.rotate_xy = *g_lane->nodeList.choice.computed.rotateXY;
 
                         }
                         
@@ -696,13 +696,13 @@ namespace cpp_message
                                 //Attribute DElevation
                                 if(attributes->dElevation)
                                 {
-                                    node.attributes.dElevation_exists = true;
-                                    node.attributes.dElevation = *attributes->dElevation;
+                                    node.attributes.d_elevation_exists = true;
+                                    node.attributes.d_elevation = *attributes->dElevation;
 
                                 }
                                 else
                                 {
-                                    node.attributes.dElevation_exists = false;
+                                    node.attributes.d_elevation_exists = false;
                                 }//end Attribute DElevation
 
                                 //Attributes Disabled
@@ -727,12 +727,12 @@ namespace cpp_message
                                 //Attributes DWidth
                                 if(attributes->dWidth)
                                 {
-                                    node.attributes.dWitdh_exists = true;
-                                    node.attributes.dWitdh = *attributes->dWidth;
+                                    node.attributes.d_width_exists = true;
+                                    node.attributes.d_width = *attributes->dWidth;
                                 }
                                 else
                                 {
-                                    node.attributes.dWitdh_exists = false;
+                                    node.attributes.d_width_exists = false;
                                 }//end Attributes DWidth
 
                                 //Attributes Enabled
@@ -768,7 +768,7 @@ namespace cpp_message
                                         j2735_msgs::NodeAttributeXY n_att;
                                         na = attributes->localNode->list.array[ln];
                                         n_att.node_attribute_xy = *na;
-                                        node.attributes.local_node.node_attribute_xy_List.push_back(n_att);
+                                        node.attributes.local_node.node_attribute_xy_list.push_back(n_att);
                                         
                                     }
                                 }

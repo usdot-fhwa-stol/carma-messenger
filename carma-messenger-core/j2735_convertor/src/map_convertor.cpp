@@ -43,7 +43,7 @@ void MapConvertor::convertComputedLane(const j2735_msgs::ComputedLane& in_msg, c
   convertOffsetYaxis(in_msg.offset_y_axis, out_msg.offset_y_axis);
 
   // Convert DrivenLineOffsetSm
-  out_msg.rotateXY = (double)in_msg.rotateXY * units::ONE_AND_A_HALF_DEG;
+  out_msg.rotate_xy = (double)in_msg.rotate_xy * units::ONE_AND_A_HALF_DEG;
   // Done Convertion
   out_msg.rotatexy_exists = in_msg.rotatexy_exists;
 
@@ -132,7 +132,7 @@ void MapConvertor::convertLaneDataAttribute(const j2735_msgs::LaneDataAttribute&
 void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetXY& in_msg,
                                              cav_msgs::NodeAttributeSetXY& out_msg)
 {
-  for (j2735_msgs::NodeAttributeXY attribute : in_msg.local_node.node_attribute_xy_List)
+  for (j2735_msgs::NodeAttributeXY attribute : in_msg.local_node.node_attribute_xy_list)
   {
     out_msg.local_node.push_back(attribute);
   }
@@ -151,8 +151,8 @@ void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetX
   out_msg.enabled_exists = in_msg.enabled_exists;
 
   out_msg.data_exists = in_msg.data_exists;
-  out_msg.dWitdh_exists = in_msg.dWitdh_exists;
-  out_msg.dElevation_exists = in_msg.dElevation_exists;
+  out_msg.d_width_exists = in_msg.d_width_exists;
+  out_msg.d_elevation_exists = in_msg.d_elevation_exists;
 
   // Convert LaneDataAttributeList
   for (j2735_msgs::LaneDataAttribute attribute : in_msg.data.lane_attribute_list)
@@ -162,9 +162,9 @@ void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetX
     out_msg.lane_attribute_list.push_back(cav_attribute);
   }
   // Convert dWidth
-  out_msg.dWitdh = (double)in_msg.dWitdh / units::CM_PER_M;
-  // Convert dElevation
-  out_msg.dElevation = (double)in_msg.dElevation / units::CM_PER_M;
+  out_msg.d_width = (double)in_msg.d_width / units::CM_PER_M;
+  // Convert d_elevation
+  out_msg.d_elevation = (double)in_msg.d_elevation / units::CM_PER_M;
   // Done Conversion
 }
 
