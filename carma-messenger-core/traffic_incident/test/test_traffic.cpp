@@ -87,7 +87,7 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
 
     cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
  
-    EXPECT_EQ(traffic_msg.header.timestamp,25000);
+    EXPECT_EQ(traffic_msg.m_header.timestamp,25000);
  
   }
 
@@ -121,7 +121,7 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
 
     cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
  
-    EXPECT_EQ(traffic_msg.header.sender_id,"USDOT-49096");
+    EXPECT_EQ(traffic_msg.m_header.sender_id,"USDOT-49096");
     EXPECT_EQ(traffic_msg.strategy,"carma3/Incident_Use_Case");
   
   }
