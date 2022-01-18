@@ -12,7 +12,7 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-FROM usdotfhwastoldev/carma-base:develop as base_image
+FROM usdotfhwastolcandidate/carma-base:fiesta as base_image
 FROM base_image as setup
 
 RUN mkdir ~/src
