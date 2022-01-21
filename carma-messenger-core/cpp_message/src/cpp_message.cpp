@@ -174,7 +174,7 @@ namespace cpp_message
                 ROS_WARN_STREAM("Cannot decode SPAT message");
             }
         }
-        else if(msg->messageType=="MapData")
+        else if(msg->messageType=="MAP")
         {
             std::vector<uint8_t> array=msg->content;
             Map_Message decode;

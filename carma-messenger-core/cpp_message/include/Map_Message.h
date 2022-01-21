@@ -31,6 +31,12 @@ namespace cpp_message
              */
             boost::optional<j2735_msgs::MapData>decode_map_message(std::vector<uint8_t>& binary_array);
 
-        
+            /**
+             * @brief Construct a new  map message object
+             * 
+             * @param binary_array Container with binary input.
+             *  @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
+             */
+            j2735_msgs::GenericLane decode_generic_lane(GenericLane_t* g_lane);
     };
 }
