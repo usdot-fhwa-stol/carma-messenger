@@ -392,19 +392,7 @@ namespace cpp_message
         gl.lane_attributes.directional_use.lane_direction =  *g_lane->laneAttributes.directionalUse.buf >> lane_direction_bits_to_shift;
 
         // - LaneType
-        uint8_t lane_type_choice = g_lane->laneAttributes.laneType.present;
-
-        for (size_t i = 0; i < 8; i++) //8 for uint8. ASN1 is received as bits for lane type
-        {
-             ROS_ERROR_STREAM("lane_type_choice: "  << (int)lane_type_choice);
-            if ((int)lane_type_choice == 1)
-            {
-                gl.lane_attributes.laneType.choice = i; 
-                ROS_ERROR_STREAM("i: "  << i);
-                break;
-            }
-            lane_type_choice = lane_type_choice >> 1;
-        }
+        gl.lane_attributes.laneType.choice  = (int)g_lane->laneAttributes.laneType.present - 1; // j2735 ROS msg starts from index 0
 
         gl.lane_attributes.laneType.crosswalk.lane_attributes_crosswalk = *g_lane->laneAttributes.laneType.choice.crosswalk.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.crosswalk.bits_unused;
@@ -544,7 +532,7 @@ namespace cpp_message
         }
         ROS_ERROR_STREAM("15");
         //Node List
-        gl.node_list.choice = g_lane->nodeList.present;
+        gl.node_list.choice = (int)g_lane->nodeList.present - 1; // ROS j2735 msg starts from 0 index
         gl.node_list.computed.offset_x_axis.large = g_lane->nodeList.choice.computed.offsetXaxis.choice.large;
         gl.node_list.computed.offset_x_axis.small = g_lane->nodeList.choice.computed.offsetXaxis.choice.small;
 
@@ -721,7 +709,7 @@ namespace cpp_message
             } //end Attributes
 
             //Node Delta
-            node.delta.choice = g_lane->nodeList.choice.nodes.list.array[n]->delta.present;
+            node.delta.choice = (int)g_lane->nodeList.choice.nodes.list.array[n]->delta.present - 1; // index starts from 0 on j2735 msg
             
             node.delta.node_latlon.latitude = g_lane->nodeList.choice.nodes.list.array[n]->delta.choice.node_LatLon.lat;
             node.delta.node_latlon.longitude = g_lane->nodeList.choice.nodes.list.array[n]->delta.choice.node_LatLon.lon;
