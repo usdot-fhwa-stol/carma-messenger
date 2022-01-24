@@ -16,11 +16,11 @@
  */
 
 #include <cstdint>
-#include <j2735_msgs/TrafficControlRequest.h>
-#include <cav_msgs/TrafficControlRequest.h>
-#include <j2735_msgs/TrafficControlRequestV01.h>
-#include <cav_msgs/TrafficControlRequestV01.h>
-#include <cav_msgs/OffsetPoint.h>
+#include <j2735_v2x_msgs/msg/traffic_control_request.hpp>
+#include <carma_v2x_msgs/msg/traffic_control_request.hpp>
+#include <j2735_v2x_msgs/msg/traffic_control_request_v01.hpp>
+#include <carma_v2x_msgs/msg/traffic_control_request_v01.hpp>
+#include <carma_v2x_msgs/msg/offset_point.hpp>
 #include "units.h"
 #include "value_convertor.h"
 
@@ -39,17 +39,17 @@ namespace geofence_request
 ////
 
 /**
- * @brief Convert the contents of a j2735_msgs::OffsetPoint into a cav_msgs::OffsetPoint
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::OffsetPoint into a carma_v2x_msgs::msg::OffsetPoint
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_msg,const int8_t scale);
+void convert(const j2735_v2x_msgs::msg::OffsetPoint& in_msg, carma_v2x_msgs::msg::OffsetPoint& out_msg,const int8_t scale);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlBounds into a cav_msgs::TrafficControlBounds
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlBounds into a carma_v2x_msgs::msg::TrafficControlBounds
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
@@ -58,27 +58,27 @@ void convert(const j2735_msgs::OffsetPoint& in_msg, cav_msgs::OffsetPoint& out_m
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlBounds& in_msg, cav_msgs::TrafficControlBounds& out_msg, const int8_t scale);
+void convert(const j2735_v2x_msgs::msg::TrafficControlBounds& in_msg, carma_v2x_msgs::msg::TrafficControlBounds& out_msg, const int8_t scale);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlRequestV01 into a cav_msgs::TrafficControlRequestV01
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlRequestV01 into a carma_v2x_msgs::msg::TrafficControlRequestV01
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlRequestV01& in_msg, cav_msgs::TrafficControlRequestV01& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlRequestV01& in_msg, carma_v2x_msgs::msg::TrafficControlRequestV01& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlRequest into a cav_msgs::TrafficControlRequest
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlRequest into a carma_v2x_msgs::msg::TrafficControlRequest
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlRequest& in_msg, cav_msgs::TrafficControlRequest& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlRequest& in_msg, carma_v2x_msgs::msg::TrafficControlRequest& out_msg);
 
 ////
 // Convert cav_msgs to j2735_msgs
@@ -86,7 +86,7 @@ void convert(const j2735_msgs::TrafficControlRequest& in_msg, cav_msgs::TrafficC
 
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlBounds into a j2735_msgs::TrafficControlBounds
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlBounds into a j2735_v2x_msgs::msg::TrafficControlBounds
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
@@ -98,18 +98,18 @@ void convert(const j2735_msgs::TrafficControlRequest& in_msg, cav_msgs::TrafficC
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlBounds& in_msg, j2735_msgs::TrafficControlBounds& out_msg, const int8_t scale);
+void convert(const carma_v2x_msgs::msg::TrafficControlBounds& in_msg, j2735_v2x_msgs::msg::TrafficControlBounds& out_msg, const int8_t scale);
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlRequestV01 into a j2735_msgs::TrafficControlRequestV01 
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlRequestV01 into a j2735_v2x_msgs::msg::TrafficControlRequestV01 
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlRequestV01& in_msg, j2735_msgs::TrafficControlRequestV01& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlRequestV01& in_msg, j2735_v2x_msgs::msg::TrafficControlRequestV01& out_msg);
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlRequest into a j2735_msgs::TrafficControlRequest
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlRequest into a j2735_v2x_msgs::msg::TrafficControlRequest
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
@@ -127,7 +127,7 @@ void convert(const cav_msgs::TrafficControlRequestV01& in_msg, j2735_msgs::Traff
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlRequest& in_msg, j2735_msgs::TrafficControlRequest& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlRequest& in_msg, j2735_v2x_msgs::msg::TrafficControlRequest& out_msg);
 
 
 }  // namespace geofence_request

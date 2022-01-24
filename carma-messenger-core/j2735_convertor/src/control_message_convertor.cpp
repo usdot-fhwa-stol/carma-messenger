@@ -25,13 +25,13 @@ namespace geofence_control
 // Convert j2735_msgs to cav_msgs
 ////
 
-void convert(const j2735_msgs::DailySchedule& in_msg, cav_msgs::DailySchedule& out_msg)
+void convert(const j2735_v2x_msgs::msg::DailySchedule& in_msg, carma_v2x_msgs::msg::DailySchedule& out_msg)
 {
   out_msg.begin = ros::Duration(in_msg.begin * units::SEC_PER_MIN);
   out_msg.duration = ros::Duration(in_msg.duration * units::SEC_PER_MIN);
 }
 
-void convert(const j2735_msgs::PathNode& in_msg, cav_msgs::PathNode& out_msg)
+void convert(const j2735_v2x_msgs::msg::PathNode& in_msg, carma_v2x_msgs::msg::PathNode& out_msg)
 {
   out_msg.x = (double)in_msg.x / units::CM_PER_M;
   out_msg.y = (double)in_msg.y / units::CM_PER_M;
@@ -49,79 +49,79 @@ void convert(const j2735_msgs::PathNode& in_msg, cav_msgs::PathNode& out_msg)
   }
 }
 
-void convert(const j2735_msgs::RepeatParams& in_msg, cav_msgs::RepeatParams& out_msg)
+void convert(const j2735_v2x_msgs::msg::RepeatParams& in_msg, carma_v2x_msgs::msg::RepeatParams& out_msg)
 {
   out_msg.offset = ros::Duration(in_msg.offset * units::SEC_PER_MIN);
   out_msg.period = ros::Duration(in_msg.period * units::SEC_PER_MIN);
   out_msg.span = ros::Duration(in_msg.span * units::SEC_PER_MIN);
 }
 
-void convert(const j2735_msgs::TrafficControlDetail& in_msg, cav_msgs::TrafficControlDetail& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlDetail& in_msg, carma_v2x_msgs::msg::TrafficControlDetail& out_msg)
 {
   out_msg.choice = in_msg.choice;
   switch(in_msg.choice)
   {
-    case j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE : 
       out_msg.signal = in_msg.signal;
       break;
-    case j2735_msgs::TrafficControlDetail::STOP_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::STOP_CHOICE : 
       // Not implemented yet
       break;
-    case j2735_msgs::TrafficControlDetail::YIELD_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::YIELD_CHOICE : 
       // Not implemented yet
       break;
-    case j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::NOTOWING_CHOICE : 
       // Not implemented yet
       break;
-    case j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::RESTRICTED_CHOICE : 
       // Not implemented yet
       break;
-    case j2735_msgs::TrafficControlDetail::CLOSED_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE : 
       out_msg.closed = in_msg.closed;
       break;
-    case j2735_msgs::TrafficControlDetail::CHAINS_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::CHAINS_CHOICE : 
       out_msg.chains = in_msg.chains;
       break;
-    case j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::DIRECTION_CHOICE : 
       out_msg.direction = in_msg.direction;
       break;
-    case j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::LATAFFINITY_CHOICE : 
       out_msg.lataffinity = in_msg.lataffinity;
       break;
-    case j2735_msgs::TrafficControlDetail::LATPERM_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE : 
       for(int i = 0; i < 2; i++)
       {
         out_msg.latperm[i] = in_msg.latperm[i];
       }
       break;
-    case j2735_msgs::TrafficControlDetail::PARKING_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::PARKING_CHOICE : 
       out_msg.parking = in_msg.parking;
       break;
-    case j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE : 
       out_msg.minspeed = (float)in_msg.minspeed / units::DECA_MPS_PER_MPS;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE : 
       out_msg.maxspeed = (float)in_msg.maxspeed / units::DECA_MPS_PER_MPS;
       break;
-    case j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE : 
       out_msg.minhdwy = (float)in_msg.minhdwy / units::DECA_M_PER_M;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE : 
       out_msg.maxvehmass = (float)in_msg.maxvehmass;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
       out_msg.maxvehheight = (float)in_msg.maxvehheight / units::DECA_M_PER_M;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
       out_msg.maxvehwidth = (float)in_msg.maxvehwidth / units::DECA_M_PER_M;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
       out_msg.maxvehlength = (float)in_msg.maxvehlength / units::DECA_M_PER_M;
       break;
-    case j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
       out_msg.maxvehaxles = in_msg.maxvehaxles;
       break;
-    case j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE : 
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
       break;
     default : 
@@ -130,7 +130,7 @@ void convert(const j2735_msgs::TrafficControlDetail& in_msg, cav_msgs::TrafficCo
   }
 }
 
-void convert(const j2735_msgs::TrafficControlGeometry& in_msg, cav_msgs::TrafficControlGeometry& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlGeometry& in_msg, carma_v2x_msgs::msg::TrafficControlGeometry& out_msg)
 {
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
@@ -142,22 +142,22 @@ void convert(const j2735_msgs::TrafficControlGeometry& in_msg, cav_msgs::Traffic
 
   for (auto in_node : in_msg.nodes)
   {
-    cav_msgs::PathNode out_node;
+    carma_v2x_msgs::msg::PathNode out_node;
     convert(in_node, out_node);
     out_msg.nodes.push_back(out_node);
   }
 }
 
-void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficControlMessage& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlMessage& in_msg, carma_v2x_msgs::msg::TrafficControlMessage& out_msg)
 {
   // uint8 choice
   out_msg.choice = in_msg.choice;
   switch(in_msg.choice)
   {
-    case j2735_msgs::TrafficControlMessage::RESERVED : 
+    case j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED : 
       // Not implemented yet
       break;
-    case j2735_msgs::TrafficControlMessage::TCMV01 : 
+    case j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01 : 
       convert(in_msg.tcmV01, out_msg.tcmV01);
       break;
     default : 
@@ -166,7 +166,7 @@ void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficC
   }
 }
 
-void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::TrafficControlMessageV01& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_v2x_msgs::msg::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
   // j2735_msgs/Id64b reqid
@@ -220,13 +220,13 @@ void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::Traff
   }
 }
 
-void convert(const j2735_msgs::TrafficControlParams& in_msg, cav_msgs::TrafficControlParams& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlParams& in_msg, carma_v2x_msgs::msg::TrafficControlParams& out_msg)
 {
   // j2735_msgs/TrafficControlVehClass[] vclasses
   out_msg.vclasses = in_msg.vclasses;
   
   // # schedule TrafficControlSchedule
-  // cav_msgs/TrafficControlSchedule schedule
+  // carma_v2x_msgs/msg/trafficcontrolschedule s.hppedule
   convert(in_msg.schedule, out_msg.schedule);
 
   // # regulatory BOOLEAN
@@ -238,7 +238,7 @@ void convert(const j2735_msgs::TrafficControlParams& in_msg, cav_msgs::TrafficCo
   convert(in_msg.detail, out_msg.detail);
 }
 
-void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::TrafficControlSchedule& out_msg)
+void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2x_msgs::msg::TrafficControlSchedule& out_msg)
 {
   out_msg.start = ros::Time(in_msg.start * units::SEC_PER_MIN, 0);
 
@@ -259,7 +259,7 @@ void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::Traffic
   {
     for (auto in_between : in_msg.between)
     {
-      cav_msgs::DailySchedule out_between;
+      carma_v2x_msgs::msg::DailySchedule out_between;
       convert(in_between, out_between);
       out_msg.between.push_back(out_between);
     }
@@ -276,13 +276,13 @@ void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::Traffic
 // Convert cav_msgs to j2735_msgs
 ////
 
-void convert(const cav_msgs::DailySchedule& in_msg, j2735_msgs::DailySchedule& out_msg)
+void convert(const carma_v2x_msgs::msg::DailySchedule& in_msg, j2735_v2x_msgs::msg::DailySchedule& out_msg)
 {
   out_msg.begin = in_msg.begin.toSec() / units::SEC_PER_MIN;
   out_msg.duration = in_msg.duration.toSec() / units::SEC_PER_MIN;
 }
 
-void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg)
+void convert(const carma_v2x_msgs::msg::PathNode& in_msg, j2735_v2x_msgs::msg::PathNode& out_msg)
 {
   out_msg.x = (int16_t)(in_msg.x * units::CM_PER_M);
   out_msg.y = (int16_t)(in_msg.y * units::CM_PER_M);
@@ -300,79 +300,79 @@ void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg)
   }
 }
 
-void convert(const cav_msgs::RepeatParams& in_msg, j2735_msgs::RepeatParams& out_msg)
+void convert(const carma_v2x_msgs::msg::RepeatParams& in_msg, j2735_v2x_msgs::msg::RepeatParams& out_msg)
 {
   out_msg.offset = in_msg.offset.toSec() / units::SEC_PER_MIN;
   out_msg.period = in_msg.period.toSec() / units::SEC_PER_MIN;
   out_msg.span = in_msg.span.toSec() / units::SEC_PER_MIN;
 }
 
-void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficControlDetail& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlDetail& in_msg, j2735_v2x_msgs::msg::TrafficControlDetail& out_msg)
 {
   out_msg.choice = in_msg.choice;
   switch(in_msg.choice)
   {
-    case cav_msgs::TrafficControlDetail::SIGNAL_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE : 
       out_msg.signal = in_msg.signal;
       break;
-    case cav_msgs::TrafficControlDetail::STOP_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::STOP_CHOICE : 
       // Not implemented yet
       break;
-    case cav_msgs::TrafficControlDetail::YIELD_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::YIELD_CHOICE : 
       // Not implemented yet
       break;
-    case cav_msgs::TrafficControlDetail::NOTOWING_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::NOTOWING_CHOICE : 
       // Not implemented yet
       break;
-    case cav_msgs::TrafficControlDetail::RESTRICTED_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::RESTRICTED_CHOICE : 
       // Not implemented yet
       break;
-    case cav_msgs::TrafficControlDetail::CLOSED_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE : 
       out_msg.closed = in_msg.closed;
       break;
-    case cav_msgs::TrafficControlDetail::CHAINS_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::CHAINS_CHOICE : 
       out_msg.chains = in_msg.chains;
       break;
-    case cav_msgs::TrafficControlDetail::DIRECTION_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::DIRECTION_CHOICE : 
       out_msg.direction = in_msg.direction;
       break;
-    case cav_msgs::TrafficControlDetail::LATAFFINITY_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::LATAFFINITY_CHOICE : 
       out_msg.lataffinity = in_msg.lataffinity;
       break;
-    case cav_msgs::TrafficControlDetail::LATPERM_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE : 
       for(int i = 0; i < 2; i++)
       {
         out_msg.latperm[i] = in_msg.latperm[i];
       }
       break;
-    case cav_msgs::TrafficControlDetail::PARKING_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::PARKING_CHOICE : 
       out_msg.parking = in_msg.parking;
       break;
-    case cav_msgs::TrafficControlDetail::MINSPEED_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE : 
       out_msg.minspeed = (uint16_t)(in_msg.minspeed * units::DECA_MPS_PER_MPS);
       break;
-    case cav_msgs::TrafficControlDetail::MAXSPEED_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE : 
       out_msg.maxspeed = (uint16_t)(in_msg.maxspeed * units::DECA_MPS_PER_MPS);
       break;
-    case cav_msgs::TrafficControlDetail::MINHDWY_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE : 
       out_msg.minhdwy = (uint16_t)(in_msg.minhdwy * units::DECA_M_PER_M);
       break;
-    case cav_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE : 
       out_msg.maxvehmass = (uint16_t)in_msg.maxvehmass;
       break;
-    case cav_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
       out_msg.maxvehheight = (uint8_t)(in_msg.maxvehheight * units::DECA_M_PER_M);
       break;
-    case cav_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
       out_msg.maxvehwidth = (uint8_t)(in_msg.maxvehwidth * units::DECA_M_PER_M);
       break;
-    case cav_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
       out_msg.maxvehlength = (uint8_t)(in_msg.maxvehlength * units::DECA_M_PER_M);
       break;
-    case cav_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
       out_msg.maxvehaxles = in_msg.maxvehaxles;
       break;
-    case cav_msgs::TrafficControlDetail::MINVEHOCC_CHOICE : 
+    case carma_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
       break;
     default : 
@@ -381,7 +381,7 @@ void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficCo
   }
 }
 
-void convert(const cav_msgs::TrafficControlGeometry& in_msg, j2735_msgs::TrafficControlGeometry& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlGeometry& in_msg, j2735_v2x_msgs::msg::TrafficControlGeometry& out_msg)
 {
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
@@ -393,22 +393,22 @@ void convert(const cav_msgs::TrafficControlGeometry& in_msg, j2735_msgs::Traffic
 
   for (auto in_node : in_msg.nodes)
   {
-    j2735_msgs::PathNode out_node;
+    j2735_v2x_msgs::msg::PathNode out_node;
     convert(in_node, out_node);
     out_msg.nodes.push_back(out_node);
   }
 }
 
-void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficControlMessage& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlMessage& in_msg, j2735_v2x_msgs::msg::TrafficControlMessage& out_msg)
 {
   // uint8 choice
   out_msg.choice = in_msg.choice;
   switch(in_msg.choice)
   {
-    case cav_msgs::TrafficControlMessage::RESERVED : 
+    case carma_v2x_msgs::msg::TrafficControlMessage::RESERVED : 
       // Not implemented yet
       break;
-    case cav_msgs::TrafficControlMessage::TCMV01 : 
+    case carma_v2x_msgs::msg::TrafficControlMessage::TCMV01 : 
       convert(in_msg.tcmV01, out_msg.tcmV01);
       break;
     default : 
@@ -417,7 +417,7 @@ void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficC
   }
 }
 
-void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::TrafficControlMessageV01& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_v2x_msgs::msg::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
   // j2735_msgs/Id64b reqid
@@ -471,13 +471,13 @@ void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::Traff
   }
 }
 
-void convert(const cav_msgs::TrafficControlParams& in_msg, j2735_msgs::TrafficControlParams& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlParams& in_msg, j2735_v2x_msgs::msg::TrafficControlParams& out_msg)
 {
   // j2735_msgs/TrafficControlVehClass[] vclasses
   out_msg.vclasses = in_msg.vclasses;
   
   // # schedule TrafficControlSchedule
-  // cav_msgs/TrafficControlSchedule schedule
+  // carma_v2x_msgs/msg/trafficcontrolschedule s.hppedule
   convert(in_msg.schedule, out_msg.schedule);
 
   // # regulatory BOOLEAN
@@ -489,7 +489,7 @@ void convert(const cav_msgs::TrafficControlParams& in_msg, j2735_msgs::TrafficCo
   convert(in_msg.detail, out_msg.detail);
 }
 
-void convert(const cav_msgs::TrafficControlSchedule& in_msg, j2735_msgs::TrafficControlSchedule& out_msg)
+void convert(const carma_v2x_msgs::msg::TrafficControlSchedule& in_msg, j2735_v2x_msgs::msg::TrafficControlSchedule& out_msg)
 {
   out_msg.start = in_msg.start.toSec() / units::SEC_PER_MIN;
 
@@ -510,7 +510,7 @@ void convert(const cav_msgs::TrafficControlSchedule& in_msg, j2735_msgs::Traffic
   {
     for (auto in_between : in_msg.between)
     {
-      j2735_msgs::DailySchedule out_between;
+      j2735_v2x_msgs::msg::DailySchedule out_between;
       convert(in_between, out_between);
       out_msg.between.push_back(out_between);
     }

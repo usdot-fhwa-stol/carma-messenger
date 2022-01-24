@@ -16,8 +16,8 @@
  */
 
 #include <cstdint>
-#include <j2735_msgs/TrafficControlMessage.h>
-#include <cav_msgs/TrafficControlMessage.h>
+#include <j2735_v2x_msgs/msg/traffic_control_message.hpp>
+#include <carma_v2x_msgs/msg/traffic_control_message.hpp>
 
 #include "units.h"
 #include "value_convertor.h"
@@ -37,94 +37,94 @@ namespace geofence_control
 ////
 
 /**
- * @brief Convert the contents of a j2735_msgs::DailySchedule into a cav_msgs::DailySchedule
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::DailySchedule into a carma_v2x_msgs::msg::DailySchedule
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::DailySchedule& in_msg, cav_msgs::DailySchedule& out_msg);
+void convert(const j2735_v2x_msgs::msg::DailySchedule& in_msg, carma_v2x_msgs::msg::DailySchedule& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::PathNode into a cav_msgs::PathNode
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::PathNode into a carma_v2x_msgs::msg::PathNode
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::PathNode& in_msg, cav_msgs::PathNode& out_msg);
+void convert(const j2735_v2x_msgs::msg::PathNode& in_msg, carma_v2x_msgs::msg::PathNode& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::RepeatParams into a cav_msgs::RepeatParams
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::RepeatParams into a carma_v2x_msgs::msg::RepeatParams
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::RepeatParams& in_msg, cav_msgs::RepeatParams& out_msg);
+void convert(const j2735_v2x_msgs::msg::RepeatParams& in_msg, carma_v2x_msgs::msg::RepeatParams& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlDetail into a cav_msgs::TrafficControlDetail
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlDetail into a carma_v2x_msgs::msg::TrafficControlDetail
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlDetail& in_msg, cav_msgs::TrafficControlDetail& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlDetail& in_msg, carma_v2x_msgs::msg::TrafficControlDetail& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlGeometry into a cav_msgs::TrafficControlGeometry
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlGeometry into a carma_v2x_msgs::msg::TrafficControlGeometry
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlGeometry& in_msg, cav_msgs::TrafficControlGeometry& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlGeometry& in_msg, carma_v2x_msgs::msg::TrafficControlGeometry& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlMessage into a cav_msgs::TrafficControlMessage
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlMessage into a carma_v2x_msgs::msg::TrafficControlMessage
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficControlMessage& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlMessage& in_msg, carma_v2x_msgs::msg::TrafficControlMessage& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlMessageV01 into a cav_msgs::TrafficControlMessageV01
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlMessageV01 into a carma_v2x_msgs::msg::TrafficControlMessageV01
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlMessageV01& in_msg, cav_msgs::TrafficControlMessageV01& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_v2x_msgs::msg::TrafficControlMessageV01& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlParams into a cav_msgs::TrafficControlParams
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlParams into a carma_v2x_msgs::msg::TrafficControlParams
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlParams& in_msg, cav_msgs::TrafficControlParams& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlParams& in_msg, carma_v2x_msgs::msg::TrafficControlParams& out_msg);
 
 /**
- * @brief Convert the contents of a j2735_msgs::TrafficControlSchedule into a cav_msgs::TrafficControlSchedule
+ * @brief Convert the contents of a j2735_v2x_msgs::msg::TrafficControlSchedule into a carma_v2x_msgs::msg::TrafficControlSchedule
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::TrafficControlSchedule& out_msg);
+void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2x_msgs::msg::TrafficControlSchedule& out_msg);
 
 ////
 // Convert cav_msgs to j2735_msgs
@@ -132,93 +132,93 @@ void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::Traffic
 
 
 /**
- * @brief Convert the contents of a cav_msgs::DailySchedule into a j2735_msgs::DailySchedule
+ * @brief Convert the contents of a carma_v2x_msgs::msg::DailySchedule into a j2735_v2x_msgs::msg::DailySchedule
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::DailySchedule& in_msg, j2735_msgs::DailySchedule& out_msg);
+void convert(const carma_v2x_msgs::msg::DailySchedule& in_msg, j2735_v2x_msgs::msg::DailySchedule& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::PathNode into a j2735_msgs::PathNode
+ * @brief Convert the contents of a carma_v2x_msgs::msg::PathNode into a j2735_v2x_msgs::msg::PathNode
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg);
+void convert(const carma_v2x_msgs::msg::PathNode& in_msg, j2735_v2x_msgs::msg::PathNode& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::RepeatParams into a j2735_msgs::RepeatParams
+ * @brief Convert the contents of a carma_v2x_msgs::msg::RepeatParams into a j2735_v2x_msgs::msg::RepeatParams
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::RepeatParams& in_msg, j2735_msgs::RepeatParams& out_msg);
+void convert(const carma_v2x_msgs::msg::RepeatParams& in_msg, j2735_v2x_msgs::msg::RepeatParams& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlDetail into a j2735_msgs::TrafficControlDetail
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlDetail into a j2735_v2x_msgs::msg::TrafficControlDetail
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficControlDetail& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlDetail& in_msg, j2735_v2x_msgs::msg::TrafficControlDetail& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlGeometry into a j2735_msgs::TrafficControlGeometry
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlGeometry into a j2735_v2x_msgs::msg::TrafficControlGeometry
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlGeometry& in_msg, j2735_msgs::TrafficControlGeometry& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlGeometry& in_msg, j2735_v2x_msgs::msg::TrafficControlGeometry& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlMessage into a j2735_msgs::TrafficControlMessage
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlMessage into a j2735_v2x_msgs::msg::TrafficControlMessage
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficControlMessage& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlMessage& in_msg, j2735_v2x_msgs::msg::TrafficControlMessage& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlMessageV01 into a j2735_msgs::TrafficControlMessageV01
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlMessageV01 into a j2735_v2x_msgs::msg::TrafficControlMessageV01
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::TrafficControlMessageV01& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_v2x_msgs::msg::TrafficControlMessageV01& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlParams into a j2735_msgs::TrafficControlParams
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlParams into a j2735_v2x_msgs::msg::TrafficControlParams
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlParams& in_msg, j2735_msgs::TrafficControlParams& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlParams& in_msg, j2735_v2x_msgs::msg::TrafficControlParams& out_msg);
 
 /**
- * @brief Convert the contents of a cav_msgs::TrafficControlSchedule into a j2735_msgs::TrafficControlSchedule
+ * @brief Convert the contents of a carma_v2x_msgs::msg::TrafficControlSchedule into a j2735_v2x_msgs::msg::TrafficControlSchedule
  *
  * @param in_msg The message to be converted
  * @param out_msg The message to store the output
  *
  * Unit conversions and presence flags are handled
  */
-void convert(const cav_msgs::TrafficControlSchedule& in_msg, j2735_msgs::TrafficControlSchedule& out_msg);
+void convert(const carma_v2x_msgs::msg::TrafficControlSchedule& in_msg, j2735_v2x_msgs::msg::TrafficControlSchedule& out_msg);
 }  // namespace geofence_control
 }  // namespace j2735_convertor

@@ -17,13 +17,13 @@
 
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
-#include <j2735_msgs/BSM.h>
-#include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
-#include <cav_msgs/SystemAlert.h>
-#include <cav_msgs/BSM.h>
-#include <cav_msgs/SPAT.h>
-#include <cav_msgs/MapData.h>
+#include <j2735_v2x_msgs/msg/bsm.hpp>
+#include <j2735_v2x_msgs/msg/spat.hpp>
+#include <j2735_v2x_msgs/msg/map_data.hpp>
+#include <carma_v2x_msgs/msg/system_alert.hpp>
+#include <carma_v2x_msgs/msg/bsm.hpp>
+#include <carma_v2x_msgs/msg/spat.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
 #include "units.h"
 
 namespace j2735_convertor
@@ -40,159 +40,159 @@ class MapConvertor
 {
 public:
   /**
-   * @brief Convert the contents of a j2735_msgs::MapData into a cav_msgs::MapData
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::MapData into a carma_v2x_msgs::msg::MapData
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convert(const j2735_msgs::MapData& in_msg, cav_msgs::MapData& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::MapData& in_msg, carma_v2x_msgs::msg::MapData& out_msg);
 
 private:
   /**
-   * @brief Convert the contents of a j2735_msgs::OffsetXaxis into a cav_msgs::OffsetAxis
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::OffsetXaxis into a carma_v2x_msgs::msg::OffsetAxis
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertOffsetXaxis(const j2735_msgs::OffsetXaxis& in_msg, cav_msgs::OffsetAxis& out_msg);
+  static void convertOffsetXaxis(const j2735_v2x_msgs::msg::OffsetXaxis& in_msg, carma_v2x_msgs::msg::OffsetAxis& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::OffsetYaxis into a cav_msgs::OffsetAxis
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::OffsetYaxis into a carma_v2x_msgs::msg::OffsetAxis
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertOffsetYaxis(const j2735_msgs::OffsetYaxis& in_msg, cav_msgs::OffsetAxis& out_msg);
+  static void convertOffsetYaxis(const j2735_v2x_msgs::msg::OffsetYaxis& in_msg, carma_v2x_msgs::msg::OffsetAxis& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::ComputedLane into a cav_msgs::ComputedLane
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::ComputedLane into a carma_v2x_msgs::msg::ComputedLane
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertComputedLane(const j2735_msgs::ComputedLane& in_msg, cav_msgs::ComputedLane& out_msg);
+  static void convertComputedLane(const j2735_v2x_msgs::msg::ComputedLane& in_msg, carma_v2x_msgs::msg::ComputedLane& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::NodeOffsetPointXY into a cav_msgs::NodeOffsetPointXY
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::NodeOffsetPointXY into a carma_v2x_msgs::msg::NodeOffsetPointXY
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertNodeOffsetPointXY(const j2735_msgs::NodeOffsetPointXY& in_msg,
-                                       cav_msgs::NodeOffsetPointXY& out_msg);
+  static void convertNodeOffsetPointXY(const j2735_v2x_msgs::msg::NodeOffsetPointXY& in_msg,
+                                       carma_v2x_msgs::msg::NodeOffsetPointXY& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::LaneDataAttribute into a cav_msgs::LaneDataAttribute
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::LaneDataAttribute into a carma_v2x_msgs::msg::LaneDataAttribute
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertLaneDataAttribute(const j2735_msgs::LaneDataAttribute& in_msg,
-                                       cav_msgs::LaneDataAttribute& out_msg);
+  static void convertLaneDataAttribute(const j2735_v2x_msgs::msg::LaneDataAttribute& in_msg,
+                                       carma_v2x_msgs::msg::LaneDataAttribute& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::NodeAttributeSetXY into a cav_msgs::NodeAttributeSetXY
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::NodeAttributeSetXY into a carma_v2x_msgs::msg::NodeAttributeSetXY
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetXY& in_msg,
-                                        cav_msgs::NodeAttributeSetXY& out_msg);
+  static void convertNodeAttributeSetXY(const j2735_v2x_msgs::msg::NodeAttributeSetXY& in_msg,
+                                        carma_v2x_msgs::msg::NodeAttributeSetXY& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::NodeXY into a cav_msgs::NodeXY
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::NodeXY into a carma_v2x_msgs::msg::NodeXY
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertNodeXY(const j2735_msgs::NodeXY& in_msg, cav_msgs::NodeXY& out_msg);
+  static void convertNodeXY(const j2735_v2x_msgs::msg::NodeXY& in_msg, carma_v2x_msgs::msg::NodeXY& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::NodeSetXY into a cav_msgs::NodeSetXY
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::NodeSetXY into a carma_v2x_msgs::msg::NodeSetXY
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertNodeSetXY(const j2735_msgs::NodeSetXY& in_msg, cav_msgs::NodeSetXY& out_msg);
+  static void convertNodeSetXY(const j2735_v2x_msgs::msg::NodeSetXY& in_msg, carma_v2x_msgs::msg::NodeSetXY& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::NodeListXY into a cav_msgs::NodeListXY
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::NodeListXY into a carma_v2x_msgs::msg::NodeListXY
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertNodeListXY(const j2735_msgs::NodeListXY& in_msg, cav_msgs::NodeListXY& out_msg);
+  static void convertNodeListXY(const j2735_v2x_msgs::msg::NodeListXY& in_msg, carma_v2x_msgs::msg::NodeListXY& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::GenericLane into a cav_msgs::GenericLane
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::GenericLane into a carma_v2x_msgs::msg::GenericLane
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertGenericLane(const j2735_msgs::GenericLane& in_msg, cav_msgs::GenericLane& out_msg);
+  static void convertGenericLane(const j2735_v2x_msgs::msg::GenericLane& in_msg, carma_v2x_msgs::msg::GenericLane& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::RegulatorySpeedLimit into a cav_msgs::RegulatorySpeedLimit
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::RegulatorySpeedLimit into a carma_v2x_msgs::msg::RegulatorySpeedLimit
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertRegulatorySpeedLimit(const j2735_msgs::RegulatorySpeedLimit& in_msg,
-                                          cav_msgs::RegulatorySpeedLimit& out_msg);
+  static void convertRegulatorySpeedLimit(const j2735_v2x_msgs::msg::RegulatorySpeedLimit& in_msg,
+                                          carma_v2x_msgs::msg::RegulatorySpeedLimit& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::Position3D into a cav_msgs::Position3D
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::Position3D into a carma_v2x_msgs::msg::Position3D
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertPosition3D(const j2735_msgs::Position3D& in_msg, cav_msgs::Position3D& out_msg);
+  static void convertPosition3D(const j2735_v2x_msgs::msg::Position3D& in_msg, carma_v2x_msgs::msg::Position3D& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::IntersectionGeometry into a cav_msgs::IntersectionGeometry
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::IntersectionGeometry into a carma_v2x_msgs::msg::IntersectionGeometry
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertIntersectionGeometry(const j2735_msgs::IntersectionGeometry& in_msg,
-                                          cav_msgs::IntersectionGeometry& out_msg);
+  static void convertIntersectionGeometry(const j2735_v2x_msgs::msg::IntersectionGeometry& in_msg,
+                                          carma_v2x_msgs::msg::IntersectionGeometry& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::RoadSegment into a cav_msgs::RoadSegment
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::RoadSegment into a carma_v2x_msgs::msg::RoadSegment
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertRoadSegment(const j2735_msgs::RoadSegment& in_msg, cav_msgs::RoadSegment& out_msg);
+  static void convertRoadSegment(const j2735_v2x_msgs::msg::RoadSegment& in_msg, carma_v2x_msgs::msg::RoadSegment& out_msg);
 };
 }  // namespace j2735_convertor

@@ -18,18 +18,18 @@
 #include <mutex>
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
-#include <j2735_msgs/BSM.h>
-#include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
-#include <j2735_msgs/TrafficControlMessage.h>
-#include <j2735_msgs/TrafficControlRequest.h>
-#include <cav_msgs/SystemAlert.h>
-#include <cav_msgs/BSM.h>
-#include <cav_msgs/SPAT.h>
-#include <cav_msgs/MapData.h>
-#include <cav_msgs/TrafficControlMessage.h>
-#include <cav_msgs/TrafficControlRequest.h>
-#include <cav_msgs/MapData.h>
+#include <j2735_v2x_msgs/msg/bsm.hpp>
+#include <j2735_v2x_msgs/msg/spat.hpp>
+#include <j2735_v2x_msgs/msg/map_data.hpp>
+#include <j2735_v2x_msgs/msg/traffic_control_message.hpp>
+#include <j2735_v2x_msgs/msg/traffic_control_request.hpp>
+#include <carma_v2x_msgs/msg/system_alert.hpp>
+#include <carma_v2x_msgs/msg/bsm.hpp>
+#include <carma_v2x_msgs/msg/spat.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
+#include <carma_v2x_msgs/msg/traffic_control_message.hpp>
+#include <carma_v2x_msgs/msg/traffic_control_request.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
 #include <j2735_convertor/bsm_convertor.h>
 #include <j2735_convertor/map_convertor.h>
 #include <j2735_convertor/spat_convertor.h>
@@ -98,60 +98,60 @@ private:
   void initialize();
 
   /**
-   * @brief Converts cav_msgs::BSM messages to j2735_msgs::BSM and publishes the converted messages
+   * @brief Converts carma_v2x_msgs::msg::BSM messages to j2735_v2x_msgs::msg::BSM and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void BsmHandler(const cav_msgs::BSMConstPtr& message);
+  void BsmHandler(const carma_v2x_msgs::msg::BSMConstPtr& message);
 
   /**
-   * @brief Converts j2735_msgs::BSM messages to cav_msgs::BSM and publishes the converted messages
+   * @brief Converts j2735_v2x_msgs::msg::BSM messages to carma_v2x_msgs::msg::BSM and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735BsmHandler(const j2735_msgs::BSMConstPtr& message);
+  void j2735BsmHandler(const j2735_v2x_msgs::msg::BSMConstPtr& message);
 
   /**
-   * @brief Converts j2735_msgs::SPAT messages to cav_msgs::SPAT and publishes the converted messages
+   * @brief Converts j2735_v2x_msgs::msg::SPAT messages to carma_v2x_msgs::msg::SPAT and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735SpatHandler(const j2735_msgs::SPATConstPtr& message);
+  void j2735SpatHandler(const j2735_v2x_msgs::msg::SPATConstPtr& message);
 
   /**
-   * @brief Converts j2735_msgs::MapData messages to cav_msgs::MapData and publishes the converted messages
+   * @brief Converts j2735_v2x_msgs::msg::MapData messages to carma_v2x_msgs::msg::MapData and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735MapHandler(const j2735_msgs::MapDataConstPtr& message);
+  void j2735MapHandler(const j2735_v2x_msgs::msg::MapDataConstPtr& message);
 
   /**
-   * @brief Converts cav_msgs::TrafficControlMessage messages to j2735_msgs::TrafficControlMessage and publishes the converted messages
+   * @brief Converts carma_v2x_msgs::msg::TrafficControlMessage messages to j2735_v2x_msgs::msg::TrafficControlMessage and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void ControlMessageHandler(const cav_msgs::TrafficControlMessageConstPtr& message);
+  void ControlMessageHandler(const carma_v2x_msgs::msg::TrafficControlMessageConstPtr& message);
 
   /**
-   * @brief Converts j2735_msgs::TrafficControlMessage messages to cav_msgs::TrafficControlMessage and publishes the converted messages
+   * @brief Converts j2735_v2x_msgs::msg::TrafficControlMessage messages to carma_v2x_msgs::msg::TrafficControlMessage and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735ControlMessageHandler(const j2735_msgs::TrafficControlMessageConstPtr& message);
+  void j2735ControlMessageHandler(const j2735_v2x_msgs::msg::TrafficControlMessageConstPtr& message);
 
     /**
-   * @brief Converts cav_msgs::ControlRequest messages to j2735_msgs::ControlRequest and publishes the converted messages
+   * @brief Converts carma_v2x_msgs::msg::ControlRequest messages to j2735_v2x_msgs::msg::ControlRequest and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void ControlRequestHandler(const cav_msgs::TrafficControlRequestConstPtr& message);
+  void ControlRequestHandler(const carma_v2x_msgs::msg::TrafficControlRequestConstPtr& message);
 
   /**
-   * @brief Converts j2735_msgs::ControlRequest messages to cav_msgs::ControlRequest and publishes the converted messages
+   * @brief Converts j2735_v2x_msgs::msg::ControlRequest messages to carma_v2x_msgs::msg::ControlRequest and publishes the converted messages
    *
    * @param message The message to convert
    */
-  void j2735ControlRequestHandler(const j2735_msgs::TrafficControlRequestConstPtr& message);
+  void j2735ControlRequestHandler(const j2735_v2x_msgs::msg::TrafficControlRequestConstPtr& message);
 };
 
 }  // namespace j2735_convertor

@@ -16,13 +16,13 @@
  */
 
 #include <cstdint>
-#include <j2735_msgs/BSM.h>
-#include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
-#include <cav_msgs/SystemAlert.h>
-#include <cav_msgs/BSM.h>
-#include <cav_msgs/SPAT.h>
-#include <cav_msgs/MapData.h>
+#include <j2735_v2x_msgs/msg/bsm.hpp>
+#include <j2735_v2x_msgs/msg/spat.hpp>
+#include <j2735_v2x_msgs/msg/map_data.hpp>
+#include <carma_v2x_msgs/msg/system_alert.hpp>
+#include <carma_v2x_msgs/msg/bsm.hpp>
+#include <carma_v2x_msgs/msg/spat.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
 #include "units.h"
 
 namespace j2735_convertor
