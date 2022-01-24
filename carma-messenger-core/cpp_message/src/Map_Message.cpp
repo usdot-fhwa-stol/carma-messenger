@@ -94,7 +94,7 @@ namespace cpp_message
                         new_intersection.id.region_exists = false;
                         new_intersection.id.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
                     }
-                    ROS_ERROR_STREAM("Before entering lane ");
+                    
 
                     for(size_t i =0; i < map_msg_intersections->laneSet.list.count;i++)
                     {
@@ -104,7 +104,7 @@ namespace cpp_message
                         new_intersection.lane_set.lane_list.push_back(gl);
                     }
                     
-                    ROS_ERROR_STREAM("1/4 Here");
+                    
                     if(map_msg_intersections->name)
                     {
                         new_intersection.name_exists=true;
@@ -125,7 +125,7 @@ namespace cpp_message
                     {
                         new_intersection.name_exists = false;
                     }
-                    ROS_ERROR_STREAM("1/4 1/4");
+                    
                     if(map_msg_intersections->laneWidth)
                     {
                         new_intersection.lane_width_exists = true;
@@ -157,7 +157,7 @@ namespace cpp_message
                     {
                         new_intersection.preempt_priority_data_exists = false;
                     }
-                    ROS_ERROR_STREAM("1/4 Half");
+                    
                     if(map_msg_intersections->speedLimits)
                     {
                         new_intersection.speed_limits_exists = true;
@@ -193,7 +193,7 @@ namespace cpp_message
                     }
                     new_intersection.ref_point.latitude = map_msg_intersections->refPoint.lat;
                     new_intersection.ref_point.longitude = map_msg_intersections->refPoint.Long;
-                    ROS_ERROR_STREAM("1/4 3/4");
+                    
 
                     new_intersection.revision = map_msg_intersections->revision;
                 
@@ -206,7 +206,7 @@ namespace cpp_message
             {
                 output.intersections_exists = false;
             }
-            ROS_ERROR_STREAM("1/4");
+            
             //Road Segment
             if(map_msg.roadSegments)
             {
@@ -298,7 +298,7 @@ namespace cpp_message
                     output.road_segments.road_segment_list.push_back(rs);
                 }
             }//end Road Segments
-            ROS_ERROR_STREAM("HALF");
+            
             //Data Parameters
             if(map_msg.dataParameters)
             {
@@ -333,7 +333,7 @@ namespace cpp_message
             {
                 output.data_parameters_exists = false;
             }
-            ROS_ERROR_STREAM("3/4");
+            
             //Restriction List
             if(map_msg.restrictionList)
             {
@@ -530,7 +530,7 @@ namespace cpp_message
         {
             gl.lane_id = g_lane->laneID;
         }
-        ROS_ERROR_STREAM("15");
+        
         //Node List
         gl.node_list.choice = (int)g_lane->nodeList.present - 1; // ROS j2735 msg starts from 0 index
         gl.node_list.computed.offset_x_axis.large = g_lane->nodeList.choice.computed.offsetXaxis.choice.large;
