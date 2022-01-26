@@ -27,44 +27,78 @@ namespace j2735_convertor
   carma_ros2_utils::CallbackReturn Node::handle_on_configure(const rclcpp_lifecycle::State &)
   {
 
-    // J2735 BSM Subscriber
-  j2735_bsm_sub_ = create_subscription<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm", 100, std::bind(&Node::j2735BsmHandler, this, std_ph::_1));
+    /*
+    TODO In ROS1 each topic is given its own thread to spin on using AsyncSpinner.
+         This reduces latency in the conversions (bsms are not held up while Maps convert etc.)
+         Still need to determine how to implement this multi-threading behavior in ROS2. 
+         Documentation should be reviewed.
 
-  // BSM Publisher
-  converted_bsm_pub_ = create_publisher<carma_v2x_msgs::msg::BSM>("incoming_bsm", 100);
+         
+      // Setup node handles here if needed
+      default_nh_.reset(new ros::CARMANodeHandle());
+      bsm_nh_.reset(new ros::CARMANodeHandle());
+      spat_nh_.reset(new ros::CARMANodeHandle());
+      map_nh_.reset(new ros::CARMANodeHandle());
+      geofence_nh_.reset(new ros::CARMANodeHandle());
+      // Set Callback Queues for Node Handles
+      bsm_nh_->setCallbackQueue(&bsm_queue_);
+      spat_nh_->setCallbackQueue(&spat_queue_);
+      map_nh_->setCallbackQueue(&map_queue_);
+      geofence_nh_->setCallbackQueue(&geofence_queue_);
 
-  // Outgoing J2735 BSM Subscriber
-  outbound_bsm_sub_ = create_subscription<carma_v2x_msgs::msg::BSM>("outgoing_bsm", 1, std::bind(&Node::BsmHandler,
-                                         this);  // Queue size of 1 as we should never publish outdated BSMs
+      // Attach bsm, spat, map to processing to unique threads
+      ros::AsyncSpinner bsm_spinner(1, &bsm_queue_);
+      bsm_spinner.start();
 
-  // BSM Publisher
-  outbound_j2735_bsm_pub_ = create_publisher<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
+      ros::AsyncSpinner spat_spinner(1, &spat_queue_);
+      spat_spinner.start();
 
-  // J2735 SPAT Subscriber
-  j2735_spat_sub_ = create_subscription<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 100, std::bind(&Node::j2735SpatHandler, this, std_ph::_1));
+      ros::AsyncSpinner map_spinner(1, &map_queue_);
+      map_spinner.start();
 
-  // SPAT Publisher TODO think about queue sizes
-  converted_spat_pub_ = create_publisher<carma_v2x_msgs::msg::SPAT>("incoming_spat", 100);
+      ros::AsyncSpinner geofence_spinner(1, &geofence_queue_);
+      geofence_spinner.start();
 
-  // J2735 MAP Subscriber
-  j2735_map_sub_ = create_subscription<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 50, std::bind(&Node::j2735MapHandler, this, std_ph::_1));
+    */
 
-  // MAP Publisher TODO think about queue sizes
-  converted_map_pub_ = create_publisher<carma_v2x_msgs::msg::MapData>("incoming_map", 50);
+      // J2735 BSM Subscriber
+    j2735_bsm_sub_ = create_subscription<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm", 100, std::bind(&Node::j2735BsmHandler, this, std_ph::_1));
 
-  // Incoming geofence pub/sub
-  converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", 50);
-  converted_geofence_request_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlRequest>("incoming_geofence_request", 50);
+    // BSM Publisher
+    converted_bsm_pub_ = create_publisher<carma_v2x_msgs::msg::BSM>("incoming_bsm", 100);
 
-  j2735_geofence_control_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 50, std::bind(&Node::j2735ControlMessageHandler, this, std_ph::_1));
-  j2735_geofence_request_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlRequest>("incoming_j2735_geofence_request", 50, std::bind(&Node::j2735ControlRequestHandler, this, std_ph::_1));
+    // Outgoing J2735 BSM Subscriber
+    outbound_bsm_sub_ = create_subscription<carma_v2x_msgs::msg::BSM>("outgoing_bsm", 1, std::bind(&Node::BsmHandler,
+                                          this);  // Queue size of 1 as we should never publish outdated BSMs
 
-  // Outgoing geofence pub/sub
-  outbound_geofence_control_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlMessage>("outgoing_geofence_control", 50, std::bind(&Node::ControlMessageHandler, this, std_ph::_1));
-  outbound_geofence_request_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlRequest>("outgoing_geofence_request", 50, std::bind(&Node::ControlRequestHandler, this, std_ph::_1));
+    // BSM Publisher
+    outbound_j2735_bsm_pub_ = create_publisher<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
 
-  outbound_j2735_geofence_control_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlMessage>("outgoing_j2735_geofence_control", 10);
-  outbound_j2735_geofence_request_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlRequest>("outgoing_j2735_geofence_request", 10);
+    // J2735 SPAT Subscriber
+    j2735_spat_sub_ = create_subscription<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 100, std::bind(&Node::j2735SpatHandler, this, std_ph::_1));
+
+    // SPAT Publisher TODO think about queue sizes
+    converted_spat_pub_ = create_publisher<carma_v2x_msgs::msg::SPAT>("incoming_spat", 100);
+
+    // J2735 MAP Subscriber
+    j2735_map_sub_ = create_subscription<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 50, std::bind(&Node::j2735MapHandler, this, std_ph::_1));
+
+    // MAP Publisher TODO think about queue sizes
+    converted_map_pub_ = create_publisher<carma_v2x_msgs::msg::MapData>("incoming_map", 50);
+
+    // Incoming geofence pub/sub
+    converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", 50);
+    converted_geofence_request_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlRequest>("incoming_geofence_request", 50);
+
+    j2735_geofence_control_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 50, std::bind(&Node::j2735ControlMessageHandler, this, std_ph::_1));
+    j2735_geofence_request_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlRequest>("incoming_j2735_geofence_request", 50, std::bind(&Node::j2735ControlRequestHandler, this, std_ph::_1));
+
+    // Outgoing geofence pub/sub
+    outbound_geofence_control_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlMessage>("outgoing_geofence_control", 50, std::bind(&Node::ControlMessageHandler, this, std_ph::_1));
+    outbound_geofence_request_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlRequest>("outgoing_geofence_request", 50, std::bind(&Node::ControlRequestHandler, this, std_ph::_1));
+
+    outbound_j2735_geofence_control_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlMessage>("outgoing_j2735_geofence_control", 10);
+    outbound_j2735_geofence_request_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlRequest>("outgoing_j2735_geofence_request", 10);
 
     // Return success if everthing initialized successfully
     return CallbackReturn::SUCCESS;
