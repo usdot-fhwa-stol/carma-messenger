@@ -14,15 +14,9 @@
  * the License.
  */
 
-#include <gmock/gmock.h>
-#include <j2735_convertor/control_request_convertor.h>
+#include <gtest/gtest.h>
+#include <j2735_convertor/control_request_convertor.hpp>
 
-using ::testing::_;
-using ::testing::A;
-using ::testing::DoAll;
-using ::testing::InSequence;
-using ::testing::Return;
-using ::testing::ReturnArg;
 
 namespace j2735_convertor
 {
@@ -126,7 +120,7 @@ TEST(ControlRequest, convertControlBoundsToCAV)
   j2735_convertor::geofence_request::convert(in_msg, out_msg, scale);
   
   ASSERT_EQ(out_msg.oldest.sec, 30000);
-  ASSERT_EQ(out_msg.oldest.nsec, 0);
+  ASSERT_EQ(out_msg.oldest.nanosec, 0);
   ASSERT_NEAR(out_msg.reflat, 45.0, 0.00000001);
   ASSERT_NEAR(out_msg.reflon, 40.0, 0.00000001);
 
@@ -150,7 +144,7 @@ TEST(ControlRequest, convertControlRequestToJ2735)
   in_msg.reqseq = 77;
 
   carma_v2x_msgs::msg::TrafficControlBounds b1;
-  b1.oldest = b1.oldest.fromNSec(500000000);
+  b1.oldest = b1.oldest.set__nanosec(500000000);
   b1.reflat = 45.0;// 45 deg
   b1.reflon = 40.0;// 40 deg
   
@@ -161,7 +155,7 @@ TEST(ControlRequest, convertControlRequestToJ2735)
     }
 
   carma_v2x_msgs::msg::TrafficControlBounds b2;
-  b2.oldest = b1.oldest.fromNSec(500000000);
+  b2.oldest = b1.oldest.set__nanosec(500000000);
   b2.reflat = 45.0;// 45 deg
   b2.reflon = 40.0;// 40 deg
 
@@ -172,7 +166,7 @@ TEST(ControlRequest, convertControlRequestToJ2735)
     }
 
   carma_v2x_msgs::msg::TrafficControlBounds b3;
-  b3.oldest = b1.oldest.fromNSec(500000000);
+  b3.oldest = b1.oldest.set__nanosec(500000000);
   b3.reflat = 45.0;// 45 deg
   b3.reflon = 40.0;// 40 deg
   
@@ -183,7 +177,7 @@ TEST(ControlRequest, convertControlRequestToJ2735)
     }
 
   carma_v2x_msgs::msg::TrafficControlBounds b4;
-  b4.oldest = b1.oldest.fromNSec(500000000);
+  b4.oldest = b1.oldest.set__nanosec(500000000);
   b4.reflat = 45.0;// 45 deg
   b4.reflon = 40.0;// 40 deg
 
@@ -389,7 +383,7 @@ TEST(ControlRequest, convertControlBoundsToJ2735)
 {
   int8_t scale = 2; // Using scaling exponenet of 2. Applied as 10^n.
   carma_v2x_msgs::msg::TrafficControlBounds in_msg;
-  in_msg.oldest = in_msg.oldest.fromNSec(500000000);
+  in_msg.oldest = in_msg.oldest.set__nanosec(500000000);
   in_msg.reflat = 45.0;// 45 deg
   in_msg.reflon = 40.0;// 40 deg
 

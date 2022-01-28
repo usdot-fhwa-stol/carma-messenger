@@ -14,8 +14,9 @@
  * the License.
  */
 
-#include <j2735_convertor/control_request_convertor.h>
+#include <j2735_convertor/control_request_convertor.hpp>
 #include <math.h>
+#include <rclcpp/time.hpp>
 
 namespace j2735_convertor
 {
@@ -33,7 +34,7 @@ void convert(const j2735_v2x_msgs::msg::OffsetPoint& in_msg, carma_v2x_msgs::msg
 
 void convert(const j2735_v2x_msgs::msg::TrafficControlBounds& in_msg, carma_v2x_msgs::msg::TrafficControlBounds& out_msg, const int8_t scale) 
 {
-  out_msg.oldest = ros::Time(in_msg.oldest * units::SEC_PER_MIN, 0);
+  out_msg.oldest = rclcpp::Time(in_msg.oldest * units::SEC_PER_MIN, 0);
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
 
@@ -74,7 +75,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlRequest& in_msg, carma_v2x
     case j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED : 
       break;
     case j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01 : 
-      convert(in_msg.tcrV01, out_msg.tcrV01);
+      convert(in_msg.tcr_v01, out_msg.tcr_v01);
       break;
     default:
       break;
@@ -119,7 +120,7 @@ bool isLessThan(const std::vector<double>& data, int16_t threshold)
 
 void convert(const carma_v2x_msgs::msg::TrafficControlBounds& in_msg, j2735_v2x_msgs::msg::TrafficControlBounds& out_msg, const int8_t scale) 
 {
-  out_msg.oldest = in_msg.oldest.toSec() / units::SEC_PER_MIN;
+  out_msg.oldest = in_msg.oldest.sec / units::SEC_PER_MIN;
   out_msg.reflat = in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflon = in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG;
 
@@ -265,7 +266,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlRequestV01& in_msg, j2735_
        case carma_v2x_msgs::msg::TrafficControlRequest::RESERVED : 
        break;
        case carma_v2x_msgs::msg::TrafficControlRequest::TCRV01 : 
-       convert(in_msg.tcrV01, out_msg.tcrV01);
+       convert(in_msg.tcr_v01, out_msg.tcr_v01);
        break;
        default : 
       break;

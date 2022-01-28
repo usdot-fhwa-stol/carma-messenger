@@ -14,7 +14,7 @@
  * the License.
  */
 
-#include <j2735_convertor/spat_convertor.h>
+#include <j2735_convertor/spat_convertor.hpp>
 
 /**
  * CPP File containing SPATConvertor method definitions

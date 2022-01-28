@@ -62,26 +62,38 @@ namespace j2735_convertor
     */
 
       // J2735 BSM Subscriber
-    j2735_bsm_sub_ = create_subscription<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm", 100, std::bind(&Node::j2735BsmHandler, this, std_ph::_1));
+    auto j2735_bsm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_bsm_options;
+    j2735_bsm_options.callback_group = j2735_bsm_cb_group;
+    j2735_bsm_sub_ = create_subscription<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm", 100, std::bind(&Node::j2735BsmHandler, this, std_ph::_1), j2735_bsm_options);
 
     // BSM Publisher
     converted_bsm_pub_ = create_publisher<carma_v2x_msgs::msg::BSM>("incoming_bsm", 100);
 
     // Outgoing J2735 BSM Subscriber
+    auto outbound_bsm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_bsm_options;
+    outbound_bsm_options.callback_group = outbound_bsm_cb_group;
     outbound_bsm_sub_ = create_subscription<carma_v2x_msgs::msg::BSM>("outgoing_bsm", 1, std::bind(&Node::BsmHandler,
-                                          this);  // Queue size of 1 as we should never publish outdated BSMs
+                                          this, std_ph::_1), outbound_bsm_options);  // Queue size of 1 as we should never publish outdated BSMs
 
     // BSM Publisher
     outbound_j2735_bsm_pub_ = create_publisher<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
 
     // J2735 SPAT Subscriber
-    j2735_spat_sub_ = create_subscription<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 100, std::bind(&Node::j2735SpatHandler, this, std_ph::_1));
+    auto j2735_spat_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_spat_options;
+    j2735_spat_options.callback_group = j2735_bsm_cb_group;
+    j2735_spat_sub_ = create_subscription<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 100, std::bind(&Node::j2735SpatHandler, this, std_ph::_1), j2735_spat_options);
 
     // SPAT Publisher TODO think about queue sizes
     converted_spat_pub_ = create_publisher<carma_v2x_msgs::msg::SPAT>("incoming_spat", 100);
 
     // J2735 MAP Subscriber
-    j2735_map_sub_ = create_subscription<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 50, std::bind(&Node::j2735MapHandler, this, std_ph::_1));
+    auto j2735_map_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_map_options;
+    j2735_map_options.callback_group = j2735_map_cb_group;
+    j2735_map_sub_ = create_subscription<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 50, std::bind(&Node::j2735MapHandler, this, std_ph::_1), j2735_map_options);
 
     // MAP Publisher TODO think about queue sizes
     converted_map_pub_ = create_publisher<carma_v2x_msgs::msg::MapData>("incoming_map", 50);
@@ -90,12 +102,28 @@ namespace j2735_convertor
     converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", 50);
     converted_geofence_request_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlRequest>("incoming_geofence_request", 50);
 
-    j2735_geofence_control_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 50, std::bind(&Node::j2735ControlMessageHandler, this, std_ph::_1));
-    j2735_geofence_request_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlRequest>("incoming_j2735_geofence_request", 50, std::bind(&Node::j2735ControlRequestHandler, this, std_ph::_1));
+    auto j2735_geofence_control_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_geofence_control_options;
+    j2735_geofence_control_options.callback_group = j2735_geofence_control_cb_group;
+    j2735_geofence_control_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 50, std::bind(&Node::j2735ControlMessageHandler, this, std_ph::_1), j2735_geofence_control_options);
+    
+
+    auto j2735_geofence_request_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_geofence_request_options;
+    j2735_geofence_request_options.callback_group = j2735_geofence_request_cb_group;
+    j2735_geofence_request_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlRequest>("incoming_j2735_geofence_request", 50, std::bind(&Node::j2735ControlRequestHandler, this, std_ph::_1), j2735_geofence_request_options);
 
     // Outgoing geofence pub/sub
-    outbound_geofence_control_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlMessage>("outgoing_geofence_control", 50, std::bind(&Node::ControlMessageHandler, this, std_ph::_1));
-    outbound_geofence_request_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlRequest>("outgoing_geofence_request", 50, std::bind(&Node::ControlRequestHandler, this, std_ph::_1));
+    auto outbound_geofence_control_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_geofence_control_options;
+    outbound_geofence_control_options.callback_group = outbound_geofence_control_cb_group;
+    outbound_geofence_control_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlMessage>("outgoing_geofence_control", 50, std::bind(&Node::ControlMessageHandler, this, std_ph::_1), outbound_geofence_control_options);
+    
+    
+    auto outbound_geofence_request_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_geofence_request_options;
+    outbound_geofence_request_options.callback_group = outbound_geofence_request_cb_group;
+    outbound_geofence_request_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlRequest>("outgoing_geofence_request", 50, std::bind(&Node::ControlRequestHandler, this, std_ph::_1), outbound_geofence_request_options);
 
     outbound_j2735_geofence_control_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlMessage>("outgoing_j2735_geofence_control", 10);
     outbound_j2735_geofence_request_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlRequest>("outgoing_j2735_geofence_request", 10);

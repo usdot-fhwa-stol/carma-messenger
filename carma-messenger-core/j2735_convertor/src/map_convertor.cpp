@@ -14,7 +14,7 @@
  * the License.
  */
 
-#include <j2735_convertor/map_convertor.h>
+#include <j2735_convertor/map_convertor.hpp>
 
 /**
  * CPP File containing MapConvertor method definitions

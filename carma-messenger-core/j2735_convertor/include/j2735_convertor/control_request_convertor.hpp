@@ -21,8 +21,8 @@
 #include <j2735_v2x_msgs/msg/traffic_control_request_v01.hpp>
 #include <carma_v2x_msgs/msg/traffic_control_request_v01.hpp>
 #include <carma_v2x_msgs/msg/offset_point.hpp>
-#include "units.h"
-#include "value_convertor.h"
+#include "units.hpp"
+#include "value_convertor.hpp"
 
 namespace j2735_convertor
 {

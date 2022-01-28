@@ -19,11 +19,11 @@
 #include <j2735_v2x_msgs/msg/bsm.hpp>
 #include <j2735_v2x_msgs/msg/spat.hpp>
 #include <j2735_v2x_msgs/msg/map_data.hpp>
-#include <carma_v2x_msgs/msg/system_alert.hpp>
+#include <carma_msgs/msg/system_alert.hpp>
 #include <carma_v2x_msgs/msg/bsm.hpp>
 #include <carma_v2x_msgs/msg/spat.hpp>
 #include <carma_v2x_msgs/msg/map_data.hpp>
-#include "units.h"
+#include "units.hpp"
 
 namespace j2735_convertor
 {

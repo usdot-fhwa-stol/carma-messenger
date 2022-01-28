@@ -23,6 +23,14 @@
 
 #include <carma_ros2_utils/carma_lifecycle_node.hpp>
 
+#include <j2735_convertor/bsm_convertor.hpp>
+#include <j2735_convertor/control_message_convertor.hpp>
+#include <j2735_convertor/control_request_convertor.hpp>
+#include <j2735_convertor/map_convertor.hpp>
+#include <j2735_convertor/spat_convertor.hpp>
+#include <j2735_convertor/units.hpp>
+#include <j2735_convertor/value_convertor.hpp>
+
 namespace j2735_convertor
 {
 

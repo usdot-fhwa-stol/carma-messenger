@@ -14,18 +14,10 @@
  * the License.
  */
 
-#include <gmock/gmock.h>
-#include <j2735_convertor/control_message_convertor.h>
-#include <ros/ros.h>
-#include <ros/time.h>
+#include <gtest/gtest.h>
+#include <rclcpp/rclcpp.hpp>
+#include <j2735_convertor/control_message_convertor.hpp>
 
-using ::testing::_;
-using ::testing::A;
-using ::testing::DoAll;
-using ::testing::InSequence;
-using ::testing::Return;
-using ::testing::ReturnArg;
-using ::testing::ElementsAre;
 
 namespace j2735_convertor
 {
@@ -217,7 +209,7 @@ namespace j2735_convertor
   {
     j2735_v2x_msgs::msg::TrafficControlMessage in_msg;
     in_msg.choice = j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01;
-    in_msg.tcmV01 = create_j2735_TrafficControlMessageV01();
+    in_msg.tcm_v01 = create_j2735_TrafficControlMessageV01();
     return in_msg;
   }
 
@@ -226,8 +218,8 @@ namespace j2735_convertor
   carma_v2x_msgs::msg::DailySchedule create_cav_DailySchedule(bool optional = true)
   {
     carma_v2x_msgs::msg::DailySchedule in_msg;
-    in_msg.begin = ros::Duration(36000);
-    in_msg.duration = ros::Duration(3600);
+    in_msg.begin = rclcpp::Duration(36000,0);
+    in_msg.duration = rclcpp::Duration(3600,0);
     return in_msg;
   }
 
@@ -250,9 +242,9 @@ namespace j2735_convertor
   carma_v2x_msgs::msg::RepeatParams create_cav_RepeatParams(bool optional = true)
   {
     carma_v2x_msgs::msg::RepeatParams in_msg;
-    in_msg.offset = ros::Duration(3600);
-    in_msg.period = ros::Duration(6000);
-    in_msg.span = ros::Duration(1800);
+    in_msg.offset = rclcpp::Duration(3600,0);
+    in_msg.period = rclcpp::Duration(6000,0);
+    in_msg.span = rclcpp::Duration(1800,0);
     return in_msg;
   }
 
@@ -269,7 +261,7 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::TrafficControlGeometry in_msg;
     in_msg.proj = "Project 1";
     in_msg.datum = "Datum 1";
-    in_msg.reftime = ros::Time(180000);
+    in_msg.reftime = rclcpp::Time(180000, 0);
     in_msg.reflon = -40.0;
     in_msg.reflat = 80.0;
     in_msg.refelv = 500;
@@ -287,7 +279,7 @@ namespace j2735_convertor
   carma_v2x_msgs::msg::TrafficControlSchedule create_cav_TrafficControlSchedule(bool optional = true)
   {
     carma_v2x_msgs::msg::TrafficControlSchedule in_msg;
-    in_msg.start = ros::Time(180000);
+    in_msg.start = rclcpp::Time(180000, 0);
     
     in_msg.end_exists = optional;
     in_msg.dow_exists = optional;
@@ -295,7 +287,7 @@ namespace j2735_convertor
     in_msg.repeat_exists = optional;
     if(optional)
     {
-      in_msg.end = ros::Time(180000);
+      in_msg.end = rclcpp::Time(180000, 0);
       in_msg.dow.dow[0] = j2735_v2x_msgs::msg::DayOfWeek::TUE;
       in_msg.dow.dow[1] = j2735_v2x_msgs::msg::DayOfWeek::MON;
       in_msg.dow.dow[2] = j2735_v2x_msgs::msg::DayOfWeek::WED;
@@ -368,7 +360,7 @@ namespace j2735_convertor
 
     // # updated EpochMins
     // time updated
-    in_msg.updated = ros::Time(180000);
+    in_msg.updated = rclcpp::Time(180000, 0);
 
     // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
     // j2735_msgs/TrafficControlPackage package
@@ -407,20 +399,20 @@ namespace j2735_convertor
   {
     carma_v2x_msgs::msg::TrafficControlMessage in_msg;
     in_msg.choice = carma_v2x_msgs::msg::TrafficControlMessage::TCMV01;
-    in_msg.tcmV01 = create_cav_TrafficControlMessageV01();
+    in_msg.tcm_v01 = create_cav_TrafficControlMessageV01();
     return in_msg;
   }
 
-  ////////////////////////////////// TEST FUNCTIONS ////////////////////////////////
+//   ////////////////////////////////// TEST FUNCTIONS ////////////////////////////////
 
   void test_DailySchedule(
     j2735_v2x_msgs::msg::DailySchedule in_msg, 
     carma_v2x_msgs::msg::DailySchedule out_msg)
   {
     ASSERT_EQ(out_msg.begin.sec, in_msg.begin * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.begin.nsec, 0);
+    ASSERT_EQ(out_msg.begin.nanosec, 0);
     ASSERT_EQ(out_msg.duration.sec, in_msg.duration * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.duration.nsec, 0);
+    ASSERT_EQ(out_msg.duration.nanosec, 0);
   }
 
   void test_PathNode(
@@ -447,11 +439,11 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::RepeatParams out_msg)
   {
     ASSERT_EQ(out_msg.offset.sec, in_msg.offset * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.offset.nsec, 0);
+    ASSERT_EQ(out_msg.offset.nanosec, 0);
     ASSERT_EQ(out_msg.period.sec, in_msg.period * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.period.nsec, 0);
+    ASSERT_EQ(out_msg.period.nanosec, 0);
     ASSERT_EQ(out_msg.span.sec, in_msg.span * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.span.nsec, 0);
+    ASSERT_EQ(out_msg.span.nanosec, 0);
   }
 
   void test_TrafficControlDetail(
@@ -469,7 +461,7 @@ namespace j2735_convertor
     ASSERT_EQ(out_msg.proj, in_msg.proj);
     ASSERT_EQ(out_msg.datum, in_msg.datum);
     ASSERT_EQ(out_msg.reftime.sec, in_msg.reftime * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.reftime.nsec, 0.);
+    ASSERT_EQ(out_msg.reftime.nanosec, 0.);
     ASSERT_NEAR(in_msg.reflon, out_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
     ASSERT_NEAR(in_msg.reflat, out_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
     ASSERT_NEAR(in_msg.refelv - 4096, out_msg.refelv * units::DECA_M_PER_M, 0.001 );
@@ -486,13 +478,13 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::TrafficControlSchedule out_msg)
   {
     ASSERT_EQ(out_msg.start.sec, in_msg.start * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.start.nsec, 0);
+    ASSERT_EQ(out_msg.start.nanosec, 0);
 
     ASSERT_EQ(out_msg.end_exists, in_msg.end_exists);
     if(in_msg.end_exists)
     {
       ASSERT_EQ(out_msg.end.sec, in_msg.end * units::SEC_PER_MIN);
-      ASSERT_EQ(out_msg.end.nsec, 0);
+      ASSERT_EQ(out_msg.end.nanosec, 0);
     }
     
     ASSERT_EQ(out_msg.dow_exists, in_msg.dow_exists);
@@ -543,7 +535,7 @@ namespace j2735_convertor
     ASSERT_EQ(in_msg.msgnum, out_msg.msgnum);
     ASSERT_EQ(in_msg.id.id, out_msg.id.id);
     ASSERT_EQ(out_msg.updated.sec, in_msg.updated * units::SEC_PER_MIN);
-    ASSERT_EQ(out_msg.updated.nsec, 0);
+    ASSERT_EQ(out_msg.updated.nanosec, 0);
 
     ASSERT_EQ(in_msg.package_exists, out_msg.package_exists);
     if(in_msg.package_exists)
@@ -573,7 +565,7 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::TrafficControlMessage out_msg)
   {
     ASSERT_EQ(out_msg.choice, in_msg.choice);
-    test_TrafficControlMessageV01(in_msg.tcmV01, out_msg.tcmV01);
+    test_TrafficControlMessageV01(in_msg.tcm_v01, out_msg.tcm_v01);
   }
 
 TEST(ControlMessage, convertDailyScheduleToCAV)
@@ -797,10 +789,10 @@ TEST(ControlMessage, convertTrafficControlMessageToCAV)
 
   // Test TCMV01
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01;
-  in_msg.tcmV01 = create_j2735_TrafficControlMessageV01();
+  in_msg.tcm_v01 = create_j2735_TrafficControlMessageV01();
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  test_TrafficControlMessageV01(in_msg.tcmV01, out_msg.tcmV01);
+  test_TrafficControlMessageV01(in_msg.tcm_v01, out_msg.tcm_v01);
 }
 
 TEST(ControlMessage, convertTrafficControlMessageV01ToCAV)
@@ -1072,10 +1064,10 @@ TEST(ControlMessage, convertTrafficControlMessageToJ2735)
 
   // Test TCMV01
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlMessage::TCMV01;
-  in_msg.tcmV01 = create_cav_TrafficControlMessageV01();
+  in_msg.tcm_v01 = create_cav_TrafficControlMessageV01();
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  test_TrafficControlMessageV01(out_msg.tcmV01, in_msg.tcmV01);
+  test_TrafficControlMessageV01(out_msg.tcm_v01, in_msg.tcm_v01);
 }
 
 TEST(ControlMessage, convertTrafficControlMessageV01ToJ2735)
