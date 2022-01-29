@@ -15,4 +15,10 @@
 #  the License.
 source /opt/ros/noetic/setup.bash
 cd ~/
-colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+colcon build --packages-ignore j2735_convertor --cmake-args -DCMAKE_BUILD_TYPE=Release --install-base /opt/carma/install
+
+# Build ros2
+rm -r build/
+source /home/carma/catkin/setup.bash
+source /opt/ros/foxy/setup.bash
+colcon build --packages-up-to j2735_convertor --cmake-args -DCMAKE_BUILD_TYPE=Release --install-base /opt/carma/install_ros2 
