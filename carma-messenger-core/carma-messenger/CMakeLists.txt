@@ -25,7 +25,7 @@ carma_package()
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cpp_message
-  j2735_convertor
+  # j2735_convertor
 )
 
 ###################################
