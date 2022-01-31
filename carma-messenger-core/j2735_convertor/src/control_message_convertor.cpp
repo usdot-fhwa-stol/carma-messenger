@@ -279,8 +279,10 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
 
 void convert(const carma_v2x_msgs::msg::DailySchedule& in_msg, j2735_v2x_msgs::msg::DailySchedule& out_msg)
 {
-  out_msg.begin = in_msg.begin.sec / units::SEC_PER_MIN;
-  out_msg.duration = in_msg.duration.sec / units::SEC_PER_MIN;
+  rclcpp::Time begin((in_msg.begin.sec + in_msg.begin.nanosec), 0.0);
+  out_msg.begin = begin.seconds() / units::SEC_PER_MIN;
+  rclcpp::Time duration((in_msg.duration.sec + in_msg.duration.nanosec),0.0);
+  out_msg.duration = duration.seconds() / units::SEC_PER_MIN;
 }
 
 void convert(const carma_v2x_msgs::msg::PathNode& in_msg, j2735_v2x_msgs::msg::PathNode& out_msg)
@@ -303,9 +305,12 @@ void convert(const carma_v2x_msgs::msg::PathNode& in_msg, j2735_v2x_msgs::msg::P
 
 void convert(const carma_v2x_msgs::msg::RepeatParams& in_msg, j2735_v2x_msgs::msg::RepeatParams& out_msg)
 {
-  out_msg.offset = in_msg.offset.sec / units::SEC_PER_MIN;
-  out_msg.period = in_msg.period.sec / units::SEC_PER_MIN;
-  out_msg.span = in_msg.span.sec / units::SEC_PER_MIN;
+  rclcpp::Time offset((in_msg.offset.sec + in_msg.offset.nanosec), 0.0);
+  out_msg.offset =  offset.seconds() / units::SEC_PER_MIN;
+  rclcpp::Time period((in_msg.period.sec + in_msg.period.nanosec) , 0.0);
+  out_msg.period = period.seconds()/ units::SEC_PER_MIN;
+  rclcpp::Time span((in_msg.span.sec + in_msg.span.nanosec), 0.0);
+  out_msg.span = span.seconds()/ units::SEC_PER_MIN;
 }
 
 void convert(const carma_v2x_msgs::msg::TrafficControlDetail& in_msg, j2735_v2x_msgs::msg::TrafficControlDetail& out_msg)
@@ -386,7 +391,8 @@ void convert(const carma_v2x_msgs::msg::TrafficControlGeometry& in_msg, j2735_v2
 {
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
-  out_msg.reftime = in_msg.reftime.sec / units::SEC_PER_MIN;
+  rclcpp::Time reftime((in_msg.reftime.sec + in_msg.reftime.nanosec), 0.0);
+  out_msg.reftime = reftime.seconds() / units::SEC_PER_MIN;
   out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.refelv = (int32_t)((in_msg.refelv + 409.6) * units::DECA_M_PER_M); // handle offset
@@ -442,7 +448,8 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_
 
   // # updated EpochMins
   // time updated
-  out_msg.updated = in_msg.updated.sec / units::SEC_PER_MIN;
+  rclcpp::Time updated((in_msg.updated.sec + in_msg.updated.nanosec), 0.0);
+  out_msg.updated = updated.seconds() / units::SEC_PER_MIN;
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
   // j2735_msgs/TrafficControlPackage package
@@ -492,12 +499,14 @@ void convert(const carma_v2x_msgs::msg::TrafficControlParams& in_msg, j2735_v2x_
 
 void convert(const carma_v2x_msgs::msg::TrafficControlSchedule& in_msg, j2735_v2x_msgs::msg::TrafficControlSchedule& out_msg)
 {
-  out_msg.start = in_msg.start.sec / units::SEC_PER_MIN;
+  rclcpp::Time start((in_msg.start.sec + in_msg.start.nanosec), 0.0);
+  out_msg.start = start.seconds()/ units::SEC_PER_MIN;
 
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
   {
-    out_msg.end = in_msg.end.sec / units::SEC_PER_MIN;
+    rclcpp::Time end((in_msg.end.sec + in_msg.end.nanosec), 0.0);
+    out_msg.end = end.seconds()/ units::SEC_PER_MIN;
   }
 
   out_msg.dow_exists = in_msg.dow_exists;
