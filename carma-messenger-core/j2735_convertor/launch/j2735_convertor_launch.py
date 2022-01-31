@@ -46,14 +46,13 @@ def generate_launch_description():
             
             # Launch the core node(s)
             ComposableNode(
-                    package='j2735_convertor',
-                    plugin='j2735_convertor::Node',
-                    name='j2735_convertor_node',
-                    extra_arguments=[
-                        {'use_intra_process_comms': True},
-                        {'--log-level' : log_level }
-                    ],
-                    remappings=[("/outgoing_bsm","/bsm_outbound")]
+                package='j2735_convertor',
+                plugin='j2735_convertor::Node',
+                name='j2735_convertor_node',
+                extra_arguments=[
+                    {'use_intra_process_comms': True},
+                    {'--log-level' : log_level }
+                ]
             ),
         ]
     )
