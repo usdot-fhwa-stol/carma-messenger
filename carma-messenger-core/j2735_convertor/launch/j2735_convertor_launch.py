@@ -52,7 +52,8 @@ def generate_launch_description():
                     extra_arguments=[
                         {'use_intra_process_comms': True},
                         {'--log-level' : log_level }
-                    ]
+                    ],
+                    remappings=[("/outgoing_bsm","/bsm_outbound")]
             ),
         ]
     )

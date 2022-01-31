@@ -24,7 +24,6 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <!-- <depend>j2735_convertor</depend> -->
   <depend>cpp_message</depend>
 
   <build_depend>carma_cmake_common</build_depend>
