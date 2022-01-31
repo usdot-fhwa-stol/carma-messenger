@@ -120,7 +120,7 @@ bool isLessThan(const std::vector<double>& data, int16_t threshold)
 
 void convert(const carma_v2x_msgs::msg::TrafficControlBounds& in_msg, j2735_v2x_msgs::msg::TrafficControlBounds& out_msg, const int8_t scale) 
 {
-  rclcpp::Time oldest((in_msg.oldest.sec + in_msg.oldest.nanosec), 0.0);
+  rclcpp::Time oldest(in_msg.oldest.sec , in_msg.oldest.nanosec);
   out_msg.oldest = oldest.seconds() / units::SEC_PER_MIN;
   out_msg.reflat = in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflon = in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG;
