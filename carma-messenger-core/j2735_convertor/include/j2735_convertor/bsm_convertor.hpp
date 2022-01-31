@@ -16,15 +16,15 @@
  */
 
 #include <cstdint>
-#include <j2735_msgs/BSM.h>
-#include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
-#include <cav_msgs/SystemAlert.h>
-#include <cav_msgs/BSM.h>
-#include <cav_msgs/SPAT.h>
-#include <cav_msgs/MapData.h>
-#include "units.h"
-#include "value_convertor.h"
+#include <j2735_v2x_msgs/msg/bsm.hpp>
+#include <j2735_v2x_msgs/msg/spat.hpp>
+#include <j2735_v2x_msgs/msg/map_data.hpp>
+#include <carma_msgs/msg/system_alert.hpp>
+#include <carma_v2x_msgs/msg/bsm.hpp>
+#include <carma_v2x_msgs/msg/spat.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
+#include "units.hpp"
+#include "value_convertor.hpp"
 
 namespace j2735_convertor
 {
@@ -39,24 +39,24 @@ class BSMConvertor
 {
 public:
   /**
-   * @brief Convert the contents of a j2735_msgs::BSM into a cav_msgs::BSM
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::BSM into a carma_v2x_msgs::msg::BSM
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const j2735_msgs::BSM& in_msg, cav_msgs::BSM& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::BSM& in_msg, carma_v2x_msgs::msg::BSM& out_msg);
 
   /**
-   * @brief Convert the contents of a cav_msgs::BSM into a j2735_msgs::BSM
+   * @brief Convert the contents of a carma_v2x_msgs::msg::BSM into a j2735_v2x_msgs::msg::BSM
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const cav_msgs::BSM& in_msg, j2735_msgs::BSM& out_msg);
+  static void convert(const carma_v2x_msgs::msg::BSM& in_msg, j2735_v2x_msgs::msg::BSM& out_msg);
 
 private:
   ////
@@ -64,87 +64,87 @@ private:
   ////
 
   /**
-   * @brief Convert the contents of a j2735_msgs::VehicleSize into a cav_msgs::VehicleSize
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::VehicleSize into a carma_v2x_msgs::msg::VehicleSize
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const j2735_msgs::VehicleSize& in_msg, cav_msgs::VehicleSize& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::VehicleSize& in_msg, carma_v2x_msgs::msg::VehicleSize& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::AccelerationSet4Way into a cav_msgs::AccelerationSet4Way
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::AccelerationSet4Way into a carma_v2x_msgs::msg::AccelerationSet4Way
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const j2735_msgs::AccelerationSet4Way& in_msg, cav_msgs::AccelerationSet4Way& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg, carma_v2x_msgs::msg::AccelerationSet4Way& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::PositionalAccuracy into a cav_msgs::PositionalAccuracy
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::PositionalAccuracy into a carma_v2x_msgs::msg::PositionalAccuracy
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const j2735_msgs::PositionalAccuracy& in_msg, cav_msgs::PositionalAccuracy& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::PositionalAccuracy& in_msg, carma_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::BSMCoreData into a cav_msgs::BSMCoreData
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::BSMCoreData into a carma_v2x_msgs::msg::BSMCoreData
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const j2735_msgs::BSMCoreData& in_msg, cav_msgs::BSMCoreData& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::BSMCoreData& in_msg, carma_v2x_msgs::msg::BSMCoreData& out_msg);
 
   ////
   // Convert cav_msgs to j2735_msgs
   ////
 
   /**
-   * @brief Convert the contents of a cav_msgs::VehicleSize into a j2735_msgs::VehicleSize
+   * @brief Convert the contents of a carma_v2x_msgs::msg::VehicleSize into a j2735_v2x_msgs::msg::VehicleSize
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const cav_msgs::VehicleSize& in_msg, j2735_msgs::VehicleSize& out_msg);
+  static void convert(const carma_v2x_msgs::msg::VehicleSize& in_msg, j2735_v2x_msgs::msg::VehicleSize& out_msg);
 
   /**
-   * @brief Convert the contents of a cav_msgs::AccelerationSet4Way into a j2735_msgs::AccelerationSet4Way
+   * @brief Convert the contents of a carma_v2x_msgs::msg::AccelerationSet4Way into a j2735_v2x_msgs::msg::AccelerationSet4Way
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const cav_msgs::AccelerationSet4Way& in_msg, j2735_msgs::AccelerationSet4Way& out_msg);
+  static void convert(const carma_v2x_msgs::msg::AccelerationSet4Way& in_msg, j2735_v2x_msgs::msg::AccelerationSet4Way& out_msg);
 
   /**
-   * @brief Convert the contents of a cav_msgs::PositionalAccuracy into a j2735_msgs::PositionalAccuracy
+   * @brief Convert the contents of a carma_v2x_msgs::msg::PositionalAccuracy into a j2735_v2x_msgs::msg::PositionalAccuracy
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const cav_msgs::PositionalAccuracy& in_msg, j2735_msgs::PositionalAccuracy& out_msg);
+  static void convert(const carma_v2x_msgs::msg::PositionalAccuracy& in_msg, j2735_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
   /**
-   * @brief Convert the contents of a cav_msgs::BSMCoreData into a j2735_msgs::BSMCoreData
+   * @brief Convert the contents of a carma_v2x_msgs::msg::BSMCoreData into a j2735_v2x_msgs::msg::BSMCoreData
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions and presence flags are handled
    */
-  static void convert(const cav_msgs::BSMCoreData& in_msg, j2735_msgs::BSMCoreData& out_msg);
+  static void convert(const carma_v2x_msgs::msg::BSMCoreData& in_msg, j2735_v2x_msgs::msg::BSMCoreData& out_msg);
 };
 }  // namespace j2735_convertor

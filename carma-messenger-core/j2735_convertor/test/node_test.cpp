@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) 2022 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,9 +15,30 @@
  */
 
 #include <gtest/gtest.h>
-#include <rclcpp/rclcpp.hpp>
+#include <memory>
+#include <chrono>
+#include <thread>
+#include <future>
 
-// Run all the tests
+#include "j2735_convertor/j2735_convertor_node.hpp"
+
+
+// TODO for USER: Implement a real test using GTest
+TEST(Testj2735_convertor, example_test){
+
+    rclcpp::NodeOptions options;
+    auto worker_node = std::make_shared<j2735_convertor::Node>(options);
+
+    worker_node->configure(); //Call configure state transition
+    worker_node->activate();  //Call activate state transition to get not read for runtime
+
+    std::unique_ptr<std_msgs::msg::String> msg = std::make_unique<std_msgs::msg::String>();
+    msg->data = "my string";
+
+    worker_node->example_callback(move(msg)); // Manually drive topic callbacks
+
+}
+
 int main(int argc, char ** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

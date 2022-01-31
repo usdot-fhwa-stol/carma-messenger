@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2021 LEIDOS.
+ * Copyright (C) 2022 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,14 +14,20 @@
  * the License.
  */
 
-#include "j2735_convertor.h"
+#include <rclcpp/rclcpp.hpp>
+#include "j2735_convertor/j2735_convertor_node.hpp"
 
-/**
- * Entry Function for Execution
- */
-int main(int argc, char**argv)
+int main(int argc, char **argv) 
 {
-   j2735_convertor::J2735Convertor node(argc,argv);
+  rclcpp::init(argc, argv);
 
-    return node.run();
+  auto node = std::make_shared<j2735_convertor::Node>(rclcpp::NodeOptions());
+  
+  rclcpp::executors::MultiThreadedExecutor executor;
+  executor.add_node(node->get_node_base_interface());
+  executor.spin();
+
+  rclcpp::shutdown();
+
+  return 0;
 }

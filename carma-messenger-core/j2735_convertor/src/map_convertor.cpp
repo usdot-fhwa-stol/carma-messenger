@@ -14,7 +14,7 @@
  * the License.
  */
 
-#include <j2735_convertor/map_convertor.h>
+#include <j2735_convertor/map_convertor.hpp>
 
 /**
  * CPP File containing MapConvertor method definitions
@@ -22,21 +22,21 @@
 
 namespace j2735_convertor
 {
-void MapConvertor::convertOffsetXaxis(const j2735_msgs::OffsetXaxis& in_msg, cav_msgs::OffsetAxis& out_msg)
+void MapConvertor::convertOffsetXaxis(const j2735_v2x_msgs::msg::OffsetXaxis& in_msg, carma_v2x_msgs::msg::OffsetAxis& out_msg)
 {
   out_msg.choice = in_msg.choice;
   out_msg.large = in_msg.large;
   out_msg.small = in_msg.small;
 }
 
-void MapConvertor::convertOffsetYaxis(const j2735_msgs::OffsetYaxis& in_msg, cav_msgs::OffsetAxis& out_msg)
+void MapConvertor::convertOffsetYaxis(const j2735_v2x_msgs::msg::OffsetYaxis& in_msg, carma_v2x_msgs::msg::OffsetAxis& out_msg)
 {
   out_msg.choice = in_msg.choice;
   out_msg.large = in_msg.large;
   out_msg.small = in_msg.small;
 }
 
-void MapConvertor::convertComputedLane(const j2735_msgs::ComputedLane& in_msg, cav_msgs::ComputedLane& out_msg)
+void MapConvertor::convertComputedLane(const j2735_v2x_msgs::msg::ComputedLane& in_msg, carma_v2x_msgs::msg::ComputedLane& out_msg)
 {
   out_msg.reference_lane_id = in_msg.reference_lane_id;
   convertOffsetXaxis(in_msg.offset_x_axis, out_msg.offset_x_axis);
@@ -54,38 +54,38 @@ void MapConvertor::convertComputedLane(const j2735_msgs::ComputedLane& in_msg, c
   out_msg.scale_y_axis_exists = in_msg.scale_y_axis_exists;
 }
 
-void MapConvertor::convertNodeOffsetPointXY(const j2735_msgs::NodeOffsetPointXY& in_msg,
-                                            cav_msgs::NodeOffsetPointXY& out_msg)
+void MapConvertor::convertNodeOffsetPointXY(const j2735_v2x_msgs::msg::NodeOffsetPointXY& in_msg,
+                                            carma_v2x_msgs::msg::NodeOffsetPointXY& out_msg)
 {
   out_msg.choice = in_msg.choice;
   // Convert XY or Lat/Lon points based on choice field
   switch (in_msg.choice)
   {
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY1:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY1:
       out_msg.x = (double)in_msg.node_xy1.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy1.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY2:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY2:
       out_msg.x = (double)in_msg.node_xy2.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy2.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY3:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY3:
       out_msg.x = (double)in_msg.node_xy3.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy3.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY4:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY4:
       out_msg.x = (double)in_msg.node_xy4.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy4.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY5:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY5:
       out_msg.x = (double)in_msg.node_xy5.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy5.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_XY6:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_XY6:
       out_msg.x = (double)in_msg.node_xy6.x / units::CM_PER_M;
       out_msg.y = (double)in_msg.node_xy6.y / units::CM_PER_M;
       break;
-    case j2735_msgs::NodeOffsetPointXY::NODE_LATLON:
+    case j2735_v2x_msgs::msg::NodeOffsetPointXY::NODE_LATLON:
       out_msg.latitude = (double)in_msg.node_latlon.latitude / units::TENTH_MICRO_DEG_PER_DEG;
       out_msg.longitude = (double)in_msg.node_latlon.longitude / units::TENTH_MICRO_DEG_PER_DEG;
       break;
@@ -93,34 +93,34 @@ void MapConvertor::convertNodeOffsetPointXY(const j2735_msgs::NodeOffsetPointXY&
   // Done Conversion
 }
 
-void MapConvertor::convertLaneDataAttribute(const j2735_msgs::LaneDataAttribute& in_msg,
-                                            cav_msgs::LaneDataAttribute& out_msg)
+void MapConvertor::convertLaneDataAttribute(const j2735_v2x_msgs::msg::LaneDataAttribute& in_msg,
+                                            carma_v2x_msgs::msg::LaneDataAttribute& out_msg)
 {
   out_msg.choice = in_msg.choice;
   // Convert Angles
   // Do comparison to avoid duplicate math
   switch (in_msg.choice)
   {
-    case j2735_msgs::LaneDataAttribute::PATH_END_POINT_ANGLE:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::PATH_END_POINT_ANGLE:
       out_msg.path_end_point_angle = in_msg.path_end_point_angle;
       break;
-    case j2735_msgs::LaneDataAttribute::LANE_CROWN_POINT_CENTER:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::LANE_CROWN_POINT_CENTER:
       out_msg.lane_crown_point_center = in_msg.lane_crown_point_center * units::THREE_TENTHS_DEG;
       break;
-    case j2735_msgs::LaneDataAttribute::LANE_CROWN_POINT_LEFT:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::LANE_CROWN_POINT_LEFT:
       out_msg.lane_crown_point_left = in_msg.lane_crown_point_left * units::THREE_TENTHS_DEG;
       break;
-    case j2735_msgs::LaneDataAttribute::LANE_CROWN_POINT_RIGHT:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::LANE_CROWN_POINT_RIGHT:
       out_msg.lane_crown_point_right = in_msg.lane_crown_point_right * units::THREE_TENTHS_DEG;
       break;
-    case j2735_msgs::LaneDataAttribute::LANE_ANGLE:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::LANE_ANGLE:
       out_msg.lane_angle = in_msg.lane_angle * units::ONE_AND_A_HALF_DEG;
       break;
-    case j2735_msgs::LaneDataAttribute::SPEED_LIMITS:
+    case j2735_v2x_msgs::msg::LaneDataAttribute::SPEED_LIMITS:
       // Convert SpeedLimitsList
-      for (j2735_msgs::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
+      for (j2735_v2x_msgs::msg::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
       {
-        cav_msgs::RegulatorySpeedLimit cav_limit;
+        carma_v2x_msgs::msg::RegulatorySpeedLimit cav_limit;
         convertRegulatorySpeedLimit(limit, cav_limit);
         out_msg.speed_limits.push_back(cav_limit);
       }
@@ -129,22 +129,22 @@ void MapConvertor::convertLaneDataAttribute(const j2735_msgs::LaneDataAttribute&
   // Done Conversion
 }
 
-void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetXY& in_msg,
-                                             cav_msgs::NodeAttributeSetXY& out_msg)
+void MapConvertor::convertNodeAttributeSetXY(const j2735_v2x_msgs::msg::NodeAttributeSetXY& in_msg,
+                                             carma_v2x_msgs::msg::NodeAttributeSetXY& out_msg)
 {
-  for (j2735_msgs::NodeAttributeXY attribute : in_msg.local_node.node_attribute_xy_list)
+  for (j2735_v2x_msgs::msg::NodeAttributeXY attribute : in_msg.local_node.node_attribute_xy_list)
   {
     out_msg.local_node.push_back(attribute);
   }
   out_msg.local_node_exists = in_msg.local_node_exists;
 
-  for (j2735_msgs::SegmentAttributeXY attribute : in_msg.disabled.segment_attribute_xy)
+  for (j2735_v2x_msgs::msg::SegmentAttributeXY attribute : in_msg.disabled.segment_attribute_xy)
   {
     out_msg.disabled.push_back(attribute);
   }
   out_msg.disabled_exists = in_msg.disabled_exists;
 
-  for (j2735_msgs::SegmentAttributeXY attribute : in_msg.enabled.segment_attribute_xy)
+  for (j2735_v2x_msgs::msg::SegmentAttributeXY attribute : in_msg.enabled.segment_attribute_xy)
   {
     out_msg.enabled.push_back(attribute);
   }
@@ -155,9 +155,9 @@ void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetX
   out_msg.d_elevation_exists = in_msg.d_elevation_exists;
 
   // Convert LaneDataAttributeList
-  for (j2735_msgs::LaneDataAttribute attribute : in_msg.data.lane_attribute_list)
+  for (j2735_v2x_msgs::msg::LaneDataAttribute attribute : in_msg.data.lane_attribute_list)
   {
-    cav_msgs::LaneDataAttribute cav_attribute;
+    carma_v2x_msgs::msg::LaneDataAttribute cav_attribute;
     convertLaneDataAttribute(attribute, cav_attribute);
     out_msg.lane_attribute_list.push_back(cav_attribute);
   }
@@ -168,24 +168,24 @@ void MapConvertor::convertNodeAttributeSetXY(const j2735_msgs::NodeAttributeSetX
   // Done Conversion
 }
 
-void MapConvertor::convertNodeXY(const j2735_msgs::NodeXY& in_msg, cav_msgs::NodeXY& out_msg)
+void MapConvertor::convertNodeXY(const j2735_v2x_msgs::msg::NodeXY& in_msg, carma_v2x_msgs::msg::NodeXY& out_msg)
 {
   convertNodeOffsetPointXY(in_msg.delta, out_msg.delta);
   convertNodeAttributeSetXY(in_msg.attributes, out_msg.attributes);
   out_msg.attributes_exists = in_msg.attributes_exists;
 }
 
-void MapConvertor::convertNodeSetXY(const j2735_msgs::NodeSetXY& in_msg, cav_msgs::NodeSetXY& out_msg)
+void MapConvertor::convertNodeSetXY(const j2735_v2x_msgs::msg::NodeSetXY& in_msg, carma_v2x_msgs::msg::NodeSetXY& out_msg)
 {
-  for (j2735_msgs::NodeXY node : in_msg.node_set_xy)
+  for (j2735_v2x_msgs::msg::NodeXY node : in_msg.node_set_xy)
   {
-    cav_msgs::NodeXY cav_node;
+    carma_v2x_msgs::msg::NodeXY cav_node;
     convertNodeXY(node, cav_node);
     out_msg.node_set_xy.push_back(cav_node);
   }
 }
 
-void MapConvertor::convertNodeListXY(const j2735_msgs::NodeListXY& in_msg, cav_msgs::NodeListXY& out_msg)
+void MapConvertor::convertNodeListXY(const j2735_v2x_msgs::msg::NodeListXY& in_msg, carma_v2x_msgs::msg::NodeListXY& out_msg)
 {
   out_msg.choice = in_msg.choice;
   // Convert NodeSetXY
@@ -195,7 +195,7 @@ void MapConvertor::convertNodeListXY(const j2735_msgs::NodeListXY& in_msg, cav_m
   // Done Conversion
 }
 
-void MapConvertor::convertGenericLane(const j2735_msgs::GenericLane& in_msg, cav_msgs::GenericLane& out_msg)
+void MapConvertor::convertGenericLane(const j2735_v2x_msgs::msg::GenericLane& in_msg, carma_v2x_msgs::msg::GenericLane& out_msg)
 {
   out_msg.lane_id = in_msg.lane_id;
   out_msg.name = in_msg.name;
@@ -218,8 +218,8 @@ void MapConvertor::convertGenericLane(const j2735_msgs::GenericLane& in_msg, cav
   out_msg.overlay_lane_list_exists = in_msg.overlay_lane_list_exists;
 }
 
-void MapConvertor::convertRegulatorySpeedLimit(const j2735_msgs::RegulatorySpeedLimit& in_msg,
-                                               cav_msgs::RegulatorySpeedLimit& out_msg)
+void MapConvertor::convertRegulatorySpeedLimit(const j2735_v2x_msgs::msg::RegulatorySpeedLimit& in_msg,
+                                               carma_v2x_msgs::msg::RegulatorySpeedLimit& out_msg)
 {
   out_msg.type = in_msg.type;
   // Convert Speed
@@ -227,7 +227,7 @@ void MapConvertor::convertRegulatorySpeedLimit(const j2735_msgs::RegulatorySpeed
   // Done Conversion
 }
 
-void MapConvertor::convertPosition3D(const j2735_msgs::Position3D& in_msg, cav_msgs::Position3D& out_msg)
+void MapConvertor::convertPosition3D(const j2735_v2x_msgs::msg::Position3D& in_msg, carma_v2x_msgs::msg::Position3D& out_msg)
 {
   // Convert lat/lon
   out_msg.latitude = (double)in_msg.latitude / units::TENTH_MICRO_DEG_PER_DEG;
@@ -237,8 +237,8 @@ void MapConvertor::convertPosition3D(const j2735_msgs::Position3D& in_msg, cav_m
   out_msg.elevation_exists = in_msg.elevation_exists;
 }
 
-void MapConvertor::convertIntersectionGeometry(const j2735_msgs::IntersectionGeometry& in_msg,
-                                               cav_msgs::IntersectionGeometry& out_msg)
+void MapConvertor::convertIntersectionGeometry(const j2735_v2x_msgs::msg::IntersectionGeometry& in_msg,
+                                               carma_v2x_msgs::msg::IntersectionGeometry& out_msg)
 {
   out_msg.name = in_msg.name;
   out_msg.name_exists = in_msg.name_exists;
@@ -251,16 +251,16 @@ void MapConvertor::convertIntersectionGeometry(const j2735_msgs::IntersectionGeo
   // Convert LaneWidth
   out_msg.lane_width = (double)in_msg.lane_width / units::CM_PER_M;
   // Convert SpeedLimitsList
-  for (j2735_msgs::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
+  for (j2735_v2x_msgs::msg::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
   {
-    cav_msgs::RegulatorySpeedLimit cav_limit;
+    carma_v2x_msgs::msg::RegulatorySpeedLimit cav_limit;
     convertRegulatorySpeedLimit(limit, cav_limit);
     out_msg.speed_limits.push_back(cav_limit);
   }
   // Convert RoadLaneSet
-  for (j2735_msgs::GenericLane lane : in_msg.lane_set.lane_list)
+  for (j2735_v2x_msgs::msg::GenericLane lane : in_msg.lane_set.lane_list)
   {
-    cav_msgs::GenericLane cav_lane;
+    carma_v2x_msgs::msg::GenericLane cav_lane;
     convertGenericLane(lane, cav_lane);
     out_msg.lane_list.push_back(cav_lane);
   }
@@ -270,7 +270,7 @@ void MapConvertor::convertIntersectionGeometry(const j2735_msgs::IntersectionGeo
   out_msg.preempt_priority_data_exists = in_msg.preempt_priority_data_exists;
 }
 
-void MapConvertor::convertRoadSegment(const j2735_msgs::RoadSegment& in_msg, cav_msgs::RoadSegment& out_msg)
+void MapConvertor::convertRoadSegment(const j2735_v2x_msgs::msg::RoadSegment& in_msg, carma_v2x_msgs::msg::RoadSegment& out_msg)
 {
   out_msg.name = in_msg.name;
   out_msg.name_exists = in_msg.name_exists;
@@ -284,25 +284,25 @@ void MapConvertor::convertRoadSegment(const j2735_msgs::RoadSegment& in_msg, cav
   // Done Convertion
   out_msg.lane_width_exists = in_msg.lane_width_exists;
   // Convert SpeedLimitList
-  for (j2735_msgs::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
+  for (j2735_v2x_msgs::msg::RegulatorySpeedLimit limit : in_msg.speed_limits.speed_limits)
   {
-    cav_msgs::RegulatorySpeedLimit cav_limit;
+    carma_v2x_msgs::msg::RegulatorySpeedLimit cav_limit;
     convertRegulatorySpeedLimit(limit, cav_limit);
     out_msg.speed_limits.push_back(cav_limit);
   }
   // Done Convertion
   out_msg.speed_limits_exists = in_msg.speed_limits_exists;
   // Convert RoadLaneSet
-  for (j2735_msgs::GenericLane lane : in_msg.road_lane_set.road_lane_set_list)
+  for (j2735_v2x_msgs::msg::GenericLane lane : in_msg.road_lane_set.road_lane_set_list)
   {
-    cav_msgs::GenericLane cav_lane;
+    carma_v2x_msgs::msg::GenericLane cav_lane;
     convertGenericLane(lane, cav_lane);
     out_msg.road_lane_set_list.push_back(cav_lane);
   }
   // Done Convertion
 }
 
-void MapConvertor::convert(const j2735_msgs::MapData& in_msg, cav_msgs::MapData& out_msg)
+void MapConvertor::convert(const j2735_v2x_msgs::msg::MapData& in_msg, carma_v2x_msgs::msg::MapData& out_msg)
 {
   out_msg.header = in_msg.header;
   out_msg.time_stamp = in_msg.time_stamp;
@@ -314,9 +314,9 @@ void MapConvertor::convert(const j2735_msgs::MapData& in_msg, cav_msgs::MapData&
   out_msg.intersections_exists = in_msg.intersections_exists;
 
   // Convert IntersectionGeometryList
-  for (j2735_msgs::IntersectionGeometry geometry : in_msg.intersections)
+  for (j2735_v2x_msgs::msg::IntersectionGeometry geometry : in_msg.intersections)
   {
-    cav_msgs::IntersectionGeometry cav_geometry;
+    carma_v2x_msgs::msg::IntersectionGeometry cav_geometry;
     convertIntersectionGeometry(geometry, cav_geometry);
     out_msg.intersections.push_back(cav_geometry);
   }
@@ -325,9 +325,9 @@ void MapConvertor::convert(const j2735_msgs::MapData& in_msg, cav_msgs::MapData&
   out_msg.road_segments_exists = in_msg.road_segments_exists;
 
   // Convert RoadSegmentList
-  for (j2735_msgs::RoadSegment seg : in_msg.road_segments.road_segment_list)
+  for (j2735_v2x_msgs::msg::RoadSegment seg : in_msg.road_segments.road_segment_list)
   {
-    cav_msgs::RoadSegment cav_seg;
+    carma_v2x_msgs::msg::RoadSegment cav_seg;
     convertRoadSegment(seg, cav_seg);
     out_msg.road_segment_list.push_back(cav_seg);
   }
