@@ -15,6 +15,7 @@
  * the License.
  */
 #include "cpp_message.h"
+#include <bitset>
 
 namespace cpp_message
 {
@@ -42,5 +43,7 @@ namespace cpp_message
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage);
+
+
     };
 }
