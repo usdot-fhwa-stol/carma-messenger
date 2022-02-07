@@ -12,7 +12,7 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-FROM usdotfhwastoldev/carma-base:develop as base_image
+FROM usdotfhwastol/carma-base:carma-system-3.11.0 as base_image
 FROM base_image as setup
 
 RUN mkdir ~/src
