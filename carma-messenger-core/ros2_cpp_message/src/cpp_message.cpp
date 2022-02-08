@@ -27,6 +27,7 @@
 #include "ros2_cpp_message/SPAT_Message.h"
 #include "ros2_cpp_message/Map_Message.h"
 
+
 namespace cpp_message
 {
     namespace std_ph = std::placeholders;

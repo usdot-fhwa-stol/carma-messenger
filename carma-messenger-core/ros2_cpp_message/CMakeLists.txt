@@ -18,7 +18,9 @@ project(ros2_cpp_message)
 
 # Declare carma package and check ROS version
 find_package(carma_cmake_common REQUIRED)
-# carma_check_ros_version(2)
+find_package(asn1c REQUIRED)
+
+carma_check_ros_version(2)
 carma_package()
 
 ## Find dependencies using ament auto
@@ -49,6 +51,18 @@ ament_auto_add_library(${node_lib} SHARED
         src/Map_Message.cpp
 )
 
+
+add_library(testlib SHARED IMPORTED)
+
+# Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
+set(ASN1C_INSTALL_PATH ${asn1c_DIR}/../../../)
+
+set_target_properties(testlib PROPERTIES
+  IMPORTED_LOCATION ${ASN1C_INSTALL_PATH}/lib/libasn1c.so
+)
+
+target_link_libraries(${node_lib} testlib)
+
 ament_auto_add_executable(${node_exec} 
         src/main.cpp 
 )
@@ -68,11 +82,20 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
 
-  ament_add_gtest(test_ros2_cpp_message test/node_test.cpp)
+  ament_add_gtest(test_ros2_cpp_message_node 
+                        test/test_encode_decode.cpp
+                        test/test_MobilityOperations.cpp
+                        test/test_MobilityResponse.cpp
+                        test/test_MobilityPath.cpp
+                        test/test_MobilityRequest.cpp
+                        test/test_BSM.cpp
+                        test/test_MapMessage.cpp
+                        test/test_SPAT.cpp
+                        test/node_test.cpp)
 
-  ament_target_dependencies(test_ros2_cpp_message ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
+  ament_target_dependencies(test_ros2_cpp_message_node ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
 
-  target_link_libraries(test_ros2_cpp_message ${node_lib})
+  target_link_libraries(test_ros2_cpp_message_node ${node_lib})
 
 endif()
 

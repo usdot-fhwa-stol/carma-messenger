@@ -14,9 +14,8 @@
  * the License.
  */
 
-#include "Map_Message.h"
+#include "ros2_cpp_message/Map_Message.h"
 #include <gtest/gtest.h>
-#include <ros/ros.h>
 #include <boost/optional/optional_io.hpp>   //to print boost::optional
 
 namespace cpp_message
@@ -68,8 +67,9 @@ TEST(MapMessageTest, testDecodeMapMessage)
         for(int i = 0; i<new_binary_input.size();i++){
             new_binary_input_int.push_back(new_binary_input[i]);
         }
-
-    cpp_message::Map_Message worker;
+    
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+    cpp_message::Map_Message worker(node_logging_);
 
     auto res = worker.decode_map_message(new_binary_input_int);
 
@@ -115,7 +115,7 @@ TEST(MapMessageTest, testDecodeMapMessage)
         EXPECT_EQ(res.get().layer_id_exists, true);
 
         //Layer Type
-        EXPECT_EQ(res.get().layer_type.layer_type,j2735_msgs::LayerType::INTERSECTION_DATA);
+        EXPECT_EQ(res.get().layer_type.layer_type,j2735_v2x_msgs::msg::LayerType::INTERSECTION_DATA);
 
         //Msg Issue Revision
         EXPECT_EQ(res.get().msg_issue_revision,3);

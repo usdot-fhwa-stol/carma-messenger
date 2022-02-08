@@ -15,19 +15,19 @@
  */
 
 //#include "Mobility_Operation_Message.h"
-#include "MobilityResponse_Message.h"
+#include "ros2_cpp_message/MobilityResponse_Message.h"
 #include <gtest/gtest.h>
-#include <ros/ros.h>
 
 
 TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
 {
     std::vector<uint8_t> binary_input = {0,241,77,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,112,202};
-    cpp_message::Mobility_Response worker;
-    boost::optional<cav_msgs::MobilityResponse> res;
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+    cpp_message::Mobility_Response worker(node_logging_);
+    boost::optional<carma_v2x_msgs::msg::MobilityResponse> res;
     res = worker.decode_mobility_response_message(binary_input);
     if(res){
-        cav_msgs::MobilityResponse to_read=res.get();
+        carma_v2x_msgs::msg::MobilityResponse to_read=res.get();
         // std::cout<<to_read.header.sender_id<<std::endl;
         // std::cout<<to_read.header.recipient_id<<std::endl;
         // std::cout<<to_read.header.sender_bsm_id<<std::endl;
@@ -45,9 +45,10 @@ TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
 
 TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
 {
-    cpp_message::Mobility_Response worker;
-    cav_msgs::MobilityHeader header;
-    cav_msgs::MobilityResponse message;     
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+    cpp_message::Mobility_Response worker(node_logging_);
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityResponse message;     
     header.sender_id="USDOT-45100";
     header.recipient_id="USDOT-45095";
     header.sender_bsm_id="10ABCDEF";
@@ -74,9 +75,10 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
 
 TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
 {
-    cpp_message::Mobility_Response worker;
-    cav_msgs::MobilityHeader header;
-    cav_msgs::MobilityResponse message;     
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+    cpp_message::Mobility_Response worker(node_logging_);
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityResponse message;     
     header.sender_id="";
     header.recipient_id="";
     header.sender_bsm_id="";
