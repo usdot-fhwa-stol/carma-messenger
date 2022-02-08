@@ -52,7 +52,7 @@ namespace cpp_message
         bsm_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
         bsm_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
         spat_message_pub_ = nh_->advertise<j2735_msgs::SPAT>("incoming_j2735_spat", 5);
-        map_message_pub_ = nh_->advertise<j2735_msgs::MapData>("incoming_j2375_map", 5);
+        map_message_pub_ = nh_->advertise<j2735_msgs::MapData>("incoming_j2735_map", 5);
 
 
     }
@@ -174,7 +174,7 @@ namespace cpp_message
                 ROS_WARN_STREAM("Cannot decode SPAT message");
             }
         }
-        else if(msg->messageType=="MapData")
+        else if(msg->messageType=="MAP")
         {
             std::vector<uint8_t> array=msg->content;
             Map_Message decode;
