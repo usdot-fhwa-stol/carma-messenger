@@ -51,8 +51,6 @@ namespace cpp_message
  * 
  */
 
-// class Message
-// {
 
 class Node : public carma_ros2_utils::CarmaLifecycleNode
 {

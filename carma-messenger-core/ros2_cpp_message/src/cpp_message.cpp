@@ -34,6 +34,7 @@ namespace cpp_message
 
     Node::Node(const rclcpp::NodeOptions &options): carma_ros2_utils::CarmaLifecycleNode(options)
     {
+        
     }
 
     carma_ros2_utils::CallbackReturn Node::handle_on_configure(const rclcpp_lifecycle::State &)
