@@ -1,5 +1,4 @@
-
-# Copyright (C) 2020-2021 LEIDOS.
+# Copyright (C) 2020-2022 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -13,50 +12,29 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(j2735_convertor)
 
-## Compile as C++14, supported in ROS Noetic and newer
-add_compile_options(-std=c++14)
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+# Declare carma package and check ROS version
+find_package(carma_cmake_common REQUIRED)
+carma_check_ros_version(2)
+carma_package()
 
-## Find catkin macros and libraries
-set(DEPS
-  cav_msgs
-  j2735_msgs
-  roscpp
-  carma_utils
-)
-find_package(catkin REQUIRED COMPONENTS
-  ${DEPS}
-)
+## Find dependencies using ament auto
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-## System dependencies
-find_package(Boost REQUIRED COMPONENTS system thread)
+# Name build targets
+set(node_exec j2735_convertor_node_exec)
+set(node_lib j2735_convertor_node)
 
-###################################
-## catkin specific configuration ##
-###################################
-catkin_package(
-   INCLUDE_DIRS include
-   LIBRARIES j2735_conversions
-   CATKIN_DEPENDS ${DEPS}
-   DEPENDS Boost
-)
-
-###########
-## Build ##
-###########
-
-## Headers
+# Includes
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
 )
 
-## Declare library
-add_library(j2735_conversions
+# Build
+ament_auto_add_library(j2735_conversions
   src/bsm_convertor.cpp
   src/spat_convertor.cpp
   src/map_convertor.cpp
@@ -64,49 +42,48 @@ add_library(j2735_conversions
   src/control_request_convertor.cpp
 )
 
-target_link_libraries(j2735_conversions ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-
-add_dependencies(j2735_conversions ${catkin_EXPORTED_TARGETS})
-
-## Declare a C++ executable
-add_executable(j2735_convertor_node
-         src/main.cpp
-         src/j2735_convertor.cpp)
-
-target_link_libraries(j2735_convertor_node j2735_conversions ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-
-add_dependencies(j2735_convertor_node j2735_conversions ${catkin_EXPORTED_TARGETS})
-
-
-#############
-## Install ##
-#############
-
-## Mark executables and/or libraries for installation
-install(TARGETS j2735_convertor_node j2735_conversions
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ament_auto_add_library(${node_lib} SHARED
+        src/j2735_convertor_node.cpp
 )
 
-## Mark cpp header files for installation
- install(DIRECTORY include/${PROJECT_NAME}/
-   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-   FILES_MATCHING PATTERN "*.h"
-   PATTERN ".svn" EXCLUDE
- )
-
-#############
-## Testing ##
-#############
-
-catkin_add_gmock(${PROJECT_NAME}-test
- test/test_main.cpp
- test/control_message_test.cpp
- test/control_request_test.cpp
- WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test # Add test directory as working directory for unit tests
+ament_auto_add_executable(${node_exec} 
+        src/main.cpp 
 )
 
-if(TARGET ${PROJECT_NAME}-test)
- target_link_libraries(${PROJECT_NAME}-test j2735_conversions ${catkin_LIBRARIES})
+# Register component
+rclcpp_components_register_nodes(${node_lib} "j2735_convertor::Node")
+
+# All locally created targets will need to be manually linked
+# ament auto will handle linking of external dependencies
+target_link_libraries(${node_lib}
+  j2735_conversions
+)
+
+target_link_libraries(${node_exec}
+        ${node_lib}
+)
+
+# Testing
+if(BUILD_TESTING)  
+
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
+
+  ament_add_gtest(test_j2735_convertor 
+    test/test_main.cpp
+    test/control_message_test.cpp
+    test/control_request_test.cpp
+  )
+
+  ament_target_dependencies(test_j2735_convertor ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
+
+  target_link_libraries(test_j2735_convertor ${node_lib})
+
 endif()
+
+# Install
+ament_auto_package(
+        INSTALL_TO_SHARE launch
+)
+
+

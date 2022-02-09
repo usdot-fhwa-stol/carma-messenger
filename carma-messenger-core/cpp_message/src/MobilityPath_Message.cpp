@@ -106,7 +106,7 @@ namespace cpp_message
             }
             timestamp=atoll(timestamp_ch);
             header.timestamp=timestamp;
-            output.header=header;
+            output.m_header=header;
             //Trajectory
             cav_msgs::LocationECEF location;
             long tmp=message->value.choice.TestMessage02.body.location.ecefX;
@@ -202,7 +202,7 @@ namespace cpp_message
                 
         Mobility_Header Header;
         //convert host_id string to char array
-        std::string sender_id=plainMessage.header.sender_id;
+        std::string sender_id=plainMessage.m_header.sender_id;
         size_t string_size=sender_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH)
         {
@@ -219,7 +219,7 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage02.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        std::string recipient_id=plainMessage.header.recipient_id;
+        std::string recipient_id=plainMessage.m_header.recipient_id;
         string_size=recipient_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size> Header.STATIC_ID_MAX_LENGTH){
             ROS_WARN("Unacceptable recipient id value, changing to default");
@@ -237,8 +237,8 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.targetStaticId.size=string_size;
             
          //convert bsm_id string to char array
-        //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
-        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+         //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
+        std::string sender_bsm_id=plainMessage.m_header.sender_bsm_id;
         string_size=sender_bsm_id.size();
         if(string_size<Header.BSM_ID_LENGTH)
         {
@@ -261,8 +261,8 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.hostBSMId.size=string_size;
         
          //convert plan_id string to char array
-        std::string plan_id=plainMessage.header.plan_id;
-        string_size=plainMessage.header.plan_id.size();
+        std::string plan_id=plainMessage.m_header.plan_id;
+        string_size=plainMessage.m_header.plan_id.size();
         if(string_size!=Header.GUID_LENGTH){
             ROS_WARN("Unacceptable GUID, changing to default");
             plan_id=Header.GUID_DEFAULT;
@@ -276,7 +276,7 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.planId.buf=string_content_planId;
         message->value.choice.TestMessage02.header.planId.size=string_size;
         //get timestamp and convert to char array
-        uint64_t time=plainMessage.header.timestamp;
+        uint64_t time=plainMessage.m_header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
         if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){

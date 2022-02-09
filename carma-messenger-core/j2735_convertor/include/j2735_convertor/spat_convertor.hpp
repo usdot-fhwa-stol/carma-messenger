@@ -15,16 +15,14 @@
  * the License.
  */
 
-#include <ros/ros.h>
-#include <ros/callback_queue.h>
-#include <j2735_msgs/BSM.h>
-#include <j2735_msgs/SPAT.h>
-#include <j2735_msgs/MapData.h>
-#include <cav_msgs/SystemAlert.h>
-#include <cav_msgs/BSM.h>
-#include <cav_msgs/SPAT.h>
-#include <cav_msgs/MapData.h>
-#include "units.h"
+#include <j2735_v2x_msgs/msg/bsm.hpp>
+#include <j2735_v2x_msgs/msg/spat.hpp>
+#include <j2735_v2x_msgs/msg/map_data.hpp>
+#include <carma_msgs/msg/system_alert.hpp>
+#include <carma_v2x_msgs/msg/bsm.hpp>
+#include <carma_v2x_msgs/msg/spat.hpp>
+#include <carma_v2x_msgs/msg/map_data.hpp>
+#include "units.hpp"
 
 namespace j2735_convertor
 {
@@ -39,66 +37,66 @@ class SPATConvertor
 {
 public:
   /**
-   * @brief Convert the contents of a j2735_msgs::MapData into a cav_msgs::MapData
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::MapData into a carma_v2x_msgs::msg::MapData
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convert(const j2735_msgs::SPAT& in_msg, cav_msgs::SPAT& out_msg);
+  static void convert(const j2735_v2x_msgs::msg::SPAT& in_msg, carma_v2x_msgs::msg::SPAT& out_msg);
 
 private:
   /**
-   * @brief Convert the contents of a j2735_msgs::TimeChangeDetails into a cav_msgs::TimeChangeDetails
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::TimeChangeDetails into a carma_v2x_msgs::msg::TimeChangeDetails
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertTimeChangeDetails(const j2735_msgs::TimeChangeDetails& in_msg,
-                                       cav_msgs::TimeChangeDetails& out_msg);
+  static void convertTimeChangeDetails(const j2735_v2x_msgs::msg::TimeChangeDetails& in_msg,
+                                       carma_v2x_msgs::msg::TimeChangeDetails& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::AdvisorySpeed into a cav_msgs::AdvisorySpeed
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::AdvisorySpeed into a carma_v2x_msgs::msg::AdvisorySpeed
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertAdvisorySpeed(const j2735_msgs::AdvisorySpeed& in_msg, cav_msgs::AdvisorySpeed& out_msg);
+  static void convertAdvisorySpeed(const j2735_v2x_msgs::msg::AdvisorySpeed& in_msg, carma_v2x_msgs::msg::AdvisorySpeed& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::MovementEvent into a cav_msgs::MovementEvent
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::MovementEvent into a carma_v2x_msgs::msg::MovementEvent
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertMovementEvent(const j2735_msgs::MovementEvent& in_msg, cav_msgs::MovementEvent& out_msg);
+  static void convertMovementEvent(const j2735_v2x_msgs::msg::MovementEvent& in_msg, carma_v2x_msgs::msg::MovementEvent& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::MovementState into a cav_msgs::MovementState
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::MovementState into a carma_v2x_msgs::msg::MovementState
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertMovementState(const j2735_msgs::MovementState& in_msg, cav_msgs::MovementState& out_msg);
+  static void convertMovementState(const j2735_v2x_msgs::msg::MovementState& in_msg, carma_v2x_msgs::msg::MovementState& out_msg);
 
   /**
-   * @brief Convert the contents of a j2735_msgs::IntersectionState into a cav_msgs::IntersectionState
+   * @brief Convert the contents of a j2735_v2x_msgs::msg::IntersectionState into a carma_v2x_msgs::msg::IntersectionState
    *
    * @param in_msg The message to be converted
    * @param out_msg The message to store the output
    *
    * Unit conversions are handled
    */
-  static void convertIntersectionState(const j2735_msgs::IntersectionState& in_msg,
-                                       cav_msgs::IntersectionState& out_msg);
+  static void convertIntersectionState(const j2735_v2x_msgs::msg::IntersectionState& in_msg,
+                                       carma_v2x_msgs::msg::IntersectionState& out_msg);
 };
 }  // namespace j2735_convertor

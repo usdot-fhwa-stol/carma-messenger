@@ -88,7 +88,7 @@ TEST(TruckInspectionTest,TestMobilityOperationInBound){
     msg_out_header.sender_bsm_id="'5055'";
     msg_out_header.plan_id= "";
     msg_out_header.timestamp= 1586291827962;
-    msg_out.header = msg_out_header;
+    msg_out.m_header = msg_out_header;
 
     mobility_operation_inbound_pub.publish(msg_out);
     std::this_thread::sleep_for(std::chrono::milliseconds(500));

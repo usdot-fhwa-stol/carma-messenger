@@ -68,7 +68,7 @@ namespace truck_inspection_plugin
             if(isSafetyLogValid(msg->strategy_params))
             {
                 safety_log_ = msg->strategy_params;
-                safety_log_ += ",timestamp:" + std::to_string(msg->header.timestamp);
+                safety_log_ += ",timestamp:" + std::to_string(msg->m_header.timestamp);
             } else {
                 std_msgs::String msg_out;
                 std::string k_v_pair = msg->strategy_params;

@@ -28,7 +28,7 @@ TEST(MobilityOperationMessageTest, testDecodeMobilityOperationMsg)
     cav_msgs::MobilityOperation to_read;
     if(res) {
         to_read=res.get();
-        if(to_read.header.plan_id=="11111111-2222-3333-AAAA-111111111111" && to_read.strategy=="Carma/Platooning"){
+        if(to_read.m_header.plan_id=="11111111-2222-3333-AAAA-111111111111" && to_read.strategy=="Carma/Platooning"){
             EXPECT_TRUE(true);
         }
     else EXPECT_TRUE(false);
@@ -47,7 +47,7 @@ TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg)
     header.sender_bsm_id="10ABCDEF";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
-    message.header=header;
+    message.m_header=header;
     message.strategy="Carma/Platooning";
     message.strategy_params="vin_number:1FUJGHDV0CLBP8834,license_plate:DOT-10003,carrier_name:Silver Truck FHWA TFHRC,carrier_id:USDOT 0000001,weight:,ads_software_version:System Version Unknown,date_of_last_state_inspection:YYYY-MM-DD,date_of_last_ads_calibration:YYYY-MM-DD,pre_trip_ads_health_check:Green,ads_status:Red,iss_score:49,permit_required:0,timestamp:1585836731814";
     auto res = worker.encode_mobility_operation_message(message);
@@ -77,7 +77,7 @@ TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg_base_case)
     header.sender_bsm_id="";
     header.plan_id="";
     header.timestamp = 0;
-    message.header=header;
+    message.m_header=header;
     message.strategy="";
     message.strategy_params="";
     auto res = worker.encode_mobility_operation_message(message);

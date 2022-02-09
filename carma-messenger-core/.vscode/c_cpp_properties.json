@@ -12,7 +12,6 @@
                 "/home/carma/carma-messenger-ws/src/carma-utils/cav_driver_utils/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-messenger/carma-messenger-core/cpp_message/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/driver_shutdown/include/**",
-                "/home/carma/carma-messenger-ws/src/carma-messenger/carma-messenger-core/j2735_convertor/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/motion_predict/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/socketcan_bridge/include/**",
                 "/home/carma/carma-messenger-ws/src/carma-utils/socketcan_interface/include/**",

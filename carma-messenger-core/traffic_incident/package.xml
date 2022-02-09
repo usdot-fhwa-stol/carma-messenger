@@ -26,4 +26,6 @@
   <depend>cav_srvs</depend>
   <depend>gps_common</depend>
   <depend>roscpp</depend>
+
+  <build_depend>carma_cmake_common</build_depend>
 </package>
