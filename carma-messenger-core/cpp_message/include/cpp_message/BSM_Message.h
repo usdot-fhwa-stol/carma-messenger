@@ -1,6 +1,6 @@
 #pragma once
 /*
- * Copyright (C) 2021 LEIDOS.
+ * Copyright (C) 2020-2021 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,38 +18,34 @@
 
 namespace cpp_message
 {
-    class SPAT_Message
+    class BSM_Message
     {
         private:
         //constants 
-        int DEFAULT_MINUTE_OF_YEAR_ = 527040;
-        std::string DEFAULT_STRING_ = "";
-        int SIGNAL_GROUP_UNAVAILABLE_ = 0;
-        int ADVISORY_SPEED_TYPE_NONE_ = 0;
-
-        int DEFAULT_TIME_STAMP_ = 527040;
-
-        int SPAT_TEST_ID = 19;
-        //Encoding
-        int DEFAULT_SIGNAL_GROUP_  = 0;
-        int DEFAULT_TIME_MARK_  = 36001;
-        int DEFAULT_QUEUE_LENGTH_ = 0;  //Maneuver Assist List ConnectionManeuverAssist Queuelength default
+        static const int BSM_TEST_ID=20;
         
         public:
         /**
-         * @brief SPAT message decoding function.
+        * \brief constructor 
+        */
+        explicit BSM_Message(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+            node_logging_ = node_logging;
+        };
+
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
+        /**
+         * @brief BSM message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
-        boost::optional<j2735_msgs::SPAT>decode_spat_message(std::vector<uint8_t>& binary_array);
+        boost::optional<j2735_v2x_msgs::msg::BSM>decode_bsm_message(std::vector<uint8_t>& binary_array);
         /**
-         * @brief helper functions for SPAT message encoding.
-         * @param plainMessage contains SPAT ros message.
+         * @brief helper functions for BSM message encoding.
+         * @param plainMessage contains BSM ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
-         * TODO- Fix implementation for encoding spat message
          */
-        boost::optional<std::vector<uint8_t>> encode_spat_message(const j2735_msgs::SPAT& plainMessage);
-
-
+        boost::optional<std::vector<uint8_t>> encode_bsm_message(const j2735_v2x_msgs::msg::BSM& plainMessage);
     };
 }

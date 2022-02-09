@@ -18,329 +18,330 @@
  * CPP File containing Message method implementations
  */
 
-#include "cpp_message.h"
-#include "MobilityOperation_Message.h"
-#include "MobilityResponse_Message.h"
-#include "MobilityPath_Message.h"
-#include "MobilityRequest_Message.h"
-#include "BSM_Message.h"
-#include "SPAT_Message.h"
-#include "Map_Message.h"
+#include "cpp_message/cpp_message.h"
+#include "cpp_message/MobilityOperation_Message.h"
+#include "cpp_message/MobilityResponse_Message.h"
+#include "cpp_message/MobilityPath_Message.h"
+#include "cpp_message/MobilityRequest_Message.h"
+#include "cpp_message/BSM_Message.h"
+#include "cpp_message/SPAT_Message.h"
+#include "cpp_message/Map_Message.h"
+
 
 namespace cpp_message
 {
+    namespace std_ph = std::placeholders;
 
-    void Message::initialize()
+    Node::Node(const rclcpp::NodeOptions &options): carma_ros2_utils::CarmaLifecycleNode(options)
     {
-        nh_.reset(new ros::CARMANodeHandle());
-        pnh_.reset(new ros::CARMANodeHandle("~"));
-        // initialize pub/sub
-        outbound_binary_message_pub_ = nh_->advertise<cav_msgs::ByteArray>("outbound_binary_msg", 5);
-        inbound_binary_message_sub_ = nh_->subscribe("inbound_binary_msg", 5, &Message::inbound_binary_callback, this);
-        outbound_geofence_request_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_request", 5, &Message::outbound_control_request_callback, this);
-        inbound_geofence_request_message_pub_ = nh_->advertise<j2735_msgs::TrafficControlRequest>("incoming_j2735_geofence_request", 5);
-        outbound_geofence_control_message_sub_ = nh_->subscribe("outgoing_j2735_geofence_control", 5, &Message::outbound_control_message_callback, this);
-        inbound_geofence_control_message_pub_ = nh_->advertise<j2735_msgs::TrafficControlMessage>("incoming_j2735_geofence_control", 5);
-        mobility_operation_message_pub_=nh_->advertise<cav_msgs::MobilityOperation>("incoming_mobility_operation",5);
-        mobility_operation_message_sub_=nh_->subscribe("outgoing_mobility_operation",5, &Message::outbound_mobility_operation_message_callback,this);
-        mobility_response_message_pub_=nh_->advertise<cav_msgs::MobilityResponse>("incoming_mobility_response",5);
-        mobility_response_message_sub_=nh_->subscribe("outgoing_mobility_response",5, &Message::outbound_mobility_response_message_callback,this);
-        mobility_path_message_pub_=nh_->advertise<cav_msgs::MobilityPath>("incoming_mobility_path",5);
-        mobility_path_message_sub_=nh_->subscribe("outgoing_mobility_path",5, &Message::outbound_mobility_path_message_callback,this);
-        mobility_request_message_pub_=nh_->advertise<cav_msgs::MobilityRequest>("incoming_mobility_request",5);
-        mobility_request_message_sub_=nh_->subscribe("outgoing_mobility_request",5, &Message::outbound_mobility_request_message_callback,this);
-        bsm_message_pub_=nh_->advertise<j2735_msgs::BSM>("incoming_j2735_bsm",5);
-        bsm_message_sub_=nh_->subscribe("outgoing_j2735_bsm",5, &Message::outbound_bsm_message_callback,this);
-        spat_message_pub_ = nh_->advertise<j2735_msgs::SPAT>("incoming_j2735_spat", 5);
-        map_message_pub_ = nh_->advertise<j2735_msgs::MapData>("incoming_j2375_map", 5);
-
-
+        
     }
 
-    void Message::inbound_binary_callback(const cav_msgs::ByteArrayConstPtr& msg)
+    carma_ros2_utils::CallbackReturn Node::handle_on_configure(const rclcpp_lifecycle::State &)
+    {
+        outbound_binary_message_pub_ = create_publisher<carma_driver_msgs::msg::ByteArray>("outbound_binary_msg", 5);
+        inbound_binary_message_sub_ = create_subscription<carma_driver_msgs::msg::ByteArray>("inbound_binary_msg", 5, std::bind(&Node::inbound_binary_callback, this, std_ph::_1));
+        outbound_geofence_request_message_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlRequest>("outgoing_j2735_geofence_request", 5, std::bind(&Node::outbound_control_request_callback, this, std_ph::_1));
+        inbound_geofence_request_message_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlRequest>("incoming_j2735_geofence_request", 5);
+        outbound_geofence_control_message_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("outgoing_j2735_geofence_control", 5, std::bind(&Node::outbound_control_message_callback, this, std_ph::_1));
+        
+        inbound_geofence_control_message_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 5);
+        mobility_operation_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityOperation>("incoming_mobility_operation",5);
+
+        mobility_operation_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityOperation>("outgoing_mobility_operation", 5, std::bind(&Node::outbound_mobility_operation_message_callback, this, std_ph::_1));
+        mobility_response_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityResponse>("incoming_mobility_response",5);
+        mobility_response_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityResponse>("outgoing_mobility_response",5, std::bind(&Node::outbound_mobility_response_message_callback, this, std_ph::_1));
+        mobility_path_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityPath>("incoming_mobility_path",5);
+        mobility_path_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityPath>("outgoing_mobility_path",5, std::bind(&Node::outbound_mobility_path_message_callback, this, std_ph::_1));
+        mobility_request_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityRequest>("incoming_mobility_request",5);
+        mobility_request_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityRequest>("outgoing_mobility_request",5, std::bind(&Node::outbound_mobility_request_message_callback, this, std_ph::_1));
+        bsm_message_pub_=create_publisher<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm",5);
+        bsm_message_sub_=create_subscription<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm",5, std::bind(&Node::outbound_bsm_message_callback, this, std_ph::_1));
+        spat_message_pub_ = create_publisher<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 5);
+        map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2375_map", 5);
+
+        // Return success if everthing initialized successfully
+        return CallbackReturn::SUCCESS;
+    }
+
+
+    void Node::inbound_binary_callback(carma_driver_msgs::msg::ByteArray::UniquePtr msg)
     {
         // only handle TrafficControlRequest for now
-        if(msg->messageType == "TrafficControlRequest") {
+        if(msg->message_type == "TrafficControlRequest") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_request(array);
             if(output)
             {
-                inbound_geofence_request_message_pub_.publish(output.get());
+                inbound_geofence_request_message_pub_->publish(output.get());
             } else
             {
-                ROS_WARN_STREAM("Cannot decode geofence request message.");
+                RCLCPP_WARN_STREAM(get_logger(), "Cannot decode geofence request message.");
             }
         }
 
             // handle TrafficControlMessage
-        else if(msg->messageType == "TrafficControlMessage") {
+        else if(msg->message_type == "TrafficControlMessage") {
             std::vector<uint8_t> array = msg->content;
             auto output = decode_geofence_control(array);
             if(output)
             {
-                inbound_geofence_control_message_pub_.publish(output.get());
+                inbound_geofence_control_message_pub_->publish(output.get());
             } else
             {
-                ROS_WARN_STREAM("Cannot decode geofence control message.");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode geofence control message.");
             }
         }
         
-        else if(msg->messageType=="MobilityOperation")   
+        else if(msg->message_type=="MobilityOperation")   
         {
             std::vector<uint8_t> array=msg->content;
-            Mobility_Operation decode;
+            Mobility_Operation decode(this->get_node_logging_interface());
             auto output=decode.decode_mobility_operation_message(array);
             if(output)
             {
-                mobility_operation_message_pub_.publish(output.get());
+                mobility_operation_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode Mobility Operation message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Mobility Operation message");
             }
 
         }
 
-        else if(msg->messageType=="MobilityResponse")
+        else if(msg->message_type=="MobilityResponse")
         {
             std::vector<uint8_t> array=msg->content;
-            Mobility_Response decode;
+            Mobility_Response decode(this->get_node_logging_interface());
             auto output=decode.decode_mobility_response_message(array);
             if(output)
             {
-                mobility_response_message_pub_.publish(output.get());
+                mobility_response_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode Mobility Response message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Mobility Response message");
             }
             
         }
-        else if(msg->messageType=="MobilityPath")   
+        else if(msg->message_type=="MobilityPath")   
         {
             std::vector<uint8_t> array=msg->content;
-            Mobility_Path decode;
+            Mobility_Path decode(this->get_node_logging_interface());
             auto output=decode.decode_mobility_path_message(array);
             if(output)
             {
-                mobility_path_message_pub_.publish(output.get());
+                mobility_path_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode Mobility Path message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Mobility Path message");
             }
              
         }
-        else if(msg->messageType=="MobilityRequest")   
+        else if(msg->message_type=="MobilityRequest")   
         {
             std::vector<uint8_t> array=msg->content;
-            Mobility_Request decode;
+            Mobility_Request decode(this->get_node_logging_interface());
             auto output=decode.decode_mobility_request_message(array);
             if(output)
             {
-                mobility_request_message_pub_.publish(output.get());
+                mobility_request_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode Mobility Request message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Mobility Request message");
             }
              
         }
-        else if(msg->messageType=="BSM")   
+        else if(msg->message_type=="BSM")   
         {
             std::vector<uint8_t> array=msg->content;
-            BSM_Message decode;
+            BSM_Message decode(this->get_node_logging_interface());
             auto output=decode.decode_bsm_message(array);
             if(output)
             {
-                bsm_message_pub_.publish(output.get());
+                bsm_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode BSM message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode BSM message");
             }
              
         }
-        else if(msg->messageType=="SPAT")
+        else if(msg->message_type=="SPAT")
         {
             std::vector<uint8_t> array=msg->content;
             SPAT_Message decode;
             auto output = decode.decode_spat_message(array);
             if(output)
             {
-                spat_message_pub_.publish(output.get());
+                spat_message_pub_->publish(output.get());
             }
             else{
-                ROS_WARN_STREAM("Cannot decode SPAT message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode SPAT message");
             }
         }
-        else if(msg->messageType=="MapData")
+        else if(msg->message_type=="MapData")
         {
             std::vector<uint8_t> array=msg->content;
-            Map_Message decode;
+            Map_Message decode(this->get_node_logging_interface());
             auto output = decode.decode_map_message(array);
             if(output)
             {
-                map_message_pub_.publish(output.get());
+                map_message_pub_->publish(output.get());
             }
             else
             {
-                ROS_WARN_STREAM("Cannot decode MapData Message");
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode MapData Message");
             }
         }
     }
 
-    void Message::outbound_control_request_callback(const j2735_msgs::TrafficControlRequestConstPtr& msg)
+    void Node::outbound_control_request_callback(j2735_v2x_msgs::msg::TrafficControlRequest::UniquePtr msg)
     {
 
-        j2735_msgs::TrafficControlRequest request_msg(*msg.get());
+        j2735_v2x_msgs::msg::TrafficControlRequest request_msg(*msg.get());
         auto res = encode_geofence_request(request_msg);
         if(res) {
             // copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="TrafficControlRequest";
+            output.header.stamp=this->now();
+            output.message_type="TrafficControlRequest";
             output.content = res.get();            
             // publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         } else
         {
-            ROS_WARN_STREAM("Cannot encode geofence request message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode geofence request message.");
         }
 
     }
 
-    void Message::outbound_control_message_callback(const j2735_msgs::TrafficControlMessageConstPtr& msg)
+    void Node::outbound_control_message_callback(j2735_v2x_msgs::msg::TrafficControlMessage::UniquePtr msg)
     {
-        j2735_msgs::TrafficControlMessage control_msg(*msg.get());
+        j2735_v2x_msgs::msg::TrafficControlMessage control_msg(*msg.get());
         auto res = encode_geofence_control(control_msg);
         if(res) {
             // copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="TrafficControlMessage";
+            output.header.stamp=this->now();
+            output.message_type="TrafficControlMessage";
             output.content = res.get();
             // publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         } else
         {
-            ROS_WARN_STREAM("Cannot encode geofence control message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode geofence control message.");
         }
     }
 
-    int Message::run()
-    {
-        initialize();
-        ros::CARMANodeHandle::spin();
-        return 0;
-    }
-
-    void Message::outbound_mobility_operation_message_callback(const cav_msgs::MobilityOperation& msg)
+    void Node::outbound_mobility_operation_message_callback(carma_v2x_msgs::msg::MobilityOperation::UniquePtr msg)
     {//encode and publish as outbound binary message
-        Mobility_Operation encode;
-        auto res=encode.encode_mobility_operation_message(msg);
+        Mobility_Operation encode(this->get_node_logging_interface());
+        auto res=encode.encode_mobility_operation_message(*msg.get());
         if(res)
         {
             //copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="MobilityOperation";
+            output.header.stamp=this->now();
+            output.message_type="MobilityOperation";
             output.content=res.get();
             //publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode mobility operation message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode mobility operation message.");
         }
     }
 
-    void Message::outbound_mobility_response_message_callback(const cav_msgs::MobilityResponse& msg)
+    void Node::outbound_mobility_response_message_callback(carma_v2x_msgs::msg::MobilityResponse::UniquePtr msg)
         {//encode and publish as outbound binary message
-        Mobility_Response encode;
-        auto res=encode.encode_mobility_response_message(msg);
+        Mobility_Response encode(this->get_node_logging_interface());
+        auto res=encode.encode_mobility_response_message(*msg.get());
         if(res)
         {
             //copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="MobilityResponse";
+            output.header.stamp=this->now();
+            output.message_type="MobilityResponse";
             output.content=res.get();
             //publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode mobility response message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode mobility response message.");
         }
     }
-    void Message::outbound_mobility_path_message_callback(const cav_msgs::MobilityPath& msg)
+    void Node::outbound_mobility_path_message_callback(carma_v2x_msgs::msg::MobilityPath::UniquePtr msg)
     {//encode and publish as outbound binary message
-        Mobility_Path encode;
-        auto res=encode.encode_mobility_path_message(msg);
+        Mobility_Path encode(this->get_node_logging_interface());
+        auto res=encode.encode_mobility_path_message(*msg.get());
         if(res)
         {
             //copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="MobilityPath";
+            output.header.stamp=this->now();
+            output.message_type="MobilityPath";
             output.content=res.get();
             //publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode mobility path message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode mobility path message.");
         }
     }
-    void Message::outbound_mobility_request_message_callback(const cav_msgs::MobilityRequest& msg)
+    void Node::outbound_mobility_request_message_callback(carma_v2x_msgs::msg::MobilityRequest::UniquePtr msg)
     {//encode and publish as outbound binary message
-        Mobility_Request encode;
-        auto res=encode.encode_mobility_request_message(msg);
+        Mobility_Request encode(this->get_node_logging_interface());
+        auto res=encode.encode_mobility_request_message(*msg.get());
         if(res)
         {
             //copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="MobilityRequest";
+            output.header.stamp=this->now();
+            output.message_type="MobilityRequest";
             output.content=res.get();
             //publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode mobility request message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode mobility request message.");
         }
     }
-    void Message::outbound_bsm_message_callback(const j2735_msgs::BSM& msg)
+    void Node::outbound_bsm_message_callback(j2735_v2x_msgs::msg::BSM::UniquePtr msg)
     {//encode and publish as outbound binary message
-        BSM_Message encode;
-        auto res=encode.encode_bsm_message(msg);
+        BSM_Message encode(this->get_node_logging_interface());
+        auto res=encode.encode_bsm_message(*msg.get());
         if(res)
         {
             //copy to byte array msg
-            cav_msgs::ByteArray output;
+            carma_driver_msgs::msg::ByteArray output;
             output.header.frame_id="0";
-            output.header.stamp=ros::Time::now();
-            output.messageType="BSM";
+            output.header.stamp=this->now();
+            output.message_type="BSM";
             output.content=res.get();
             //publish result
-            outbound_binary_message_pub_.publish(output);
+            outbound_binary_message_pub_->publish(output);
         }
         else
         {
-            ROS_WARN_STREAM("Cannot encode BSM message.");
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode BSM message.");
         }
     }
-    boost::optional<j2735_msgs::TrafficControlMessage> Message::decode_geofence_control(std::vector<uint8_t>& binary_array)
+    boost::optional<j2735_v2x_msgs::msg::TrafficControlMessage> Node::decode_geofence_control(std::vector<uint8_t>& binary_array)
     {
-        j2735_msgs::TrafficControlMessage output;
+        j2735_v2x_msgs::msg::TrafficControlMessage output;
         // decode results
         asn_dec_rval_t rval;
         MessageFrame_t* message = 0;
@@ -358,21 +359,21 @@ namespace cpp_message
         if(rval.code == RC_OK) {
             if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_reserved)
             {
-                output.choice = j2735_msgs::TrafficControlMessage::RESERVED;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED;
             }
             else if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_tcmV01)
             {
-                output.choice = j2735_msgs::TrafficControlMessage::TCMV01;
-                output.tcmV01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
+                output.choice = j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01;
+                output.tcm_v01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
             }
-            return output;            
+            return output;
         }
-        return boost::optional<j2735_msgs::TrafficControlMessage>{};
+        return boost::optional<j2735_v2x_msgs::msg::TrafficControlMessage>{};
     }
 
-    j2735_msgs::TrafficControlMessageV01 Message::decode_geofence_control_v01(const TrafficControlMessageV01_t& message)
+    j2735_v2x_msgs::msg::TrafficControlMessageV01 Node::decode_geofence_control_v01(const TrafficControlMessageV01_t& message)
     {
-        j2735_msgs::TrafficControlMessageV01 output;
+        j2735_v2x_msgs::msg::TrafficControlMessageV01 output;
 
         // decode reqid
         output.reqid = decode_id64b(message.reqid);
@@ -427,9 +428,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::Id64b Message::decode_id64b (const Id64b_t& message)
+    j2735_v2x_msgs::msg::Id64b Node::decode_id64b (const Id64b_t& message)
     {
-        j2735_msgs::Id64b output;
+        j2735_v2x_msgs::msg::Id64b output;
         
         // Type uint8[8] size can vary due to encoder optimization
         auto id_len = message.size;
@@ -440,9 +441,9 @@ namespace cpp_message
         return output;
     }
     
-    j2735_msgs::Id128b Message::decode_id128b (const Id128b_t& message)
+    j2735_v2x_msgs::msg::Id128b Node::decode_id128b (const Id128b_t& message)
     {
-        j2735_msgs::Id128b output;
+        j2735_v2x_msgs::msg::Id128b output;
         // Type uint8[16]  size can vary due to encoder optimization
         auto id_len = message.size;
         for(auto i = 0; i < id_len; i++)
@@ -452,9 +453,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::TrafficControlPackage Message::decode_geofence_control_package (const TrafficControlPackage_t& message)
+    j2735_v2x_msgs::msg::TrafficControlPackage Node::decode_geofence_control_package (const TrafficControlPackage_t& message)
     {
-        j2735_msgs::TrafficControlPackage output;
+        j2735_v2x_msgs::msg::TrafficControlPackage output;
 
         // convert label from 8-bit array to string optional
         std::string label;
@@ -477,9 +478,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::TrafficControlParams Message::decode_geofence_control_params (const TrafficControlParams_t& message)
+    j2735_v2x_msgs::msg::TrafficControlParams Node::decode_geofence_control_params (const TrafficControlParams_t& message)
     {
-        j2735_msgs::TrafficControlParams output;
+        j2735_v2x_msgs::msg::TrafficControlParams output;
 
         // convert vlasses
         auto vclasses_len = message.vclasses.list.count;
@@ -501,18 +502,18 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::TrafficControlVehClass Message::decode_geofence_control_veh_class (const TrafficControlVehClass_t& message)
+    j2735_v2x_msgs::msg::TrafficControlVehClass Node::decode_geofence_control_veh_class (const TrafficControlVehClass_t& message)
     {
-        j2735_msgs::TrafficControlVehClass output;
+        j2735_v2x_msgs::msg::TrafficControlVehClass output;
 
         output.vehicle_class = message;    
 
         return output;
     }
 
-    j2735_msgs::TrafficControlSchedule Message::decode_geofence_control_schedule (const TrafficControlSchedule_t& message)
+    j2735_v2x_msgs::msg::TrafficControlSchedule Node::decode_geofence_control_schedule (const TrafficControlSchedule_t& message)
     {
-        j2735_msgs::TrafficControlSchedule output;
+        j2735_v2x_msgs::msg::TrafficControlSchedule output;
         
         // long int from 8-bit array for "start"  size can vary due to encoder optimization
         uint64_t tmp_start = 0;
@@ -562,9 +563,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::DayOfWeek Message::decode_day_of_week(const DSRC_DayOfWeek_t& message)
+    j2735_v2x_msgs::msg::DayOfWeek Node::decode_day_of_week(const DSRC_DayOfWeek_t& message)
     {
-        j2735_msgs::DayOfWeek output;
+        j2735_v2x_msgs::msg::DayOfWeek output;
         
         uint8_t tmp_binary=0;
         if (message.size > 0) // size is default 1 as 8 bits are sufficient for bit-wise encoding of 7 days 
@@ -579,9 +580,9 @@ namespace cpp_message
         return output;
     } 
 
-    j2735_msgs::DailySchedule Message::decode_daily_schedule(const DailySchedule_t& message)
+    j2735_v2x_msgs::msg::DailySchedule Node::decode_daily_schedule(const DailySchedule_t& message)
     {
-        j2735_msgs::DailySchedule output;
+        j2735_v2x_msgs::msg::DailySchedule output;
         
         output.begin = message.begin;
         output.duration = message.duration;
@@ -589,9 +590,9 @@ namespace cpp_message
         return output;
     } 
 
-    j2735_msgs::RepeatParams Message::decode_repeat_params (const RepeatParams_t& message)
+    j2735_v2x_msgs::msg::RepeatParams Node::decode_repeat_params (const RepeatParams_t& message)
     {
-        j2735_msgs::RepeatParams output;
+        j2735_v2x_msgs::msg::RepeatParams output;
 
         output.offset = message.offset;
         output.period = message.period; 
@@ -600,52 +601,52 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::TrafficControlDetail Message::decode_geofence_control_detail (const TrafficControlDetail_t& message)
+    j2735_v2x_msgs::msg::TrafficControlDetail Node::decode_geofence_control_detail (const TrafficControlDetail_t& message)
     {
-        j2735_msgs::TrafficControlDetail output;
+        j2735_v2x_msgs::msg::TrafficControlDetail output;
 
         switch (message.present)
         {
             case TrafficControlDetail_PR_signal:
             {
                 // signal OCTET STRING SIZE(0..63),
-                output.choice = j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE;
                 auto signal_size = message.choice.signal.size;
                 for (auto i = 0; i < signal_size; i ++)
                 output.signal.push_back(message.choice.signal.buf[i]);    
                 break;
             }
             case TrafficControlDetail_PR_stop:
-                output.choice = j2735_msgs::TrafficControlDetail::STOP_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::STOP_CHOICE;
                 break;
             case TrafficControlDetail_PR_yield:
-                output.choice = j2735_msgs::TrafficControlDetail::YIELD_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::YIELD_CHOICE;
                 break;
             case TrafficControlDetail_PR_notowing:
-                output.choice = j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::NOTOWING_CHOICE;
                 break;
             case TrafficControlDetail_PR_restricted:
-                output.choice = j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::RESTRICTED_CHOICE;
                 break;
             case TrafficControlDetail_PR_closed:
                 // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
                 output.closed = message.choice.closed;
-                output.choice = j2735_msgs::TrafficControlDetail::CLOSED_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE;
                 break;
             case TrafficControlDetail_PR_chains:
                 // 	chains ENUMERATED {no, permitted, required},
                 output.chains = message.choice.chains;
-                output.choice = j2735_msgs::TrafficControlDetail::CHAINS_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::CHAINS_CHOICE;
                 break;
             case TrafficControlDetail_PR_direction:
                 // 	direction ENUMERATED {forward, reverse},
                 output.direction = message.choice.direction;
-                output.choice = j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::DIRECTION_CHOICE;
                 break;
             case TrafficControlDetail_PR_lataffinity:
                 // 	lataffinity ENUMERATED {left, right},
                 output.lataffinity = message.choice.lataffinity;
-                output.choice = j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::LATAFFINITY_CHOICE;
                 break;
             case TrafficControlDetail_PR_latperm:
             {
@@ -653,58 +654,58 @@ namespace cpp_message
                 auto latperm_size = message.choice.latperm.list.count;
                 for(auto i = 0; i < latperm_size; i++)
                     output.latperm[i] = *message.choice.latperm.list.array[i];
-                output.choice = j2735_msgs::TrafficControlDetail::LATPERM_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE;
                 break;
             }
             case TrafficControlDetail_PR_parking:
                 // 	parking ENUMERATED {no, parallel, angled},
                 output.parking = message.choice.parking;
-                output.choice = j2735_msgs::TrafficControlDetail::PARKING_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::PARKING_CHOICE;
                 break;
             case TrafficControlDetail_PR_minspeed:
                 // 	minspeed INTEGER (0..1023), -- tenths of m/s
                 output.minspeed = message.choice.minspeed;
-                output.choice = j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxspeed:
                 // 	maxspeed INTEGER (0..1023), -- tenths of m/s
                 output.maxspeed = message.choice.maxspeed;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE;
                 break;
             case TrafficControlDetail_PR_minhdwy:
                 // 	minhdwy INTEGER (0..2047), -- tenths of meters
                 output.minhdwy = message.choice.minhdwy;
-                output.choice = j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehmass:
                 // 	maxvehmass INTEGER (0..65535), -- kg
                 output.maxvehmass = message.choice.maxvehmass;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehheight:
                 // 	maxvehheight INTEGER (0..127), -- tenths of meters
                 output.maxvehheight = message.choice.maxvehheight;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehwidth:
                 // 	maxvehwidth INTEGER (0..127), -- tenths of meters
                 output.maxvehwidth = message.choice.maxvehwidth;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehlength:
                 // 	maxvehlength INTEGER (0..1023), -- tenths of meters
                 output.maxvehlength = message.choice.maxvehlength;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehaxles:
                 // 	maxvehaxles INTEGER (2..15),
                 output.maxvehaxles = message.choice.maxvehaxles;
-                output.choice = j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE;
                 break;
             case TrafficControlDetail_PR_minvehocc:
                 // 	minvehocc INTEGER (1..15), 
                 output.minvehocc = message.choice.minvehocc;
-                output.choice = j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE;
                 break;
             default:
                 break;
@@ -713,9 +714,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::TrafficControlGeometry Message::decode_geofence_control_geometry (const TrafficControlGeometry_t& message)
+    j2735_v2x_msgs::msg::TrafficControlGeometry Node::decode_geofence_control_geometry (const TrafficControlGeometry_t& message)
     {
-        j2735_msgs::TrafficControlGeometry output;
+        j2735_v2x_msgs::msg::TrafficControlGeometry output;
 
         // proj
         std::string proj;
@@ -766,9 +767,9 @@ namespace cpp_message
         return output;
     }
 
-    j2735_msgs::PathNode Message::decode_path_node (const PathNode_t& message)
+    j2735_v2x_msgs::msg::PathNode Node::decode_path_node (const PathNode_t& message)
     {
-        j2735_msgs::PathNode output;
+        j2735_v2x_msgs::msg::PathNode output;
 
         output.x = message.x;
         output.y = message.y; 
@@ -790,9 +791,9 @@ namespace cpp_message
         return output;
     }
 
-    boost::optional<j2735_msgs::TrafficControlRequest> Message::decode_geofence_request(std::vector<uint8_t>& binary_array)
+    boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest> Node::decode_geofence_request(std::vector<uint8_t>& binary_array)
     {
-        j2735_msgs::TrafficControlRequest output;
+        j2735_v2x_msgs::msg::TrafficControlRequest output;
         // decode results
         asn_dec_rval_t rval;
         MessageFrame_t* message = 0;
@@ -810,12 +811,12 @@ namespace cpp_message
         if(rval.code == RC_OK) {
             if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_reserved){
                 
-                output.choice = j2735_msgs::TrafficControlRequest::RESERVED;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED;
             }
             else if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_tcrV01){
 
-                output.choice = j2735_msgs::TrafficControlRequest::TCRV01;
-                j2735_msgs::TrafficControlRequestV01 tcrV01;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01;
+                j2735_v2x_msgs::msg::TrafficControlRequestV01 tcrV01;
 
                 // decode id
                 uint8_t id[8];
@@ -832,7 +833,7 @@ namespace cpp_message
                 // copy bounds
                 auto bounds_count = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.count;
                 for(auto i = 0; i < bounds_count; i++) {
-                j2735_msgs::TrafficControlBounds bound;
+                j2735_v2x_msgs::msg::TrafficControlBounds bound;
                 
                 // recover a long value from 8-bit array
                 uint64_t long_bits = 0;
@@ -849,7 +850,7 @@ namespace cpp_message
                 // copy offset array to boost vector
                 auto count = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.count;
                 for(auto j = 0; j < count; j++) {
-                    j2735_msgs::OffsetPoint offset;
+                    j2735_v2x_msgs::msg::OffsetPoint offset;
                     offset.deltax = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltax;
                     offset.deltay = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltay;
                     bound.offsets[j] = offset;
@@ -858,18 +859,18 @@ namespace cpp_message
                 tcrV01.bounds.push_back(bound);
             }
 
-            output.tcrV01 = tcrV01;
+            output.tcr_v01 = tcrV01;
             }
 
-            return boost::optional<j2735_msgs::TrafficControlRequest>(output);
+            return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>(output);
         }
-        return boost::optional<j2735_msgs::TrafficControlRequest>{};
+        return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>{};
     }
     
     // Futher separating into helper convertor function fails the asn1c encoder.
     // As the problem seem to arise from nested calloc-ed functions, left the function in monolithic
     // structure, while refactoring what is possible (those that don't further call calloc functions)
-    boost::optional<std::vector<uint8_t>> Message::encode_geofence_control(j2735_msgs::TrafficControlMessage control_msg)
+    boost::optional<std::vector<uint8_t>> Node::encode_geofence_control(j2735_v2x_msgs::msg::TrafficControlMessage control_msg)
     {
         // encode result placeholder
         uint8_t buffer[512] = {0};
@@ -888,21 +889,21 @@ namespace cpp_message
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05;        
         //======================== CONTROL MESSAGE START =====================
-        if (control_msg.choice == j2735_msgs::TrafficControlMessage::RESERVED)
+        if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_reserved;
         }
-        else if (control_msg.choice == j2735_msgs::TrafficControlMessage::TCMV01)
+        else if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01)
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
             // ======================== TCMV01 START =============================
             TrafficControlMessageV01_t* output_v01;
             output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
-            j2735_msgs::TrafficControlMessageV01 msg_v01;
-            msg_v01 = control_msg.tcmV01;
+            j2735_v2x_msgs::msg::TrafficControlMessageV01 msg_v01;
+            msg_v01 = control_msg.tcm_v01;
             // encode reqid
             Id64b_t* output_64b;
-            j2735_msgs::Id64b msg_64b;
+            j2735_v2x_msgs::msg::Id64b msg_64b;
             msg_64b = msg_v01.reqid;
             output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
             // Type uint8[8]
@@ -922,7 +923,7 @@ namespace cpp_message
             output_v01->msgnum = msg_v01.msgnum;
             // encode id
             Id128b_t* output_128b;
-            j2735_msgs::Id128b msg_128b;
+            j2735_v2x_msgs::msg::Id128b msg_128b;
             msg_128b = msg_v01.id;
             output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
             
@@ -952,7 +953,7 @@ namespace cpp_message
                 TrafficControlPackage_t* output_package;
                 output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
                 
-                j2735_msgs::TrafficControlPackage msg_package;
+                j2735_v2x_msgs::msg::TrafficControlPackage msg_package;
                 msg_package = msg_v01.package;
                 //convert label string to char array (optional)
                 
@@ -979,7 +980,7 @@ namespace cpp_message
                 for (auto i = 0; i < tcids_len; i++)
                 {
                     Id128b_t* output_128b;
-                    j2735_msgs::Id128b msg_128b;
+                    j2735_v2x_msgs::msg::Id128b msg_128b;
                     msg_128b = msg_package.tcids[i];
                     output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     
@@ -1006,7 +1007,7 @@ namespace cpp_message
                 // ===================== TCMV01 - PARAMS START =====================
                 TrafficControlParams_t* output_params;
                 output_params = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t));
-                j2735_msgs::TrafficControlParams msg_params;
+                j2735_v2x_msgs::msg::TrafficControlParams msg_params;
                 msg_params = msg_v01.params;
                 // convert vlasses
                 auto vclasses_size = msg_params.vclasses.size();
@@ -1022,7 +1023,7 @@ namespace cpp_message
                 // ======================= TCMV01 - PARAMS - SCHEDULE START ===================================
                 TrafficControlSchedule_t* output_schedule;
                 output_schedule = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t));
-                j2735_msgs::TrafficControlSchedule msg_schedule;
+                j2735_v2x_msgs::msg::TrafficControlSchedule msg_schedule;
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
                 uint8_t start_val[8] = {0};
@@ -1090,7 +1091,7 @@ namespace cpp_message
                 //output_v01->geometry = encode_geofence_control_geometry(msg_v01.geometry);
                 TrafficControlGeometry_t* output_geometry;
                 output_geometry = (TrafficControlGeometry_t*) calloc(1, sizeof(TrafficControlGeometry_t));
-                j2735_msgs::TrafficControlGeometry msg_geometry;
+                j2735_v2x_msgs::msg::TrafficControlGeometry msg_geometry;
                 msg_geometry = msg_v01.geometry;
                 // convert proj string to char array
                 size_t proj_size = msg_geometry.proj.size();
@@ -1147,7 +1148,7 @@ namespace cpp_message
                     //=============== TCMV01 - GEOMETRY - NODE START ===========================
                     PathNode_t* output_node;
                     output_node = (PathNode_t*) calloc(1, sizeof(PathNode_t));
-                    j2735_msgs::PathNode msg_node;
+                    j2735_v2x_msgs::msg::PathNode msg_node;
                     msg_node = msg_geometry.nodes[i];
                     output_node->x = msg_node.x;
                     output_node->y = msg_node.y;
@@ -1198,7 +1199,7 @@ namespace cpp_message
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
-    Id64b_t* Message::encode_id64b (const j2735_msgs::Id64b& msg)
+    Id64b_t* Node::encode_id64b (const j2735_v2x_msgs::msg::Id64b& msg)
     {
         Id64b_t* output;
         output = (Id64b_t*) calloc(1, sizeof(Id64b_t));
@@ -1214,7 +1215,7 @@ namespace cpp_message
         return output;
     }
     
-    Id128b_t* Message::encode_id128b (const j2735_msgs::Id128b& msg)
+    Id128b_t* Node::encode_id128b (const j2735_v2x_msgs::msg::Id128b& msg)
     {
         Id128b_t* output;
         output = (Id128b_t*) calloc(1, sizeof(Id128b_t));
@@ -1230,7 +1231,7 @@ namespace cpp_message
         return output;
     }
 
-    TrafficControlVehClass_t* Message::encode_geofence_control_veh_class (const j2735_msgs::TrafficControlVehClass& msg)
+    TrafficControlVehClass_t* Node::encode_geofence_control_veh_class (const j2735_v2x_msgs::msg::TrafficControlVehClass& msg)
     {
         TrafficControlVehClass_t* output;
         output = (TrafficControlVehClass_t*) calloc(1, sizeof(TrafficControlVehClass_t));
@@ -1239,13 +1240,13 @@ namespace cpp_message
         return output;
     }
 
-    TrafficControlDetail_t* Message::encode_geofence_control_detail(const j2735_msgs::TrafficControlDetail& msg)
+    TrafficControlDetail_t* Node::encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg)
     {
         TrafficControlDetail_t* output;
         output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
         switch(msg.choice)
         {
-            case j2735_msgs::TrafficControlDetail::SIGNAL_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_signal;
                 // signal OCTET STRING SIZE(0..63),
@@ -1258,51 +1259,51 @@ namespace cpp_message
                 output->choice.signal.size = signal_size;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::STOP_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::STOP_CHOICE:
                 output->present = TrafficControlDetail_PR_stop;
             break;
             
-            case j2735_msgs::TrafficControlDetail::YIELD_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::YIELD_CHOICE:
                 output->present = TrafficControlDetail_PR_yield;
             break;
 
-            case j2735_msgs::TrafficControlDetail::NOTOWING_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::NOTOWING_CHOICE:
                 output->present = TrafficControlDetail_PR_notowing;
             break;
 
-            case j2735_msgs::TrafficControlDetail::RESTRICTED_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::RESTRICTED_CHOICE:
                 output->present = TrafficControlDetail_PR_restricted;
             break;
 
-            case j2735_msgs::TrafficControlDetail::CLOSED_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_closed;
                 // closed ENUMERATED {open, closed, taperleft, taperright, openleft, openright}
                 output->choice.closed = msg.closed;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::CHAINS_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::CHAINS_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_chains;
                 // 	chains ENUMERATED {no, permitted, required},
                 output->choice.chains = msg.chains;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::DIRECTION_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::DIRECTION_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_direction;
                 // 	direction ENUMERATED {forward, reverse},
                 output->choice.direction = msg.direction;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::LATAFFINITY_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::LATAFFINITY_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_lataffinity;
                 // 	lataffinity ENUMERATED {left, right},
                 output->choice.lataffinity = msg.lataffinity;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::LATPERM_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_latperm;
                 // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
@@ -1320,70 +1321,70 @@ namespace cpp_message
                 output->choice.latperm = *latperm_p;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::PARKING_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::PARKING_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_parking;
                 // 	parking ENUMERATED {no, parallel, angled},
                 output->choice.parking = msg.parking;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MINSPEED_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_minspeed;
                 // 	minspeed INTEGER (0..1023), -- tenths of m/s
                 output->choice.minspeed = msg.minspeed;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXSPEED_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxspeed;
                 // 	maxspeed INTEGER (0..1023), -- tenths of m/s
                 output->choice.maxspeed = msg.maxspeed;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MINHDWY_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_minhdwy;
                 // 	minhdwy INTEGER (0..2047), -- tenths of meters
                 output->choice.minhdwy = msg.minhdwy;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXVEHMASS_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehmass;
                 // 	maxvehmass INTEGER (0..65535), -- kg
                 output->choice.maxvehmass = msg.maxvehmass;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXVEHHEIGHT_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehheight;
                 // 	maxvehheight INTEGER (0..127), -- tenths of meters
                 output->choice.maxvehheight = msg.maxvehheight;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXVEHWIDTH_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehwidth;
                 // 	maxvehwidth INTEGER (0..127), -- tenths of meters
                 output->choice.maxvehwidth = msg.maxvehwidth;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXVEHLENGTH_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehlength;
                 // 	maxvehlength INTEGER (0..1023), -- tenths of meters
                 output->choice.maxvehlength = msg.maxvehlength;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MAXVEHAXLES_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehaxles;
                 // 	maxvehaxles INTEGER (2..15),
                 output->choice.maxvehaxles = msg.maxvehaxles;
             break;
             }
-            case j2735_msgs::TrafficControlDetail::MINVEHOCC_CHOICE:
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_minvehocc;
                 // 	minvehocc INTEGER (1..15), 
@@ -1397,7 +1398,7 @@ namespace cpp_message
         return output;
     }
     
-    DSRC_DayOfWeek_t* Message::encode_day_of_week(const j2735_msgs::DayOfWeek& msg)
+    DSRC_DayOfWeek_t* Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg)
     {
         DSRC_DayOfWeek_t* output;
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
@@ -1416,7 +1417,7 @@ namespace cpp_message
         return output;
     } 
 
-    DailySchedule_t* Message::encode_daily_schedule(const j2735_msgs::DailySchedule& msg)
+    DailySchedule_t* Node::encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg)
     {
         DailySchedule_t* output;
         output = (DailySchedule_t*) calloc(1, sizeof(DailySchedule_t));
@@ -1427,7 +1428,7 @@ namespace cpp_message
         return output;
     } 
 
-    RepeatParams_t* Message::encode_repeat_params (const j2735_msgs::RepeatParams& msg)
+    RepeatParams_t* Node::encode_repeat_params (const j2735_v2x_msgs::msg::RepeatParams& msg)
     {
         RepeatParams_t* output;
         output = (RepeatParams_t*) calloc(1, sizeof(RepeatParams_t));
@@ -1439,7 +1440,7 @@ namespace cpp_message
         return output;
     }
 
-    PathNode_t* Message::encode_path_node (const j2735_msgs::PathNode& msg)
+    PathNode_t* Node::encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg)
     {
         PathNode_t* output;
         output = (PathNode_t*) calloc(1, sizeof(PathNode_t));
@@ -1462,7 +1463,7 @@ namespace cpp_message
         return output;
     }
 
-    boost::optional<std::vector<uint8_t>> Message::encode_geofence_request(j2735_msgs::TrafficControlRequest request_msg)
+    boost::optional<std::vector<uint8_t>> Node::encode_geofence_request(j2735_v2x_msgs::msg::TrafficControlRequest request_msg)
     {
         // encode result placeholder
         uint8_t buffer[512];
@@ -1473,7 +1474,7 @@ namespace cpp_message
         // if mem allocation fails
 	    if (!message)
         {
-		    ROS_WARN_STREAM("Cannot allocate mem for TrafficControlRequest message encoding");
+		    RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for TrafficControlRequest message encoding");
             return boost::optional<std::vector<uint8_t>>{};
 	    }
         //set message type to TestMessage04
@@ -1481,10 +1482,10 @@ namespace cpp_message
         message->value.present = MessageFrame__value_PR_TestMessage04;
 
         // Check and copy TrafficControlRequest choice
-        if (request_msg.choice == j2735_msgs::TrafficControlRequest::RESERVED){
+        if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED){
             message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_reserved;
         }
-        else if (request_msg.choice == j2735_msgs::TrafficControlRequest::TCRV01) {
+        else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01) {
             message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_tcrV01;
         
             // create 
@@ -1498,19 +1499,19 @@ namespace cpp_message
             uint8_t id_content[8];
             for(auto i = 0; i < 8; i++)
             {
-                id_content[i] = request_msg.tcrV01.reqid.id[i];
+                id_content[i] = request_msg.tcr_v01.reqid.id[i];
             }
 
             tcr->reqid.size = 8;
             tcr->reqid.buf = id_content;
             // copy reqseq
-            tcr->reqseq = request_msg.tcrV01.reqseq;
+            tcr->reqseq = request_msg.tcr_v01.reqseq;
 
             // copy scale
-            tcr->scale = request_msg.tcrV01.scale;
+            tcr->scale = request_msg.tcr_v01.scale;
             
             // copy bounds
-            auto count = request_msg.tcrV01.bounds.size();
+            auto count = request_msg.tcr_v01.bounds.size();
             TrafficControlRequestV01::TrafficControlRequestV01__bounds* bounds_list;
             bounds_list = (TrafficControlRequestV01::TrafficControlRequestV01__bounds*)calloc(1, sizeof(TrafficControlRequestV01::TrafficControlRequestV01__bounds));
             
@@ -1518,24 +1519,24 @@ namespace cpp_message
                 // construct control bounds
                 TrafficControlBounds_t* bounds_p;
                 bounds_p = (TrafficControlBounds_t*) calloc(1, sizeof(TrafficControlBounds_t));
-                bounds_p->reflat = request_msg.tcrV01.bounds[i].reflat;
-                bounds_p->reflon = request_msg.tcrV01.bounds[i].reflon;
+                bounds_p->reflat = request_msg.tcr_v01.bounds[i].reflat;
+                bounds_p->reflon = request_msg.tcr_v01.bounds[i].reflon;
                 // copy offsets from array to C list struct
                 TrafficControlBounds::TrafficControlBounds__offsets* offsets;
                 offsets = (TrafficControlBounds::TrafficControlBounds__offsets*)calloc(1, sizeof(TrafficControlBounds::TrafficControlBounds__offsets));
-                auto offset_count = request_msg.tcrV01.bounds[i].offsets.size();
+                auto offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
                 for(auto j = 0; j < offset_count; j++) {
                     OffsetPoint_t* offset_p;
                     offset_p = (OffsetPoint_t*) calloc(1, sizeof(OffsetPoint_t));
-                    offset_p->deltax = request_msg.tcrV01.bounds[i].offsets[j].deltax;
-                    offset_p->deltay = request_msg.tcrV01.bounds[i].offsets[j].deltay;
+                    offset_p->deltax = request_msg.tcr_v01.bounds[i].offsets[j].deltax;
+                    offset_p->deltay = request_msg.tcr_v01.bounds[i].offsets[j].deltay;
                     asn_sequence_add(&offsets->list, offset_p);
                 }
                 bounds_p->offsets = *offsets;
                 //convert a long value to an 8-bit array of length 8
                 uint8_t oldest_val[8];
                 for(int k = 7; k >= 0; k--) {
-                    oldest_val[7-k] = request_msg.tcrV01.bounds[i].oldest >> (k * 8);
+                    oldest_val[7-k] = request_msg.tcr_v01.bounds[i].oldest >> (k * 8);
                 }
                 bounds_p->oldest.size = 8;
                 bounds_p->oldest.buf = oldest_val;
@@ -1562,3 +1563,8 @@ namespace cpp_message
     }
 
 } // cpp_message namespace
+
+#include "rclcpp_components/register_node_macro.hpp"
+
+// Register the component with class_loader
+RCLCPP_COMPONENTS_REGISTER_NODE(cpp_message::Node)

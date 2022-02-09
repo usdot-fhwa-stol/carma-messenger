@@ -1,6 +1,5 @@
-#pragma once
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) <SUB><year> LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,22 +14,25 @@
  * the License.
  */
 
+#include <gtest/gtest.h>
+#include <memory>
+#include <chrono>
+#include <thread>
+#include <future>
 
-#include "cpp_message.h"
-
-namespace cpp_message
+#include "cpp_message/cpp_message.h"
+     
+int main(int argc, char ** argv)
 {
-    class Map_Message
-    {
-        public:
-            /**
-             * @brief Construct a new  map message object
-             * 
-             * @param binary_array Container with binary input.
-             *  @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
-             */
-            boost::optional<j2735_msgs::MapData>decode_map_message(std::vector<uint8_t>& binary_array);
+    ::testing::InitGoogleTest(&argc, argv);
 
-        
-    };
+    //Initialize ROS
+    rclcpp::init(argc, argv);
+    
+    bool success = RUN_ALL_TESTS();
+
+    //shutdown ROS
+    rclcpp::shutdown();
+
+    return success;
 }

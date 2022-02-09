@@ -36,17 +36,27 @@ namespace cpp_message
         static const int MOBILITYPATH_TEST_ID=242;
         public:
         /**
+        * \brief constructor 
+        */
+        explicit Mobility_Path(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+            node_logging_ = node_logging;
+        };
+
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
+        /**
          * @brief Mobility Path message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
-        boost::optional<cav_msgs::MobilityPath> decode_mobility_path_message(std::vector<uint8_t>& binary_array);
+        boost::optional<carma_v2x_msgs::msg::MobilityPath> decode_mobility_path_message(std::vector<uint8_t>& binary_array);
             /**
          * @brief Mobility Path message encoding function.
          * @param plainMessage Container with MobilityPath ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
-        boost::optional<std::vector<uint8_t>> encode_mobility_path_message(cav_msgs::MobilityPath plainMessage);
+        boost::optional<std::vector<uint8_t>> encode_mobility_path_message(carma_v2x_msgs::msg::MobilityPath plainMessage);
 
     };
 }

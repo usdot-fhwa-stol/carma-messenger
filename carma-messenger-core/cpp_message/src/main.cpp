@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) 2022 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,14 +14,20 @@
  * the License.
  */
 
-#include "cpp_message.h"
+#include <rclcpp/rclcpp.hpp>
+#include "cpp_message/cpp_message.h"
 
-/**
- * Entry Function for Execution
- */
-int main(int argc, char**argv)
+int main(int argc, char **argv) 
 {
-    ros::init(argc,argv,"cpp_message_node");
-    cpp_message::Message node;
-    return node.run();
+  rclcpp::init(argc, argv);
+
+  auto node = std::make_shared<cpp_message::Node>(rclcpp::NodeOptions());
+  
+  rclcpp::executors::MultiThreadedExecutor executor;
+  executor.add_node(node->get_node_base_interface());
+  executor.spin();
+
+  rclcpp::shutdown();
+
+  return 0;
 }
