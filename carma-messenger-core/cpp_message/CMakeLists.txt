@@ -90,6 +90,7 @@ if(BUILD_TESTING)
                         test/test_BSM.cpp
                         test/test_MapMessage.cpp
                         test/test_SPAT.cpp
+                        test/test_encode_decode.cpp
                         test/node_test.cpp)
 
   ament_target_dependencies(test_cpp_message_node ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
