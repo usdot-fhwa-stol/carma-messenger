@@ -21,8 +21,17 @@
 #include <future>
 
 #include "ros2_cpp_message/cpp_message.h"
+#include "test_encode_decode.cpp"
+#include "test_MobilityOperations.cpp"
+#include "test_MobilityResponse.cpp"
+#include "test_MobilityPath.cpp"
+#include "test_MobilityRequest.cpp"
+#include "test_BSM.cpp"
+#include "test_MapMessage.cpp"
+#include "test_SPAT.cpp"
+#include "test_BSM.cpp"
 
-
+     
 int main(int argc, char ** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
