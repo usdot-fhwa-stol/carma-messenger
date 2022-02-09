@@ -81,7 +81,7 @@ namespace cpp_message
                 sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
             }
             else if(str_len>Header_constant.BSM_ID_LENGTH){
-                // RCLCPP_WARN(get_logger(),"BSM ID -size greater than limit, changing to default");
+                RCLCPP_WARN(node_logging_->get_logger(),"BSM ID -size greater than limit, changing to default");
                 sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
             }
             
@@ -136,7 +136,7 @@ namespace cpp_message
 
             return boost::optional<carma_v2x_msgs::msg::MobilityOperation>(output);
         }
-        RCLCPP_WARN_STREAM( node_logging_->get_logger(), "mobility operation decoding failed");
+        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "mobility operation decoding failed");
         return boost::optional<carma_v2x_msgs::msg::MobilityOperation>{};
 
     }
@@ -152,7 +152,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message_shared)
         {
-            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for MobilityOperation message encoding");
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Cannot allocate mem for MobilityOperation message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
         MessageFrame_t* message=message_shared.get();
@@ -165,7 +165,7 @@ namespace cpp_message
         Mobility_Header Header;
         size_t string_size=sender_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable host id value, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable host id value, changing to default");
             sender_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
@@ -180,7 +180,7 @@ namespace cpp_message
         std::string recipient_id=plainMessage.m_header.recipient_id;
         string_size=recipient_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable recipient id value, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable recipient id value, changing to default");
             recipient_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
@@ -199,7 +199,7 @@ namespace cpp_message
             sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
         }
         else if(string_size>Header.BSM_ID_LENGTH){
-            // RCLCPP_WARN(get_logger(),"BSM ID greater than limit, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"BSM ID greater than limit, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
@@ -215,7 +215,7 @@ namespace cpp_message
         std::string plan_id=plainMessage.m_header.plan_id;
         string_size=plan_id.size();
         if(string_size!=Header.GUID_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable GUID, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable GUID, changing to default");
             plan_id=Header.GUID_DEFAULT;
             string_size=Header.GUID_LENGTH;
         }
@@ -234,7 +234,7 @@ namespace cpp_message
             timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(timestamp);
         }
         else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable timestamp value, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable timestamp value, changing to default");
             timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
         uint8_t string_content_timestamp[Header.TIMESTAMP_MESSAGE_LENGTH];
@@ -249,7 +249,7 @@ namespace cpp_message
         std::string strategy=plainMessage.strategy;
         string_size=strategy.size();
         if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable strategy_params value, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable strategy_params value, changing to default");
             strategy=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }        
@@ -266,7 +266,7 @@ namespace cpp_message
         std::string strategy_params=plainMessage.strategy_params;
         string_size=strategy_params.size();
         if(string_size<STRATEGY_PARAMS_MIN_LENGTH || string_size>STRATEGY_PARAMS_MAX_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable strategy_params value, changing to default");
+            RCLCPP_WARN(node_logging_->get_logger(),"Unacceptable strategy_params value, changing to default");
             strategy_params=STRATEGY_PARAMS_STRING_DEFAULT;
             string_size=STRATEGY_PARAMS_STRING_DEFAULT.size();
         }

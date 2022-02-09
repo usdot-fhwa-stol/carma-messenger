@@ -20,9 +20,10 @@
 
 TEST(BSMTest, testDecodeBSM)
 {
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
     std::vector<uint8_t> binary_input = {0,20,37,0,64,64,128,193,0,0,90,210,116,128,53,164,233,0,8,0,0,0,0,0,128,0,0,0,126,125,7,208,127,128,0,10,170,0,128,8};
-    cpp_message::BSM_Message worker(node_logging_);
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::BSM_Message worker(node->get_node_logging_interface());
     auto res = worker.decode_bsm_message(binary_input);
     j2735_v2x_msgs::msg::BSM to_read;
     if(res)
@@ -64,8 +65,8 @@ TEST(BSMTest, testDecodeBSM)
 
 TEST(BSMTest, testEncodeBSM)
 {
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
-    cpp_message::BSM_Message worker(node_logging_);
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::BSM_Message worker(node->get_node_logging_interface());    
     j2735_v2x_msgs::msg::BSM message;
     message.core_data.msg_count = 1;
     message.core_data.id = {1,2,3,4};

@@ -44,12 +44,12 @@ else() # ROS2
 	find_package(ament_cmake_auto REQUIRED)
 	ament_auto_find_build_dependencies()
 
-	# if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	install(FILES third_party_lib/libasn1c_x64.so DESTINATION lib RENAME libasn1c.so)
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		install(FILES third_party_lib/libasn1c_x64.so DESTINATION lib RENAME libasn1c.so)
+	elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		install(FILES third_party_lib/libasn1c_x86.so DESTINATION lib RENAME libasn1c.so)
+	endif()
+
 	ament_auto_package()
-		
-	# elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	# 	install(FILES third_party_lib/libasn1c_x86.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
-	# endif()
 
 endif()

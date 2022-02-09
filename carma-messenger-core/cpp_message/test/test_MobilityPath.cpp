@@ -19,8 +19,8 @@
 TEST(MobilityPathMessageTest, testDecodeRequestMsg)
 {
     std::vector<uint8_t> binary_input={0,242,112,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,116,193,149,6,137,131,42,13,83,6,84,27,57,100,201,155,54,236,152,51,108,225,171,70,237,218,184,96,220,39,213,245,125,95,103,217,246};
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
-    cpp_message::Mobility_Path worker(node_logging_);
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
     boost::optional<carma_v2x_msgs::msg::MobilityPath> res;
     carma_v2x_msgs::msg::MobilityPath to_read;
     res=(worker.decode_mobility_path_message(binary_input));
@@ -48,8 +48,8 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
-    cpp_message::Mobility_Path worker(node_logging_);
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
     carma_v2x_msgs::msg::MobilityHeader header;
     carma_v2x_msgs::msg::MobilityPath message;     
     header.sender_id="USDOT-45100";
@@ -105,8 +105,8 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
-    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
-    cpp_message::Mobility_Path worker(node_logging_);
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
     carma_v2x_msgs::msg::MobilityHeader header;
     carma_v2x_msgs::msg::MobilityPath message;     
     header.sender_id="";

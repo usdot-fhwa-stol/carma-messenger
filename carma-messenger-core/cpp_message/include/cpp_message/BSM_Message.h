@@ -25,6 +25,9 @@ namespace cpp_message
         static const int BSM_TEST_ID=20;
         
         public:
+
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
         /**
         * \brief constructor 
         */
@@ -32,9 +35,6 @@ namespace cpp_message
 
             node_logging_ = node_logging;
         };
-
-        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
-
         /**
          * @brief BSM message decoding function.
          * @param binary_array Container with binary input.

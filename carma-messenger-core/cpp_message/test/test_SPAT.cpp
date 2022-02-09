@@ -77,7 +77,6 @@ namespace cpp_message
             EXPECT_EQ(res.get().intersections.intersection_state_list.front().states.movement_list.front().state_time_speed.movement_event_list.front().timing.max_end_time, 22548);
         }
 
-
     }
 
     TEST(SPATTest, DISABLED_testENCODESPAT)
