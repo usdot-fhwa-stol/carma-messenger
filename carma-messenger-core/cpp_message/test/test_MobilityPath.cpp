@@ -54,7 +54,7 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
     carma_v2x_msgs::msg::MobilityPath message;     
     header.sender_id="USDOT-45100";
     header.recipient_id="USDOT-45095";
-    header.sender_bsm_id="10ABCDEF";
+    header.sender_bsm_id="100ABCEF";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
     message.m_header=header;

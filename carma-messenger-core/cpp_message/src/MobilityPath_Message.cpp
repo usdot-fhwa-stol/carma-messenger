@@ -68,10 +68,12 @@ namespace cpp_message
             header.recipient_id=recipient_id;
             
             //get bsm id
+            //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
             str_len=message->value.choice.TestMessage02.header.hostBSMId.size;
             for(size_t i=0;i<str_len;i++){
                 sender_bsm_id +=message->value.choice.TestMessage02.header.hostBSMId.buf[i];
             }
+           
             if(str_len<Header_constant.BSM_ID_LENGTH)
             {
                 sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
@@ -196,16 +198,18 @@ namespace cpp_message
         
         message->messageId=MOBILITYPATH_TEST_ID;
         message->value.present=MessageFrame__value_PR_TestMessage02;
-
+                
         Mobility_Header Header;
         //convert host_id string to char array
         std::string sender_id=plainMessage.m_header.sender_id;
         size_t string_size=sender_id.size();
-        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable host id value, changing to default");
+        if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH)
+        {
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(),"Unacceptable host id value, changing to default");
             sender_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
-        }
+        }                
+
         uint8_t string_content_hostId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -221,6 +225,8 @@ namespace cpp_message
             recipient_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
+            
+
         uint8_t string_content_targetId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -228,18 +234,23 @@ namespace cpp_message
         }
         message->value.choice.TestMessage02.header.targetStaticId.buf=string_content_targetId;
         message->value.choice.TestMessage02.header.targetStaticId.size=string_size;
-        
+            
          //convert bsm_id string to char array
+         //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
         std::string sender_bsm_id=plainMessage.m_header.sender_bsm_id;
         string_size=sender_bsm_id.size();
-        if(string_size<Header.BSM_ID_LENGTH){
+        if(string_size<Header.BSM_ID_LENGTH)
+        {
             sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
         }
-        else if(string_size>Header.BSM_ID_LENGTH){
-            // RCLCPP_WARN(get_logger(),"Unacceptable bsm id, changing to default");
+        else if(string_size>Header.BSM_ID_LENGTH)
+        {
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Unacceptable bsm id, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
+        RCLCPP_DEBUG_STREAM( node_logging_->get_logger(), "String_Size " << string_size);
+        
         uint8_t string_content_BSMId[string_size];
         for(size_t i=0;i<string_size;i++)
         {
@@ -283,7 +294,6 @@ namespace cpp_message
         message->value.choice.TestMessage02.header.timestamp.buf=string_content_timestamp;
         message->value.choice.TestMessage02.header.timestamp.size=string_size;
 
-        
         //location
         carma_v2x_msgs::msg::LocationECEF starting_location;
         long location_val;
@@ -359,7 +369,7 @@ namespace cpp_message
         }
 
         message->value.choice.TestMessage02.body.trajectory=*offsets_list;
-        
+
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
         //log a warning if it fails
         if(ec.encoded==-1){
@@ -370,7 +380,8 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        
+
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
+    
 }

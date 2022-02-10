@@ -15,6 +15,8 @@
  * the License.
  */
 #include "cpp_message.h"
+#include <bitset>
+
 
 namespace cpp_message
 {

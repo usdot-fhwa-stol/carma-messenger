@@ -58,7 +58,7 @@ namespace cpp_message
         bsm_message_pub_=create_publisher<j2735_v2x_msgs::msg::BSM>("incoming_j2735_bsm",5);
         bsm_message_sub_=create_subscription<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm",5, std::bind(&Node::outbound_bsm_message_callback, this, std_ph::_1));
         spat_message_pub_ = create_publisher<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 5);
-        map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2375_map", 5);
+        map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 5);
 
         // Return success if everthing initialized successfully
         return CallbackReturn::SUCCESS;
@@ -182,7 +182,7 @@ namespace cpp_message
                 RCLCPP_WARN_STREAM( get_logger(), "Cannot decode SPAT message");
             }
         }
-        else if(msg->message_type=="MapData")
+        else if(msg->messageType=="MAP")
         {
             std::vector<uint8_t> array=msg->content;
             Map_Message decode(this->get_node_logging_interface());

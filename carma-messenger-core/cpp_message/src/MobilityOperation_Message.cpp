@@ -73,6 +73,7 @@ namespace cpp_message
             header.recipient_id=recipient_id;
             
             //get bsm id
+            //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
             str_len=message->value.choice.TestMessage03.header.hostBSMId.size;
             for(size_t i=0;i<str_len;i++){
                 sender_bsm_id +=message->value.choice.TestMessage03.header.hostBSMId.buf[i];
@@ -193,6 +194,7 @@ namespace cpp_message
         message->value.choice.TestMessage03.header.targetStaticId.size=string_size;
         
          //convert bsm_id string to char array
+         //sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
         std::string sender_bsm_id=plainMessage.m_header.sender_bsm_id;
         string_size=sender_bsm_id.size();
         if(string_size<Header.BSM_ID_LENGTH){
@@ -295,4 +297,8 @@ namespace cpp_message
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
+    
+   
+
+
 }
