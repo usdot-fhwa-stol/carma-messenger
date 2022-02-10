@@ -182,7 +182,7 @@ namespace cpp_message
                 RCLCPP_WARN_STREAM( get_logger(), "Cannot decode SPAT message");
             }
         }
-        else if(msg->messageType=="MAP")
+        else if(msg->message_type=="MAP")
         {
             std::vector<uint8_t> array=msg->content;
             Map_Message decode(this->get_node_logging_interface());
