@@ -13,12 +13,14 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(carma-messenger)
 
 find_package(carma_cmake_common REQUIRED)
 carma_check_ros_version(1)
 carma_package()
+
+find_package(catkin REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
