@@ -14,20 +14,25 @@
  * the License.
  */
 
-#include <rclcpp/rclcpp.hpp>
+#include <gtest/gtest.h>
+#include <memory>
+#include <chrono>
+#include <thread>
+#include <future>
+
 #include "cpp_message/cpp_message.h"
-
-int main(int argc, char **argv) 
+     
+int main(int argc, char ** argv)
 {
-  rclcpp::init(argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
-  auto node = std::make_shared<cpp_message::Node>(rclcpp::NodeOptions());
-  
-  rclcpp::executors::MultiThreadedExecutor executor;
-  executor.add_node(node->get_node_base_interface());
-  executor.spin();
+    //Initialize ROS
+    rclcpp::init(argc, argv);
+    
+    bool success = RUN_ALL_TESTS();
 
-  rclcpp::shutdown();
+    //shutdown ROS
+    rclcpp::shutdown();
 
-  return 0;
+    return success;
 }

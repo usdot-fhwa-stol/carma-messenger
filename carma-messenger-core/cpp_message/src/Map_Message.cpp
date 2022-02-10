@@ -15,13 +15,13 @@
  * the License.
  */
 
-#include "Map_Message.h"
+#include "cpp_message/Map_Message.h"
 
 namespace cpp_message
 {
-    boost::optional<j2735_msgs::MapData> Map_Message::decode_map_message(std::vector<uint8_t>& binary_array)
+    boost::optional<j2735_v2x_msgs::msg::MapData> Map_Message::decode_map_message(std::vector<uint8_t>& binary_array)
     {
-        j2735_msgs::MapData output;
+        j2735_v2x_msgs::msg::MapData output;
 
         // decode results
         asn_dec_rval_t rval;
@@ -81,7 +81,7 @@ namespace cpp_message
                 for(size_t i = 0; i < map_msg.intersections->list.count; i++)
                 {
                     map_msg_intersections = map_msg.intersections->list.array[i];
-                    j2735_msgs::IntersectionGeometry new_intersection;
+                    j2735_v2x_msgs::msg::IntersectionGeometry new_intersection;
                     new_intersection.id.id = map_msg_intersections->id.id;
 
                     if(map_msg_intersections->id.region)
@@ -92,7 +92,7 @@ namespace cpp_message
                     else
                     {
                         new_intersection.id.region_exists = false;
-                        new_intersection.id.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
+                        new_intersection.id.region = j2735_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
                     }
                     
 
@@ -145,7 +145,7 @@ namespace cpp_message
                             SignalControlZone_t *sig = new SignalControlZone_t;
                             sig = map_msg_intersections->preemptPriorityData->list.array[p];
                             
-                            j2735_msgs::SignalControlZone s;
+                            j2735_v2x_msgs::msg::SignalControlZone s;
 
                             /*SignalControlZone.msg states that RegionalExtension has not yet been implemented*/
 
@@ -168,7 +168,7 @@ namespace cpp_message
 
                             speedLimit = map_msg_intersections->speedLimits->list.array[s];
 
-                            j2735_msgs::RegulatorySpeedLimit rsl;
+                            j2735_v2x_msgs::msg::RegulatorySpeedLimit rsl;
                             rsl.speed = speedLimit->speed;
                             rsl.type.speed_limit_type = speedLimit->type;
                             new_intersection.speed_limits.speed_limits.push_back(rsl);
@@ -219,7 +219,7 @@ namespace cpp_message
                 {
                     rseg = map_msg.roadSegments->list.array[i];
 
-                    j2735_msgs::RoadSegment rs;
+                    j2735_v2x_msgs::msg::RoadSegment rs;
 
                     if(rseg->laneWidth)
                     {
@@ -260,7 +260,7 @@ namespace cpp_message
 
                         for (size_t i = 0; i < rseg->speedLimits->list.count;i++)
                         {
-                            j2735_msgs::RegulatorySpeedLimit sl;
+                            j2735_v2x_msgs::msg::RegulatorySpeedLimit sl;
 
                             speedL = rseg->speedLimits->list.array[i];
 
@@ -345,7 +345,7 @@ namespace cpp_message
                 {
                     rca = map_msg.restrictionList->list.array[i];
 
-                    j2735_msgs::RestrictionClassAssignment rclass;
+                    j2735_v2x_msgs::msg::RestrictionClassAssignment rclass;
                     rclass.id = rca->id;
                     output.restriction_list.restriction_class_list.push_back(rclass);
                 }
@@ -356,14 +356,14 @@ namespace cpp_message
             }
 
         }
-        return boost::optional<j2735_msgs::MapData>(output);
+        return boost::optional<j2735_v2x_msgs::msg::MapData>(output);
 
     }
 
 
-    j2735_msgs::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane)
+    j2734_v2x_msgs::msg::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane)
     {
-        j2735_msgs::GenericLane gl;
+        j2734_v2x_msgs::msg::GenericLane gl;
         //Egress Approach
         if(g_lane->egressApproach)
         {
@@ -429,7 +429,7 @@ namespace cpp_message
             {
                 ct = g_lane->connectsTo->list.array[c];
 
-                j2735_msgs::Connection entry;
+                j2734_v2x_msgs::msg::Connection entry;
 
                 //Connection ID
                 if(ct->connectionID)
@@ -487,7 +487,7 @@ namespace cpp_message
                     else
                     {
                         entry.remote_intersection.region_exists = false;
-                        entry.remote_intersection.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
+                        entry.remote_intersection.region = j2734_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
                     }
 
                     entry.remote_intersection.id = ct->remoteIntersection->id;
@@ -581,7 +581,7 @@ namespace cpp_message
         //Nodes
         for(size_t n =0;n< g_lane->nodeList.choice.nodes.list.count; n++)
         {
-            j2735_msgs::NodeXY node;
+            j2734_v2x_msgs::msg::NodeXY node;
 
             //Attributes
             if(g_lane->nodeList.choice.nodes.list.array[n]->attributes)
@@ -593,7 +593,7 @@ namespace cpp_message
                 if(attributes->data)
                 {
                     node.attributes.data_exists = true;
-                    j2735_msgs::LaneDataAttribute data;
+                    j2734_v2x_msgs::msg::LaneDataAttribute data;
                     for(size_t d =0; d< attributes->data->list.count; d++)
                     {
                         data.lane_angle = attributes->data->list.array[d]->choice.laneAngle;
@@ -604,7 +604,7 @@ namespace cpp_message
 
                         for(size_t sl = 0; sl < attributes->data->list.array[d]->choice.speedLimits.list.count; sl++)
                         {
-                            j2735_msgs::RegulatorySpeedLimit speedLimit;
+                            j2734_v2x_msgs::msg::RegulatorySpeedLimit speedLimit;
                             speedLimit.speed = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->speed;
                             speedLimit.type.speed_limit_type = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->type;
                                 data.speed_limits.speed_limits.push_back(speedLimit);
@@ -638,7 +638,7 @@ namespace cpp_message
                     for(size_t sa = 0; sa < attributes->disabled->list.count; sa++)
                     {
                         sa_xy = attributes->disabled->list.array[sa];
-                        j2735_msgs::SegmentAttributeXY sxy;
+                        j2734_v2x_msgs::msg::SegmentAttributeXY sxy;
                         sxy.segment_attribute_xy = *sa_xy;
                         node.attributes.disabled.segment_attribute_xy.push_back(sxy);
                     }
@@ -670,7 +670,7 @@ namespace cpp_message
                     {
                         sa_xy = attributes->enabled->list.array[en];
 
-                        j2735_msgs::SegmentAttributeXY enabled;
+                        j2734_v2x_msgs::msg::SegmentAttributeXY enabled;
                         enabled.segment_attribute_xy = *sa_xy;
                         node.attributes.enabled.segment_attribute_xy.push_back(enabled);
                     }
@@ -690,7 +690,7 @@ namespace cpp_message
 
                     for(size_t ln = 0; ln < attributes->localNode->list.count; ln++)
                     {
-                        j2735_msgs::NodeAttributeXY n_att;
+                        j2734_v2x_msgs::msg::NodeAttributeXY n_att;
                         na = attributes->localNode->list.array[ln];
                         n_att.node_attribute_xy = *na;
                         node.attributes.local_node.node_attribute_xy_List.push_back(n_att);

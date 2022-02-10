@@ -27,18 +27,30 @@ namespace cpp_message
             static const int URGENCY_UNKNOWN=0;
 
             public:
+
+            /**
+            * \brief constructor 
+            */
+            explicit Mobility_Response(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+                node_logging_ = node_logging;
+            };
+
+            rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
+
             /**
              * @brief Mobility Response message decoding function.
              * @param binary_array Container with binary input.
              * @return decoded ros message, returns ROS warning and an empty message if decoding fails. 
              */
-            boost::optional<cav_msgs::MobilityResponse> decode_mobility_response_message(std::vector<uint8_t>& binary_array);
+            boost::optional<carma_v2x_msgs::msg::MobilityResponse> decode_mobility_response_message(std::vector<uint8_t>& binary_array);
             /**
              * @brief Mobility Response message encoding function.
              * @param plainMessage contains mobility response ros message to be encoded as byte array.
              * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
              */
-            boost::optional<std::vector<uint8_t>> encode_mobility_response_message(cav_msgs::MobilityResponse plainMessage);
+            boost::optional<std::vector<uint8_t>> encode_mobility_response_message(carma_v2x_msgs::msg::MobilityResponse plainMessage);
 
     };
 }

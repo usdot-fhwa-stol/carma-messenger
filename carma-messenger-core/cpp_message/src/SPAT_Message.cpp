@@ -18,16 +18,16 @@
  * CPP File containing SPAT Message method implementations
  */
 
-#include "SPAT_Message.h"
+#include "cpp_message/SPAT_Message.h"
 
 namespace cpp_message
 {
 
     //Convert the SPAT j2735 message to cav_msgs
-    boost::optional<j2735_msgs::SPAT> SPAT_Message::decode_spat_message(std::vector<uint8_t> &binary_array)
+    boost::optional<j2735_v2x_msgs::msg::SPAT> SPAT_Message::decode_spat_message(std::vector<uint8_t> &binary_array)
     {
         //Decode the binary message into SPAT message
-        j2735_msgs::SPAT output;
+        j2735_v2x_msgs::msg::SPAT output;
         //decode results - stored in binary array
         asn_dec_rval_t rval;
         MessageFrame_t *message = nullptr;
@@ -55,7 +55,7 @@ namespace cpp_message
             {
                 is_time_stamp_exists = false;
                 *minute_of_the_year = DEFAULT_MINUTE_OF_YEAR_;
-                ROS_DEBUG_STREAM("Minute of the year value doesn't exist, set to Default");
+                // RCLCPP_DEBUG_STREAM(  get_logger(), "Minute of the year value doesn't exist, set to Default");
             }
 
             output.time_stamp_exists = is_time_stamp_exists;
@@ -78,7 +78,7 @@ namespace cpp_message
             }
 
             //3. Decode Intersection
-            j2735_msgs::IntersectionStateList intersections;
+            j2735_v2x_msgs::msg::IntersectionStateList intersections;
 
             //IntersectionStateList is an array of intersectionState - of size 1-32
             for (size_t i = 0; i < message->value.choice.SPAT.intersections.list.count; i++)
@@ -86,7 +86,7 @@ namespace cpp_message
                 if(!message->value.choice.SPAT.intersections.list.array[i]){
                     continue;
                 }
-                j2735_msgs::IntersectionState intersection;
+                j2735_v2x_msgs::msg::IntersectionState intersection;
                 IntersectionState_t *state = new IntersectionState_t;
                 state = message->value.choice.SPAT.intersections.list.array[i];
                 //Decode intersection name
@@ -103,10 +103,10 @@ namespace cpp_message
                 {
                     intersection.name_exists = false;
                     intersection.name = DEFAULT_STRING_;
-                    ROS_DEBUG_STREAM("Intersection name doesn't exist, set to Default");
+                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Intersection name doesn't exist, set to Default");
                 }
                 //Decode id
-                j2735_msgs::IntersectionReferenceID id;
+                j2735_v2x_msgs::msg::IntersectionReferenceID id;
                 id.id = state->id.id;
                 if (state->id.region)
                 {
@@ -116,8 +116,8 @@ namespace cpp_message
                 else
                 {
                     id.region_exists = false;
-                    id.region = j2735_msgs::IntersectionReferenceID::REGION_UNAVAILABLE;
-                    ROS_DEBUG_STREAM("Intersection ID doesn't exist, set to Region Unavailable");
+                    id.region = j2735_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
+                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Intersection ID doesn't exist, set to Region Unavailable");
                 }
 
                 intersection.id = id;
@@ -148,8 +148,8 @@ namespace cpp_message
                 else
                 {
                     intersection.moy_exists = false;
-                    intersection.moy = j2735_msgs::IntersectionState::MOY_INVALID;
-                    ROS_DEBUG_STREAM("Intersection moy doesn't exis, set to MOY_INVALID");
+                    intersection.moy = j2735_v2x_msgs::msg::IntersectionState::MOY_INVALID;
+                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Intersection moy doesn't exis, set to MOY_INVALID");
                 }
                 //Time stamp
                 if (state->timeStamp)
@@ -161,9 +161,9 @@ namespace cpp_message
                 }
                 else
                 {
-                    intersection.time_stamp = j2735_msgs::IntersectionState::TIME_STAMP_UNAVAILABLE;
+                    intersection.time_stamp = j2735_v2x_msgs::msg::IntersectionState::TIME_STAMP_UNAVAILABLE;
                     intersection.time_stamp_exists = false;
-                    ROS_DEBUG_STREAM("Intersection time stamp doesn't exist, value set to TIME_STAMP_UNAVAILABLE");
+                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Intersection time stamp doesn't exist, value set to TIME_STAMP_UNAVAILABLE");
                 }
                 //Enabled lanes list
                 
@@ -171,7 +171,7 @@ namespace cpp_message
                 if (state->enabledLanes)
                 {
                     enabled_lanes_exists = true;
-                    j2735_msgs::EnabledLaneList enabled_lanes_list;
+                    j2735_v2x_msgs::msg::EnabledLaneList enabled_lanes_list;
                     for (size_t j = 0; j < state->enabledLanes->list.count; j++)
                     {
                         LaneID_t *enabled_lane_id = new LaneID_t;
@@ -186,14 +186,14 @@ namespace cpp_message
                 intersection.enabled_lanes_exists = enabled_lanes_exists;
 
                 //MovementList
-                j2735_msgs::MovementList movement_states;
+                j2735_v2x_msgs::msg::MovementList movement_states;
                 //movement states is an array of Movement states
                 for (size_t j = 0; j < state->states.list.count; j++)
                 {
                     if(!state->states.list.array[j]){
                         continue;
                     }
-                    j2735_msgs::MovementState movement_state;
+                    j2735_v2x_msgs::msg::MovementState movement_state;
                     movement_state.movement_name_exists = false;
                     if (state->states.list.array[j]->movementName)
                     {
@@ -215,21 +215,21 @@ namespace cpp_message
                     }
 
                     //State Time Speed Movement Event List
-                    j2735_msgs::MovementEventList movement_event_list;
+                    j2735_v2x_msgs::msg::MovementEventList movement_event_list;
                     for (int k = 0; k < state->states.list.array[j]->state_time_speed.list.count; k++)
                     {
                         if(!state->states.list.array[j]->state_time_speed.list.array[k]){
                             continue;
                         }
-                        j2735_msgs::MovementEvent movement_event;
+                        j2735_v2x_msgs::msg::MovementEvent movement_event;
                         //Decode movement event
                         //1. MovementPhaseState
                         if(state->states.list.array[j]->state_time_speed.list.array[k]->eventState){
                             movement_event.event_state.movement_phase_state = state->states.list.array[j]->state_time_speed.list.array[k]->eventState;
                         }
                         else{
-                            movement_event.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::UNAVAILABLE;
-                            ROS_DEBUG_STREAM("Movement event - event state, value doesn't exist. Set to default UNAVAILABLE");
+                            movement_event.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::UNAVAILABLE;
+                            // RCLCPP_DEBUG_STREAM(  get_logger(), "Movement event - event state, value doesn't exist. Set to default UNAVAILABLE");
                         }
 
                         //2. TimeChangeDetails
@@ -238,7 +238,7 @@ namespace cpp_message
                         {
                             movement_event.timing_exists = true;
 
-                            j2735_msgs::TimeChangeDetails timing;
+                            j2735_v2x_msgs::msg::TimeChangeDetails timing;
                             timing.start_time_exists = false;
                             if (state->states.list.array[j]->state_time_speed.list.array[k]->timing->startTime)
                             {
@@ -294,7 +294,7 @@ namespace cpp_message
                             
                             for (size_t l = 0; l < state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.count; l++)
                             {
-                                j2735_msgs::AdvisorySpeed advisory_speed;
+                                j2735_v2x_msgs::msg::AdvisorySpeed advisory_speed;
 
                                 advisory_speed.type.advisory_speed_type = state->states.list.array[j]->state_time_speed.list.array[k]->speeds->list.array[l]->type;
 
@@ -308,8 +308,8 @@ namespace cpp_message
                                 }
                                 else
                                 {
-                                    advisory_speed.speed = j2735_msgs::AdvisorySpeed::SPEED_UNAVAILABLE;
-                                    ROS_DEBUG_STREAM("Advisory speed- speed doesn't exist, assigned default value speed_unavailable");
+                                    advisory_speed.speed = j2735_v2x_msgs::msg::AdvisorySpeed::SPEED_UNAVAILABLE;
+                                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Advisory speed- speed doesn't exist, assigned default value speed_unavailable");
                                 }
 
                                 SpeedConfidence_t *confidence = new SpeedConfidence_t;
@@ -326,8 +326,8 @@ namespace cpp_message
                                 }
                                 else
                                 {
-                                    advisory_speed.distance = j2735_msgs::AdvisorySpeed::DISTANCE_UNKNOWN;
-                                    ROS_DEBUG_STREAM("Advisory speed - distance, value doesn't exist, set to default distance_unknown");
+                                    advisory_speed.distance = j2735_v2x_msgs::msg::AdvisorySpeed::DISTANCE_UNKNOWN;
+                                    // RCLCPP_DEBUG_STREAM(  get_logger(), "Advisory speed - distance, value doesn't exist, set to default distance_unknown");
                                 }
 
                                 // RESTRICTION CLASS ID not DEFINED in incoming state message
@@ -344,7 +344,7 @@ namespace cpp_message
                 intersection.states = movement_states;
 
                 //ManeuverAssistList
-                j2735_msgs::ManeuverAssistList maneuver_assist_list;
+                j2735_v2x_msgs::msg::ManeuverAssistList maneuver_assist_list;
                 bool maneuver_assist_list_exists = false;
                 if (state->maneuverAssistList)
                 {
@@ -358,14 +358,14 @@ namespace cpp_message
 
             //4. Regional - not implemented yet
 
-            return boost::optional<j2735_msgs::SPAT>(output);
+            return boost::optional<j2735_v2x_msgs::msg::SPAT>(output);
         }
 
-        ROS_WARN_STREAM("SPAT Message decoding failed");
-        return boost::optional<j2735_msgs::SPAT>{};
+        // RCLCPP_WARN_STREAM( rclcpp::get_logger(), "SPAT Message decoding failed");
+        return boost::optional<j2735_v2x_msgs::msg::SPAT>{};
     }
 
-    boost::optional<std::vector<uint8_t>> SPAT_Message::encode_spat_message(const j2735_msgs::SPAT &plainMessage)
+    boost::optional<std::vector<uint8_t>> SPAT_Message::encode_spat_message(const j2735_v2x_msgs::msg::SPAT &plainMessage)
     {
         //encode result placeholder
         uint8_t buffer[2048] = {0};
@@ -377,7 +377,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for SPAT encoding");
+            // RCLCPP_WARN_STREAM( rclcpp::get_logger(), "Cannot allocate mem for SPAT encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
         //set message type to SPAT
@@ -393,7 +393,7 @@ namespace cpp_message
             *timestamp = plainMessage.time_stamp;
         }
         else{
-            ROS_DEBUG_STREAM("Encoding, Assigning default timestamp");
+            // RCLCPP_DEBUG_STREAM(  get_logger(), "Encoding, Assigning default timestamp");
             *timestamp = DEFAULT_TIME_STAMP_;
         }
         
@@ -410,7 +410,7 @@ namespace cpp_message
             message->value.choice.SPAT.name->size = name.size();
         }
         else{
-            ROS_DEBUG_STREAM("Encoding, name doesn't exist");
+            // RCLCPP_DEBUG_STREAM(  get_logger(), "Encoding, name doesn't exist");
         }
 
 
@@ -434,7 +434,7 @@ namespace cpp_message
                 intersectionState->name->size = name_string_size;
             }
             else{
-                ROS_DEBUG_STREAM("Intersection state name doesn't exist for state "<< i);
+                // RCLCPP_DEBUG_STREAM(  get_logger(), "Intersection state name doesn't exist for state "<< i);
             }
             //No else condition for name doesn't exist
 
@@ -597,7 +597,7 @@ namespace cpp_message
                                 *speed_advice = plainMessage.intersections.intersection_state_list[i].states.movement_list[j].state_time_speed.movement_event_list[k].speeds.advisory_speed_list[l].speed;
                             }
                             else{
-                               *speed_advice = j2735_msgs::AdvisorySpeed::SPEED_UNAVAILABLE;
+                               *speed_advice = j2735_v2x_msgs::msg::AdvisorySpeed::SPEED_UNAVAILABLE;
                             }
                             advisory_speed->speed = speed_advice;
 
@@ -612,7 +612,7 @@ namespace cpp_message
                                 *zone_length = plainMessage.intersections.intersection_state_list[i].states.movement_list[j].state_time_speed.movement_event_list[k].speeds.advisory_speed_list[l].distance;
                             }
                             else{
-                                *zone_length = j2735_msgs::AdvisorySpeed::DISTANCE_UNKNOWN;
+                                *zone_length = j2735_v2x_msgs::msg::AdvisorySpeed::DISTANCE_UNKNOWN;
                             }
                             advisory_speed->distance = zone_length;
 
@@ -684,7 +684,7 @@ namespace cpp_message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message, buffer, buffer_size);
                 //log a warning if that fails
         if(ec.encoded == -1) {
-            ROS_WARN_STREAM("Encoding for SPAT Message failed");
+            // RCLCPP_WARN_STREAM( rclcpp::get_logger(), "Encoding for SPAT Message failed");
             return boost::optional<std::vector<uint8_t>>{};
         }
         

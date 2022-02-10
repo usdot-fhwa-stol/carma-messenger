@@ -14,9 +14,8 @@
  * the License.
  */
 
-#include "SPAT_Message.h"
+#include "cpp_message/SPAT_Message.h"
 #include <gtest/gtest.h>
-#include <ros/ros.h>
 #include <boost/optional/optional_io.hpp>   //To print boost::optional
 
 namespace cpp_message
@@ -67,7 +66,7 @@ namespace cpp_message
         }
         
 
-        cpp_message::SPAT_Message worker;
+        cpp_message::SPAT_Message worker;        
         auto res = worker.decode_spat_message(new_binary_input_int);
         
         
@@ -78,16 +77,15 @@ namespace cpp_message
             EXPECT_EQ(res.get().intersections.intersection_state_list.front().states.movement_list.front().state_time_speed.movement_event_list.front().timing.max_end_time, 22548);
         }
 
-
     }
 
     TEST(SPATTest, DISABLED_testENCODESPAT)
     {
         cpp_message::SPAT_Message worker;
-        j2735_msgs::SPAT message;
+        j2735_v2x_msgs::msg::SPAT message;
         
         //1. Intersection State List
-        j2735_msgs::IntersectionState intersection_state_1;
+        j2735_v2x_msgs::msg::IntersectionState intersection_state_1;
         intersection_state_1.id.id = 127;
         intersection_state_1.revision = 2;
         intersection_state_1.status.intersection_status_object = 0000000000000000;
@@ -98,12 +96,12 @@ namespace cpp_message
         //intersection_state_1.states.movement_list;// Add movement_state_1 to this
         
         
-        j2735_msgs::MovementState movement_state_1;
+        j2735_v2x_msgs::msg::MovementState movement_state_1;
         movement_state_1.signal_group = 1;
         //movement_state_1.state_time_speed.movement_event_list; //Add movement_event_1 to this
 
-        j2735_msgs::MovementEvent movement_event_1;
-        movement_event_1.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::STOP_AND_REMAIN;
+        j2735_v2x_msgs::msg::MovementEvent movement_event_1;
+        movement_event_1.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::STOP_AND_REMAIN;
         movement_event_1.timing_exists = true;
         movement_event_1.timing.min_end_time = 5786;
         movement_event_1.timing.max_end_time_exists = true;
@@ -113,12 +111,12 @@ namespace cpp_message
         intersection_state_1.states.movement_list.push_back(movement_state_1);
 
         //Second Movement state
-        j2735_msgs::MovementState movement_state_2;
+        j2735_v2x_msgs::msg::MovementState movement_state_2;
         movement_state_2.signal_group = 2;
         //movement_state_2.state_time_speed.movement_event_list - Add Movement event to this
 
-        j2735_msgs::MovementEvent movement_event_2;
-        movement_event_2.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::PERMISSIVE_MOVEMENT_ALLOWED;
+        j2735_v2x_msgs::msg::MovementEvent movement_event_2;
+        movement_event_2.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::PERMISSIVE_MOVEMENT_ALLOWED;
         movement_event_2.timing_exists = true;
         movement_event_2.timing.min_end_time = 5581;
         movement_event_2.timing.max_end_time_exists = true;
@@ -129,11 +127,11 @@ namespace cpp_message
 
 
         //Third Movement State
-        j2735_msgs::MovementState movement_state_3;
+        j2735_v2x_msgs::msg::MovementState movement_state_3;
         movement_state_3.signal_group = 3;
 
-        j2735_msgs::MovementEvent movement_event_3;
-        movement_event_3.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::STOP_AND_REMAIN;
+        j2735_v2x_msgs::msg::MovementEvent movement_event_3;
+        movement_event_3.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::STOP_AND_REMAIN;
         movement_event_3.timing_exists = true;
         movement_event_3.timing.min_end_time = 5642;
         movement_event_3.timing.max_end_time_exists = true;
@@ -143,11 +141,11 @@ namespace cpp_message
         intersection_state_1.states.movement_list.push_back(movement_state_3);
 
         //Fourth Movement State
-        j2735_msgs::MovementState movement_state_4;
+        j2735_v2x_msgs::msg::MovementState movement_state_4;
         movement_state_4.signal_group = 4;
 
-        j2735_msgs::MovementEvent movement_event_4;
-        movement_event_4.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::STOP_AND_REMAIN;
+        j2735_v2x_msgs::msg::MovementEvent movement_event_4;
+        movement_event_4.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::STOP_AND_REMAIN;
         movement_event_4.timing_exists = true;
         movement_event_4.timing.min_end_time = 5786;
         movement_event_4.timing.max_end_time_exists = true;
@@ -157,11 +155,11 @@ namespace cpp_message
         intersection_state_1.states.movement_list.push_back(movement_state_4);
 
         //Fifth Movement State
-        j2735_msgs::MovementState movement_state_5;
+        j2735_v2x_msgs::msg::MovementState movement_state_5;
         movement_state_5.signal_group = 5;
 
-        j2735_msgs::MovementEvent movement_event_5;
-        movement_event_5.event_state.movement_phase_state = j2735_msgs::MovementPhaseState::STOP_AND_REMAIN;
+        j2735_v2x_msgs::msg::MovementEvent movement_event_5;
+        movement_event_5.event_state.movement_phase_state = j2735_v2x_msgs::msg::MovementPhaseState::STOP_AND_REMAIN;
         movement_event_5.timing_exists = true;
         movement_event_5.timing.min_end_time = 5786;
         movement_event_5.timing.max_end_time_exists = true;

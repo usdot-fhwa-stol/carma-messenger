@@ -19,7 +19,7 @@
 
 namespace cpp_message
 {
-    class Mobility_Operation
+    class Mobility_Operation 
     {
         private:
         //constants
@@ -29,21 +29,30 @@ namespace cpp_message
             static const int STRATEGY_PARAMS_MAX_LENGTH=1000;
             static const int MOBILITY_OPERATION_TEST_ID=243;
             std::string STRATEGY_PARAMS_STRING_DEFAULT="[]";
-        
+
         public:
+        /**
+        * \brief constructor 
+        */
+        explicit Mobility_Operation(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+            node_logging_ = node_logging;
+        };
+
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
         /**
          * @brief Mobility Operation message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
-        boost::optional<cav_msgs::MobilityOperation>decode_mobility_operation_message(std::vector<uint8_t>& binary_array);
+        boost::optional<carma_v2x_msgs::msg::MobilityOperation>decode_mobility_operation_message(std::vector<uint8_t>& binary_array);
+
         /**
          * @brief helper functions for Mobility Operation message encoding.
          * @param plainMessage contains mobility operation ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
-        boost::optional<std::vector<uint8_t>> encode_mobility_operation_message(cav_msgs::MobilityOperation plainMessage);
-
-
+        boost::optional<std::vector<uint8_t>> encode_mobility_operation_message(carma_v2x_msgs::msg::MobilityOperation plainMessage);
     };
 }

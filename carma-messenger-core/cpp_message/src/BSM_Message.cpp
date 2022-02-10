@@ -18,13 +18,13 @@
  * CPP File containing BSM Message method implementations
  */
 
-#include "BSM_Message.h"
+#include "cpp_message/BSM_Message.h"
 
 namespace cpp_message
 {
-    boost::optional<j2735_msgs::BSM> BSM_Message::decode_bsm_message(std::vector<uint8_t>& binary_array){
+    boost::optional<j2735_v2x_msgs::msg::BSM> BSM_Message::decode_bsm_message(std::vector<uint8_t>& binary_array){
         
-        j2735_msgs::BSM output;
+        j2735_v2x_msgs::msg::BSM output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
         MessageFrame_t* message = nullptr;
@@ -90,14 +90,14 @@ namespace cpp_message
             output.core_data.size.vehicle_length = core_data_msg.size.length;
             output.core_data.size.vehicle_width = core_data_msg.size.width;
             
-            return boost::optional<j2735_msgs::BSM>(output);
+            return boost::optional<j2735_v2x_msgs::msg::BSM>(output);
         }
-        ROS_WARN_STREAM("BasicSafetyMessage decoding failed");
-        return boost::optional<j2735_msgs::BSM>{};
+        RCLCPP_WARN_STREAM( node_logging_->get_logger(), "BasicSafetyMessage decoding failed");
+        return boost::optional<j2735_v2x_msgs::msg::BSM>{};
 
     }
 
-    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_msgs::BSM& plain_msg)
+    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_v2x_msgs::msg::BSM& plain_msg)
     {
         //Uncomment below (and one line at the end of the function) to print the message in human readable form
         //FILE *fp;
@@ -115,7 +115,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for BasicSafetyMessage encoding");
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for BasicSafetyMessage encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
 
@@ -210,7 +210,7 @@ namespace cpp_message
         
         //log a warning if that fails
         if(ec.encoded == -1) {
-            ROS_WARN_STREAM("Encoding for BasicSafetyMessage has failed");
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Encoding for BasicSafetyMessage has failed");
             std::cout << "Failed: " << ec.failed_type->name << std::endl;
             return boost::optional<std::vector<uint8_t>>{};
         }

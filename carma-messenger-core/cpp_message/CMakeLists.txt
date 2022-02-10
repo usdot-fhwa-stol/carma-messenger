@@ -1,5 +1,5 @@
 
-# Copyright (C) 2020-2021 LEIDOS.
+# Copyright (C) 2022 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -13,118 +13,93 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(cpp_message)
 
+# Declare carma package and check ROS version
 find_package(carma_cmake_common REQUIRED)
-carma_check_ros_version(1)
+find_package(asn1c REQUIRED)
+
+carma_check_ros_version(2)
 carma_package()
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-set(DEPS_CATKIN
-	cav_msgs
-	j2735_msgs
-	roscpp
-	carma_utils
-	asn1c
-)
-find_package(catkin REQUIRED COMPONENTS
-  ${DEPS_CATKIN}
-)
+## Find dependencies using ament auto
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system thread)
+# Name build targets
+set(node_exec cpp_message_node_exec)
+set(node_lib cpp_message_node)
 
-catkin_package(
-   CATKIN_DEPENDS ${DEPS_CATKIN}
-   DEPENDS Boost
-)
-
-###########
-## Build ##
-###########
+# Includes
 include_directories(
 	include
-	include/generated
-	${catkin_INCLUDE_DIRS}
+	include/generated       
 )
+
+ament_export_include_directories(include)
+
+# Build
+ament_auto_add_library(${node_lib} SHARED
+        src/cpp_message.cpp
+        src/MobilityOperation_Message.cpp
+        src/MobilityResponse_Message.cpp
+        src/MobilityPath_Message.cpp
+        src/MobilityRequest_Message.cpp
+        src/BSM_Message.cpp
+        src/SPAT_Message.cpp
+        src/Map_Message.cpp
+)
+
 
 add_library(testlib SHARED IMPORTED)
 
-## Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
-set(ASN1C_INSTALL_PATH "/opt/carma/install/asn1c")
-
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x64.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)
-	file(RENAME ${ASN1C_INSTALL_PATH}/lib/libasn1c_x64.so ${ASN1C_INSTALL_PATH}/lib/libasn1c.so)
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../lib_asn1c/third_party_lib/libasn1c_x86.so DESTINATION ${ASN1C_INSTALL_PATH}/lib)
-	file(RENAME ${ASN1C_INSTALL_PATH}/lib/libasn1c_x86.so ${ASN1C_INSTALL_PATH}/lib/libasn1c.so)
-endif()
+# Following is asn1c library install path outside the container, which is usually fixed as /opt/carma/install/
+set(ASN1C_INSTALL_PATH ${asn1c_DIR}/../../../)
 
 set_target_properties(testlib PROPERTIES
   IMPORTED_LOCATION ${ASN1C_INSTALL_PATH}/lib/libasn1c.so
 )
 
-## Declare a C++ executable
-add_executable(cpp_message_node
-	src/main.cpp
-	src/cpp_message.cpp
+target_link_libraries(${node_lib} testlib)
+
+ament_auto_add_executable(${node_exec} 
+        src/main.cpp 
 )
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(cpp_message_node testlib ${Boost_LIBRARIES} ${catkin_LIBRARIES} cpp_message_library)
+# Register component
+rclcpp_components_register_nodes(${node_lib} "cpp_message::Node")
 
-add_library(cpp_message_library src/cpp_message.cpp 
-            src/MobilityOperation_Message.cpp
-			src/MobilityResponse_Message.cpp
-			src/MobilityPath_Message.cpp
-			src/MobilityRequest_Message.cpp
-			src/BSM_Message.cpp
-			src/SPAT_Message.cpp
-			src/Map_Message.cpp)
-add_dependencies(cpp_message_library ${catkin_EXPORTED_TARGETS} testlib)
-
-## Add cmake target dependencies of the executable
-## same as for the library above
-add_dependencies(cpp_message_node ${catkin_EXPORTED_TARGETS} )
-
-#############
-## Install ##
-#############
-
-install(TARGETS cpp_message_node cpp_message_library
-	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# All locally created targets will need to be manually linked
+# ament auto will handle linking of external dependencies
+target_link_libraries(${node_exec}
+        ${node_lib}
 )
 
-## Mark cpp header files for installation
-install(DIRECTORY include
-	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
+# Testing
+if(BUILD_TESTING)  
 
-## Mark other files for installation (e.g. launch and bag files, etc.)
-install(DIRECTORY
-	launch
-	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
 
-#############
-## Testing ##
-#############
+  ament_add_gtest(test_cpp_message_node 
+                        test/test_MobilityOperations.cpp
+                        test/test_MobilityResponse.cpp
+                        test/test_MobilityPath.cpp
+                        test/test_MobilityRequest.cpp
+                        test/test_BSM.cpp
+                        test/test_MapMessage.cpp
+                        test/test_SPAT.cpp
+                        test/test_encode_decode.cpp
+                        test/node_test.cpp)
 
-## Add gtest based cpp test target and link libraries
-catkin_add_gmock(${PROJECT_NAME}-test 
-	test/test_encode_decode.cpp
-	test/test_MobilityOperations.cpp
-	test/test_MobilityResponse.cpp
-	test/test_MobilityPath.cpp
-	test/test_MobilityRequest.cpp
-	test/test_BSM.cpp
-	test/test_MapMessage.cpp
-	test/test_SPAT.cpp
+  ament_target_dependencies(test_cpp_message_node ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
+
+  target_link_libraries(test_cpp_message_node ${node_lib})
+
+endif()
+
+# Install
+ament_auto_package(
+        INSTALL_TO_SHARE launch
 )
-target_link_libraries(${PROJECT_NAME}-test cpp_message_library testlib ${catkin_LIBRARIES})

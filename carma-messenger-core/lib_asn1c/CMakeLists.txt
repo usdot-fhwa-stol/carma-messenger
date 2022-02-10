@@ -13,24 +13,43 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(asn1c)
 
 find_package(carma_cmake_common REQUIRED)
-carma_check_ros_version(1)
 carma_package()
+
+find_package(ros_environment REQUIRED)
+
+set(ROS_VERSION $ENV{ROS_VERSION})
 
 ################
 ## POST BUILD ##
 ################
 
-find_package(catkin REQUIRED COMPONENTS)
+if(${ROS_VERSION} EQUAL 1) # ROS 1
 
-catkin_package()
+	find_package(catkin REQUIRED COMPONENTS)
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	install(FILES third_party_lib/libasn1c_x64.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	install(FILES third_party_lib/libasn1c_x86.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
+	catkin_package()
+
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		install(FILES third_party_lib/libasn1c_x64.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
+	elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		install(FILES third_party_lib/libasn1c_x86.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
+	endif()
+
+else() # ROS2
+
+	find_package(ament_cmake_auto REQUIRED)
+	ament_auto_find_build_dependencies()
+
+	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+		install(FILES third_party_lib/libasn1c_x64.so DESTINATION lib RENAME libasn1c.so)
+	elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		install(FILES third_party_lib/libasn1c_x86.so DESTINATION lib RENAME libasn1c.so)
+	endif()
+
+	ament_auto_package()
+
 endif()
-

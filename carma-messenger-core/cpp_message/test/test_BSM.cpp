@@ -14,17 +14,18 @@
  * the License.
  */
 
-#include "BSM_Message.h"
+#include "cpp_message/BSM_Message.h"
 #include <gtest/gtest.h>
-#include <ros/ros.h>
 #include <boost/optional/optional_io.hpp>   //to print boost::optional
 
 TEST(BSMTest, testDecodeBSM)
 {
+
     std::vector<uint8_t> binary_input = {0,20,37,0,64,64,128,193,0,0,90,210,116,128,53,164,233,0,8,0,0,0,0,0,128,0,0,0,126,125,7,208,127,128,0,10,170,0,128,8};
-    cpp_message::BSM_Message worker;
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::BSM_Message worker(node->get_node_logging_interface());
     auto res = worker.decode_bsm_message(binary_input);
-    j2735_msgs::BSM to_read;
+    j2735_v2x_msgs::msg::BSM to_read;
     if(res)
     {
         to_read=res.get();
@@ -50,7 +51,7 @@ TEST(BSMTest, testDecodeBSM)
         EXPECT_EQ(to_read.core_data.accel_set.longitudinal, 0);
         EXPECT_EQ(to_read.core_data.accel_set.vert, 0);
         EXPECT_EQ(to_read.core_data.accel_set.yaw_rate, 1); 
-        EXPECT_EQ(to_read.core_data.brakes.wheel_brakes.brake_applied_status, j2735_msgs::BrakeAppliedStatus::RIGHT_REAR); 
+        EXPECT_EQ(to_read.core_data.brakes.wheel_brakes.brake_applied_status, j2735_v2x_msgs::msg::BrakeAppliedStatus::RIGHT_REAR); 
         EXPECT_EQ(to_read.core_data.brakes.traction.traction_control_status, 1); 
         EXPECT_EQ(to_read.core_data.brakes.abs.anti_lock_brake_status, 1); 
         EXPECT_EQ(to_read.core_data.brakes.scs.stability_control_status, 1); 
@@ -64,14 +65,15 @@ TEST(BSMTest, testDecodeBSM)
 
 TEST(BSMTest, testEncodeBSM)
 {
-    cpp_message::BSM_Message worker;
-    j2735_msgs::BSM message;
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::BSM_Message worker(node->get_node_logging_interface());    
+    j2735_v2x_msgs::msg::BSM message;
     message.core_data.msg_count = 1;
     message.core_data.id = {1,2,3,4};
     message.core_data.sec_mark = 1;
     message.core_data.longitude = 1;
     message.core_data.accuracy.orientation = 1;
-    message.core_data.brakes.wheel_brakes.brake_applied_status = j2735_msgs::BrakeAppliedStatus::RIGHT_REAR;
+    message.core_data.brakes.wheel_brakes.brake_applied_status = j2735_v2x_msgs::msg::BrakeAppliedStatus::RIGHT_REAR;
     message.core_data.brakes.traction.traction_control_status = 1;
     message.core_data.brakes.abs.anti_lock_brake_status = 1;
     message.core_data.brakes.scs.stability_control_status = 1;

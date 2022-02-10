@@ -1,11 +1,20 @@
 <?xml version="1.0"?>
-<package format="3">
-	<name>asn1c</name>
-	<version>3.3.0</version>
+<package format = "3">
+  <name>asn1c</name>
+  <version>3.3.0</version>
 	<description>This is asn1c library for DSRC.</description>
-	<maintainer email="carma@xxx.xxx">carma</maintainer>
-	<license>BSD</license>
-	<buildtool_depend>catkin</buildtool_depend>
 
-	<build_depend>carma_cmake_common</build_depend>
+  <maintainer email="carma@dot.gov">carma</maintainer>
+	<license>BSD</license>
+
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_auto</buildtool_depend>
+
+  <build_depend>carma_cmake_common</build_depend>
+
+  <export>
+    <build_type condition="$ROS_VERSION == 1">catkin</build_type>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+  </export>
+  
 </package>
