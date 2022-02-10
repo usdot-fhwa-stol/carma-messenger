@@ -47,6 +47,6 @@ namespace cpp_message
              * @param g_lane Pointer that has decoded GenericLane object to convert into ROS
              * @return Generic Lane j2735 ROS Msg
              */
-            j2735_msgs::GenericLane decode_generic_lane(GenericLane_t* g_lane);
+            j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t* g_lane);
     };
 }

@@ -361,9 +361,9 @@ namespace cpp_message
     }
 
 
-    j2734_v2x_msgs::msg::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane)
+    j2735_v2x_msgs::msg::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane)
     {
-        j2734_v2x_msgs::msg::GenericLane gl;
+        j2735_v2x_msgs::msg::GenericLane gl;
         //Egress Approach
         if(g_lane->egressApproach)
         {
@@ -392,23 +392,23 @@ namespace cpp_message
         gl.lane_attributes.directional_use.lane_direction =  *g_lane->laneAttributes.directionalUse.buf >> lane_direction_bits_to_shift;
 
         // - LaneType
-        gl.lane_attributes.laneType.choice  = (int)g_lane->laneAttributes.laneType.present - 1; // j2735 ROS msg starts from index 0
+        gl.lane_attributes.lane_type.choice  = (int)g_lane->laneAttributes.laneType.present - 1; // j2735 ROS msg starts from index 0
 
-        gl.lane_attributes.laneType.crosswalk.lane_attributes_crosswalk = *g_lane->laneAttributes.laneType.choice.crosswalk.buf >> 
+        gl.lane_attributes.lane_type.crosswalk.lane_attributes_crosswalk = *g_lane->laneAttributes.laneType.choice.crosswalk.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.crosswalk.bits_unused;
-        gl.lane_attributes.laneType.median.lane_attributes_barrier = *g_lane->laneAttributes.laneType.choice.median.buf >> 
+        gl.lane_attributes.lane_type.median.lane_attributes_barrier = *g_lane->laneAttributes.laneType.choice.median.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.median.bits_unused;
-        gl.lane_attributes.laneType.parking.lane_attributes_parking = *g_lane->laneAttributes.laneType.choice.parking.buf >> 
+        gl.lane_attributes.lane_type.parking.lane_attributes_parking = *g_lane->laneAttributes.laneType.choice.parking.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.parking.bits_unused;
-        gl.lane_attributes.laneType.bikeLane.lane_attributes_bike = *g_lane->laneAttributes.laneType.choice.bikeLane.buf >> 
+        gl.lane_attributes.lane_type.bike_lane.lane_attributes_bike = *g_lane->laneAttributes.laneType.choice.bikeLane.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.bikeLane.bits_unused;
-        gl.lane_attributes.laneType.sidewalk.lane_attributes_sidewalk = *g_lane->laneAttributes.laneType.choice.sidewalk.buf >> 
+        gl.lane_attributes.lane_type.sidewalk.lane_attributes_sidewalk = *g_lane->laneAttributes.laneType.choice.sidewalk.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.sidewalk.bits_unused;
-        gl.lane_attributes.laneType.striping.lane_attributes_striping = *g_lane->laneAttributes.laneType.choice.striping.buf >> 
+        gl.lane_attributes.lane_type.striping.lane_attributes_striping = *g_lane->laneAttributes.laneType.choice.striping.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.striping.bits_unused;
-        gl.lane_attributes.laneType.trackedVehicle.lane_attributes_trackedvehicle = *g_lane->laneAttributes.laneType.choice.trackedVehicle.buf >> 
+        gl.lane_attributes.lane_type.tracked_vehicle.lane_attributes_trackedvehicle = *g_lane->laneAttributes.laneType.choice.trackedVehicle.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.trackedVehicle.bits_unused;
-        gl.lane_attributes.laneType.vehicle.lane_attributes_vehicle = *g_lane->laneAttributes.laneType.choice.vehicle.buf >> 
+        gl.lane_attributes.lane_type.vehicle.lane_attributes_vehicle = *g_lane->laneAttributes.laneType.choice.vehicle.buf >> 
                                                                             g_lane->laneAttributes.laneType.choice.vehicle.bits_unused;
 
         if(g_lane->maneuvers)
@@ -429,7 +429,7 @@ namespace cpp_message
             {
                 ct = g_lane->connectsTo->list.array[c];
 
-                j2734_v2x_msgs::msg::Connection entry;
+                j2735_v2x_msgs::msg::Connection entry;
 
                 //Connection ID
                 if(ct->connectionID)
@@ -487,7 +487,7 @@ namespace cpp_message
                     else
                     {
                         entry.remote_intersection.region_exists = false;
-                        entry.remote_intersection.region = j2734_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
+                        entry.remote_intersection.region = j2735_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
                     }
 
                     entry.remote_intersection.id = ct->remoteIntersection->id;
@@ -557,7 +557,7 @@ namespace cpp_message
         if(g_lane->nodeList.choice.computed.rotateXY)
         {
             gl.node_list.computed.rotatexy_exists = true;
-            gl.node_list.computed.rotateXY = *g_lane->nodeList.choice.computed.rotateXY;
+            gl.node_list.computed.rotate_xy = *g_lane->nodeList.choice.computed.rotateXY;
 
         }
         
@@ -581,7 +581,7 @@ namespace cpp_message
         //Nodes
         for(size_t n =0;n< g_lane->nodeList.choice.nodes.list.count; n++)
         {
-            j2734_v2x_msgs::msg::NodeXY node;
+            j2735_v2x_msgs::msg::NodeXY node;
 
             //Attributes
             if(g_lane->nodeList.choice.nodes.list.array[n]->attributes)
@@ -593,7 +593,7 @@ namespace cpp_message
                 if(attributes->data)
                 {
                     node.attributes.data_exists = true;
-                    j2734_v2x_msgs::msg::LaneDataAttribute data;
+                    j2735_v2x_msgs::msg::LaneDataAttribute data;
                     for(size_t d =0; d< attributes->data->list.count; d++)
                     {
                         data.lane_angle = attributes->data->list.array[d]->choice.laneAngle;
@@ -604,7 +604,7 @@ namespace cpp_message
 
                         for(size_t sl = 0; sl < attributes->data->list.array[d]->choice.speedLimits.list.count; sl++)
                         {
-                            j2734_v2x_msgs::msg::RegulatorySpeedLimit speedLimit;
+                            j2735_v2x_msgs::msg::RegulatorySpeedLimit speedLimit;
                             speedLimit.speed = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->speed;
                             speedLimit.type.speed_limit_type = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->type;
                                 data.speed_limits.speed_limits.push_back(speedLimit);
@@ -621,13 +621,13 @@ namespace cpp_message
                 //Attribute DElevation
                 if(attributes->dElevation)
                 {
-                    node.attributes.dElevation_exists = true;
-                    node.attributes.dElevation = *attributes->dElevation;
+                    node.attributes.d_elevation_exists = true;
+                    node.attributes.d_elevation = *attributes->dElevation;
 
                 }
                 else
                 {
-                    node.attributes.dElevation_exists = false;
+                    node.attributes.d_elevation_exists = false;
                 }//end Attribute DElevation
 
                 //Attributes Disabled
@@ -638,7 +638,7 @@ namespace cpp_message
                     for(size_t sa = 0; sa < attributes->disabled->list.count; sa++)
                     {
                         sa_xy = attributes->disabled->list.array[sa];
-                        j2734_v2x_msgs::msg::SegmentAttributeXY sxy;
+                        j2735_v2x_msgs::msg::SegmentAttributeXY sxy;
                         sxy.segment_attribute_xy = *sa_xy;
                         node.attributes.disabled.segment_attribute_xy.push_back(sxy);
                     }
@@ -652,12 +652,12 @@ namespace cpp_message
                 //Attributes DWidth
                 if(attributes->dWidth)
                 {
-                    node.attributes.dWitdh_exists = true;
-                    node.attributes.dWitdh = *attributes->dWidth;
+                    node.attributes.d_width_exists = true;
+                    node.attributes.d_width = *attributes->dWidth;
                 }
                 else
                 {
-                    node.attributes.dWitdh_exists = false;
+                    node.attributes.d_width_exists = false;
                 }//end Attributes DWidth
 
                 //Attributes Enabled
@@ -670,7 +670,7 @@ namespace cpp_message
                     {
                         sa_xy = attributes->enabled->list.array[en];
 
-                        j2734_v2x_msgs::msg::SegmentAttributeXY enabled;
+                        j2735_v2x_msgs::msg::SegmentAttributeXY enabled;
                         enabled.segment_attribute_xy = *sa_xy;
                         node.attributes.enabled.segment_attribute_xy.push_back(enabled);
                     }
@@ -690,10 +690,10 @@ namespace cpp_message
 
                     for(size_t ln = 0; ln < attributes->localNode->list.count; ln++)
                     {
-                        j2734_v2x_msgs::msg::NodeAttributeXY n_att;
+                        j2735_v2x_msgs::msg::NodeAttributeXY n_att;
                         na = attributes->localNode->list.array[ln];
                         n_att.node_attribute_xy = *na;
-                        node.attributes.local_node.node_attribute_xy_List.push_back(n_att);
+                        node.attributes.local_node.node_attribute_xy_list.push_back(n_att);
                         
                     }
                 }
