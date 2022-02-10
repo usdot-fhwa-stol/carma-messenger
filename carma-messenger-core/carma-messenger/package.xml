@@ -23,8 +23,8 @@
 
   <license>Apache 2.0</license>
 
+  <!-- TODO once all of carma-messenger is converted to ROS2 add actual exec dependencies to package.xml -->
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>cpp_message</depend>
 
   <build_depend>carma_cmake_common</build_depend>
 
