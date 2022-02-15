@@ -29,6 +29,20 @@ services:
     restart: always
     command: roscore
 
+  ros1_bridge:
+    image: usdotfhwastoldev/carma-msgs:develop
+    network_mode: host
+    container_name: ros1_bridge
+    volumes_from:
+      - container:carma-config:ro
+    environment:
+      - ROS_IP=192.168.0.100
+      - ROS_MASTER_URI=http://localhost:11311
+    volumes:
+      - /opt/carma/logs:/opt/carma/logs
+      - /opt/carma/.ros:/home/carma/.ros
+    command: bash -c 'wait-for-it.sh localhost:11311 -- rosparam load /opt/carma/vehicle/config/bridge.yml && source ~/.base-image/workspace/install/setup.bash && ros2 run ros1_bridge parameter_bridge'
+
   messenger:
     image: usdotfhwastoldev/carma-messenger-core:develop
     network_mode: host
@@ -42,18 +56,28 @@ services:
       - /opt/carma/.ros:/opt/carma/.ros
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
+  messenger_ros2:
+    image: usdotfhwastoldev/carma-messenger-core:develop
+    network_mode: host
+    container_name: messenger_ros2
+    volumes_from:
+      - container:carma-config:ro
+    runtime: nvidia
+    volumes:
+      - /opt/carma/logs:/opt/carma/logs
+      - /opt/carma/.ros:/home/carma/.ros
+    command: bash -c 'source /opt/carma/install_ros2/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
+
   cohda_dsrc_driver:
     image: usdotfhwastoldev/carma-cohda-dsrc-driver:develop
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/logs:/opt/carma/logs
-      - /opt/carma/.ros:/opt/carma/.ros
-    command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=dsrc_driver'
+      - /opt/carma/.ros:/home/carma/.ros
+    command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
 
   torc-pinpoint-driver:
     image: usdotfhwastoldev/carma-torc-pinpoint-driver:develop

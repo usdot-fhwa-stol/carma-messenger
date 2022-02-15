@@ -23,18 +23,10 @@
 <launch>
 
   <!-- Specific Drivers -->
-  <arg name="drivers" default="dsrc_driver pinpoint_driver"
+  <arg name="drivers" default="pinpoint_driver"
     doc="Desired real drivers to launch specified by package name."/>
 
-  <arg name="dsrc_driver" value="$(eval ('dsrc_driver' in arg('drivers').split()))"/>
   <arg name="pinpoint_driver" value="$(eval ('pinpoint_driver' in arg('drivers').split()))"/>
- 
-  <!-- DSRC OBU Driver Node -->
-  <include if="$(arg dsrc_driver)" file="$(find dsrc_driver)/launch/dsrc_node.launch">
-    <arg name="dsrc_address" default="192.168.88.40" />
-    <arg name="dsrc_listening_port" default="1516" />
-    <arg name="listening_port" default="5398" />
-  </include>
 
   <!--pinpoint node-->
    <include if="$(arg pinpoint_driver)" file="$(find pinpoint)/launch/pinpoint.launch">
