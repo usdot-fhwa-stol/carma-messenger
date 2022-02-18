@@ -37,7 +37,7 @@ TEST(TruckInspectionTest,TestMobilityOperationInBound){
     auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_inbound_pub;
     //publisher 
-    mobility_operation_inbound_pub = worker_node->create_publisher<carma_v2x_msgs::msg::MobilityOperation>("mobility_request_inbound", 5);
+    mobility_operation_inbound_pub = worker_node->create_publisher<carma_v2x_msgs::msg::MobilityOperation>("mobility_operation_inbound", 5);
 
     worker_node->configure(); //Call configure state transition
     worker_node->activate();  //Call activate state transition to get not read for runtime
@@ -105,7 +105,7 @@ TEST(TruckInspectionTest,TestTruckIdentified){
     std::promise<void> sub_called;
     std::shared_future<void> sub_called_future(sub_called.get_future());
     auto callback =
-        [&counter, &sub_called](carma_v2x_msgs::msg::MobilityOperation::ConstSharedPtr msg) -> void
+        [&counter, &sub_called](std_msgs::msg::String::ConstSharedPtr msg) -> void
         {
         ++counter;
         sub_called.set_value();
@@ -114,7 +114,7 @@ TEST(TruckInspectionTest,TestTruckIdentified){
     worker_node->configure(); //Call configure state transition
     worker_node->activate();  //Call activate state transition to get not read for runtime
 
-    auto cav_truck_identified_sub = worker_node->create_subscription<carma_v2x_msgs::msg::MobilityOperation>("cav_truck_identified", 5, callback);
+    auto cav_truck_identified_sub = worker_node->create_subscription<std_msgs::msg::String>("cav_truck_identified", 5, callback);
 
     rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
 
@@ -136,7 +136,7 @@ TEST(TruckInspectionTest,TestTruckSafetyInfo){
     std::promise<void> sub_called;
     std::shared_future<void> sub_called_future(sub_called.get_future());
     auto callback =
-        [&counter, &sub_called](carma_v2x_msgs::msg::MobilityOperation::ConstSharedPtr msg) -> void
+        [&counter, &sub_called](std_msgs::msg::String::ConstSharedPtr msg) -> void
         {
         ++counter;
         sub_called.set_value();
@@ -145,7 +145,7 @@ TEST(TruckInspectionTest,TestTruckSafetyInfo){
     worker_node->configure(); //Call configure state transition
     worker_node->activate();  //Call activate state transition to get not read for runtime
 
-    auto truck_safety_info_sub = worker_node->create_subscription<carma_v2x_msgs::msg::MobilityOperation>("truck_safety_info", 5, callback);
+    auto truck_safety_info_sub = worker_node->create_subscription<std_msgs::msg::String>("truck_safety_info", 5, callback);
     rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
 
     //ASSERTION
