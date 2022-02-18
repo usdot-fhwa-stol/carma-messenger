@@ -16,7 +16,7 @@
 <package format="3">
   <name>truck_inspection_plugin</name>
   <version>1.0.0</version>
-  <description>The truck_inspection_plugin package</description>
+  <description>This node works with CARMA Messenger truck inspection client to send safety inspection request</description>
 
   <maintainer email="carma@dot.gov">carma</maintainer>
 
