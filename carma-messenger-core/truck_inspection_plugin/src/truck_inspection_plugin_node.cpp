@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-#include "truck_inspection_plugin_ros2/truck_inspection_plugin_ros2_node.hpp"
+#include "truck_inspection_plugin/truck_inspection_plugin_node.hpp"
 
-namespace truck_inspection_plugin_ros2
+namespace truck_inspection_plugin
 {
   namespace std_ph = std::placeholders;
 
@@ -132,9 +132,9 @@ namespace truck_inspection_plugin_ros2
       return count == this->number_of_entries;
   }
 
-} // truck_inspection_plugin_ros2
+} // truck_inspection_plugin
 
 #include "rclcpp_components/register_node_macro.hpp"
 
 // Register the component with class_loader
-RCLCPP_COMPONENTS_REGISTER_NODE(truck_inspection_plugin_ros2::Node)
+RCLCPP_COMPONENTS_REGISTER_NODE(truck_inspection_plugin::Node)

@@ -24,7 +24,7 @@ import os
 
 
 '''
-This file is can be used to launch the CARMA truck_inspection_plugin_ros2_node.
+This file is can be used to launch the CARMA truck_inspection_plugin_node.
   Though in carma-platform it may be launched directly from the base launch file.
 '''
 
@@ -37,22 +37,22 @@ def generate_launch_description():
     
     # Get parameter file path
     param_file_path = os.path.join(
-        get_package_share_directory('truck_inspection_plugin_ros2'), 'config/parameters.yaml')
+        get_package_share_directory('truck_inspection_plugin'), 'config/parameters.yaml')
 
         
     # Launch node(s) in a carma container to allow logging to be configured
     container = ComposableNodeContainer(
         package='carma_ros2_utils',
-        name='truck_inspection_plugin_ros2_container',
+        name='truck_inspection_plugin_container',
         namespace=GetCurrentNamespace(),
         executable='carma_component_container_mt',
         composable_node_descriptions=[
             
             # Launch the core node(s)
             ComposableNode(
-                    package='truck_inspection_plugin_ros2',
-                    plugin='truck_inspection_plugin_ros2::Node',
-                    name='truck_inspection_plugin_ros2_node',
+                    package='truck_inspection_plugin',
+                    plugin='truck_inspection_plugin::Node',
+                    name='truck_inspection_plugin_node',
                     extra_arguments=[
                         {'use_intra_process_comms': True},
                         {'--log-level' : log_level }

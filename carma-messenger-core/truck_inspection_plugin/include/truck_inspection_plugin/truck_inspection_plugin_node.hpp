@@ -22,12 +22,12 @@
 #include <std_srvs/srv/empty.hpp>
 
 #include <carma_ros2_utils/carma_lifecycle_node.hpp>
-#include "truck_inspection_plugin_ros2/truck_inspection_plugin_ros2_config.hpp"
+#include "truck_inspection_plugin/truck_inspection_plugin_config.hpp"
 #include "carma_v2x_msgs/msg/mobility_request.hpp"
 #include "carma_v2x_msgs/msg/mobility_operation.hpp"
 #include <std_srvs/srv/trigger.hpp>
 
-namespace truck_inspection_plugin_ros2
+namespace truck_inspection_plugin
 {
 
   class Node : public carma_ros2_utils::CarmaLifecycleNode
@@ -85,4 +85,4 @@ namespace truck_inspection_plugin_ros2
 
   };
 
-} // truck_inspection_plugin_ros2
+} // truck_inspection_plugin

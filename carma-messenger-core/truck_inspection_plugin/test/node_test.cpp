@@ -19,10 +19,8 @@
 #include <thread>
 #include <chrono>
 
-// #include <test_rclcpp/utils.hpp>
-// #include <test_rclcpp/msg/u_int32.hpp>
 
-#include "truck_inspection_plugin_ros2/truck_inspection_plugin_ros2_node.hpp"
+#include "truck_inspection_plugin/truck_inspection_plugin_node.hpp"
 
 namespace std_ph = std::placeholders;
 
@@ -34,7 +32,7 @@ TEST(TruckInspectionTest,TestMobilityOperationInBound){
     options.use_intra_process_comms(true);
     options.arguments(remaps);
 
-    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+    auto worker_node = std::make_shared<truck_inspection_plugin::Node>(options);
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_inbound_pub;
     //publisher 
     mobility_operation_inbound_pub = worker_node->create_publisher<carma_v2x_msgs::msg::MobilityOperation>("mobility_operation_inbound", 5);
@@ -99,7 +97,7 @@ TEST(TruckInspectionTest,TestTruckIdentified){
     options.use_intra_process_comms(true);
     options.arguments(remaps);
 
-    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+    auto worker_node = std::make_shared<truck_inspection_plugin::Node>(options);
 
     int counter = 0;
     std::promise<void> sub_called;
@@ -130,7 +128,7 @@ TEST(TruckInspectionTest,TestTruckSafetyInfo){
     options.use_intra_process_comms(true);
     options.arguments(remaps);
 
-    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+    auto worker_node = std::make_shared<truck_inspection_plugin::Node>(options);
 
     int counter = 0;
     std::promise<void> sub_called;

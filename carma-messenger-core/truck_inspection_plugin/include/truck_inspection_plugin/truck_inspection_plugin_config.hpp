@@ -19,11 +19,11 @@
 #include <iostream>
 #include <vector>
 
-namespace truck_inspection_plugin_ros2
+namespace truck_inspection_plugin
 {
 
   /**
-   * \brief Stuct containing the algorithm configuration values for truck_inspection_plugin_ros2
+   * \brief Stuct containing the algorithm configuration values for truck_inspection_plugin
    */
   struct Config
   {
@@ -34,11 +34,11 @@ namespace truck_inspection_plugin_ros2
     // TODO for USER: Update prints for the added parameters
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
     {
-      output << "truck_inspection_plugin_ros2::Config { " << std::endl
+      output << "truck_inspection_plugin::Config { " << std::endl
            << "num_of_entries: " << c.num_of_entries << std::endl
            << "}" << std::endl;
       return output;
     }
   };
 
-} // truck_inspection_plugin_ros2
+} // truck_inspection_plugin
