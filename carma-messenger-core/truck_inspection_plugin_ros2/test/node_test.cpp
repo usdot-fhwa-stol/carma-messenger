@@ -14,45 +14,141 @@
  * the License.
  */
 
-// #include <gtest/gtest.h>
-// #include <memory>
-// #include <chrono>
-// #include <thread>
-// #include <future>
 
-// #include "truck_inspection_plugin_ros2/truck_inspection_plugin_ros2_node.hpp"
+#include <gtest/gtest.h>
+#include <thread>
+#include <chrono>
+
+#include "truck_inspection_plugin_ros2/truck_inspection_plugin_ros2_node.hpp"
+
+namespace std_ph = std::placeholders;
+
+//TO BE DELETED when upload to GitHub
+TEST(TruckInspectionTest,TestMobilityOperationInBound){
+
+    std::vector<std::string> remaps; // Remaps to keep topics separate from other tests
+    rclcpp::NodeOptions options;
+    options.use_intra_process_comms(true);
+    options.arguments(remaps);
+
+    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+
+    worker_node->configure(); //Call configure state transition
+    worker_node->activate();  //Call activate state transition to get not read for runtime
+
+    //publisher 
+    carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_inbound_pub;
+    mobility_operation_inbound_pub = worker_node->create_publisher<carma_v2x_msgs::msg::MobilityOperation>("mobility_request_inbound", 5);
+
+    // truck info
+    std::string vin_number_ = "1FUJGBDV8CLBP8898";
+    std::string license_plate_ ="DOT-10002";
+    std::string carrier_name_ = "FMCSA Tech Division";
+    std::string carrier_id_ ="DOT 1";
+    std::string ads_software_version_ ="CARMA Platform v3.3.0";
+    std::string date_of_last_state_inspection_ ="2020.01.20";
+    std::string date_of_last_ads_calibration_="2020.02.20";
+    std::string pre_trip_ads_health_check_ ="red";
+    std::string ads_health_status_ ="red";
+    std::string state_short_name_ = "VA";
+    std::string weight_= "15654";
+    std::string iss_score_ = "75";
+    std::string permit_required_= "yes";
+    std::string ads_health_status = "engaged"; //ads_health_status
+    std::string ads_auto_status_ = "1"; //CAUTION
+    
+    carma_v2x_msgs::msg::MobilityOperation msg_out;
+    carma_v2x_msgs::msg::MobilityHeader msg_out_header;
+    msg_out.strategy = "TruckInspection";
+    msg_out.strategy_params = "'vin_number:"+vin_number_
+                              +",carrier_name:"+carrier_name_
+                              +",date_of_last_state_inspection:"+date_of_last_state_inspection_
+                              +",date_of_last_ads_calibration:"+date_of_last_ads_calibration_
+                              +",license_plate:"+license_plate_
+                              +",weight:"+weight_
+                              +",carrier_id:"+carrier_id_
+                              +",permit_required:"+permit_required_
+                              +",iss_score:"+iss_score_
+                              +",pre_trip_ads_health_check:"+pre_trip_ads_health_check_
+                              +",ads_health_status:"+ads_health_status_
+                              +",ads_auto_status:"+ads_auto_status_
+                              +",ads_software_version:"+ads_software_version_
+                              +",state_short_name:"+state_short_name_+"'";
+    msg_out_header.sender_id =  "''";
+    msg_out_header.recipient_id="''";
+    msg_out_header.sender_bsm_id="'5055'";
+    msg_out_header.plan_id= "";
+    msg_out_header.timestamp= 1586291827962;
+    msg_out.m_header = msg_out_header;
+
+    mobility_operation_inbound_pub->publish(msg_out);
+
+    rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
+
+    EXPECT_EQ(1,mobility_operation_inbound_pub->get_subscription_count());
+}
 
 
-// // TODO for USER: Implement a real test using GTest
-// TEST(Testtruck_inspection_plugin_ros2, example_test){
-
-//     rclcpp::NodeOptions options;
-//     auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
-
-//     worker_node->configure(); //Call configure state transition
-//     worker_node->activate();  //Call activate state transition to get not read for runtime
-
-//     std::unique_ptr<std_msgs::msg::String> msg = std::make_unique<std_msgs::msg::String>();
-//     msg->data = "my string";
-
-//     worker_node->example_callback(move(msg)); // Manually drive topic callbacks
-
-// }
-
-// int main(int argc, char ** argv)
-// {
-//     ::testing::InitGoogleTest(&argc, argv);
-
-//     //Initialize ROS
-//     rclcpp::init(argc, argv);
-
-//     bool success = RUN_ALL_TESTS();
-
-//     //shutdown ROS
-//     rclcpp::shutdown();
-
-//     return success;
-// } 
+void callback(carma_v2x_msgs::msg::MobilityOperation::UniquePtr msg){}
 
 
+TEST(TruckInspectionTest,TestTruckIdentified){
+
+    std::vector<std::string> remaps; // Remaps to keep topics separate from other tests
+    rclcpp::NodeOptions options;
+    options.use_intra_process_comms(true);
+    options.arguments(remaps);
+
+    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+
+    // Subscriber
+    carma_ros2_utils::SubPtr<std_msgs::msg::String> cav_truck_identified_sub;
+
+    // cav_truck_identified_sub = worker_node->create_subscription<carma_v2x_msgs::msg::MobilityOperation>("cav_truck_identified", 5, std::bind(&callback, this, std_ph::_1));
+
+    worker_node->configure(); //Call configure state transition
+    worker_node->activate();  //Call activate state transition to get not read for runtime
+    rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
+
+    //ASSERTION
+    EXPECT_EQ(1, cav_truck_identified_sub->get_publisher_count()); 
+
+}
+
+
+TEST(TruckInspectionTest,TestTruckSafetyInfo){
+    std::vector<std::string> remaps; // Remaps to keep topics separate from other tests
+    rclcpp::NodeOptions options;
+    options.use_intra_process_comms(true);
+    options.arguments(remaps);
+
+    auto worker_node = std::make_shared<truck_inspection_plugin_ros2::Node>(options);
+
+    // Subscriber
+    carma_ros2_utils::SubPtr<std_msgs::msg::String> truck_safety_info_sub;
+
+    // truck_safety_info_sub = nh.subscribe("truck_safety_info", 0,&TestSubscriber::callback, &subscriber);
+
+    worker_node->configure(); //Call configure state transition
+    worker_node->activate();  //Call activate state transition to get not read for runtime
+    rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
+
+    //ASSERTION
+    EXPECT_EQ(1, truck_safety_info_sub->get_publisher_count());   
+}
+
+int main(int argc, char ** argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+
+    //Initialize ROS
+    rclcpp::init(argc, argv);
+
+    bool success = RUN_ALL_TESTS();
+
+    //shutdown ROS
+    rclcpp::shutdown();
+
+    return success;
+} 
 
