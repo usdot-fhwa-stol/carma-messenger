@@ -31,7 +31,6 @@ namespace truck_inspection_plugin
 
   rcl_interfaces::msg::SetParametersResult Node::parameter_update_callback(const std::vector<rclcpp::Parameter> &parameters)
   {
-    // TODO for the USER: Ensure all parameters can be updated dynamically by adding them to this method
     auto error = update_params<int>({{"num_of_entries", config_.num_of_entries}}, parameters);
 
     rcl_interfaces::msg::SetParametersResult result;
