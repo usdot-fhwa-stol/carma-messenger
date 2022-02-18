@@ -25,7 +25,7 @@ import os
 
 '''
 This file is can be used to launch the CARMA truck_inspection_plugin_node.
-  Though in carma-platform it may be launched directly from the base launch file.
+  Though in carma-messenger it may be launched directly from the base launch file.
 '''
 
 def generate_launch_description():
