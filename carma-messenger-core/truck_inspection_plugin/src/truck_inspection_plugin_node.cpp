@@ -80,7 +80,7 @@ namespace truck_inspection_plugin
   void Node::content_pub_timer_callback()
   {
         std_msgs::msg::String msg_content;
-        msg_content.data = safety_log_;
+        msg_content.data = this->safety_log_;
         content_pub_->publish(msg_content);
   }
 
