@@ -22,8 +22,6 @@ services:
     container_name: roscore
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/.ros:/opt/carma/.ros
     restart: always
@@ -36,7 +34,6 @@ services:
     volumes_from:
       - container:carma-config:ro
     environment:
-      - ROS_IP=192.168.0.100
       - ROS_MASTER_URI=http://localhost:11311
     volumes:
       - /opt/carma/logs:/opt/carma/logs
@@ -50,8 +47,6 @@ services:
     container_name: carma-messenger-core
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
@@ -86,8 +81,6 @@ services:
     network_mode: host
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
