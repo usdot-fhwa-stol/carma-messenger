@@ -100,11 +100,14 @@ TEST(TruckInspectionTest,TestTruckIdentified){
     auto worker_node = std::make_shared<truck_inspection_plugin::Node>(options);
 
     int counter = 0;
+    std_msgs::msg::String::ConstSharedPtr received_msg;
+
     std::promise<void> sub_called;
     std::shared_future<void> sub_called_future(sub_called.get_future());
     auto callback =
-        [&counter, &sub_called](std_msgs::msg::String::ConstSharedPtr msg) -> void
+        [&counter, &sub_called, &received_msg](std_msgs::msg::String::ConstSharedPtr msg) -> void
         {
+        received_msg = msg;
         ++counter;
         sub_called.set_value();
         };
@@ -115,6 +118,9 @@ TEST(TruckInspectionTest,TestTruckIdentified){
     auto cav_truck_identified_sub = worker_node->create_subscription<std_msgs::msg::String>("cav_truck_identified", 5, callback);
 
     rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
+
+    if(counter > 0)
+        EXPECT_EQ("vin_number:1FUJGHDV0CLBP8896,license_plate:DOT-1003,state_short_name:VA", received_msg->data);
 
     //ASSERTION
     EXPECT_EQ(1, cav_truck_identified_sub->get_publisher_count()); 
@@ -131,12 +137,15 @@ TEST(TruckInspectionTest,TestTruckSafetyInfo){
     auto worker_node = std::make_shared<truck_inspection_plugin::Node>(options);
 
     int counter = 0;
+    std_msgs::msg::String::ConstSharedPtr received_msg;
+
     std::promise<void> sub_called;
     std::shared_future<void> sub_called_future(sub_called.get_future());
     auto callback =
-        [&counter, &sub_called](std_msgs::msg::String::ConstSharedPtr msg) -> void
+        [&counter, &sub_called, &received_msg](std_msgs::msg::String::ConstSharedPtr msg) -> void
         {
         ++counter;
+        received_msg = msg;
         sub_called.set_value();
         };
 
@@ -145,6 +154,10 @@ TEST(TruckInspectionTest,TestTruckSafetyInfo){
 
     auto truck_safety_info_sub = worker_node->create_subscription<std_msgs::msg::String>("truck_safety_info", 5, callback);
     rclcpp::spin_some(worker_node->get_node_base_interface()); // Spin current queue to allow for subscription callback to trigger
+
+    if(counter > 0)
+        EXPECT_EQ("vin_number:1FUJGBDV8CLBP8898,carrier_name:FMCSA Tech Division,date_of_last_state_inspection:2020.01.20,date_of_last_ads_calibration:2020.02.20,license_plate:DOT-10002,weight:15654,carrier_id:DOT 1,permit_required:Yes,iss_score:75,pre_trip_ads_health_check:red,ads_health_status:1,ads_auto_status:engaged,ads_software_version:CARMA Platform v3.3.0,state_short_name:VA,timestamp:1586291827962",received_msg->data);
+
 
     //ASSERTION
     EXPECT_EQ(1, truck_safety_info_sub->get_publisher_count());   

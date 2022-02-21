@@ -52,6 +52,9 @@ namespace truck_inspection_plugin
     int number_of_entries;
     std::string safety_log_;
 
+    // Timers
+    rclcpp::TimerBase::SharedPtr content_pub_timer_;
+
   public:
     /**
      * \brief Node constructor 
@@ -82,6 +85,8 @@ namespace truck_inspection_plugin
     bool isADSAutoEngaged(const std::string& log);
 
     carma_ros2_utils::CallbackReturn handle_on_configure(const rclcpp_lifecycle::State &);
+
+    void content_pub_timer_callback();
 
   };
 
