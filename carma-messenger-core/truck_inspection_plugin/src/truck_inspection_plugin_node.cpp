@@ -63,13 +63,11 @@ namespace truck_inspection_plugin
     // Setup service servers
     inspection_request_service_server_ = create_service<std_srvs::srv::Trigger>("send_inspection_request",std::bind(&Node::inspectionRequestCallback, this, std_ph::_1, std_ph::_2, std_ph::_3));
     
-    if(!this->safety_log_.empty()) {
 
         content_pub_timer_ = create_timer(
         get_clock(),
         std::chrono::milliseconds(50),
         std::bind(&Node::content_pub_timer_callback, this));
-    }
 
     RCLCPP_INFO_STREAM(this->get_logger(), "Truck inspection plugin is initialized...");
 
@@ -79,9 +77,11 @@ namespace truck_inspection_plugin
 
   void Node::content_pub_timer_callback()
   {
-        std_msgs::msg::String msg_content;
-        msg_content.data = this->safety_log_;
-        content_pub_->publish(msg_content);
+          if(!this->safety_log_.empty()) {
+                std_msgs::msg::String msg_content;
+                msg_content.data = this->safety_log_;
+                content_pub_->publish(msg_content);
+          }
   }
 
   // Parameter names not shown to prevent unused compile warning. The user may add them back
