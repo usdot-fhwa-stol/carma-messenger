@@ -81,14 +81,10 @@ def generate_launch_description():
         ]
     )
 
-    drivers_group = GroupAction(
+    plugins_group = GroupAction(
         actions=[
-            PushRosNamespace(EnvironmentVariable('CARMA_INTR_NS', default_value='hardware_interface')),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/drivers.launch.py']),
-                launch_arguments = { 
-                    'vehicle_config_param_file' : vehicle_config_param_file
-                    }.items()
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
             ),
         ]
     )
@@ -107,9 +103,7 @@ def generate_launch_description():
         declare_vehicle_config_dir_arg,
         declare_vehicle_characteristics_param_file_arg,
         declare_vehicle_config_param_file_arg,
-        drivers_group,
-        transform_group,
-        environment_group,
         v2x_group,
+        plugins_group,
         system_controller
     ])
