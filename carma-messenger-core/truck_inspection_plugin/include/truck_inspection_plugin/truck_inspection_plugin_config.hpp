@@ -27,11 +27,10 @@ namespace truck_inspection_plugin
    */
   struct Config
   {
-    //! Example parameter
+    //! num_of_entries
     int num_of_entries = 13;
 
     // Stream operator for this config
-    // TODO for USER: Update prints for the added parameters
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
     {
       output << "truck_inspection_plugin::Config { " << std::endl

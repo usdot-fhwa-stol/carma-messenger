@@ -24,7 +24,6 @@
 
 namespace std_ph = std::placeholders;
 
-//TO BE DELETED when upload to GitHub
 TEST(TruckInspectionTest,TestMobilityOperationInBound){
 
     std::vector<std::string> remaps; // Remaps to keep topics separate from other tests
