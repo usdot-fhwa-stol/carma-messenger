@@ -64,10 +64,10 @@ namespace truck_inspection_plugin
     inspection_request_service_server_ = create_service<std_srvs::srv::Trigger>("send_inspection_request",std::bind(&Node::inspectionRequestCallback, this, std_ph::_1, std_ph::_2, std_ph::_3));
     
 
-        content_pub_timer_ = create_timer(
-        get_clock(),
-        std::chrono::milliseconds(50),
-        std::bind(&Node::content_pub_timer_callback, this));
+    content_pub_timer_ = create_timer(
+    get_clock(),
+    std::chrono::milliseconds(50),
+    std::bind(&Node::content_pub_timer_callback, this));
 
     RCLCPP_INFO_STREAM(this->get_logger(), "Truck inspection plugin is initialized...");
 
