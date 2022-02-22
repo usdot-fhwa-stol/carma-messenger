@@ -27,7 +27,7 @@ from carma_ros2_utils.launch.get_log_level import GetLogLevel
 
 def generate_launch_description():
     """
-    Launch CARMA System.
+    Launch desired CARMA Messenger drivers
     """
 
     env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "WARN" }')

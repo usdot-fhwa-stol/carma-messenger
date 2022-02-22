@@ -39,9 +39,6 @@
   <!-- UI -->
   <include file="$(find carma-messenger)/launch/ui.launch"/>
 
-   <!-- Message Encoder/Decoder Node -->
-  <include file="$(find cpp_message)/launch/cpp_message.launch"/>
-
    <!-- Traffic Incident Node -->
   <include file="$(find traffic_incident)/launch/traffic_incident.launch"/>
 
