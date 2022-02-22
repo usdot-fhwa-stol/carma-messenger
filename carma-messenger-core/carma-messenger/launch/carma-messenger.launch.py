@@ -22,6 +22,8 @@ from launch.substitutions import ThisLaunchFileDir
 from launch.substitutions import EnvironmentVariable
 from launch.actions import GroupAction
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 import os
 
@@ -30,10 +32,17 @@ def generate_launch_description():
     Launch CARMA Messenger System.
     """
 
+    configuration_delay = LaunchConfiguration('configuration_delay')
+    declare_configuration_delay_arg = DeclareLaunchArgument(
+        name ='configuration_delay', default_value='4.0')
+
     v2x_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/message.launch.py']),
+                launch_arguments = { 
+                    'configuration_delay' : [configuration_delay]
+                }.items()
             ),
         ]
     )
@@ -42,11 +51,15 @@ def generate_launch_description():
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
+                launch_arguments = { 
+                    'configuration_delay' : [configuration_delay]
+                }.items()
             ),
         ]
     )
 
     return LaunchDescription([
+        declare_configuration_delay_arg,
         v2x_group,
         plugins_group
     ])

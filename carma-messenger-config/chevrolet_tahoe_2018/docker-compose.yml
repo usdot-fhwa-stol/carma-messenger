@@ -63,7 +63,6 @@ services:
     container_name: messenger_ros2
     volumes_from:
       - container:carma-config:ro
-    runtime: nvidia
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
