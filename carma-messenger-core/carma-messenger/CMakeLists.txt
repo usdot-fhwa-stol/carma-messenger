@@ -17,25 +17,43 @@ cmake_minimum_required(VERSION 3.5)
 project(carma-messenger)
 
 find_package(carma_cmake_common REQUIRED)
-carma_check_ros_version(1)
 carma_package()
 
-find_package(catkin REQUIRED)
+find_package(ros_environment REQUIRED)
 
-###################################
-## catkin specific configuration ##
-###################################
-catkin_package()
+set(ROS_VERSION $ENV{ROS_VERSION})
 
-#############
-## Install ##
-#############
+if(${ROS_VERSION} EQUAL 1) # ROS 1
 
-## Mark other files for installation (e.g. launch and bag files, etc.)
-install(DIRECTORY
-  launch
-  log-config
-  scripts
-  ui
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+  find_package(catkin REQUIRED)
+
+  ###################################
+  ## catkin specific configuration ##
+  ###################################
+  catkin_package()
+
+  #############
+  ## Install ##
+  #############
+
+  ## Mark other files for installation (e.g. launch and bag files, etc.)
+  install(DIRECTORY
+    launch
+    log-config
+    scripts
+    ui
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+else() # ROS 2
+
+  find_package(ament_cmake_auto REQUIRED)
+  ament_auto_find_build_dependencies()
+
+
+  ament_auto_package(
+          INSTALL_TO_SHARE launch log-config scripts ui
+  )
+
+endif()
+

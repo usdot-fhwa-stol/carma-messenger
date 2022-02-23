@@ -19,17 +19,18 @@
   <version>1.0.0</version>
   <description>Meta-package for launching a full carma-messenger instance</description>
 
-  <maintainer email="carma@todo.todo">carma</maintainer>
+  <maintainer email="carma@dot.gov">carma</maintainer>
 
   <license>Apache 2.0</license>
 
   <!-- TODO once all of carma-messenger is converted to ROS2 add actual exec dependencies to package.xml -->
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_auto</buildtool_depend>
 
   <build_depend>carma_cmake_common</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
   </export>
 </package>
