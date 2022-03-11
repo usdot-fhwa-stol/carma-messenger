@@ -24,7 +24,16 @@ typedef enum MobilityPlanType {
 	MobilityPlanType_changingLanesToTheLeft	= 1,
 	MobilityPlanType_changingLanesToTheRight	= 2,
 	MobilityPlanType_joinPlatoonAtRear	= 3,
-	MobilityPlanType_platoonFollowerJoin	= 4
+	MobilityPlanType_platoonFollowerJoin	= 4,
+	MobilityPlanType_joinPlatoonFromFront	= 5,
+	MobilityPlanType_platoonFrontJoin	= 6,
+	MobilityPlanType_cutInFromSide	= 7,
+	MobilityPlanType_platoonCutInJoin	= 8,
+	MobilityPlanType_stopCreateGap	= 9,
+	MobilityPlanType_cutInFrontDone	= 10,
+	MobilityPlanType_cutInMidOrRearDone	= 11,
+	MobilityPlanType_platoonDeparture	= 12,
+	MobilityPlanType_deleteMember	= 13
 	/*
 	 * Enumeration is extensible
 	 */
