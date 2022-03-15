@@ -83,6 +83,17 @@ namespace cpp_message
             // handle TrafficControlMessage
         else if(msg->message_type == "TrafficControlMessage") {
             std::vector<uint8_t> array = msg->content;
+
+            // create string stream
+            std::stringstream ss;
+
+            // print out the string stream
+            for(auto val : array) {
+                ss << val << ", ";
+            }
+            
+            RCLCPP_WARN_STREAM(get_logger(), "TCM Binary Input: " << ss.str());
+
             auto output = decode_geofence_control(array);
             if(output)
             {
