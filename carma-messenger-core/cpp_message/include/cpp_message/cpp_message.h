@@ -20,6 +20,9 @@ extern "C"
 #include "MessageFrame.h"
 }
 
+#include "TrafficControlMessage.h"
+#include "TrafficControlRequest.h"
+
 #include <vector>
 #include <boost/optional.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -148,7 +151,7 @@ namespace cpp_message
             j2735_v2x_msgs::msg::TrafficControlVehClass decode_geofence_control_veh_class(const TrafficControlVehClass_t& message);
             j2735_v2x_msgs::msg::TrafficControlSchedule decode_geofence_control_schedule(const TrafficControlSchedule_t& message);
             j2735_v2x_msgs::msg::TrafficControlDetail decode_geofence_control_detail(const TrafficControlDetail_t& message);
-            j2735_v2x_msgs::msg::DayOfWeek decode_day_of_week(const DSRC_DayOfWeek_t& message);
+            j2735_v2x_msgs::msg::DayOfWeek decode_day_of_week(const CARMA_CLOUD_DayOfWeek_t& message);
             j2735_v2x_msgs::msg::DailySchedule decode_daily_schedule(const DailySchedule_t& message);
             j2735_v2x_msgs::msg::RepeatParams decode_repeat_params(const RepeatParams_t& message);
             j2735_v2x_msgs::msg::PathNode decode_path_node(const PathNode_t& message);
@@ -158,7 +161,7 @@ namespace cpp_message
             Id128b_t*    encode_id128b(const j2735_v2x_msgs::msg::Id128b& msg);
             TrafficControlVehClass_t*    encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg);
             TrafficControlDetail_t*  encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg);
-            DSRC_DayOfWeek_t*    encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg);
+            CARMA_CLOUD_DayOfWeek_t*    encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg);
             DailySchedule_t* encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg);
             RepeatParams_t*  encode_repeat_params(const j2735_v2x_msgs::msg::RepeatParams& msg);
             PathNode_t*  encode_path_node(const j2735_v2x_msgs::msg::PathNode& msg);

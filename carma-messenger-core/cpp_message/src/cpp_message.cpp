@@ -344,7 +344,7 @@ namespace cpp_message
         j2735_v2x_msgs::msg::TrafficControlMessage output;
         // decode results
         asn_dec_rval_t rval;
-        MessageFrame_t* message = 0;
+        TrafficControlMessage_t* message = 0;
         // copy from vector to array
         auto len = binary_array.size();
         uint8_t buf[len] = {0};
@@ -353,18 +353,18 @@ namespace cpp_message
         }
         
         // use asn1c lib to decode
-        rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
+        rval = uper_decode(0, &asn_DEF_TrafficControlMessage, (void **) &message, buf, len, 0, 0);
 
         // if decode succeed
         if(rval.code == RC_OK) {
-            if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_reserved)
+            if (message->present == TrafficControlMessage_PR_reserved)
             {
                 output.choice = j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED;
             }
-            else if (message->value.choice.TestMessage05.body.present == TrafficControlMessage_PR_tcmV01)
+            else if (message->present == TrafficControlMessage_PR_tcmV01)
             {
                 output.choice = j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01;
-                output.tcm_v01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
+                output.tcm_v01 = decode_geofence_control_v01(message->choice.tcmV01);
             }
             return output;
         }
@@ -563,7 +563,7 @@ namespace cpp_message
         return output;
     }
 
-    j2735_v2x_msgs::msg::DayOfWeek Node::decode_day_of_week(const DSRC_DayOfWeek_t& message)
+    j2735_v2x_msgs::msg::DayOfWeek Node::decode_day_of_week(const CARMA_CLOUD_DayOfWeek_t& message)
     {
         j2735_v2x_msgs::msg::DayOfWeek output;
         
@@ -796,7 +796,7 @@ namespace cpp_message
         j2735_v2x_msgs::msg::TrafficControlRequest output;
         // decode results
         asn_dec_rval_t rval;
-        MessageFrame_t* message = 0;
+        TrafficControlRequest_t* message = 0;
         // copy from vector to array
         auto len = binary_array.size();
         uint8_t buf[len];
@@ -805,54 +805,54 @@ namespace cpp_message
         }
         
         // use asn1c lib to decode
-        rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
+        rval = uper_decode(0, &asn_DEF_TrafficControlRequest, (void **) &message, buf, len, 0, 0);
 
         // if decode successed
         if(rval.code == RC_OK) {
-            if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_reserved){
+            if (message->present == TrafficControlRequest_PR_reserved){
                 
                 output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED;
             }
-            else if (message->value.choice.TestMessage04.body.present == TrafficControlRequest_PR_tcrV01){
+            else if (message->present == TrafficControlRequest_PR_tcrV01){
 
                 output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01;
                 j2735_v2x_msgs::msg::TrafficControlRequestV01 tcrV01;
 
                 // decode id
                 uint8_t id[8];
-                auto id_len = message->value.choice.TestMessage04.body.choice.tcrV01.reqid.size;
+                auto id_len = message->choice.tcrV01.reqid.size;
                 for(auto i = 0; i < id_len; i++)
                 {
-                    tcrV01.reqid.id[i] = message->value.choice.TestMessage04.body.choice.tcrV01.reqid.buf[i];
+                    tcrV01.reqid.id[i] = message->tcrV01.reqid.buf[i];
                 }
 
-                tcrV01.reqseq = message->value.choice.TestMessage04.body.choice.tcrV01.reqseq;
+                tcrV01.reqseq = message->choice.tcrV01.reqseq;
 
-                tcrV01.scale = message->value.choice.TestMessage04.body.choice.tcrV01.scale;
+                tcrV01.scale = message->choice.tcrV01.scale;
 
                 // copy bounds
-                auto bounds_count = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.count;
+                auto bounds_count = message->choice.tcrV01.bounds.list.count;
                 for(auto i = 0; i < bounds_count; i++) {
                 j2735_v2x_msgs::msg::TrafficControlBounds bound;
                 
                 // recover a long value from 8-bit array
                 uint64_t long_bits = 0;
-                auto bits_array_size = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.size;
+                auto bits_array_size = message->choice.tcrV01.bounds.list.array[i]->oldest.size;
                 for(auto j = 0; j < bits_array_size; j++) {
                     long_bits = long_bits << 8;
-                    long_bits |= message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->oldest.buf[j];
+                    long_bits |= message->choice.tcrV01.bounds.list.array[i]->oldest.buf[j];
                 }
                 
                 bound.oldest = long_bits;
                 // copy lat/lon
-                bound.reflon = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->reflon;
-                bound.reflat = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->reflat;
+                bound.reflon = message->choice.tcrV01.bounds.list.array[i]->reflon;
+                bound.reflat = message->choice.tcrV01.bounds.list.array[i]->reflat;
                 // copy offset array to boost vector
-                auto count = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.count;
+                auto count = message->choice.tcrV01.bounds.list.array[i]->offsets.list.count;
                 for(auto j = 0; j < count; j++) {
                     j2735_v2x_msgs::msg::OffsetPoint offset;
-                    offset.deltax = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltax;
-                    offset.deltay = message->value.choice.TestMessage04.body.choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltay;
+                    offset.deltax = message->choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltax;
+                    offset.deltay = message->choice.tcrV01.bounds.list.array[i]->offsets.list.array[j]->deltay;
                     bound.offsets[j] = offset;
                 }
                 
@@ -877,25 +877,22 @@ namespace cpp_message
         void * buffer_new;
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
-	    MessageFrame_t* message;
-	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+	    TrafficControlMessage_t* message;
+	    message = (TrafficControlMessage_t*)calloc(1, sizeof(TrafficControlMessage_t));
         // if mem allocation fails
 	    if (!message)
         {
             return boost::optional<std::vector<uint8_t>>{};
 	    }
 
-	    //set message type to TestMessage05
-	    message->messageId = 245;
-        message->value.present = MessageFrame__value_PR_TestMessage05;        
         //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
         {
-            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_reserved;
+            message->present = TrafficControlMessage_PR_reserved;
         }
         else if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01)
         {
-            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
+            message->present = TrafficControlMessage_PR_tcmV01;
             // ======================== TCMV01 START =============================
             TrafficControlMessageV01_t* output_v01;
             output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
@@ -1174,19 +1171,19 @@ namespace cpp_message
                 output_v01->geometry = output_geometry;
             }
             //============================TCMV01 END=====================
-            message->value.choice.TestMessage05.body.choice.tcmV01 = *output_v01;
+            message->choice.tcmV01 = *output_v01;
         }
         else
         {
-            message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_NOTHING;
+            message->present = TrafficControlMessage_PR_NOTHING;
         }
 
         // ===================== CONTROL MESSAGE end =====================
         // encode message
         void *buffer_void = NULL;
         asn_per_constraints_s *constraints = NULL;
-        ssize_t ec_new = uper_encode_to_new_buffer(&asn_DEF_MessageFrame, constraints, message, &buffer_void);
-	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
+        ssize_t ec_new = uper_encode_to_new_buffer(&asn_DEF_TrafficControlMessage, constraints, message, &buffer_void);
+	    ec = uper_encode_to_buffer(&asn_DEF_TrafficControlMessage, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
             return boost::optional<std::vector<uint8_t>>{};
@@ -1398,10 +1395,10 @@ namespace cpp_message
         return output;
     }
     
-    DSRC_DayOfWeek_t* Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg)
+    CARMA_CLOUD_DayOfWeek_t* Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg)
     {
-        DSRC_DayOfWeek_t* output;
-        output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
+        CARMA_CLOUD_DayOfWeek_t* output;
+        output = (CARMA_CLOUD_DayOfWeek_t*) calloc(1, sizeof(CARMA_CLOUD_DayOfWeek_t));
         
         uint8_t* dow_val;
         dow_val = (uint8_t*)calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
@@ -1469,24 +1466,21 @@ namespace cpp_message
         uint8_t buffer[512];
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
-	    MessageFrame_t* message;
-	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+	    TrafficControlRequest_t* message;
+	    message = (TrafficControlRequest_t*)calloc(1, sizeof(TrafficControlRequest_t));
         // if mem allocation fails
 	    if (!message)
         {
 		    RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for TrafficControlRequest message encoding");
             return boost::optional<std::vector<uint8_t>>{};
 	    }
-        //set message type to TestMessage04
-	    message->messageId = 244;
-        message->value.present = MessageFrame__value_PR_TestMessage04;
 
         // Check and copy TrafficControlRequest choice
         if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED){
-            message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_reserved;
+            message->present = TrafficControlRequest_PR_reserved;
         }
         else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01) {
-            message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_tcrV01;
+            message->present = TrafficControlRequest_PR_tcrV01;
         
             // create 
             TrafficControlRequestV01_t* tcr;
@@ -1545,11 +1539,11 @@ namespace cpp_message
 
         tcr->bounds = *bounds_list;
 
-        message->value.choice.TestMessage04.body.choice.tcrV01 = *tcr;
+        message->choice.tcrV01 = *tcr;
         }
 
         // encode message
-	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
+	    ec = uper_encode_to_buffer(&asn_DEF_TrafficControlRequest, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
             return boost::optional<std::vector<uint8_t>>{};
