@@ -823,7 +823,7 @@ namespace cpp_message
                 auto id_len = message->choice.tcrV01.reqid.size;
                 for(auto i = 0; i < id_len; i++)
                 {
-                    tcrV01.reqid.id[i] = message->tcrV01.reqid.buf[i];
+                    tcrV01.reqid.id[i] = message->choice.tcrV01.reqid.buf[i];
                 }
 
                 tcrV01.reqseq = message->choice.tcrV01.reqseq;
