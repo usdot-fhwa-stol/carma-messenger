@@ -33,7 +33,7 @@ TEST(MobilityRequestMessageTest, testDecodeMobilityRequestMsg)
         // std::cout<<"H_plan id:"<<to_read.header.plan_id<<std::endl;
         // std::cout<<"H_timestamp:"<<to_read.header.timestamp<<std::endl;
         // std::cout<<"strategy:"<<to_read.strategy<<std::endl;
-        // std::cout<<"plan type:"<<to_read.plan_type;;
+        std::cout<<"plan type:"<<to_read.plan_type;;
         // std::cout<<"urgency:"<<to_read.urgency<<std::endl;        
         // std::cout<<"location_x:"<<to_read.location.ecef_x<<std::endl;
         // std::cout<<"location_y:"<<to_read.location.ecef_y<<std::endl;
@@ -72,7 +72,7 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
 
     //body
     message.strategy="Carma/Platooning";
-    message.plan_type.type=4;
+    message.plan_type.type=10;
     message.urgency=50;
     
         //location
@@ -116,9 +116,9 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
     
     if(res)
     {
-        // std::vector<uint8_t> to_read=res.get();
-        // for(size_t i=0;i<to_read.size();i++)std::cout<<int(to_read[i])<<",";
-        // std::cout<<"\n";
+        std::vector<uint8_t> to_read=res.get();
+        for(size_t i=0;i<to_read.size();i++)std::cout<<int(to_read[i])<<",";
+        std::cout<<"\n";
         EXPECT_TRUE(true);
     }
     else
