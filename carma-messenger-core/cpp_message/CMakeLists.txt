@@ -99,7 +99,7 @@ target_link_libraries(${node_exec}
 
  endif()
 
-# # Install
-# ament_auto_package(
-#         INSTALL_TO_SHARE launch
-# )
+# Install
+ament_auto_package(
+        INSTALL_TO_SHARE launch
+)
