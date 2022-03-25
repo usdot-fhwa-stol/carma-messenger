@@ -793,13 +793,15 @@ namespace cpp_message
 
     boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest> Node::decode_geofence_request(std::vector<uint8_t>& binary_array)
     {
+        std::cerr<<"request decode"<<std::endl;
         j2735_v2x_msgs::msg::TrafficControlRequest output;
         // decode results
         asn_dec_rval_t rval;
         TrafficControlRequest_t* message = 0;
         // copy from vector to array
         auto len = binary_array.size();
-        uint8_t buf[len];
+        std::cerr <<"len " << len <<std::endl;
+        uint8_t buf[len] = {0};
         for(auto i = 0; i < len; i++) {
             buf[i] = binary_array[i];
         }
@@ -809,14 +811,18 @@ namespace cpp_message
 
         // if decode successed
         if(rval.code == RC_OK) {
-            if (message->present == TrafficControlRequest_PR_reserved){
-                
+            std::cerr<<"message->present: "<<message->present<<std::endl;
+            
+            if (message->present == TrafficControlRequest_PR_reserved)
+            {    
                 output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED;
+                std::cerr<<"reserved"<<std::endl;
             }
-            else if (message->present == TrafficControlRequest_PR_tcrV01){
-
+            else if (message->present == TrafficControlRequest_PR_tcrV01)
+            {
                 output.choice = j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01;
                 j2735_v2x_msgs::msg::TrafficControlRequestV01 tcrV01;
+                std::cerr<<"tcr1"<<std::endl;
 
                 // decode id
                 uint8_t id[8];
@@ -884,15 +890,17 @@ namespace cpp_message
         {
             return boost::optional<std::vector<uint8_t>>{};
 	    }
-
+        std::cerr << "control_msg.choice" << control_msg.choice << std::endl;
         //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
         {
             message->present = TrafficControlMessage_PR_reserved;
+            std::cerr << "encoder" << message->present << std::endl;
         }
         else if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01)
         {
             message->present = TrafficControlMessage_PR_tcmV01;
+            std::cerr << "encoder" << message->present << std::endl;
             // ======================== TCMV01 START =============================
             TrafficControlMessageV01_t* output_v01;
             output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
@@ -1189,7 +1197,7 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg
-        auto array_length = ec.encoded / 8;
+        auto array_length = (ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         //for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
@@ -1474,14 +1482,23 @@ namespace cpp_message
 		    RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for TrafficControlRequest message encoding");
             return boost::optional<std::vector<uint8_t>>{};
 	    }
+        std::cerr<<"request_msg.choice " << request_msg.choice <<std::endl;
 
         // Check and copy TrafficControlRequest choice
-        if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED){
-            message->present = TrafficControlRequest_PR_reserved;
+        if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED)
+        {
+            std::cerr<<"message->present "<< message->present <<std::endl;   
+            message->present = TrafficControlRequest_PR::TrafficControlRequest_PR_reserved;
+            // create 
+            NULL_t* reserved;
+            reserved = (NULL_t*)calloc(1, sizeof(NULL_t));
+            message->choice.reserved = *reserved;
         }
-        else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01) {
-            message->present = TrafficControlRequest_PR_tcrV01;
-        
+        else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01)
+        {
+            
+            message->present = TrafficControlRequest_PR::TrafficControlRequest_PR_tcrV01;
+            std::cerr<<"message->present "<< message->present <<std::endl;
             // create 
             TrafficControlRequestV01_t* tcr;
             tcr = (TrafficControlRequestV01_t*)calloc(1, sizeof(TrafficControlRequestV01_t));
@@ -1509,7 +1526,8 @@ namespace cpp_message
             TrafficControlRequestV01::TrafficControlRequestV01__bounds* bounds_list;
             bounds_list = (TrafficControlRequestV01::TrafficControlRequestV01__bounds*)calloc(1, sizeof(TrafficControlRequestV01::TrafficControlRequestV01__bounds));
             
-            for(auto i = 0; i < count; i++) {
+            for(auto i = 0; i < count; i++) 
+            {
                 // construct control bounds
                 TrafficControlBounds_t* bounds_p;
                 bounds_p = (TrafficControlBounds_t*) calloc(1, sizeof(TrafficControlBounds_t));
@@ -1519,7 +1537,8 @@ namespace cpp_message
                 TrafficControlBounds::TrafficControlBounds__offsets* offsets;
                 offsets = (TrafficControlBounds::TrafficControlBounds__offsets*)calloc(1, sizeof(TrafficControlBounds::TrafficControlBounds__offsets));
                 auto offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
-                for(auto j = 0; j < offset_count; j++) {
+                for(auto j = 0; j < offset_count; j++)
+                {
                     OffsetPoint_t* offset_p;
                     offset_p = (OffsetPoint_t*) calloc(1, sizeof(OffsetPoint_t));
                     offset_p->deltax = request_msg.tcr_v01.bounds[i].offsets[j].deltax;
@@ -1529,27 +1548,30 @@ namespace cpp_message
                 bounds_p->offsets = *offsets;
                 //convert a long value to an 8-bit array of length 8
                 uint8_t oldest_val[8];
-                for(int k = 7; k >= 0; k--) {
+                for(int k = 7; k >= 0; k--) 
+                {
                     oldest_val[7-k] = request_msg.tcr_v01.bounds[i].oldest >> (k * 8);
                 }
                 bounds_p->oldest.size = 8;
                 bounds_p->oldest.buf = oldest_val;
                 asn_sequence_add(&bounds_list->list, bounds_p);
-        }
+            }
 
-        tcr->bounds = *bounds_list;
+            tcr->bounds = *bounds_list;
 
-        message->choice.tcrV01 = *tcr;
+            message->choice.tcrV01 = *tcr;
         }
+        else message->present = TrafficControlRequest_PR::TrafficControlRequest_PR_NOTHING;
 
         // encode message
+        
 	    ec = uper_encode_to_buffer(&asn_DEF_TrafficControlRequest, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg
-        auto array_length = ec.encoded / 8;
+        auto array_length = (ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         // for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";//For unit test purposes
