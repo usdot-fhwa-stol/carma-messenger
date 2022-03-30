@@ -135,7 +135,20 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlGeometry& in_msg, carma_v2
 {
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
-  out_msg.reftime = rclcpp::Time(in_msg.reftime * units::SEC_PER_MIN, 0);
+
+  int32_t sec = 0;
+  // Use conditional to avoid issues from casting in std::min
+  if ((double)in_msg.reftime* units::SEC_PER_MIN >  (double)std::numeric_limits<int32_t>::max()) 
+  {
+    sec = std::numeric_limits<int32_t>::max();
+  } 
+  else 
+  {
+    sec = in_msg.reftime* units::SEC_PER_MIN;
+    
+  }
+
+  out_msg.reftime = rclcpp::Time(sec, 0);
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.refelv = (float)in_msg.refelv / units::DECA_M_PER_M - (float) 409.6; //handle offset
@@ -251,10 +264,12 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
     if ((double)in_msg.end* units::SEC_PER_MIN >  (double)std::numeric_limits<int32_t>::max()) 
     {
       sec = std::numeric_limits<int32_t>::max();
+      
     } 
     else 
     {
       sec = in_msg.end* units::SEC_PER_MIN;
+      
     }
     
     out_msg.end = rclcpp::Time(sec, 0);
