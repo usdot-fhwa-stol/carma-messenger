@@ -246,7 +246,14 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
   {
-    out_msg.end = rclcpp::Time(in_msg.end * units::SEC_PER_MIN, 0);
+    
+    
+    auto x =  std::numeric_limits<decltype(in_msg.end)>::max();
+    // Obtained from carma_v2x_msgs/msg/TrafficControlSchedule.msg
+    double endtime_max =  153722867280912;
+    auto end_time = std::min(in_msg.end* units::SEC_PER_MIN, endtime_max);
+    out_msg.end = rclcpp::Time(end_time, 0);
+    
   }
 
   out_msg.dow_exists = in_msg.dow_exists;
