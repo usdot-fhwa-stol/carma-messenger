@@ -246,11 +246,18 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
   {
+    int32_t sec = 0;
+    // Use conditional to avoid issues from casting in std::min
+    if ((double)in_msg.end* units::SEC_PER_MIN >  (double)std::numeric_limits<int32_t>::max()) 
+    {
+      sec = std::numeric_limits<int32_t>::max();
+    } 
+    else 
+    {
+      sec = in_msg.end* units::SEC_PER_MIN;
+    }
     
-    // Obtained from carma_v2x_msgs/msg/TrafficControlSchedule.msg
-    double endtime_max =  153722867280912;
-    auto end_time = std::min(in_msg.end* units::SEC_PER_MIN, endtime_max);
-    out_msg.end = rclcpp::Time(end_time, 0);
+    out_msg.end = rclcpp::Time(sec, 0);
     
   }
 
