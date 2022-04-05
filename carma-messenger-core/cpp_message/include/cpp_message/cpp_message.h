@@ -41,6 +41,7 @@ extern "C"
 #include "j2735_v2x_msgs/msg/spat.hpp"
 #include "j2735_v2x_msgs/msg/traffic_control_request.hpp"
 #include "j2735_v2x_msgs/msg/traffic_control_message.hpp"
+#include "carma_v2x_msgs/msg/psm.hpp"
 
 
 namespace cpp_message
