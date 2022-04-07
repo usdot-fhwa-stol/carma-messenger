@@ -237,16 +237,174 @@ namespace cpp_message
 
             //presence_vector
             //A BIT STRING defining the presence of optional fields.
-            AccelerationSet4Way_t binary_accel_set = *message->value.choice.PersonalSafetyMessage.accelSet;
-            output.accel_set = decode_accel_set_message(binary_accel_set);
+            if(message->value.choice.PersonalSafetyMessage.accelSet){
+                output.presence_vetor |= (1 << 1);
+                AccelerationSet4Way_t binary_accel_set = *message->value.choice.PersonalSafetyMessage.accelSet;
+                output.accel_set = decode_accel_set_message(binary_accel_set);
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.pathHistory){
+                output.presence_vetor |= (1 << 2);
+                PathHistory_t binary_path_history = *message->value.choice.PersonalSafetyMessage.pathHistory;
+                output.path_history = decode_path_history_message(binary_path_history);
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.pathPrediction){
+                output.presence_vetor |= (1 << 3);
+                PathPrediction_t binary_path_prediction = *message->value.choice.PersonalSafetyMessage.pathPrediction;
+                output.path_prediction = decode_path_prediction_message(binary_path_prediction);
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.propulsion){
+                output.presence_vetor |= (1 << 4);
+                PropelledInformation_t binary_propelled_information = *message->value.choice.PersonalSafetyMessage.propulsion;
+                output.propulsion = decode_propulsion_message(binary_propelled_information);
+            }
 
-            PathHistory_t binary_path_history = *message->value.choice.PersonalSafetyMessage.pathHistory;
-            output.path_history = decode_path_history_message(binary_path_history);
+            if(message->value.choice.PersonalSafetyMessage.useState){
+                output.presence_vetor |= (1 << 5);
+                PersonalDeviceUsageState_t binary_usage_state = *message->value.choice.PersonalSafetyMessage.useState;
+                output.use_state = decode_use_state(binary_usage_state);
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.crossRequest){
+                output.presence_vector |= (1 << 6);
+                output.cross_request.cross_request = *message->value.choice.PersonalSafetyMessage.crossRequest;
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.crossState){
+                output.presence_vector |= (1 << 7);
+                output.cross_state.cross_state = *message->value.choice.PersonalSafetyMessage.crossState;
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.clusterSize){
+                output.presence_vector |= (1 << 8);
+                output.cluster_size.cluster_size = *message->value.choice.PersonalSafetyMessage.clusterSize;
+            }
+
+            if(*message->value.choice.PersonalSafetyMessage.clusterRadius){
+                output.presence_vector |= (1 << 9);
+                int cluster_radius = *message->value.choice.PersonalSafetyMessage.clusterRadius;
+                if(cluster_radius > j2735_v2x_msgs::msg::PersonalClusterRadius::CLUSTER_RADIUS_MAX){
+
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Cluster Radius is greater than max, set to max");
+                    cluster_radius = j2735_v2x_msgs::msg::PersonalClusterRadius::CLUSTER_RADIUS_MAX;
+                }
+                output.cluster_radius.cluster_radius = cluster_radius;
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.eventResponderType){
+                output.presence_vector |= (1 << 10);
+                output.event_responder_type.type = *message->value.choice.PersonalSafetyMessage.eventResponderType;
+            }
+            
+            // PublicSafetyandRoadWorkerActivity 
+            if(!message->value.choice.PersonalSafetyMessage.activityType){
+                output.activity_type.activities = j2735_v2x_msgs::msg::PublicSafetyAndRoadWorkerActivity::UNAVAILABLE;
+            }
+            else{
+                output.presence_vector |= (1 << 11);
+                output.activity_type.activities |= message->value.choice.PersonalSafetyMessage.activityType->buf[0];
+
+                for(int i = 1; i< message->value.choice.PersonalSafetyMessage.activityType->size;i++){
+                    output.activity_type.activities |= (message->value.choice.PersonalSafetyMessage.activityType->buf[i] << i);
+                }
+                
+            }
+
+            if(!message->value.choice.PersonalSafetyMessage.activitySubType){
+                output.activity_sub_type.sub_types = j2735_v2x_msgs::msg::PublicSafetyDirectingTrafficSubType::UNAVAILABLE;
+            }
+            else{
+                output.presence_vector |= (1 << 12);
+                output.activity_sub_type.sub_types |= message->value.choice.PersonalSafetyMessage.activitySubType->buf[0];
+                for(int i = 1; i< message->value.choice.PersonalSafetyMessage.activitySubType->size;i++){
+                    output.activity_sub_type.sub_types |= (message->value.choice.PersonalSafetyMessage.activitySubType->buf[i] << i);
+                }
+            }
+
+            if(!message->value.choice.PersonalSafetyMessage.assistType){
+                output.assist_type.types = j2735_v2x_msgs::msg::PersonalAssistive::UNAVAILABLE;
+            }
+            else{
+                output.presence_vector |= (1 << 13);
+                output.assist_type.types |= message->value.choice.PersonalSafetyMessage.assistType->buf[0];
+                for(int i = 1; i < message->value.choice.PersonalSafetyMessage.assistType->size;i++){
+                    output.assist_type.types |= (message->value.choice.PersonalSafetyMessage.assistType->buf[i] << i);
+                }
+            }
+
+            if(!message->value.choice.PersonalSafetyMessage.sizing){
+                output.sizing.sizes_and_behaviors = j2735_v2x_msgs::msg::UserSizeAndBehaviour::UNAVAILABLE;
+            }
+            else{
+                output.presence_vector |= (1 << 14);
+                output.sizing.sizes_and_behaviors |= message->value.choice.PersonalSafetyMessage.sizing->buf[0];
+                for(int i = 1; i < message->value.choice.PersonalSafetyMessage.sizing->size;i++){
+                    output.sizing.sizes_and_behaviors |= (message->value.choice.PersonalSafetyMessage.sizing->buf[i] << i);
+                }
+            }
+
+            if(message->value.choice.PersonalSafetyMessage.attachment){
+                output.presence_vector |= (1 << 15);
+                output.attachment.type = *message->value.choice.PersonalSafetyMessage.attachment;
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.attachmentRadius){
+                output.presence_vector |= (1 << 16);
+                output.attachment_radius.attachment_radius = *message->value.choice.PersonalSafetyMessage.attachmentRadius;
+            }
+            
+            if(message->value.choice.PersonalSafetyMessage.animalType){
+                output.presence_vector |= (1 << 17);
+                output.animal_type.type = *message->value.choice.PersonalSafetyMessage.animalType;
+            }
+            
 
             return boost::optional<carma_v2x_msgs::msg::PSM>(output);
         }
 
         return boost::optional<carma_v2x_msgs::msg::PSM>{};
+    }
+
+    j2735_v2x_msgs::msg::PersonalDeviceUsageState PSM_Message::decode_use_state(PersonalDeviceUsageState_t& message){
+        j2735_v2x_msgs::msg::PersonalDeviceUsageState output;
+        
+        for(int i = message.size -1;i >= 0; i--){
+            output.states |= (message.buf[i] << i);
+        }
+
+        return output;
+    }
+
+    j2735_v2x_msgs::msg::PropelledInformation PSM_Message::decode_propulsion_message(PropelledInformation_t& message){
+        
+        j2735_v2x_msgs::msg::PropelledInformation output;
+
+        // output.choice = message.choice;
+        if(message.choice.human && !message.choice.human==0){
+            output.choice = j2735_v2x_msgs::msg::PropelledInformation::CHOICE_HUMAN;
+            output.human.type = message.choice.human;
+        }
+        else if(message.choice.animal && !message.choice.animal==0){
+            output.choice = j2735_v2x_msgs::msg::PropelledInformation::CHOICE_ANIMAL;
+            output.animal.type  = message.choice.animal;
+        }
+        else if(message.choice.motor && !message.choice.motor ==0){
+            output.choice = j2735_v2x_msgs::msg::PropelledInformation::CHOICE_MOTOR;
+            output.motor.type = message.choice.motor;
+        }
+
+        return output;
+    }
+
+    carma_v2x_msgs::msg::PathPrediction PSM_Message::decode_path_prediction_message(PathPrediction_t& message){
+        carma_v2x_msgs::msg::PathPrediction output;
+
+        output.radius_of_curvature = message.radiusOfCurve * 0.01;
+        output.confidence = message.confidence * 0.5;
+
+        return output;
     }
 
     carma_v2x_msgs::msg::PathHistory PSM_Message::decode_path_history_message(PathHistory_t& message){
@@ -613,12 +771,14 @@ namespace cpp_message
             output.presence_vector |= 1 << (carma_v2x_msgs::msg::PathHistory::HAS_CURR_GNSS_STATUS -1);
 
             uint8_t gnss_status=0;
-            for(int i = message.currGNSSstatus->size -1 ;i= 0 ;i--){
+            for(int i = message.currGNSSstatus->size -1 ;i >= 0 ;i--){
                 gnss_status |= (message.currGNSSstatus->buf[i] << i);
                 
             }
              
         }
+
+        return output;
     }
 
     carma_v2x_msgs::msg::AccelerationSet4Way PSM_Message::decode_accel_set_message(AccelerationSet4Way_t& message){
