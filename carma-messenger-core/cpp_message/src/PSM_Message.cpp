@@ -238,52 +238,52 @@ namespace cpp_message
             //presence_vector
             //A BIT STRING defining the presence of optional fields.
             if(message->value.choice.PersonalSafetyMessage.accelSet){
-                output.presence_vetor |= (1 << 1);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ACCEL_SET;
                 AccelerationSet4Way_t binary_accel_set = *message->value.choice.PersonalSafetyMessage.accelSet;
                 output.accel_set = decode_accel_set_message(binary_accel_set);
             }
             
             if(message->value.choice.PersonalSafetyMessage.pathHistory){
-                output.presence_vetor |= (1 << 2);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_PATH_HISTORY;
                 PathHistory_t binary_path_history = *message->value.choice.PersonalSafetyMessage.pathHistory;
                 output.path_history = decode_path_history_message(binary_path_history);
             }
             
             if(message->value.choice.PersonalSafetyMessage.pathPrediction){
-                output.presence_vetor |= (1 << 3);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_PATH_PREDICTION;
                 PathPrediction_t binary_path_prediction = *message->value.choice.PersonalSafetyMessage.pathPrediction;
                 output.path_prediction = decode_path_prediction_message(binary_path_prediction);
             }
             
             if(message->value.choice.PersonalSafetyMessage.propulsion){
-                output.presence_vetor |= (1 << 4);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_PROPULSION;
                 PropelledInformation_t binary_propelled_information = *message->value.choice.PersonalSafetyMessage.propulsion;
                 output.propulsion = decode_propulsion_message(binary_propelled_information);
             }
 
             if(message->value.choice.PersonalSafetyMessage.useState){
-                output.presence_vetor |= (1 << 5);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_USE_STATE;
                 PersonalDeviceUsageState_t binary_usage_state = *message->value.choice.PersonalSafetyMessage.useState;
                 output.use_state = decode_use_state(binary_usage_state);
             }
             
             if(message->value.choice.PersonalSafetyMessage.crossRequest){
-                output.presence_vector |= (1 << 6);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_CROSS_REQUEST;
                 output.cross_request.cross_request = *message->value.choice.PersonalSafetyMessage.crossRequest;
             }
             
             if(message->value.choice.PersonalSafetyMessage.crossState){
-                output.presence_vector |= (1 << 7);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_CROSS_STATE;
                 output.cross_state.cross_state = *message->value.choice.PersonalSafetyMessage.crossState;
             }
             
             if(message->value.choice.PersonalSafetyMessage.clusterSize){
-                output.presence_vector |= (1 << 8);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_CLUSTER_SIZE;
                 output.cluster_size.cluster_size = *message->value.choice.PersonalSafetyMessage.clusterSize;
             }
 
             if(*message->value.choice.PersonalSafetyMessage.clusterRadius){
-                output.presence_vector |= (1 << 9);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_CLUSTER_RADIUS;
                 int cluster_radius = *message->value.choice.PersonalSafetyMessage.clusterRadius;
                 if(cluster_radius > j2735_v2x_msgs::msg::PersonalClusterRadius::CLUSTER_RADIUS_MAX){
 
@@ -294,7 +294,7 @@ namespace cpp_message
             }
             
             if(message->value.choice.PersonalSafetyMessage.eventResponderType){
-                output.presence_vector |= (1 << 10);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_EVENT_RESPONDER_TYPE;
                 output.event_responder_type.type = *message->value.choice.PersonalSafetyMessage.eventResponderType;
             }
             
@@ -303,7 +303,7 @@ namespace cpp_message
                 output.activity_type.activities = j2735_v2x_msgs::msg::PublicSafetyAndRoadWorkerActivity::UNAVAILABLE;
             }
             else{
-                output.presence_vector |= (1 << 11);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ACTIVITY_TYPE;
                 output.activity_type.activities |= message->value.choice.PersonalSafetyMessage.activityType->buf[0];
 
                 for(int i = 1; i< message->value.choice.PersonalSafetyMessage.activityType->size;i++){
@@ -316,7 +316,7 @@ namespace cpp_message
                 output.activity_sub_type.sub_types = j2735_v2x_msgs::msg::PublicSafetyDirectingTrafficSubType::UNAVAILABLE;
             }
             else{
-                output.presence_vector |= (1 << 12);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ACTIVITY_SUB_TYPE;
                 output.activity_sub_type.sub_types |= message->value.choice.PersonalSafetyMessage.activitySubType->buf[0];
                 for(int i = 1; i< message->value.choice.PersonalSafetyMessage.activitySubType->size;i++){
                     output.activity_sub_type.sub_types |= (message->value.choice.PersonalSafetyMessage.activitySubType->buf[i] << i);
@@ -327,7 +327,7 @@ namespace cpp_message
                 output.assist_type.types = j2735_v2x_msgs::msg::PersonalAssistive::UNAVAILABLE;
             }
             else{
-                output.presence_vector |= (1 << 13);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ASSIST_TYPE;
                 output.assist_type.types |= message->value.choice.PersonalSafetyMessage.assistType->buf[0];
                 for(int i = 1; i < message->value.choice.PersonalSafetyMessage.assistType->size;i++){
                     output.assist_type.types |= (message->value.choice.PersonalSafetyMessage.assistType->buf[i] << i);
@@ -338,7 +338,7 @@ namespace cpp_message
                 output.sizing.sizes_and_behaviors = j2735_v2x_msgs::msg::UserSizeAndBehaviour::UNAVAILABLE;
             }
             else{
-                output.presence_vector |= (1 << 14);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_SIZING;
                 output.sizing.sizes_and_behaviors |= message->value.choice.PersonalSafetyMessage.sizing->buf[0];
                 for(int i = 1; i < message->value.choice.PersonalSafetyMessage.sizing->size;i++){
                     output.sizing.sizes_and_behaviors |= (message->value.choice.PersonalSafetyMessage.sizing->buf[i] << i);
@@ -346,17 +346,17 @@ namespace cpp_message
             }
 
             if(message->value.choice.PersonalSafetyMessage.attachment){
-                output.presence_vector |= (1 << 15);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ATTACHMENT;
                 output.attachment.type = *message->value.choice.PersonalSafetyMessage.attachment;
             }
             
             if(message->value.choice.PersonalSafetyMessage.attachmentRadius){
-                output.presence_vector |= (1 << 16);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ATTACHMENT_RADIUS;
                 output.attachment_radius.attachment_radius = *message->value.choice.PersonalSafetyMessage.attachmentRadius;
             }
             
             if(message->value.choice.PersonalSafetyMessage.animalType){
-                output.presence_vector |= (1 << 17);
+                output.presence_vector |= carma_v2x_msgs::msg::PSM::HAS_ANIMAL_TYPE;
                 output.animal_type.type = *message->value.choice.PersonalSafetyMessage.animalType;
             }
             
@@ -540,7 +540,7 @@ namespace cpp_message
                     }
                     point.pos_accuracy.semi_major = semi_major;
 
-                    point.pos_accuracy.presence_vector |= (1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE -1));
+                    point.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
                 }
 
                 float semi_minor = message.crumbData.list.array[i]->posAccuracy->semiMinor * 0.05;
@@ -554,7 +554,7 @@ namespace cpp_message
                     }
                     point.pos_accuracy.semi_minor = semi_minor;
 
-                    point.pos_accuracy.presence_vector |= (1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE -1));
+                    point.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
                 }
 
             }
@@ -572,7 +572,7 @@ namespace cpp_message
                     }
                     point.pos_accuracy.orientation = orientation;
 
-                    point.pos_accuracy.presence_vector |= (1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE -1));
+                    point.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE;
                 }
             }
             
@@ -600,44 +600,44 @@ namespace cpp_message
         output.crumb_data = crumb_data;
 
         if(message.initialPosition){
-            output.presence_vector |= 1 << (carma_v2x_msgs::msg::PathHistory::HAS_INITIAL_POSITION -1);
+            output.presence_vector |= carma_v2x_msgs::msg::PathHistory::HAS_INITIAL_POSITION;
 
             if(message.initialPosition->utcTime){
-                output.initial_position.presence_vector |= 1 << 0; //Set bit 0 for UTC time
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_UTC_TIME;
                 //get DDateTime
                 
                 if(message.initialPosition->utcTime->year){
-                    output.initial_position.utc_time.presence_vector |= 1 << 0; //Set bit 0 for Year
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::YEAR;
                     output.initial_position.utc_time.year.year = *message.initialPosition->utcTime->year;
                 }
 
                 if(message.initialPosition->utcTime->month){
-                    output.initial_position.utc_time.presence_vector |= 1 << 1; //Set bit 1 for Month
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::MONTH;
                     output.initial_position.utc_time.month.month =  *message.initialPosition->utcTime->month;
                 }
 
                 if(message.initialPosition->utcTime->day){
-                    output.initial_position.utc_time.presence_vector |= 1 << 2; //Set bit 2 for Day
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::DAY; 
                     output.initial_position.utc_time.day.day = *message.initialPosition->utcTime->day;
                 }
 
                 if(message.initialPosition->utcTime->hour){
-                    output.initial_position.utc_time.presence_vector |= 1 << 3; //Set bit 3 for Hour
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::HOUR;
                     output.initial_position.utc_time.hour.hour = *message.initialPosition->utcTime->hour;
                 }
 
                 if(message.initialPosition->utcTime->minute){
-                    output.initial_position.utc_time.presence_vector |= 1 << 4; //Set bit 4 for Minute
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::MINUTE;
                     output.initial_position.utc_time.minute.minute= *message.initialPosition->utcTime->minute;
                 }
 
                 if(message.initialPosition->utcTime->second){
-                    output.initial_position.utc_time.presence_vector |= 1 << 5; //Set bit 5 for Second
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::SECOND;
                     output.initial_position.utc_time.second.millisecond= *message.initialPosition->utcTime->second;
                 }
 
                 if(message.initialPosition->utcTime->offset){
-                    output.initial_position.utc_time.presence_vector |= 1 << 6; //Set bit 6 for Offset
+                    output.initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::OFFSET; 
                     output.initial_position.utc_time.offset.offset_minute= *message.initialPosition->utcTime->offset;
                 }
 
@@ -660,7 +660,7 @@ namespace cpp_message
             }
 
             if(message.initialPosition->elevation){
-                output.initial_position.presence_vector |= 1 << 1; //Set bit 1 for Elevation
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_ELEVATION; 
 
                 output.initial_position.elevation.unavailable = false;
                 output.initial_position.elevation.elevation = *message.initialPosition->elevation * latitude_conversion_const_;
@@ -670,14 +670,14 @@ namespace cpp_message
             }
 
             if(message.initialPosition->heading){
-                output.initial_position.presence_vector |= 1 << 2; //Set bit 2 for Heading
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_HEADING;
 
                 output.initial_position.heading.unavailable = false;
                 output.initial_position.heading.heading = *message.initialPosition->heading * heading_conversion_const_;
             }
 
             if(message.initialPosition->speed){
-                output.initial_position.presence_vector |= 1 << 3; //Set bit 3 for Speed
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED;
 
                 output.initial_position.speed.transmission.transmission_state = message.initialPosition->speed->transmisson;
                 output.initial_position.speed.speed.unavailable = false;
@@ -689,7 +689,7 @@ namespace cpp_message
 
             //positional accuracy
             if(message.initialPosition->posAccuracy){
-                output.initial_position.presence_vector |= 1 << 4; //Set bit 1 for Pos accuracy
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_POS_ACCURACY;
 
                 if(message.initialPosition->posAccuracy->semiMajor && message.initialPosition->posAccuracy->semiMinor){
                     
@@ -705,7 +705,7 @@ namespace cpp_message
 
                         output.initial_position.pos_accuracy.semi_major = semi_major;
 
-                        output.initial_position.pos_accuracy.presence_vector |= 1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE -1);
+                        output.initial_position.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
                     }
 
                     float semi_minor = message.initialPosition->posAccuracy->semiMinor * 0.05;
@@ -719,7 +719,7 @@ namespace cpp_message
                         }
                         output.initial_position.pos_accuracy.semi_minor = semi_minor;
 
-                        output.initial_position.pos_accuracy.presence_vector |= (1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE -1));
+                        output.initial_position.pos_accuracy.presence_vector |carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
                     }
 
                 }
@@ -738,27 +738,27 @@ namespace cpp_message
                         }
                         output.initial_position.pos_accuracy.orientation = orientation;
 
-                        output.initial_position.pos_accuracy.presence_vector |= (1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE -1));
+                        output.initial_position.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE;
                     }
                 }
             }
 
             //time confidence
             if(message.initialPosition->timeConfidence){
-                output.initial_position.presence_vector |= 1 << 5; //Set bit 5 for Time confidence
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_TIME_CONFIDENCE;
                 output.initial_position.time_confidence.confidence = *message.initialPosition->timeConfidence;
             }
 
             //pos confidence
             if(message.initialPosition->posConfidence){
-                output.initial_position.presence_vector |= 1 << 6; //Set bit 6 for pos confidence
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_POS_CONFIDENCE;
                 output.initial_position.pos_confidence.pos.confidence = message.initialPosition->posConfidence->pos;
                 output.initial_position.pos_confidence.elevation.confidence = message.initialPosition->posConfidence->elevation;
             }
 
             // speed confidence
             if(message.initialPosition->speedConfidence){
-                output.initial_position.presence_vector |= 1 << 7; //Set bit 7 for speed confidence
+                output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED_CONFIDENCE;
                 output.initial_position.speed_confidence.heading.confidence = message.initialPosition->speedConfidence->heading;
                 output.initial_position.speed_confidence.speed.speed_confidence = message.initialPosition->speedConfidence->speed;
                 output.initial_position.speed_confidence.throttle.confidence = message.initialPosition->speedConfidence->throttle;
@@ -768,7 +768,7 @@ namespace cpp_message
         }
         
         if(message.currGNSSstatus){
-            output.presence_vector |= 1 << (carma_v2x_msgs::msg::PathHistory::HAS_CURR_GNSS_STATUS -1);
+            output.presence_vector |= carma_v2x_msgs::msg::PathHistory::HAS_CURR_GNSS_STATUS;
 
             uint8_t gnss_status=0;
             for(int i = message.currGNSSstatus->size -1 ;i >= 0 ;i--){
@@ -787,7 +787,7 @@ namespace cpp_message
         
         if(message.Long && message.lat){
             
-            accel_set.presence_vector  |= 1 << (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_AVAILABLE -1);
+            accel_set.presence_vector  |= carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_AVAILABLE;
             float Long = message.Long * 0.01;
 
             if(Long > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
@@ -810,7 +810,7 @@ namespace cpp_message
         }
 
         if(message.vert){
-            accel_set.presence_vector  |= 1 << (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_AVAILABLE -1);
+            accel_set.presence_vector  |= carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_AVAILABLE;
             float vert = message.vert * 0.196;
             if(vert > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX){
                 vert = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX;
@@ -822,7 +822,7 @@ namespace cpp_message
         }
 
         if(message.yaw){
-            accel_set.presence_vector  |= 1 << (carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_AVAILABLE -1);
+            accel_set.presence_vector  |= carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_AVAILABLE;
             float yaw = message.yaw * 0.01;
             if(yaw > carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX){
                 yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX;
@@ -950,12 +950,12 @@ namespace cpp_message
         //accuracy 
         // ) 
         if(plainMessage.accuracy.presence_vector!=0){
-            if((plainMessage.accuracy.presence_vector >> (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE - 1)) & 1U) 
+            if((plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE) 
             {   //get accuracy 
                 message->value.choice.PersonalSafetyMessage.accuracy.semiMajor = plainMessage.accuracy.semi_major;
                 message->value.choice.PersonalSafetyMessage.accuracy.semiMinor = plainMessage.accuracy.semi_minor;
             }
-            else if((plainMessage.accuracy.presence_vector >> (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE - 1)) & 1U)
+            else if((plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE)
             {   //get accuracy orientation
                 message->value.choice.PersonalSafetyMessage.accuracy.orientation = plainMessage.accuracy.orientation;
             }
@@ -989,8 +989,22 @@ namespace cpp_message
             message->value.choice.PersonalSafetyMessage.heading = heading;
         }
 
+        //Encoding optional fields
+        //accel_set
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ACCEL_SET){
+            carma_v2x_msgs::msg::AccelerationSet4Way msg_accel_set = plainMessage.accel_set;
+
+        }
+
         boost::optional<std::vector<uint8_t>> b_array;
         return b_array;
+    }
+
+    AccelerationSet4Way_t PSM_Message::encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message){
+        AccelerationSet4Way_t output;
+
+
+        return output;
     }
 
 }
