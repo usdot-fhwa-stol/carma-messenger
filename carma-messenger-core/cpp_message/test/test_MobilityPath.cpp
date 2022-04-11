@@ -13,16 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-#include "MobilityPath_Message.h"
+#include "cpp_message/MobilityPath_Message.h"
 #include <gtest/gtest.h>
-#include <ros/ros.h>
 
 TEST(MobilityPathMessageTest, testDecodeRequestMsg)
 {
     std::vector<uint8_t> binary_input={0,242,112,77,90,113,39,212,90,209,171,22,12,38,173,56,147,234,45,104,213,131,150,172,88,65,133,14,36,88,204,88,177,98,197,139,22,43,89,50,100,201,107,54,108,217,173,131,6,12,21,172,88,177,98,197,139,22,44,88,177,98,229,147,38,108,219,178,96,205,179,134,173,27,183,106,225,131,116,193,149,6,137,131,42,13,83,6,84,27,57,100,201,155,54,236,152,51,108,225,171,70,237,218,184,96,220,39,213,245,125,95,103,217,246};
-    cpp_message::Mobility_Path worker;
-    boost::optional<cav_msgs::MobilityPath> res;
-    cav_msgs::MobilityPath to_read;
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
+    boost::optional<carma_v2x_msgs::msg::MobilityPath> res;
+    carma_v2x_msgs::msg::MobilityPath to_read;
     res=(worker.decode_mobility_path_message(binary_input));
     if(res)
     {
@@ -39,7 +39,7 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
         // std::cout<<to_read.trajectory.location.timestamp<<std::endl;
         // for(int i=0;i<to_read.trajectory.offsets.size();i++) std::cout<<to_read.trajectory.offsets[i]<<" ";
         
-        if(to_read.header.sender_id=="USDOT-45100" && to_read.trajectory.location.ecef_z==2) EXPECT_TRUE(true);
+        if(to_read.m_header.sender_id=="USDOT-45100" && to_read.trajectory.location.ecef_z==2) EXPECT_TRUE(true);
         else EXPECT_TRUE(false);
     }
     else EXPECT_TRUE(false);
@@ -48,20 +48,21 @@ TEST(MobilityPathMessageTest, testDecodeRequestMsg)
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
-    cpp_message::Mobility_Path worker;
-    cav_msgs::MobilityHeader header;
-    cav_msgs::MobilityPath message;     
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityPath message;     
     header.sender_id="USDOT-45100";
     header.recipient_id="USDOT-45095";
     header.sender_bsm_id="100ABCEF";
     header.plan_id="11111111-2222-3333-AAAA-111111111111";
     header.timestamp = 9223372036854775807;
-    message.header=header;
+    message.m_header=header;
     
     //body-location and trajectory- for encoding provide ros message
     //start location
-    cav_msgs::Trajectory trajectory;
-    cav_msgs::LocationECEF starting_location;
+    carma_v2x_msgs::msg::Trajectory trajectory;
+    carma_v2x_msgs::msg::LocationECEF starting_location;
     starting_location.ecef_x=0;
     starting_location.ecef_y=1;
     starting_location.ecef_z=2;
@@ -69,14 +70,14 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
     
     trajectory.location=starting_location;
     //offsets
-    cav_msgs::LocationOffsetECEF offset1;
+    carma_v2x_msgs::msg::LocationOffsetECEF offset1;
     offset1.offset_x=1;
     offset1.offset_y=1;
     offset1.offset_z=1;
 
     trajectory.offsets.push_back(offset1);
     
-    cav_msgs::LocationOffsetECEF offset2;
+    carma_v2x_msgs::msg::LocationOffsetECEF offset2;
     offset2.offset_x=2;
     offset2.offset_y=2;
     offset2.offset_z=2;
@@ -104,20 +105,21 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;
-    cpp_message::Mobility_Path worker;
-    cav_msgs::MobilityHeader header;
-    cav_msgs::MobilityPath message;     
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityPath message;     
     header.sender_id="";
     header.recipient_id="";
     header.sender_bsm_id="";
     header.plan_id="";
     header.timestamp = 0;
-    message.header=header;
+    message.m_header=header;
     
     //body-location and trajectory- for encoding provide ros message
     //start location
-    cav_msgs::Trajectory trajectory;
-    cav_msgs::LocationECEF starting_location;
+    carma_v2x_msgs::msg::Trajectory trajectory;
+    carma_v2x_msgs::msg::LocationECEF starting_location;
     starting_location.ecef_x=0;
     starting_location.ecef_y=0;
     starting_location.ecef_z=0;
@@ -125,7 +127,7 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
     
     trajectory.location=starting_location;
     //offsets
-    cav_msgs::LocationOffsetECEF offset1;
+    carma_v2x_msgs::msg::LocationOffsetECEF offset1;
     offset1.offset_x=0;
     offset1.offset_y=0;
     offset1.offset_z=0;

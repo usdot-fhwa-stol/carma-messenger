@@ -23,14 +23,30 @@ namespace cpp_message
     class Map_Message
     {
         public:
+                    /**
+            * \brief constructor 
+            */
+            explicit Map_Message(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+                node_logging_ = node_logging;
+            };
+
+            rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
             /**
-             * @brief Construct a new  map message object
+             * @brief Construct a new map message object
              * 
              * @param binary_array Container with binary input.
              *  @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
              */
-            boost::optional<j2735_msgs::MapData>decode_map_message(std::vector<uint8_t>& binary_array);
+            boost::optional<j2735_v2x_msgs::msg::MapData>decode_map_message(std::vector<uint8_t>& binary_array);
 
-        
+            /**
+             * @brief Construct Generic lane j2735 ROS MAP.msg
+             * 
+             * @param g_lane Pointer that has decoded GenericLane object to convert into ROS
+             * @return Generic Lane j2735 ROS Msg
+             */
+            j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t* g_lane);
     };
 }

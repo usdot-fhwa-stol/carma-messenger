@@ -18,13 +18,13 @@
  * CPP File containing BSM Message method implementations
  */
 
-#include "BSM_Message.h"
+#include "cpp_message/BSM_Message.h"
 
 namespace cpp_message
 {
-    boost::optional<j2735_msgs::BSM> BSM_Message::decode_bsm_message(std::vector<uint8_t>& binary_array){
+    boost::optional<j2735_v2x_msgs::msg::BSM> BSM_Message::decode_bsm_message(std::vector<uint8_t>& binary_array){
         
-        j2735_msgs::BSM output;
+        j2735_v2x_msgs::msg::BSM output;
         //decode results - stored in binary_array
         asn_dec_rval_t rval;
         MessageFrame_t* message = nullptr;
@@ -53,16 +53,16 @@ namespace cpp_message
             output.core_data.longitude = core_data_msg.Long; 
             output.core_data.elev = core_data_msg.elev;
             output.core_data.accuracy.orientation = core_data_msg.accuracy.orientation;
-            output.core_data.accuracy.semiMajor = core_data_msg.accuracy.semiMajor;
-            output.core_data.accuracy.semiMinor = core_data_msg.accuracy.semiMinor;
+            output.core_data.accuracy.semi_major = core_data_msg.accuracy.semiMajor;
+            output.core_data.accuracy.semi_minor = core_data_msg.accuracy.semiMinor;
             output.core_data.transmission.transmission_state = core_data_msg.transmission;
             output.core_data.speed = core_data_msg.speed;
             output.core_data.heading = core_data_msg.heading;
             output.core_data.angle = core_data_msg.angle;
-            output.core_data.accelSet.lateral = core_data_msg.accelSet.lat;
-            output.core_data.accelSet.longitudinal =core_data_msg.accelSet.Long;
-            output.core_data.accelSet.vert = core_data_msg.accelSet.vert;
-            output.core_data.accelSet.yaw_rate = core_data_msg.accelSet.yaw;
+            output.core_data.accel_set.lateral = core_data_msg.accelSet.lat;
+            output.core_data.accel_set.longitudinal =core_data_msg.accelSet.Long;
+            output.core_data.accel_set.vert = core_data_msg.accelSet.vert;
+            output.core_data.accel_set.yaw_rate = core_data_msg.accelSet.yaw;
             // brake_applied_status decoding
             // e.g. make 0b0100000 to 0b0000100
             uint8_t binary = core_data_msg.brakes.wheelBrakes.buf[0] >> 3;
@@ -73,7 +73,7 @@ namespace cpp_message
             {
                 if ((int)binary == 1) 
                 {
-                    output.core_data.brakes.wheelBrakes.brake_applied_status = brake_applied_status_type;
+                    output.core_data.brakes.wheel_brakes.brake_applied_status = brake_applied_status_type;
                     break;
                 }
                 else
@@ -85,19 +85,19 @@ namespace cpp_message
             output.core_data.brakes.traction.traction_control_status = core_data_msg.brakes.traction;
             output.core_data.brakes.abs.anti_lock_brake_status = core_data_msg.brakes.abs;
             output.core_data.brakes.scs.stability_control_status = core_data_msg.brakes.scs;
-            output.core_data.brakes.brakeBoost.brake_boost_applied = core_data_msg.brakes.brakeBoost;
-            output.core_data.brakes.auxBrakes.auxiliary_brake_status = core_data_msg.brakes.auxBrakes;            
+            output.core_data.brakes.brake_boost.brake_boost_applied = core_data_msg.brakes.brakeBoost;
+            output.core_data.brakes.aux_brakes.auxiliary_brake_status = core_data_msg.brakes.auxBrakes;            
             output.core_data.size.vehicle_length = core_data_msg.size.length;
             output.core_data.size.vehicle_width = core_data_msg.size.width;
             
-            return boost::optional<j2735_msgs::BSM>(output);
+            return boost::optional<j2735_v2x_msgs::msg::BSM>(output);
         }
-        ROS_WARN_STREAM("BasicSafetyMessage decoding failed");
-        return boost::optional<j2735_msgs::BSM>{};
+        RCLCPP_WARN_STREAM( node_logging_->get_logger(), "BasicSafetyMessage decoding failed");
+        return boost::optional<j2735_v2x_msgs::msg::BSM>{};
 
     }
 
-    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_msgs::BSM& plain_msg)
+    boost::optional<std::vector<uint8_t>> BSM_Message::encode_bsm_message(const j2735_v2x_msgs::msg::BSM& plain_msg)
     {
         //Uncomment below (and one line at the end of the function) to print the message in human readable form
         //FILE *fp;
@@ -115,7 +115,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for BasicSafetyMessage encoding");
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for BasicSafetyMessage encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
 
@@ -150,8 +150,8 @@ namespace cpp_message
         PositionalAccuracy_t* pos_acc;
         pos_acc = (PositionalAccuracy_t*) calloc(1, sizeof(PositionalAccuracy_t));
         pos_acc->orientation = plain_msg.core_data.accuracy.orientation;
-        pos_acc->semiMajor = plain_msg.core_data.accuracy.semiMajor;
-        pos_acc->semiMinor = plain_msg.core_data.accuracy.semiMinor;
+        pos_acc->semiMajor = plain_msg.core_data.accuracy.semi_major;
+        pos_acc->semiMinor = plain_msg.core_data.accuracy.semi_minor;
         core_data->accuracy = *pos_acc;
         free(pos_acc);
         core_data->transmission = plain_msg.core_data.transmission.transmission_state;
@@ -160,10 +160,10 @@ namespace cpp_message
         core_data->angle = plain_msg.core_data.angle;
         AccelerationSet4Way_t* accel;
         accel = (AccelerationSet4Way_t*) calloc(1, sizeof(AccelerationSet4Way_t));
-        accel->lat = plain_msg.core_data.accelSet.lateral;
-        accel->Long = plain_msg.core_data.accelSet.longitudinal;
-        accel->vert= plain_msg.core_data.accelSet.vert;
-        accel->yaw = plain_msg.core_data.accelSet.yaw_rate;
+        accel->lat = plain_msg.core_data.accel_set.lateral;
+        accel->Long = plain_msg.core_data.accel_set.longitudinal;
+        accel->vert= plain_msg.core_data.accel_set.vert;
+        accel->yaw = plain_msg.core_data.accel_set.yaw_rate;
         core_data->accelSet = *accel;
         free(accel);
         VehicleSize_t* vehicle_size;
@@ -178,8 +178,8 @@ namespace cpp_message
         brakes->traction = plain_msg.core_data.brakes.traction.traction_control_status;
         brakes->abs = plain_msg.core_data.brakes.abs.anti_lock_brake_status;
         brakes->scs = plain_msg.core_data.brakes.scs.stability_control_status;
-        brakes->brakeBoost = plain_msg.core_data.brakes.brakeBoost.brake_boost_applied;
-        brakes->auxBrakes = plain_msg.core_data.brakes.auxBrakes.auxiliary_brake_status;
+        brakes->brakeBoost = plain_msg.core_data.brakes.brake_boost.brake_boost_applied;
+        brakes->auxBrakes = plain_msg.core_data.brakes.aux_brakes.auxiliary_brake_status;
         
         BrakeAppliedStatus_t* brake_applied_status;
         brake_applied_status = (BrakeAppliedStatus_t*) calloc(1, sizeof(BrakeAppliedStatus_t));
@@ -190,7 +190,7 @@ namespace cpp_message
         // which makes every possible encoded value to be multiples of 8: 0b00001000 (8), 0b00010000 (16), 0b00011000 (24) etc
         // so num in brackets indicate the position in the bit string:
         // unavailable: 0b10000000, leftFront: 0b01000000 etc
-        wheel_brake[0] = (char) (8 << (4 - plain_msg.core_data.brakes.wheelBrakes.brake_applied_status)); 
+        wheel_brake[0] = (char) (8 << (4 - plain_msg.core_data.brakes.wheel_brakes.brake_applied_status)); 
         brake_applied_status->buf = wheel_brake;
         brake_applied_status->size = 1;
         brake_applied_status->bits_unused = 3;
@@ -210,7 +210,7 @@ namespace cpp_message
         
         //log a warning if that fails
         if(ec.encoded == -1) {
-            ROS_WARN_STREAM("Encoding for BasicSafetyMessage has failed");
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Encoding for BasicSafetyMessage has failed");
             std::cout << "Failed: " << ec.failed_type->name << std::endl;
             return boost::optional<std::vector<uint8_t>>{};
         }

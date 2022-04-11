@@ -31,14 +31,6 @@
   <!-- ROS Bag -->
   <node if="$(arg use_rosbag)" pkg="rosbag" type="record" name="rosbag_node" args="record -o /opt/carma/logs/ --lz4 -a -x '/rosout(.*)'" />
 
-  <!-- Launch Plugins -->
-  <include file="$(find carma-messenger)/launch/plugins.launch"/>
-
-  <!-- j2735 Convertor Node -->
-  <node pkg="j2735_convertor" type="j2735_convertor_node" name="j2735_convertor">
-    <remap from="outgoing_bsm" to="bsm_outbound"/>
-  </node>
-
   <!-- System Alert Publisher to publish simulated DRIVERS_READY status -->
   <node pkg="rostopic" type="rostopic" name="drivers_ready_rostopic_pub"
         args="pub -l /system_alert cav_msgs/SystemAlert '{ type: 5, description: Simulated Drivers Ready }'"
@@ -46,9 +38,6 @@
 
   <!-- UI -->
   <include file="$(find carma-messenger)/launch/ui.launch"/>
-
-   <!-- Message Encoder/Decoder Node -->
-  <include file="$(find cpp_message)/launch/cpp_message.launch"/>
 
    <!-- Traffic Incident Node -->
   <include file="$(find traffic_incident)/launch/traffic_incident.launch"/>

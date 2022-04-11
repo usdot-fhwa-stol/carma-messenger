@@ -40,11 +40,11 @@ In Workspace, make changes on wrapper.c.
 
 To generate the x64 shared library, run:
 
-gcc -DPDU=MessageFrame -shared -o libasn1c_x64.so -I./include/ -fPIC
+gcc -DPDU=MessageFrame -shared -o libasn1c_x64.so -I./include/ ./src/*.c -fPIC
 
 To generate the x86 shared library, run:
 
-gcc -m32 -DPDU=MessageFrame -shared -o libasn1c_x86.so -I./include/ -fPIC
+gcc -m32 -DPDU=MessageFrame -shared -o libasn1c_x86.so -I./include/ ./src/*.c -fPIC
 
 Note: In order to use m32 flag, you should have the package libc6-dev-i386 ready.
 

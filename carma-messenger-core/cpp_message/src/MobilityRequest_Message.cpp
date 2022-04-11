@@ -18,16 +18,16 @@
  * CPP File containing Mobility Request Message method implementations
  */
 
-#include "MobilityRequest_Message.h"
-#include "MobilityHeader_Message.h"
+#include "cpp_message/MobilityRequest_Message.h"
+#include "cpp_message/MobilityHeader_Message.h"
 #include <algorithm>
 
 namespace cpp_message
 {
-    boost::optional<cav_msgs::MobilityRequest> Mobility_Request::decode_mobility_request_message(std::vector<uint8_t>& binary_array)
+    boost::optional<carma_v2x_msgs::msg::MobilityRequest> Mobility_Request::decode_mobility_request_message(std::vector<uint8_t>& binary_array)
     {
-        cav_msgs::MobilityHeader header;
-        cav_msgs::MobilityRequest output;
+        carma_v2x_msgs::msg::MobilityHeader header;
+        carma_v2x_msgs::msg::MobilityRequest output;
 
         //decode results - stored in binary array
         asn_dec_rval_t rval;
@@ -79,7 +79,7 @@ namespace cpp_message
                 sender_bsm_id=std::string((Header_constant.BSM_ID_LENGTH-str_len),'0').append(sender_bsm_id);
             }
             else if (str_len>Header_constant.BSM_ID_LENGTH){
-                ROS_WARN("BSM ID -size greater than limit, changing to default");
+                // RCLCPP_WARN(get_logger(),"BSM ID -size greater than limit, changing to default");
                 sender_bsm_id=Header_constant.BSM_ID_DEFAULT;
             }
             
@@ -107,7 +107,7 @@ namespace cpp_message
             timestamp=atoll(timestamp_ch);
             header.timestamp=timestamp;
 
-            output.header=header;
+            output.m_header=header;
 
             //strategy
             std::string strategy;
@@ -137,25 +137,25 @@ namespace cpp_message
             output.urgency=tmp;
 
             //location
-            cav_msgs::LocationECEF location;
+            carma_v2x_msgs::msg::LocationECEF location;
             long tmp_l=message->value.choice.TestMessage00.body.location.ecefX;
             if(tmp_l>LOCATION_MAX || tmp_l<LOCATION_MIN){
-                ROS_WARN_STREAM("Location ecefX is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_x=tmp_l;
 
             tmp_l=message->value.choice.TestMessage00.body.location.ecefY;
             if(tmp_l>LOCATION_MAX || tmp_l<LOCATION_MIN){
-                ROS_WARN_STREAM("Location ecefY is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_y=tmp_l;
 
             tmp_l=message->value.choice.TestMessage00.body.location.ecefZ;
             if(tmp>LOCATION_MAX_Z || tmp<LOCATION_MIN_Z){
-                ROS_WARN_STREAM("Location ecefZ is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefZ is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_z=tmp_l;
 
@@ -181,26 +181,26 @@ namespace cpp_message
             output.strategy_params=strategy_params;   
 
             //Trajectory
-            cav_msgs::Trajectory trajectory;
-            cav_msgs::LocationECEF trajectory_start;
+            carma_v2x_msgs::msg::Trajectory trajectory;
+            carma_v2x_msgs::msg::LocationECEF trajectory_start;
             long tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefX;
             if(tmp_t>LOCATION_MAX || tmp_t<LOCATION_MIN){
-                ROS_WARN_STREAM("Location ecefX is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_x=tmp_t;
 
             tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefY;
             if(tmp_t>LOCATION_MAX || tmp_t<LOCATION_MIN){
-                ROS_WARN_STREAM("Location ecefY is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_y=tmp_t;
 
             tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefZ;
             if(tmp_t>LOCATION_MAX_Z || tmp_t<LOCATION_MIN_Z){
-                ROS_WARN_STREAM("Location ecefZ is out of range");
-                return boost::optional<cav_msgs::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "Location ecefZ is out of range");
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_z=tmp_t;
 
@@ -220,12 +220,12 @@ namespace cpp_message
             int offset_count=message->value.choice.TestMessage00.body.trajectory->list.count;
 
             if(offset_count>MAX_POINTS_IN_MESSAGE){
-            ROS_WARN_STREAM("offset count greater than 60.");
-            return boost::optional<cav_msgs::MobilityRequest>{};
+            // RCLCPP_WARN_STREAM( get_logger(), "offset count greater than 60.");
+            return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             } 
 
             for(size_t i=0;i<offset_count;i++){
-                cav_msgs::LocationOffsetECEF Offsets;
+                carma_v2x_msgs::msg::LocationOffsetECEF Offsets;
                 Offsets.offset_x=message->value.choice.TestMessage00.body.trajectory->list.array[i]->offsetX;
                 if(Offsets.offset_x<OFFSET_MIN || Offsets.offset_x>OFFSET_MAX)  Offsets.offset_x=OFFSET_UNAVAILABLE;
 
@@ -249,12 +249,12 @@ namespace cpp_message
             expiration=atoll(expiration_ch);
             output.expiration=expiration;
 
-            return boost::optional<cav_msgs::MobilityRequest>(output);
+            return boost::optional<carma_v2x_msgs::msg::MobilityRequest>(output);
         }
-        return boost::optional<cav_msgs::MobilityRequest>{};
+        return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
     }
 
-    boost::optional<std::vector<uint8_t>> Mobility_Request::encode_mobility_request_message(cav_msgs::MobilityRequest plainMessage)
+    boost::optional<std::vector<uint8_t>> Mobility_Request::encode_mobility_request_message(carma_v2x_msgs::msg::MobilityRequest plainMessage)
     {
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
@@ -263,7 +263,7 @@ namespace cpp_message
         //if mem allocation fails
         if(!message_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for MobilityRequest message encoding");
+            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for MobilityRequest message encoding");
             return boost::optional<std::vector<uint8_t>>{};            
         }
         MessageFrame_t* message=message_shared.get();
@@ -272,11 +272,11 @@ namespace cpp_message
 
         //For Header
         //convert host_id string to char array
-        std::string sender_id=plainMessage.header.sender_id;
+        std::string sender_id=plainMessage.m_header.sender_id;
         Mobility_Header Header;
         size_t string_size=sender_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            ROS_WARN("Unacceptable host id value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable host id value, changing to default");
             sender_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
@@ -288,10 +288,10 @@ namespace cpp_message
         message->value.choice.TestMessage00.header.hostStaticId.buf=string_content_hostId;
         message->value.choice.TestMessage00.header.hostStaticId.size=string_size;
         //convert target_id string to char array
-        std::string recipient_id=plainMessage.header.recipient_id;
+        std::string recipient_id=plainMessage.m_header.recipient_id;
         string_size=recipient_id.size();
         if(string_size<Header.STATIC_ID_MIN_LENGTH || string_size>Header.STATIC_ID_MAX_LENGTH){
-            ROS_WARN("Unacceptable recipient id value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable recipient id value, changing to default");
             recipient_id=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }
@@ -304,13 +304,13 @@ namespace cpp_message
         message->value.choice.TestMessage00.header.targetStaticId.size=string_size;
         
         //convert bsm_id string to char array
-        std::string sender_bsm_id=plainMessage.header.sender_bsm_id;
+        std::string sender_bsm_id=plainMessage.m_header.sender_bsm_id;
         string_size=sender_bsm_id.size();
         if(string_size<Header.BSM_ID_LENGTH){
             sender_bsm_id=std::string((Header.BSM_ID_LENGTH-string_size),'0').append(sender_bsm_id);
         }
         else if(string_size>Header.BSM_ID_LENGTH){
-            ROS_WARN("Unacceptable BSM ID, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable BSM ID, changing to default");
             sender_bsm_id=Header.BSM_ID_DEFAULT;
         }
         string_size=Header.BSM_ID_LENGTH;
@@ -323,10 +323,10 @@ namespace cpp_message
         message->value.choice.TestMessage00.header.hostBSMId.size=string_size;
         
          //convert plan_id string to char array
-        std::string plan_id=plainMessage.header.plan_id;
+        std::string plan_id=plainMessage.m_header.plan_id;
         string_size=plan_id.size();
         if(string_size!=Header.GUID_LENGTH){
-            ROS_WARN("Unacceptable GUID, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable GUID, changing to default");
             plan_id=Header.GUID_DEFAULT;
             string_size=Header.GUID_LENGTH;
         }
@@ -338,14 +338,14 @@ namespace cpp_message
         message->value.choice.TestMessage00.header.planId.buf=string_content_planId;
         message->value.choice.TestMessage00.header.planId.size=string_size;
         //get timestamp and convert to char array
-        uint64_t time=plainMessage.header.timestamp;
+        uint64_t time=plainMessage.m_header.timestamp;
         std::string timestamp=std::to_string(time);
         string_size=timestamp.size();
         if(string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
             timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-string_size),'0').append(timestamp);
         }
         else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            ROS_WARN("Unacceptable timestamp value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable timestamp value, changing to default");
             timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
         string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
@@ -360,7 +360,7 @@ namespace cpp_message
         std::string strategy=plainMessage.strategy;
         string_size=strategy.size();
         if(string_size<STRATEGY_MIN_LENGTH || string_size>STRATEGY_MAX_LENGTH){
-            ROS_WARN("Unacceptable strategy value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable strategy value, changing to default");
             strategy=Header.STRING_DEFAULT;
             string_size=Header.STRING_DEFAULT.size();
         }        
@@ -378,28 +378,28 @@ namespace cpp_message
 
         //urgency
         uint16_t urgency=plainMessage.urgency;
-        if(urgency<URGENCY_MIN || urgency> URGENCY_MAX) urgency=cav_msgs::MobilityRequest::_plan_type_type::UNKNOWN;
+        if(urgency<URGENCY_MIN || urgency> URGENCY_MAX) urgency=carma_v2x_msgs::msg::MobilityRequest::_plan_type_type::UNKNOWN;
         message->value.choice.TestMessage00.body.urgency=urgency;
 
         //location
         long location_val;
         location_val=plainMessage.location.ecef_x;
         if(location_val> LOCATION_MAX || location_val<LOCATION_MIN){
-            ROS_WARN_STREAM("Location ecefX is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefX=location_val;
 
         location_val=plainMessage.location.ecef_y;
         if(location_val> LOCATION_MAX || location_val<LOCATION_MIN){
-            ROS_WARN_STREAM("Location ecefY is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefY=location_val;
 
         location_val=plainMessage.location.ecef_z;
         if(location_val> LOCATION_MAX_Z || location_val<LOCATION_MIN_Z){
-            ROS_WARN_STREAM("Location ecefX is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         message->value.choice.TestMessage00.body.location.ecefZ=location_val;
@@ -412,7 +412,7 @@ namespace cpp_message
             location_timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-location_timestamp_string_size),'0').append(location_timestamp);
         }
         else if(location_timestamp_string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            ROS_WARN("Unacceptable location timestamp value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable location timestamp value, changing to default");
             location_timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
         location_timestamp_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
@@ -428,7 +428,7 @@ namespace cpp_message
         std::string params_string=plainMessage.strategy_params;
         size_t params_string_size=params_string.size();
         if(params_string_size<STRATEGY_PARAMS_MIN_LENGTH || params_string_size>STRATEGY_PARAMS_MAX_LENGTH){
-            ROS_WARN("Unacceptable strategy_params value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable strategy_params value, changing to default");
             params_string=Header.STRING_DEFAULT;
             params_string_size=Header.STRING_DEFAULT.size();
         }
@@ -445,28 +445,28 @@ namespace cpp_message
         std::shared_ptr<MobilityLocation>trajectory_location_shared(new MobilityLocation);
         if(!trajectory_location_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for trajectory.location encoding");
+            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for trajectory.location encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
         MobilityLocation* trajectory_location=trajectory_location_shared.get();
         long trajectory_start;
         trajectory_start=plainMessage.trajectory.location.ecef_x;
         if(trajectory_start> LOCATION_MAX || trajectory_start<LOCATION_MIN){
-            ROS_WARN_STREAM("Location ecefX is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         trajectory_location->ecefX=trajectory_start;
         
         trajectory_start=plainMessage.trajectory.location.ecef_y;
         if(trajectory_start> LOCATION_MAX || trajectory_start<LOCATION_MIN){
-            ROS_WARN_STREAM("Location ecefY is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         trajectory_location->ecefY=trajectory_start;
 
         trajectory_start=plainMessage.trajectory.location.ecef_z;
         if(trajectory_start> LOCATION_MAX_Z || trajectory_start<LOCATION_MIN_Z){
-            ROS_WARN_STREAM("Location ecefX is out of range");
+            // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
         trajectory_location->ecefZ=trajectory_start;
@@ -480,7 +480,7 @@ namespace cpp_message
             trajectory_timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-trajectory_timestamp_string_size),'0').append(timestamp);
         }
         else if(trajectory_timestamp_string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            ROS_WARN("Unacceptable trajectory timestamp value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable trajectory timestamp value, changing to default");
             trajectory_timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
         trajectory_timestamp_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
@@ -496,14 +496,14 @@ namespace cpp_message
         size_t offset_count=plainMessage.trajectory.offsets.size();
         
         if(offset_count>MAX_POINTS_IN_MESSAGE){
-            ROS_WARN_STREAM("offset count greater than 60.");
+            // RCLCPP_WARN_STREAM( get_logger(), "offset count greater than 60.");
             return boost::optional<std::vector<uint8_t>>{};
         }
 
         std::shared_ptr <MobilityLocationOffsets>offsets_list_shared ((MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets)),free);
         if(!offsets_list_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for offsets list encoding");
+            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for offsets list encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
         MobilityLocationOffsets* offsets_list=offsets_list_shared.get();    
@@ -512,7 +512,7 @@ namespace cpp_message
             MobilityECEFOffset* Offsets=new MobilityECEFOffset;
             if(!Offsets)
             {
-                ROS_WARN_STREAM("Cannot allocate mem for Offsets encoding");
+                // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for Offsets encoding");
                 return boost::optional<std::vector<uint8_t>>{};
             }
             Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
@@ -532,7 +532,7 @@ namespace cpp_message
             expiration_string=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-expiration_string_size),'0').append(expiration_string);
         }
         else if(string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
-            ROS_WARN("Unacceptable expiration time value, changing to default");
+            // RCLCPP_WARN(get_logger(),"Unacceptable expiration time value, changing to default");
             expiration_string=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
         }
         expiration_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
@@ -545,7 +545,7 @@ namespace cpp_message
         std::shared_ptr<MobilityTimestamp_t>expiration_time_shared(new MobilityTimestamp_t);
         if(!expiration_time_shared)
         {
-            ROS_WARN_STREAM("Cannot allocate mem for expiration message encoding");
+            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for expiration message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
         MobilityTimestamp_t* expiration_time=expiration_time_shared.get();

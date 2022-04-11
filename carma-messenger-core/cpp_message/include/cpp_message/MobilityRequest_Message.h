@@ -46,17 +46,27 @@ namespace cpp_message
 
         public:
         /**
+        * \brief constructor 
+        */
+        explicit Mobility_Request(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+
+            node_logging_ = node_logging;
+        };
+
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
+
+        /**
          * @brief Mobility Request message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns an empty optional if decoding fails. 
          */         
-        boost::optional<cav_msgs::MobilityRequest> decode_mobility_request_message(std::vector<uint8_t>& binary_array);
+        boost::optional<carma_v2x_msgs::msg::MobilityRequest> decode_mobility_request_message(std::vector<uint8_t>& binary_array);
         /**
          * @brief Mobility Request message encoding function.
          * @param plainMessage contains mobility request ros message to be encoded as byte array.
          * @return encoded byte array returns an empty optional if encoding fails. 
          */
-        boost::optional<std::vector<uint8_t>> encode_mobility_request_message(cav_msgs::MobilityRequest plainMessage);
+        boost::optional<std::vector<uint8_t>> encode_mobility_request_message(carma_v2x_msgs::msg::MobilityRequest plainMessage);
 
         ~Mobility_Request();
     };

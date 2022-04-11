@@ -14,7 +14,7 @@
  * the License.
  */
 
-#include <j2735_convertor/spat_convertor.h>
+#include <j2735_convertor/spat_convertor.hpp>
 
 /**
  * CPP File containing SPATConvertor method definitions
@@ -22,8 +22,8 @@
 
 namespace j2735_convertor
 {
-void SPATConvertor::convertTimeChangeDetails(const j2735_msgs::TimeChangeDetails& in_msg,
-                                             cav_msgs::TimeChangeDetails& out_msg)
+void SPATConvertor::convertTimeChangeDetails(const j2735_v2x_msgs::msg::TimeChangeDetails& in_msg,
+                                             carma_v2x_msgs::msg::TimeChangeDetails& out_msg)
 {
   out_msg.confidence = in_msg.confidence;
   out_msg.confidence_exists = in_msg.confidence_exists;
@@ -40,7 +40,7 @@ void SPATConvertor::convertTimeChangeDetails(const j2735_msgs::TimeChangeDetails
   // Done Conversion
 }
 
-void SPATConvertor::convertAdvisorySpeed(const j2735_msgs::AdvisorySpeed& in_msg, cav_msgs::AdvisorySpeed& out_msg)
+void SPATConvertor::convertAdvisorySpeed(const j2735_v2x_msgs::msg::AdvisorySpeed& in_msg, carma_v2x_msgs::msg::AdvisorySpeed& out_msg)
 {
   out_msg.type = in_msg.type;
   out_msg.speed_exists = in_msg.speed_exists;
@@ -54,7 +54,7 @@ void SPATConvertor::convertAdvisorySpeed(const j2735_msgs::AdvisorySpeed& in_msg
   out_msg.restriction_class_id_exists = in_msg.restriction_class_id_exists;
 }
 
-void SPATConvertor::convertMovementEvent(const j2735_msgs::MovementEvent& in_msg, cav_msgs::MovementEvent& out_msg)
+void SPATConvertor::convertMovementEvent(const j2735_v2x_msgs::msg::MovementEvent& in_msg, carma_v2x_msgs::msg::MovementEvent& out_msg)
 {
   out_msg.event_state = in_msg.event_state;
   out_msg.timing_exists = in_msg.timing_exists;
@@ -64,23 +64,23 @@ void SPATConvertor::convertMovementEvent(const j2735_msgs::MovementEvent& in_msg
 
   out_msg.speeds_exists = in_msg.speeds_exists;
   // Convert AdvisorySpeedList
-  for (j2735_msgs::AdvisorySpeed speed : in_msg.speeds.advisory_speed_list)
+  for (j2735_v2x_msgs::msg::AdvisorySpeed speed : in_msg.speeds.advisory_speed_list)
   {
-    cav_msgs::AdvisorySpeed cav_speed;
+    carma_v2x_msgs::msg::AdvisorySpeed cav_speed;
     convertAdvisorySpeed(speed, cav_speed);
     out_msg.advisory_speed_list.push_back(cav_speed);
   }
 }
 
-void SPATConvertor::convertMovementState(const j2735_msgs::MovementState& in_msg, cav_msgs::MovementState& out_msg)
+void SPATConvertor::convertMovementState(const j2735_v2x_msgs::msg::MovementState& in_msg, carma_v2x_msgs::msg::MovementState& out_msg)
 {
   out_msg.movement_name = in_msg.movement_name;
   out_msg.movement_name_exists = in_msg.movement_name_exists;
   out_msg.signal_group = in_msg.signal_group;
   // Convert MovementEvent
-  for (j2735_msgs::MovementEvent event : in_msg.state_time_speed.movement_event_list)
+  for (j2735_v2x_msgs::msg::MovementEvent event : in_msg.state_time_speed.movement_event_list)
   {
-    cav_msgs::MovementEvent cav_event;
+    carma_v2x_msgs::msg::MovementEvent cav_event;
     convertMovementEvent(event, cav_event);
     out_msg.movement_event_list.push_back(cav_event);
   }
@@ -89,8 +89,8 @@ void SPATConvertor::convertMovementState(const j2735_msgs::MovementState& in_msg
   out_msg.maneuver_assist_list_exists = in_msg.maneuver_assist_list_exists;
 }
 
-void SPATConvertor::convertIntersectionState(const j2735_msgs::IntersectionState& in_msg,
-                                             cav_msgs::IntersectionState& out_msg)
+void SPATConvertor::convertIntersectionState(const j2735_v2x_msgs::msg::IntersectionState& in_msg,
+                                             carma_v2x_msgs::msg::IntersectionState& out_msg)
 {
   out_msg.name = in_msg.name;
   out_msg.name_exists = in_msg.name_exists;
@@ -107,9 +107,9 @@ void SPATConvertor::convertIntersectionState(const j2735_msgs::IntersectionState
   out_msg.enabled_lanes_exists = in_msg.enabled_lanes_exists;
 
   // Convert MovementState
-  for (j2735_msgs::MovementState state : in_msg.states.movement_list)
+  for (j2735_v2x_msgs::msg::MovementState state : in_msg.states.movement_list)
   {
-    cav_msgs::MovementState cav_state;
+    carma_v2x_msgs::msg::MovementState cav_state;
     convertMovementState(state, cav_state);
     out_msg.movement_list.push_back(cav_state);
   }
@@ -119,7 +119,7 @@ void SPATConvertor::convertIntersectionState(const j2735_msgs::IntersectionState
   out_msg.maneuever_assist_list_exists = in_msg.maneuever_assist_list_exists;
 }
 
-void SPATConvertor::convert(const j2735_msgs::SPAT& in_msg, cav_msgs::SPAT& out_msg)
+void SPATConvertor::convert(const j2735_v2x_msgs::msg::SPAT& in_msg, carma_v2x_msgs::msg::SPAT& out_msg)
 {
   out_msg.time_stamp = in_msg.time_stamp;
   out_msg.time_stamp_exists = in_msg.time_stamp_exists;
@@ -127,9 +127,9 @@ void SPATConvertor::convert(const j2735_msgs::SPAT& in_msg, cav_msgs::SPAT& out_
   out_msg.name_exists = in_msg.name_exists;
 
   // Convert Intersection State List
-  for (j2735_msgs::IntersectionState state : in_msg.intersections.intersection_state_list)
+  for (j2735_v2x_msgs::msg::IntersectionState state : in_msg.intersections.intersection_state_list)
   {
-    cav_msgs::IntersectionState cav_state;
+    carma_v2x_msgs::msg::IntersectionState cav_state;
     convertIntersectionState(state, cav_state);
     out_msg.intersection_state_list.push_back(cav_state);
   }

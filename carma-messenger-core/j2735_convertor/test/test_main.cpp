@@ -15,12 +15,20 @@
  */
 
 #include <gtest/gtest.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 // Run all the tests
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
-  testing::InitGoogleTest(&argc, argv);
-  ros::Time::init();
-  return RUN_ALL_TESTS();
-}
+    ::testing::InitGoogleTest(&argc, argv);
+
+    //Initialize ROS
+    rclcpp::init(argc, argv);
+
+    bool success = RUN_ALL_TESTS();
+
+    //shutdown ROS
+    rclcpp::shutdown();
+
+    return success;
+} 

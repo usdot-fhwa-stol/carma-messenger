@@ -15,4 +15,9 @@
 #  the License.
 source /opt/ros/noetic/setup.bash
 cd ~/
-colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --install-base /opt/carma/install
+
+# Build ros2
+source /home/carma/catkin/setup.bash
+source /opt/ros/foxy/setup.bash
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --build-base ~/build_ros2 --install-base /opt/carma/install_ros2 

@@ -1,5 +1,5 @@
-#
-# Copyright (C) 2018-2021 LEIDOS.
+
+# Copyright (C) 2022 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -12,85 +12,61 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under
 # the License.
-#
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(truck_inspection_plugin)
 
-## Compile as C++14, supported in ROS Noetic and newer
-add_compile_options(-std=c++14)
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+# Declare carma package and check ROS version
+find_package(carma_cmake_common REQUIRED)
+carma_check_ros_version(2)
+carma_package()
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  std_msgs
-  cav_msgs
-  carma_utils
-)
+## Find dependencies using ament auto
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system)
+# Name build targets
+set(node_exec truck_inspection_plugin_node_exec)
+set(node_lib truck_inspection_plugin_node)
 
-###################################
-## catkin specific configuration ##
-###################################
-
-catkin_package(
-  CATKIN_DEPENDS roscpp std_msgs cav_msgs carma_utils
-)
-
-###########
-## Build ##
-###########
-
+# Includes
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
   include
 )
 
-file(GLOB_RECURSE headers */*.hpp */*.h)
-
-add_executable( ${PROJECT_NAME}
-  ${headers}
-  src/truck_inspection_plugin.cpp
-  src/main.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
-
-#############
-## Install ##
-#############
-
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.hpp"
-  PATTERN ".svn" EXCLUDE
+# Build
+ament_auto_add_library(${node_lib} SHARED
+        src/truck_inspection_plugin_node.cpp
 )
 
-## Install C++
-install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ament_auto_add_executable(${node_exec} 
+        src/main.cpp 
 )
 
-## Install Other Resources
-install(DIRECTORY launch config
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# Register component
+rclcpp_components_register_nodes(${node_lib} "truck_inspection_plugin::Node")
+
+# All locally created targets will need to be manually linked
+# ament auto will handle linking of external dependencies
+target_link_libraries(${node_exec}
+        ${node_lib}
 )
 
+# Testing
+if(BUILD_TESTING)  
 
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
 
-#############
-## Testing ##
-#############
+  ament_add_gtest(test_truck_inspection_plugin test/node_test.cpp)
 
-if (CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest_gtest(truck_inspection_plugin_test test/test_launch.test test/test_truck_inspection_plugin.cpp)
-  target_link_libraries(truck_inspection_plugin_test ${catkin_LIBRARIES})
+  ament_target_dependencies(test_truck_inspection_plugin ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
+
+  target_link_libraries(test_truck_inspection_plugin ${node_lib})
 
 endif()
+
+# Install
+ament_auto_package(
+        INSTALL_TO_SHARE config launch
+)
