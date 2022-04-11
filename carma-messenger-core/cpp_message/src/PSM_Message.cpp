@@ -840,18 +840,19 @@ namespace cpp_message
     boost::optional<std::vector<uint8_t>> PSM_Message::encode_psm_message(const carma_v2x_msgs::msg::PSM& plainMessage){
         
         //encode result placeholder
-        uint8_t buffer[1472] = {0};
+        uint8_t buffer[544];
         size_t buffer_size = sizeof(buffer);
 
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
+        MessageFrame_t* message;
+        message = (MessageFrame_t*) calloc(1, sizeof(MessageFrame_t));
         //if mem allocation fails
-        if(!message_shared)
+        if(!message)
         {
             RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Cannot allocate mem for PSM message encoding");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        MessageFrame_t* message = message_shared.get();
+        
         //set message type to PSM
         message->messageId = PSM_TEST_ID_;
         message->value.present = MessageFrame__value_PR_PersonalSafetyMessage;
@@ -874,11 +875,10 @@ namespace cpp_message
         }
 
         // Temporary ID
-        message->value.choice.PersonalSafetyMessage.id.size = 4;
         TemporaryID_t* temp_id = new TemporaryID_t;
         uint8_t temp_id_content[4] ={0};
         for(int i = 0; i< 4; ++i){
-            temp_id_content[i] = plainMessage.id.id[i];
+            temp_id_content[i] = (char) plainMessage.id.id[i];
         }
         temp_id->buf = temp_id_content;
         temp_id->size = 4;
@@ -892,75 +892,80 @@ namespace cpp_message
         
         }
         else{
-            long lat = (plainMessage.position.latitude/latitude_conversion_const_);
-            if(lat < carma_v2x_msgs::msg::Position3D::LATITUDE_MIN * latitude_conversion_const_){
+            long lat = (float(plainMessage.position.latitude)/float(latitude_conversion_const_));
+            if(lat < carma_v2x_msgs::msg::Position3D::LATITUDE_MIN/ float(latitude_conversion_const_)){
 
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding latitude value less than min, setting to min");
-                lat = carma_v2x_msgs::msg::Position3D::LATITUDE_MIN * latitude_conversion_const_;
+                lat = carma_v2x_msgs::msg::Position3D::LATITUDE_MIN /float(latitude_conversion_const_);
             }
-            else if(lat > carma_v2x_msgs::msg::Position3D::LATITUDE_MAX * latitude_conversion_const_){
+            else if(lat > carma_v2x_msgs::msg::Position3D::LATITUDE_MAX / float(latitude_conversion_const_)){
 
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding latitude value greater than max, setting to max");
-                lat = carma_v2x_msgs::msg::Position3D::LATITUDE_MAX * latitude_conversion_const_;
+                lat = carma_v2x_msgs::msg::Position3D::LATITUDE_MAX / float(latitude_conversion_const_);
             }
             
             message->value.choice.PersonalSafetyMessage.position.lat = lat;  
         }
+        
         
             //Longitude
         if(!plainMessage.position.longitude || plainMessage.position.longitude == carma_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
             message->value.choice.PersonalSafetyMessage.position.Long = carma_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE * longitude_conversion_const_;
         }
         else{
-            long longitude = (plainMessage.position.latitude/longitude_conversion_const_);
-            if(longitude < carma_v2x_msgs::msg::Position3D::LONGITUDE_MIN * longitude_conversion_const_){
+            long longitude = ((float) plainMessage.position.longitude / (float) longitude_conversion_const_);
+            if(longitude < carma_v2x_msgs::msg::Position3D::LONGITUDE_MIN /(float) longitude_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding longitude value less than min, setting to min");
-                longitude = carma_v2x_msgs::msg::Position3D::LONGITUDE_MIN * longitude_conversion_const_;
+                longitude = carma_v2x_msgs::msg::Position3D::LONGITUDE_MIN /(float) longitude_conversion_const_;
             }
-            else if(longitude > carma_v2x_msgs::msg::Position3D::LONGITUDE_MAX * longitude_conversion_const_){
+            else if(longitude > carma_v2x_msgs::msg::Position3D::LONGITUDE_MAX /(float) longitude_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding longitude value greater than max, setting to max");
-                longitude = carma_v2x_msgs::msg::Position3D::LONGITUDE_MAX * longitude_conversion_const_;
+                longitude = carma_v2x_msgs::msg::Position3D::LONGITUDE_MAX /(float) longitude_conversion_const_;
             }
             
             message->value.choice.PersonalSafetyMessage.position.Long = longitude;
         }
-
+        
             //elevation
-        std::shared_ptr<DSRC_Elevation_t>elevation_sharedptr (new DSRC_Elevation_t);
-        DSRC_Elevation_t* elevation_ptr = elevation_sharedptr.get();
+        // std::shared_ptr<DSRC_Elevation_t>elevation_shared_ptr (new DSRC_Elevation_t);
+        DSRC_Elevation_t* elevation_ptr = new DSRC_Elevation_t;
         if(!plainMessage.position.elevation_exists || plainMessage.position.elevation == carma_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE){
             
-            *elevation_ptr = carma_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE * elevation_conversion_const_;
+            *elevation_ptr = carma_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE /(float) elevation_conversion_const_;
         }
         else{
             long elevation = plainMessage.position.elevation / elevation_conversion_const_;
-            if(elevation < carma_v2x_msgs::msg::Position3D::ELEVATION_MIN * elevation_conversion_const_){
+            if(elevation < carma_v2x_msgs::msg::Position3D::ELEVATION_MIN /(float) elevation_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding elevation value less than min, setting to min");
-                elevation = carma_v2x_msgs::msg::Position3D::ELEVATION_MIN * elevation_conversion_const_;
+                elevation = carma_v2x_msgs::msg::Position3D::ELEVATION_MIN /(float) elevation_conversion_const_;
             }
-            else if (elevation > carma_v2x_msgs::msg::Position3D::ELEVATION_MAX * elevation_conversion_const_){
+            else if (elevation > carma_v2x_msgs::msg::Position3D::ELEVATION_MAX /(float) elevation_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding elevation value greater than max, setting to max");
-                elevation = carma_v2x_msgs::msg::Position3D::ELEVATION_MAX * elevation_conversion_const_;
+                elevation = carma_v2x_msgs::msg::Position3D::ELEVATION_MAX /(float) elevation_conversion_const_;
             }
             *elevation_ptr = elevation;
             
         }
         message->value.choice.PersonalSafetyMessage.position.elevation = elevation_ptr;
-
-        //accuracy 
-        // ) 
-        if(plainMessage.accuracy.presence_vector!=0){
-            if((plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE) 
-            {   //get accuracy 
-                message->value.choice.PersonalSafetyMessage.accuracy.semiMajor = plainMessage.accuracy.semi_major;
-                message->value.choice.PersonalSafetyMessage.accuracy.semiMinor = plainMessage.accuracy.semi_minor;
-            }
-            else if((plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE)
-            {   //get accuracy orientation
-                message->value.choice.PersonalSafetyMessage.accuracy.orientation = plainMessage.accuracy.orientation;
-            }
-        }
         
+        //accuracy 
+        if(plainMessage.accuracy.presence_vector!=0){
+            if(plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE) 
+            {   //get accuracy 
+                long semi_major = plainMessage.accuracy.semi_major / 0.05;
+                message->value.choice.PersonalSafetyMessage.accuracy.semiMajor = semi_major;
+                long semi_minor = plainMessage.accuracy.semi_minor / 0.05;
+                message->value.choice.PersonalSafetyMessage.accuracy.semiMinor = semi_minor;
+            }
+            
+            if(plainMessage.accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE)
+            {   //get accuracy orientation
+                long orientation = plainMessage.accuracy.orientation / 0.0054932479;
+                message->value.choice.PersonalSafetyMessage.accuracy.orientation = orientation;
+            }
+
+        }
+
         //Speed
         if(!plainMessage.speed.unavailable){
             long speed = plainMessage.speed.velocity / velocity_conversion_const_;
@@ -974,37 +979,114 @@ namespace cpp_message
             }
             message->value.choice.PersonalSafetyMessage.speed = speed;
         }
-
+    
         //Heading
+        Heading_t heading;
         if(!plainMessage.heading.unavailable){
-            long heading = plainMessage.heading.heading / heading_conversion_const_;
-            if(heading > carma_v2x_msgs::msg::Heading::MAX * heading_conversion_const_){
+            
+            heading = plainMessage.heading.heading / heading_conversion_const_;
+
+            if(heading > carma_v2x_msgs::msg::Heading::MAX / heading_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding heading value greater than max, setting to max");
-                heading = carma_v2x_msgs::msg::Heading::MAX * heading_conversion_const_;
+                heading = carma_v2x_msgs::msg::Heading::MAX / heading_conversion_const_;
             }
-            else if (heading < carma_v2x_msgs::msg::Heading::MIN * heading_conversion_const_){
+            else if (heading < carma_v2x_msgs::msg::Heading::MIN / heading_conversion_const_){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding heading value less than min, setting to min");
-                heading = carma_v2x_msgs::msg::Heading::MIN * heading_conversion_const_;
+                heading = carma_v2x_msgs::msg::Heading::MIN / heading_conversion_const_;
             }
-            message->value.choice.PersonalSafetyMessage.heading = heading;
         }
-
-        //Encoding optional fields
-        //accel_set
-        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ACCEL_SET){
-            carma_v2x_msgs::msg::AccelerationSet4Way msg_accel_set = plainMessage.accel_set;
-
+        else{
+            RCLCPP_DEBUG_STREAM(node_logging_->get_logger(),"Encoding Heading unavailable");
+            heading = 28800;
         }
+        message->value.choice.PersonalSafetyMessage.heading = heading;
 
-        boost::optional<std::vector<uint8_t>> b_array;
-        return b_array;
+        
+        //encode message
+        ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
+
+        //log a warning if that fails
+        if(ec.encoded == -1) {
+            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Encoding for PSM Message failed");
+            return boost::optional<std::vector<uint8_t>>{};
+        }
+        //copy to byte array msg
+        size_t array_length=(ec.encoded + 7) / 8;
+        std::vector<uint8_t> b_array(array_length);
+        for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
+                
+        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        return boost::optional<std::vector<uint8_t>>(b_array);
+
     }
 
-    AccelerationSet4Way_t PSM_Message::encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message){
+    AccelerationSet4Way_t& PSM_Message::encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message){
         AccelerationSet4Way_t output;
 
+        if(message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_AVAILABLE){
+            long Long = message.longitudinal/0.01;
+
+            if(Long > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
+            {
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude greater than max, set to max");
+                Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
+            }
+            else if(Long < (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
+            {
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude less than min, set to min");
+                Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
+            }
+            output.Long = Long;
+
+            long lat = message.lateral/latitude_conversion_const_;
+            if(lat > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
+            {
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude greater than max, set to max");
+                lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
+            }
+            else if(lat > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
+            {
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude less than min, set to min");
+                lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
+            }
+            output.lat = lat;
+
+        }
+
+        if (message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_AVAILABLE){
+            
+            long vert = message.vert / 0.196;
+
+            if(vert > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196){
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set vertical greater than max, set to max");
+                vert = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196;
+            }
+            output.vert = vert;
+        }
+
+        if(message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_AVAILABLE){
+            long yaw = message.yaw_rate / 0.01;
+
+            if(yaw > carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01){
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set yaw rate greater than max, set to max");
+                yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01;
+            }
+            else if ( yaw < carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01){
+                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding accel_set yaw rate less than min, set to min");
+                yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01;
+            }
+            output.yaw = yaw;
+        }
 
         return output;
+    }
+
+    PathHistory_t& PSM_Message::encode_path_history(carma_v2x_msgs::msg::PathHistory& message){
+        
+        //crumbdata
+        for (size_t i = 0; i < message.crumb_data.points.size(); ++i){
+
+        }
     }
 
 }

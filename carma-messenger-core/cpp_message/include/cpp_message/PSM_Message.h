@@ -27,11 +27,11 @@ namespace cpp_message
         int PSM_TEST_ID_ = 32;
 
         // Conversion constants between asn.1 message spec and carma message
-        static const int latitude_conversion_const_ = 0.0000001;
-        static const int longitude_conversion_const_ = 0.0000001;
-        static const int elevation_conversion_const_ = 0.1;
-        static const int velocity_conversion_const_ = 0.02;
-        static const int heading_conversion_const_ = 0.0125;
+        float latitude_conversion_const_ = 0.0000001;
+        float longitude_conversion_const_ = 0.0000001;
+        float elevation_conversion_const_ = 0.1;
+        float velocity_conversion_const_ = 0.02;
+        float heading_conversion_const_ = 0.0125;
 
         public:
 
@@ -61,8 +61,9 @@ namespace cpp_message
         j2735_v2x_msgs::msg::PersonalDeviceUsageState decode_use_state(PersonalDeviceUsageState_t& message);
 
         //Encode Optional
-        AccelerationSet4Way_t encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message);
+        AccelerationSet4Way_t& encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message);
 
+        PathHistory_t& encode_path_history(carma_v2x_msgs::msg::PathHistory& message);
 
         /**
          * @brief helper functions for BSM message encoding.
