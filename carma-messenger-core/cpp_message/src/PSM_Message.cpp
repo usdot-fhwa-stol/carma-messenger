@@ -46,7 +46,7 @@ namespace cpp_message
             
             //device type has same enum in j2735_v2x_msgs
             output.basic_type.type = message->value.choice.PersonalSafetyMessage.basicType;
-            
+
             output.sec_mark.millisecond = message->value.choice.PersonalSafetyMessage.secMark;
 
             if(message->value.choice.PersonalSafetyMessage.msgCnt < j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX){
@@ -56,14 +56,12 @@ namespace cpp_message
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Message count greater than max, defaulting to max value");
                 output.msg_cnt.msg_cnt = j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX;
             }
-            
 
             //Temporary ID asn.1 definition: 4 octet random device identifier OCTET STRING (SIZE(4))
-            for(int i = 0; i < 4; ++i){
-
+            for(int i = 0; i < 4; i++){
                 output.id.id.push_back(message->value.choice.PersonalSafetyMessage.id.buf[i]);   
             }
-            
+ 
             carma_v2x_msgs::msg::Position3D position;
             
             if(!message->value.choice.PersonalSafetyMessage.position.lat){
@@ -100,7 +98,7 @@ namespace cpp_message
                 position.longitude = longitude;
             }
 
-            if(message->value.choice.PersonalSafetyMessage.position.elevation = nullptr){
+            if(!message->value.choice.PersonalSafetyMessage.position.elevation){
                 position.elevation_exists = false;
                 RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "elevation Unavailable");
                 position.elevation = carma_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
@@ -120,7 +118,6 @@ namespace cpp_message
             }
 
             output.position = position;
-
 
             carma_v2x_msgs::msg::PositionalAccuracy accuracy;
             
@@ -161,9 +158,9 @@ namespace cpp_message
                     accuracy.presence_vector |= 1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE -1);
                 }
                 
-
             }
-            else if (message->value.choice.PersonalSafetyMessage.accuracy.orientation){
+            
+            if (message->value.choice.PersonalSafetyMessage.accuracy.orientation){
                 
                 float orientation = message->value.choice.PersonalSafetyMessage.accuracy.orientation * 0.0054932479;
                 if( orientation > carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX)
@@ -178,14 +175,13 @@ namespace cpp_message
                         orientation = carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN;
                     }
                     
-                    accuracy.orientation = message->value.choice.PersonalSafetyMessage.accuracy.orientation;
+                    accuracy.orientation = orientation;
                     
                     accuracy.presence_vector |= 1 << (carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE -1);
                 }
             }
 
             output.accuracy = accuracy;
-
 
             // Velocity ASN.1 Representation:
             // Velocity ::= INTEGER (0..8191) -- Units of 0.02 m/s
@@ -414,13 +410,14 @@ namespace cpp_message
 
         carma_v2x_msgs::msg::PathHistoryPointList crumb_data;
 
-        if(message.crumbData.list.size == 0){
+        if(message.crumbData.list.count == 0){
             RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory points list is empty, adding empty point");
             carma_v2x_msgs::msg::PathHistoryPoint point;
             crumb_data.points.push_back(point);
         }
 
-        for(size_t i = 0; i < message.crumbData.list.size; ++i){       //MIN_SIZE = 1, MAX_SIZE = 23
+        for(size_t i = 0; i < message.crumbData.list.count; ++i){       //MIN_SIZE = 1, MAX_SIZE = 23
+            
             if(i > carma_v2x_msgs::msg::PathHistoryPointList::MAX_SIZE){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory points size greater than max rejecting points");
                 break;
@@ -446,7 +443,7 @@ namespace cpp_message
             else{
                 point.lat_offset.unavailable = true;
             }
-            
+
             //longitude
             if( message.crumbData.list.array[i]->lonOffset){
                 float lonOffset = message.crumbData.list.array[i]->lonOffset * 1e-7;
@@ -553,7 +550,7 @@ namespace cpp_message
                         semi_minor = carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
                     }
                     point.pos_accuracy.semi_minor = semi_minor;
-
+                
                     point.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
                 }
 
@@ -575,9 +572,10 @@ namespace cpp_message
                     point.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE;
                 }
             }
-            
-            if(!message.crumbData.list.array[i]->heading){
+
+            if(message.crumbData.list.array[i]->heading){
                 float heading = *message.crumbData.list.array[i]->heading * 1.5;
+                
                 if(heading > carma_v2x_msgs::msg::CoarseHeading::MAX){
                     RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory heading greater than max, defined as unavailable, value not set");
                     point.heading.unavailable = true;
@@ -593,13 +591,14 @@ namespace cpp_message
             else{
                 point.heading.unavailable = true;
             }
-            
+
             crumb_data.points.push_back(point);
+            
         }
-
+        
         output.crumb_data = crumb_data;
-
-        if(message.initialPosition){
+        
+        if(message.initialPosition!=nullptr){
             output.presence_vector |= carma_v2x_msgs::msg::PathHistory::HAS_INITIAL_POSITION;
 
             if(message.initialPosition->utcTime){
@@ -663,7 +662,7 @@ namespace cpp_message
                 output.initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_ELEVATION; 
 
                 output.initial_position.elevation.unavailable = false;
-                output.initial_position.elevation.elevation = *message.initialPosition->elevation * latitude_conversion_const_;
+                output.initial_position.elevation.elevation = *message.initialPosition->elevation * elevation_conversion_const_;
             }
             else{
                 output.initial_position.elevation.unavailable = true;
@@ -681,7 +680,7 @@ namespace cpp_message
 
                 output.initial_position.speed.transmission.transmission_state = message.initialPosition->speed->transmisson;
                 output.initial_position.speed.speed.unavailable = false;
-                output.initial_position.speed.speed.velocity = message.initialPosition->speed->speed;
+                output.initial_position.speed.speed.velocity = message.initialPosition->speed->speed * velocity_conversion_const_;
             }
             else{
                 output.initial_position.speed.speed.unavailable = true;
@@ -793,7 +792,7 @@ namespace cpp_message
             if(Long > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
                 Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
             }
-            else if(Long > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
+            else if(Long < carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
                 Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
             }
             accel_set.longitudinal = Long;
@@ -803,10 +802,10 @@ namespace cpp_message
             if(lat > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
                 lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
             }
-            else if(lat > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
+            else if(lat < carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
                 lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
             }
-            accel_set.longitudinal = lat;
+            accel_set.lateral = lat;
         }
 
         if(message.vert){
@@ -1078,11 +1077,11 @@ namespace cpp_message
                 point = (PathHistoryPoint_t*) calloc(1, sizeof(PathHistoryPoint_t));
                 
                 if(!plainMessage.path_history.crumb_data.points[i].lat_offset.unavailable){
-                    point->latOffset = plainMessage.path_history.crumb_data.points[i].lat_offset.offset / 1e-7;
+                    point->latOffset = plainMessage.path_history.crumb_data.points[i].lat_offset.offset /1e-7;
                 }
 
                 if(!plainMessage.path_history.crumb_data.points[i].lon_offset.unavailable){
-                    point->lonOffset = plainMessage.path_history.crumb_data.points[i].lon_offset.offset / 1e-7;
+                    point->lonOffset = plainMessage.path_history.crumb_data.points[i].lon_offset.offset /1e-7;
                 }
 
                 if(!plainMessage.path_history.crumb_data.points[i].elevation_offset.unavailable){
@@ -1199,7 +1198,80 @@ namespace cpp_message
                     }
                     initial_position->utcTime = utc_time;
                 }
+                if(!plainMessage.path_history.initial_position.lon.unavailable){
+                    long* longitude = new long;
+                    *longitude = plainMessage.path_history.initial_position.lon.longitude /longitude_conversion_const_ ;
+                    initial_position->Long = *longitude;
+                }
+                if(!plainMessage.path_history.initial_position.lat.unavailable){
+                    long* latitude = new long;
+                    *latitude = plainMessage.path_history.initial_position.lat.latitude/ latitude_conversion_const_;
+                    initial_position->lat = *latitude;
+                }
                 
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_ELEVATION){
+                    if(!plainMessage.path_history.initial_position.elevation.unavailable){
+                        long* elevation = new long;
+                        *elevation = plainMessage.path_history.initial_position.elevation.elevation / elevation_conversion_const_;
+                        initial_position->elevation = elevation;
+                    }
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_HEADING){
+                    if(!plainMessage.path_history.initial_position.heading.unavailable){
+                        long* heading = new long;
+                        *heading = plainMessage.path_history.initial_position.heading.heading/heading_conversion_const_;
+                        initial_position->heading = heading;
+                    }
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED){
+                    TransmissionAndSpeed_t* transmission_and_speed;
+                    transmission_and_speed = (TransmissionAndSpeed_t*) calloc(1, sizeof(TransmissionAndSpeed_t));
+                    transmission_and_speed->transmisson = plainMessage.path_history.initial_position.speed.transmission.transmission_state;
+                    transmission_and_speed->speed =  plainMessage.path_history.initial_position.speed.speed.velocity/velocity_conversion_const_;
+                    initial_position->speed = transmission_and_speed;
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_POS_ACCURACY){
+                    PositionalAccuracy_t* pos_accuracy;
+                    pos_accuracy = (PositionalAccuracy_t*) calloc(1, sizeof(PositionalAccuracy_t));
+                    if(plainMessage.path_history.initial_position.pos_accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE){
+                        pos_accuracy->semiMajor = plainMessage.path_history.initial_position.pos_accuracy.semi_major/0.05;
+                        pos_accuracy->semiMinor = plainMessage.path_history.initial_position.pos_accuracy.semi_minor/0.05;
+                    }
+                    if(plainMessage.path_history.initial_position.pos_accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE){
+                        pos_accuracy->orientation = plainMessage.path_history.initial_position.pos_accuracy.orientation/0.0054932479;
+                    }
+                    initial_position->posAccuracy = pos_accuracy;
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_TIME_CONFIDENCE){
+                    TimeConfidence_t* time_confidence;
+                    time_confidence = (TimeConfidence_t*) calloc(1, sizeof(TimeConfidence_t));
+                    *time_confidence = plainMessage.path_history.initial_position.time_confidence.confidence;
+
+                    initial_position->timeConfidence = time_confidence;
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_POS_CONFIDENCE){
+                    PositionConfidenceSet_t* position_confidence;
+                    position_confidence = (PositionConfidenceSet_t*) calloc(1, sizeof(PositionConfidenceSet_t));
+                    position_confidence->pos = plainMessage.path_history.initial_position.pos_confidence.pos.confidence;
+                    position_confidence->elevation = plainMessage.path_history.initial_position.pos_confidence.elevation.confidence;
+
+                    initial_position->posConfidence = position_confidence;
+                }
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED_CONFIDENCE){
+                    SpeedandHeadingandThrottleConfidence_t* speed_confidence;
+                    speed_confidence = (SpeedandHeadingandThrottleConfidence_t*) calloc(1, sizeof(SpeedandHeadingandThrottleConfidence_t));
+                    speed_confidence->heading = plainMessage.path_history.initial_position.speed_confidence.heading.confidence;
+                    speed_confidence->speed = plainMessage.path_history.initial_position.speed_confidence.speed.speed_confidence;
+                    speed_confidence->throttle = plainMessage.path_history.initial_position.speed_confidence.throttle.confidence;
+
+                    initial_position->speedConfidence = speed_confidence;
+                }
 
                 path_history->initialPosition = initial_position;
             }

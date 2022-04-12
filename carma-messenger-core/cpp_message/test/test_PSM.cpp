@@ -20,56 +20,29 @@
 
 namespace cpp_message
 {
-    int char2int(char input)
-    {
-    if(input >= '0' && input <= '9')
-        return input - '0';
-    if(input >= 'A' && input <= 'F')
-        return input - 'A' + 10;
-    if(input >= 'a' && input <= 'f')
-        return input - 'a' + 10;
-    throw std::invalid_argument("Invalid input string");
-    }
 
-    void hex2bin(const char* src, char* target)
-    {
-        while(*src && src[1])
-        {
-            *(target++) = char2int(*src)*16 + char2int(src[1]);
-            src += 2;
-        }
-    }
-
-    std::vector<char> HexToBytes(const std::string& hex) {
-        std::vector<char> bytes;
-
-        for (unsigned int i = 0; i < hex.length(); i += 2) {
-            std::string byteString = hex.substr(i, 2);
-            char byte = (char) strtol(byteString.c_str(), NULL, 16);
-            bytes.push_back(byte);
-        }
-
-        return bytes;
-    }
-
-    // TEST(PSMTest, testdDecodePSM){
-    //     std::string hex_message = "3C4D6573736167654672616D653E0D0A20203C6D65737361676549643E33323C2F6D65737361676549643E0D0A20203C76616C75653E0D0A202020203C506572736F6E616C5361666574794D6573736167653E0D0A2020202020203C6261736963547970653E3C61";
+    TEST(PSMTest, testdDecodePSM){
+        //Convert hex string to byte message
+        std::vector<uint8_t> binary_input={ 0, 32, 95, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 255, 254, 125, 20, 170, 40, 156, 65, 154, 41, 192, 200, 28, 242, 208, 30, 27, 125, 60, 228, 78, 83, 161, 233, 233, 215, 34, 61, 81, 187, 192, 15, 195, 80, 112, 212, 31, 163, 56, 192, 27, 206, 158, 157, 90, 252, 132, 9, 91, 34, 55, 131, 34, 149, 228, 59, 194, 151, 143, 11, 74};
+        rclcpp::NodeOptions options;
+        auto node = std::make_shared<rclcpp::Node>("base_node");
         
-    //     //Convert hex string to byte message
-    //     std::vector<uint8_t> binary_input;
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_ = node->get_node_logging_interface();;
+        cpp_message::PSM_Message worker(node_logging_);
 
-    //     std::vector<char> new_binary_input = HexToBytes(hex_message);
-    //     for(int i =0;i<new_binary_input.size();++i){
-    //         std::cout<<new_binary_input[i]<<" "<<",";
-    //     }
-    //     std::cout<<"\n";
-    // }
+        boost::optional<carma_v2x_msgs::msg::PSM> res = worker.decode_psm_message(binary_input);
+        if(res) {
+            auto psm_msg = res.get();
 
-    TEST(PSMTest, testEncodePSM){
+        }
+
+        
+    }
+
+    TEST(PSMTest, DISABLED_testEncodePSM){
         
         carma_v2x_msgs::msg::PSM message;
 
-        
         //2. basic_type
         j2735_v2x_msgs::msg::PersonalDeviceUserType basic_type;
         basic_type.type |= j2735_v2x_msgs::msg::PersonalDeviceUserType::A_PEDESTRIAN;
@@ -88,7 +61,7 @@ namespace cpp_message
 
         //5. id
         j2735_v2x_msgs::msg::TemporaryID id;
-        id.id = {0,0,0,0};
+        id.id = {1,2,3,4};
 
         message.id = id;
 
@@ -192,6 +165,44 @@ namespace cpp_message
         initial_position.utc_time.second.millisecond = 20000;
         initial_position.utc_time.presence_vector |= j2735_v2x_msgs::msg::DDateTime::OFFSET;
         initial_position.utc_time.offset.offset_minute = 800;
+
+        initial_position.lon.unavailable = false;
+        initial_position.lon.longitude = 100.20;
+        initial_position.lat.unavailable = false;
+        initial_position.lat.latitude = 80.5;
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_ELEVATION;
+        initial_position.elevation.unavailable = false;
+        initial_position.elevation.elevation = 6002.5;
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_HEADING;
+        initial_position.heading.unavailable = false;
+        initial_position.heading.heading = 320.98;
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED;
+        initial_position.speed.transmission.transmission_state |= j2735_v2x_msgs::msg::TransmissionState::FORWARDGEARS;
+        initial_position.speed.speed.unavailable = false;
+        initial_position.speed.speed.velocity = 100.5;
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_POS_ACCURACY;
+        initial_position.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE;
+        initial_position.pos_accuracy.semi_major = 11.7;
+        initial_position.pos_accuracy.semi_minor = 11.7;
+        initial_position.pos_accuracy.presence_vector |= carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE;
+        initial_position.pos_accuracy.orientation = 302.54;
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_TIME_CONFIDENCE;
+        initial_position.time_confidence.confidence |= j2735_v2x_msgs::msg::TimeConfidence::TIME_000_001;
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_POS_CONFIDENCE;
+        initial_position.pos_confidence.pos.confidence |= j2735_v2x_msgs::msg::PositionConfidence::A20M;
+        initial_position.pos_confidence.elevation.confidence |= j2735_v2x_msgs::msg::ElevationConfidence::ELEV_050_00;
+
+
+        initial_position.presence_vector |= carma_v2x_msgs::msg::FullPositionVector::HAS_SPEED_CONFIDENCE;
+        initial_position.speed_confidence.heading.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::PREC_01_DEG;
+        initial_position.speed_confidence.speed.speed_confidence |= j2735_v2x_msgs::msg::SpeedConfidence::PREC5MS;
+        initial_position.speed_confidence.throttle.confidence |= j2735_v2x_msgs::msg::ThrottleConfidence::PREC_1_PERCENT;
+
 
         path_history.initial_position = initial_position;
         message.path_history = path_history;
@@ -304,17 +315,5 @@ namespace cpp_message
         for(size_t i = 0; i < array.size(); i++) std::cout<< int(array[i])<< ", ";
        }
 
-    //    Binary examples -
-    //1. Till longitude - 0, 32, 26, 0, 0, 3, 220, 140, 4, 0, 0, 0, 0, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 0, 0, 0, 0, 0, 0
-    //2. Till Header -  0, 32, 28, 0, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 128
-    //3. till accel_set - 0, 32, 34, 64, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 250, 14, 95, 82, 240
-    //4. till path_history, speed -  0, 32, 46, 96, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 240, 5, 225, 168, 56, 106, 15, 209, 156, 96, 13, 224, 0
-    //5. till path history-complete -  0, 32, 50, 96, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 240, 7, 225, 168, 56, 106, 15, 209, 156, 96, 13, 231, 79, 78, 173, 126, 64
-    //6. till gnss_status -  0, 32, 51, 96, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 242, 32, 7, 225, 168, 56, 106, 15, 209, 156, 96, 13, 231, 79, 78, 173, 126, 64,
-    //7. initial_position - till utc time: 0, 32, 68, 96, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 128, 254, 125, 20, 170, 40, 156, 65, 154, 26, 210, 116, 127, 218, 210, 116, 128, 96, 1, 248, 106, 14, 26, 131, 244, 103, 24, 3, 121, 211, 211, 171, 95, 144
-    //8. use_state(without propulsion): 0, 32, 73, 116, 0, 3, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 128, 254, 125, 20, 170, 40, 156, 65, 154, 26, 210, 116, 127, 218, 210, 116, 128, 48, 1, 248, 106, 14, 26, 131, 244, 103, 24, 3, 121, 211, 211, 171, 95, 144, 129, 43, 100, 48, 0
-    //9. All (without propulsion) : 0, 32, 82, 119, 255, 195, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 128, 254, 125, 20, 170, 40, 156, 65, 154, 26, 210, 116, 127, 218, 210, 116, 128, 120, 1, 248, 106, 14, 26, 131, 244, 103, 24, 3, 121, 211, 211, 171, 95, 144, 129, 43, 100, 120, 50, 41, 94, 67, 252, 37, 188, 120, 90, 80
-    //10. All : 0, 32, 83, 127, 255, 195, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 128, 254, 125, 20, 170, 40, 156, 65, 154, 26, 210, 116, 127, 218, 210, 116, 128, 24, 1, 248, 106, 14, 26, 131, 244, 103, 24, 3, 121, 211, 211, 171, 95, 144, 129, 43, 100, 70, 48, 100, 82, 140, 134, 152, 12, 96, 194, 210, 128
-    // All(2): 0, 32, 83, 127, 255, 195, 220, 140, 4, 0, 0, 0, 1, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 128, 254, 125, 20, 170, 40, 156, 65, 154, 26, 210, 116, 127, 218, 210, 116, 128, 8, 1, 248, 106, 14, 26, 131, 244, 103, 24, 3, 121, 211, 211, 171, 95, 144, 129, 43, 100, 70, 16, 100, 82, 132, 136, 8, 42, 132, 8, 90, 80
     }
 }
