@@ -926,8 +926,7 @@ namespace cpp_message
             message->value.choice.PersonalSafetyMessage.position.Long = longitude;
         }
         
-            //elevation
-        // std::shared_ptr<DSRC_Elevation_t>elevation_shared_ptr (new DSRC_Elevation_t);
+        //elevation
         DSRC_Elevation_t* elevation_ptr = new DSRC_Elevation_t;
         if(!plainMessage.position.elevation_exists || plainMessage.position.elevation == carma_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE){
             
@@ -1001,10 +1000,384 @@ namespace cpp_message
         }
         message->value.choice.PersonalSafetyMessage.heading = heading;
 
+        //Encoding optional fields
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ACCEL_SET){
+            AccelerationSet4Way_t* accel_set;
+            accel_set =(AccelerationSet4Way_t*) calloc(1, sizeof(AccelerationSet4Way_t));
+
+            if(plainMessage.accel_set.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_AVAILABLE){
+                
+                long Long = plainMessage.accel_set.longitudinal/0.01;
+                if(Long > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
+                {
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude greater than max, set to max");
+                    Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
+                }
+                else if(Long < (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
+                {
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude less than min, set to min");
+                    Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
+                }
+                accel_set->Long = Long;
+                
+                
+
+                long lat = plainMessage.accel_set.lateral/0.01;
+                if(lat > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
+                {
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set latitude greater than max, set to max");
+                    lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
+                }
+                else if(lat < (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
+                {
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set latitude less than min, set to min");
+                    lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
+                }
+                accel_set->lat = lat;
+                
+            }
+
+            if (plainMessage.accel_set.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_AVAILABLE){
+                
+                long vert = plainMessage.accel_set.vert / 0.196;
+
+                if(vert > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196){
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set vertical greater than max, set to max");
+                    vert = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196;
+                }
+                accel_set->vert = vert;
+                
+            }
+
+            if(plainMessage.accel_set.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_AVAILABLE){
+                long yaw = plainMessage.accel_set.yaw_rate / 0.01;
+
+                if(yaw > carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01){
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set yaw rate greater than max, set to max");
+                    yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01;
+                }
+                else if ( yaw < carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01){
+                    RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding accel_set yaw rate less than min, set to min");
+                    yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01;
+                }
+                accel_set->yaw = yaw;
+            }
+            message->value.choice.PersonalSafetyMessage.accelSet = accel_set;
+        }
+
         
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_PATH_HISTORY){
+            PathHistory_t* path_history; 
+            path_history = (PathHistory_t*) calloc(1, sizeof(PathHistory_t));
+            
+            //get crumblist
+            PathHistoryPointList_t* path_history_list;
+            path_history_list = (PathHistoryPointList_t*) calloc(1, sizeof(PathHistoryPointList_t));
+            for(size_t i = 0 ;i < plainMessage.path_history.crumb_data.points.size(); ++i){
+                PathHistoryPoint_t* point;
+                point = (PathHistoryPoint_t*) calloc(1, sizeof(PathHistoryPoint_t));
+                
+                if(!plainMessage.path_history.crumb_data.points[i].lat_offset.unavailable){
+                    point->latOffset = plainMessage.path_history.crumb_data.points[i].lat_offset.offset / 1e-7;
+                }
+
+                if(!plainMessage.path_history.crumb_data.points[i].lon_offset.unavailable){
+                    point->lonOffset = plainMessage.path_history.crumb_data.points[i].lon_offset.offset / 1e-7;
+                }
+
+                if(!plainMessage.path_history.crumb_data.points[i].elevation_offset.unavailable){
+                    point->elevationOffset = plainMessage.path_history.crumb_data.points[i].elevation_offset.offset / 0.1;
+                }
+                
+                if(!plainMessage.path_history.crumb_data.points[i].time_offset.unavailable){
+                    point->timeOffset = plainMessage.path_history.crumb_data.points[i].time_offset.offset / 0.01;
+                }
+                
+                if(!plainMessage.path_history.crumb_data.points[i].speed.unavailable){
+                    Speed_t* speed;
+                    speed = (Speed_t*) calloc(1, sizeof(Speed_t));
+                    *speed = plainMessage.path_history.crumb_data.points[i].speed.speed / 0.02;
+                    point->speed = speed;
+                }
+
+                //positional_accuracy
+                if(!plainMessage.path_history.crumb_data.points[i].pos_accuracy.presence_vector == 0){
+                    PositionalAccuracy_t* positional_accuracy;
+                    positional_accuracy = (PositionalAccuracy_t*) calloc(1, sizeof(PositionalAccuracy_t));
+                    if(plainMessage.path_history.crumb_data.points[i].pos_accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_AVAILABLE){
+                        int semi_major = plainMessage.path_history.crumb_data.points[i].pos_accuracy.semi_major / 0.05;
+                        positional_accuracy->semiMajor = semi_major;
+
+                        int semi_minor = plainMessage.path_history.crumb_data.points[i].pos_accuracy.semi_minor / 0.05;
+                        positional_accuracy->semiMinor = semi_minor;
+
+                        point->posAccuracy = positional_accuracy;
+                    }
+                    
+                    if(plainMessage.path_history.crumb_data.points[i].pos_accuracy.presence_vector & carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE){
+                        positional_accuracy->orientation = plainMessage.path_history.crumb_data.points[i].pos_accuracy.orientation / 0.0054932479;
+                        point->posAccuracy = positional_accuracy;
+                    }
+                }
+
+                if(!plainMessage.path_history.crumb_data.points[i].heading.unavailable){
+                    CoarseHeading_t* heading;
+                    heading = (CoarseHeading_t*) calloc(1, sizeof(CoarseHeading_t));
+                    long heading_value = plainMessage.path_history.crumb_data.points[i].heading.heading / 1.5;
+                    *heading = heading_value;
+                    point->heading = heading; 
+                }
+                
+                asn_sequence_add(&path_history->crumbData.list, point);
+            
+            }
+            
+
+            if(plainMessage.path_history.presence_vector & carma_v2x_msgs::msg::PathHistory::HAS_CURR_GNSS_STATUS){
+
+                GNSSstatus_t* gnss_status;
+                gnss_status = (GNSSstatus_t*) calloc(1, sizeof(GNSSstatus_t));
+
+                std::string status = std::to_string(plainMessage.path_history.curr_gnss_status.statuses);
+                size_t size = status.size();
+                uint8_t status_string[size];
+                for(size_t i = 0;i< size;i++){
+                    status_string[i] = status[i] - '0';
+                }
+                gnss_status->size = size;
+                gnss_status->buf = status_string;
+
+                path_history->currGNSSstatus = gnss_status;
+                
+            }
+            
+
+            if(plainMessage.path_history.presence_vector & carma_v2x_msgs::msg::PathHistory::HAS_INITIAL_POSITION){
+
+                FullPositionVector_t* initial_position;
+                initial_position = (FullPositionVector_t*) calloc(1, sizeof(FullPositionVector_t));
+
+                if(plainMessage.path_history.initial_position.presence_vector & carma_v2x_msgs::msg::FullPositionVector::HAS_UTC_TIME){
+                    DDateTime_t* utc_time;
+                    utc_time = (DDateTime_t*) calloc(1, sizeof(DDateTime_t));
+
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::YEAR){
+                        long* year = new long;
+                        *year = plainMessage.path_history.initial_position.utc_time.year.year;
+                        utc_time->year = year;
+                        
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::MONTH){
+                        long* month = new long;
+                        *month = plainMessage.path_history.initial_position.utc_time.month.month;
+                        utc_time->month = month;
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::DAY){
+                        long* day = new long;
+                        *day = plainMessage.path_history.initial_position.utc_time.day.day;
+                        utc_time->day = day;
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::HOUR){
+                        long* hour = new long;
+                        *hour = plainMessage.path_history.initial_position.utc_time.hour.hour;
+                        utc_time->hour = hour;
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::MINUTE){
+                        long* minute = new long;
+                        *minute = plainMessage.path_history.initial_position.utc_time.minute.minute;
+                        utc_time->minute = minute;
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::SECOND){
+                        long* second = new long;
+                        *second = plainMessage.path_history.initial_position.utc_time.second.millisecond;
+                        utc_time->second = second;
+                    }
+                    if(plainMessage.path_history.initial_position.utc_time.presence_vector & j2735_v2x_msgs::msg::DDateTime::OFFSET){
+                        long* offset = new long;
+                        *offset = plainMessage.path_history.initial_position.utc_time.offset.offset_minute;
+                        utc_time->offset = offset;
+                    }
+                    initial_position->utcTime = utc_time;
+                }
+                
+
+                path_history->initialPosition = initial_position;
+            }
+
+            message->value.choice.PersonalSafetyMessage.pathHistory = path_history;
+
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_PATH_PREDICTION){
+            PathPrediction_t* path_prediction = new PathPrediction_t;
+            path_prediction->radiusOfCurve = plainMessage.path_prediction.radius_of_curvature;
+            path_prediction->confidence = plainMessage.path_prediction.confidence;
+
+            message->value.choice.PersonalSafetyMessage.pathPrediction = path_prediction;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_PROPULSION){
+            PropelledInformation_t* propulsion;
+            propulsion = (PropelledInformation_t*) calloc(1, sizeof(PropelledInformation_t));
+            
+            if(plainMessage.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_HUMAN){
+                propulsion->present = PropelledInformation_PR_human;
+                propulsion->choice.human = plainMessage.propulsion.human.type;
+            }
+            else if(plainMessage.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_ANIMAL){
+                propulsion->present = PropelledInformation_PR_animal;
+                propulsion->choice.animal = plainMessage.propulsion.animal.type;
+            }
+            else if(plainMessage.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_MOTOR){
+                propulsion->present = PropelledInformation_PR_motor;
+                propulsion->choice.motor = plainMessage.propulsion.motor.type;
+            }
+
+            message->value.choice.PersonalSafetyMessage.propulsion = propulsion;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_USE_STATE){
+            PersonalDeviceUsageState_t* use_state;
+            use_state = (PersonalDeviceUsageState_t*) calloc(1, sizeof(PersonalDeviceUsageState_t));
+            std::string use_state_str = std::to_string(plainMessage.use_state.states);
+            size_t size = use_state_str.size();
+            uint8_t array[size];
+            for(size_t i=0;i<size;i++){
+                array[i] = use_state_str[i] - '0';
+            }
+            use_state->size = size;
+            use_state->buf = array;
+
+            message->value.choice.PersonalSafetyMessage.useState = use_state;
+            
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_CROSS_REQUEST){
+            PersonalCrossingRequest_t* cross_request;
+            cross_request = (PersonalCrossingRequest_t*) calloc(1, sizeof(PersonalCrossingRequest_t));
+
+            *cross_request = plainMessage.cross_request.cross_request;
+            message->value.choice.PersonalSafetyMessage.crossRequest = cross_request;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_CROSS_STATE){
+            PersonalCrossingInProgress_t* cross_state;
+            cross_state = (PersonalCrossingInProgress_t*) calloc(1, sizeof(PersonalCrossingInProgress_t));
+
+            *cross_state = plainMessage.cross_state.cross_state;
+            message->value.choice.PersonalSafetyMessage.crossState = cross_state;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_CLUSTER_SIZE){
+            NumberOfParticipantsInCluster_t* cluster_size;
+            cluster_size = (NumberOfParticipantsInCluster_t*) calloc(1, sizeof(NumberOfParticipantsInCluster_t));
+
+            *cluster_size = plainMessage.cluster_size.cluster_size;
+            message->value.choice.PersonalSafetyMessage.clusterSize = cluster_size;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_CLUSTER_RADIUS){
+            NumberOfParticipantsInCluster_t* cluster_radius;
+            cluster_radius = (NumberOfParticipantsInCluster_t*) calloc(1, sizeof(NumberOfParticipantsInCluster_t));
+
+            *cluster_radius = plainMessage.cluster_radius.cluster_radius;
+            message->value.choice.PersonalSafetyMessage.clusterRadius = cluster_radius;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_EVENT_RESPONDER_TYPE){
+            PublicSafetyEventResponderWorkerType_t* event_responder_type;
+            event_responder_type = (PublicSafetyEventResponderWorkerType_t*) calloc(1, sizeof(PublicSafetyEventResponderWorkerType_t));
+
+            *event_responder_type = plainMessage.event_responder_type.type;
+            message->value.choice.PersonalSafetyMessage.eventResponderType = event_responder_type;
+        }
+        
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ACTIVITY_TYPE){
+            PublicSafetyAndRoadWorkerActivity_t* activity_type;
+            activity_type = (PublicSafetyAndRoadWorkerActivity_t*) calloc(1, sizeof(PublicSafetyAndRoadWorkerActivity_t));
+
+            std::string activity_type_str = std::to_string(plainMessage.activity_type.activities);
+            size_t size = activity_type_str.size();
+            uint8_t array[size];
+            for(size_t i = 0;i < size;i++){
+                array[i] = activity_type_str[i] - '0';
+            }
+            activity_type->size = size;
+            activity_type->buf = array;
+            message->value.choice.PersonalSafetyMessage.activityType = activity_type;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ACTIVITY_SUB_TYPE){
+            PublicSafetyDirectingTrafficSubType_t* activity_sub_type;
+            activity_sub_type = (PublicSafetyDirectingTrafficSubType_t*) calloc(1, sizeof(PublicSafetyDirectingTrafficSubType_t));
+
+            std::string sub_type_str = std::to_string(plainMessage.activity_sub_type.sub_types);
+            size_t size = sub_type_str.size();
+            uint8_t array[size];
+            for(size_t i = 0;i< size; i++){
+                array[i] = sub_type_str[i] - '0';
+            }
+            activity_sub_type->size = size;
+            activity_sub_type->buf = array;
+            message->value.choice.PersonalSafetyMessage.activitySubType = activity_sub_type;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ASSIST_TYPE){
+            PersonalAssistive_t* assist_type;
+            assist_type = (PersonalAssistive_t*) calloc(1, sizeof(PersonalAssistive_t));
+
+            std::string assist_type_str = std::to_string(plainMessage.assist_type.types);
+            size_t size = assist_type_str.size();
+            uint8_t array[size];
+            for(size_t i = 0; i < size;i++){
+                array[i] = assist_type_str[i] - '0';
+            }
+            assist_type->size = size;
+            assist_type->buf = array;
+            message->value.choice.PersonalSafetyMessage.assistType = assist_type;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_SIZING){
+            UserSizeAndBehaviour_t* sizing;
+            sizing = (UserSizeAndBehaviour_t*) calloc(1, sizeof(UserSizeAndBehaviour_t));
+            std::string sizing_string = std::to_string(plainMessage.sizing.sizes_and_behaviors);
+            size_t size = sizing_string.size();
+            uint8_t array[size];
+            for(size_t i = 0; i < size; i++){
+                array[i] = sizing_string[i] - '0';
+            }
+            sizing->size = size;
+            sizing->buf = array;
+            message->value.choice.PersonalSafetyMessage.sizing = sizing;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ATTACHMENT){
+            Attachment_t* attachment;
+            attachment = (Attachment_t*) calloc(1, sizeof(Attachment_t));
+
+            *attachment = plainMessage.attachment.type;
+            message->value.choice.PersonalSafetyMessage.attachment = attachment;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ATTACHMENT_RADIUS){
+            AttachmentRadius_t* attachment_radius;
+            attachment_radius = (AttachmentRadius_t*) calloc(1, sizeof(AttachmentRadius_t));
+
+            *attachment_radius = plainMessage.attachment_radius.attachment_radius * 10;
+            message->value.choice.PersonalSafetyMessage.attachmentRadius = attachment_radius;
+        }
+
+        if(plainMessage.presence_vector & carma_v2x_msgs::msg::PSM::HAS_ANIMAL_TYPE){
+            AnimalType_t* animal_type;
+            animal_type = (AnimalType_t*) calloc(1, sizeof(AnimalType_t));
+
+            *animal_type = plainMessage.animal_type.type;
+            message->value.choice.PersonalSafetyMessage.animalType = animal_type;
+        }
+
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-
+    
         //log a warning if that fails
         if(ec.encoded == -1) {
             RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Encoding for PSM Message failed");
@@ -1020,73 +1393,5 @@ namespace cpp_message
 
     }
 
-    AccelerationSet4Way_t& PSM_Message::encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message){
-        AccelerationSet4Way_t output;
-
-        if(message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_AVAILABLE){
-            long Long = message.longitudinal/0.01;
-
-            if(Long > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude greater than max, set to max");
-                Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
-            }
-            else if(Long < (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude less than min, set to min");
-                Long = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
-            }
-            output.Long = Long;
-
-            long lat = message.lateral/latitude_conversion_const_;
-            if(lat > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01))
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude greater than max, set to max");
-                lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX/0.01;
-            }
-            else if(lat > (carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01))
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set longitude less than min, set to min");
-                lat = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN/0.01;
-            }
-            output.lat = lat;
-
-        }
-
-        if (message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_AVAILABLE){
-            
-            long vert = message.vert / 0.196;
-
-            if(vert > carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196){
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set vertical greater than max, set to max");
-                vert = carma_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX/0.196;
-            }
-            output.vert = vert;
-        }
-
-        if(message.presence_vector & carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_AVAILABLE){
-            long yaw = message.yaw_rate / 0.01;
-
-            if(yaw > carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01){
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding accel_set yaw rate greater than max, set to max");
-                yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX/0.01;
-            }
-            else if ( yaw < carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01){
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding accel_set yaw rate less than min, set to min");
-                yaw = carma_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN/0.01;
-            }
-            output.yaw = yaw;
-        }
-
-        return output;
-    }
-
-    PathHistory_t& PSM_Message::encode_path_history(carma_v2x_msgs::msg::PathHistory& message){
-        
-        //crumbdata
-        for (size_t i = 0; i < message.crumb_data.points.size(); ++i){
-
-        }
-    }
 
 }

@@ -60,11 +60,6 @@ namespace cpp_message
 
         j2735_v2x_msgs::msg::PersonalDeviceUsageState decode_use_state(PersonalDeviceUsageState_t& message);
 
-        //Encode Optional
-        AccelerationSet4Way_t& encode_accel_set(carma_v2x_msgs::msg::AccelerationSet4Way& message);
-
-        PathHistory_t& encode_path_history(carma_v2x_msgs::msg::PathHistory& message);
-
         /**
          * @brief helper functions for BSM message encoding.
          * @param plainMessage contains BSM ros message.
