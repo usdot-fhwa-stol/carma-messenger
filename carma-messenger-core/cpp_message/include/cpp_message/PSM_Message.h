@@ -44,25 +44,45 @@ namespace cpp_message
         };
 
         /**
-         * @brief BSM message decoding function.
+         * @brief PSM message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
         boost::optional<carma_v2x_msgs::msg::PSM>decode_psm_message(std::vector<uint8_t>& binary_array);
-
+        /**
+         * @brief Converts AccelerationSet4Way asn1 message to carma_v2x_msg.
+         * @param message AccelerationSet4Way in asn.1 format.
+         * @return carma_v2x_message version for AccelerationSet4Way. 
+         */
         carma_v2x_msgs::msg::AccelerationSet4Way decode_accel_set_message(AccelerationSet4Way_t& message);
-
+        /**
+         * @brief Converts PathHistory asn1 message to carma_v2x_msg.
+         * @param message PathHistory in asn.1 format.
+         * @return carma_v2x_message version for PathHistory. 
+         */
         carma_v2x_msgs::msg::PathHistory decode_path_history_message(PathHistory_t& message);
-
+        /**
+         * @brief Converts PathPrediction asn1 message to carma_v2x_msg.
+         * @param message PathPrediction in asn.1 format.
+         * @return carma_v2x_message version for PathPrediction. 
+         */
         carma_v2x_msgs::msg::PathPrediction decode_path_prediction_message(PathPrediction_t& message);
-
+        /**
+         * @brief Converts PropelledInformation asn1 message to carma_v2x_msg.
+         * @param message PropelledInformation in asn.1 format.
+         * @return carma_v2x_message version for PropelledInformation. 
+         */
         j2735_v2x_msgs::msg::PropelledInformation decode_propulsion_message(PropelledInformation_t& message);
-
+        /**
+         * @brief Converts PersonalDeviceUsageState asn1 message to carma_v2x_msg.
+         * @param message PersonalDeviceUsageState in asn.1 format.
+         * @return carma_v2x_message version for PersonalDeviceUsageState. 
+         */
         j2735_v2x_msgs::msg::PersonalDeviceUsageState decode_use_state(PersonalDeviceUsageState_t& message);
 
         /**
-         * @brief helper functions for BSM message encoding.
-         * @param plainMessage contains BSM ros message.
+         * @brief helper functions for PSM message encoding.
+         * @param plainMessage contains PSM ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_psm_message(const carma_v2x_msgs::msg::PSM& plainMessage);

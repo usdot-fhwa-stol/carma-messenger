@@ -23,7 +23,8 @@ namespace cpp_message
 
     TEST(PSMTest, testdDecodePSM){
         //Convert hex string to byte message
-        std::vector<uint8_t> binary_input={ 0, 32, 95, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 255, 254, 125, 20, 170, 40, 156, 65, 154, 41, 192, 200, 28, 242, 208, 30, 27, 125, 60, 228, 78, 83, 161, 233, 233, 215, 34, 61, 81, 187, 192, 15, 195, 80, 112, 212, 31, 163, 56, 192, 27, 206, 158, 157, 90, 252, 132, 9, 91, 34, 55, 131, 34, 149, 228, 59, 194, 151, 143, 11, 74};
+        // std::vector<uint8_t> binary_input={ 0, 32, 95, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 192, 63, 71, 249, 127, 0, 0, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 255, 254, 125, 20, 170, 40, 156, 65, 154, 41, 192, 200, 28, 242, 208, 30, 27, 125, 60, 228, 78, 83, 161, 233, 233, 215, 34, 61, 81, 187, 192, 15, 195, 80, 112, 212, 31, 163, 56, 192, 27, 206, 158, 157, 90, 252, 132, 9, 91, 34, 55, 131, 34, 149, 228, 59, 194, 151, 143, 11, 74};
+        std::vector<uint8_t> binary_input={0, 32, 96, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 192, 63, 71, 249, 127, 16, 40, 233, 233, 213, 84, 2, 88, 229, 137, 196, 156, 78, 95, 82, 246, 255, 254, 125, 20, 170, 40, 156, 65, 154, 41, 192, 200, 28, 242, 208, 30, 27, 125, 60, 228, 78, 83, 161, 233, 233, 215, 34, 61, 81, 186, 64, 15, 195, 80, 112, 212, 31, 163, 56, 192, 27, 206, 158, 157, 90, 252, 132, 9, 91, 34, 52, 131, 34, 149, 36, 66, 65, 205, 34, 66, 210, 128};
         rclcpp::NodeOptions options;
         auto node = std::make_shared<rclcpp::Node>("base_node");
         
@@ -33,13 +34,18 @@ namespace cpp_message
         boost::optional<carma_v2x_msgs::msg::PSM> res = worker.decode_psm_message(binary_input);
         if(res) {
             auto psm_msg = res.get();
-
+            
+            EXPECT_EQ(int(psm_msg.basic_type.type), 1);
+            EXPECT_EQ(psm_msg.sec_mark.millisecond, 60998);
+            EXPECT_NEAR(psm_msg.position.latitude, 406680509 *0.0000001, 0.00001);
+            EXPECT_NEAR(psm_msg.position.longitude, -738318466 *0.0000001, 0.00001);
+            EXPECT_EQ(psm_msg.position.elevation, 4);
         }
 
         
     }
 
-    TEST(PSMTest, DISABLED_testEncodePSM){
+    TEST(PSMTest, testEncodePSM){
         
         carma_v2x_msgs::msg::PSM message;
 
@@ -69,8 +75,8 @@ namespace cpp_message
         carma_v2x_msgs::msg::Position3D position;
         position.latitude = 406680509 * (float)0.0000001;
         position.longitude = -738318466 * (float)0.0000001;
-        position.elevation_exists = false;
-        // position.elevation = 40 * 0.1;
+        position.elevation_exists = true;
+        position.elevation = 40 * 0.1;
 
         message.position = position;
 
@@ -312,8 +318,10 @@ namespace cpp_message
        boost::optional<std::vector<uint8_t>> b_array = worker.encode_psm_message(message);
        if(b_array){
         std::vector<uint8_t> array = b_array.get();
-        for(size_t i = 0; i < array.size(); i++) std::cout<< int(array[i])<< ", ";
+        // for(size_t i = 0; i < array.size(); i++) std::cout<< int(array[i])<< ", ";
+        EXPECT_FALSE(array.empty());
        }
 
+        
     }
 }

@@ -84,6 +84,9 @@ namespace cpp_message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::SPAT> spat_message_pub_;    //incoming spat message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::MapData> map_message_pub_; //incoming map message
 
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::PSM> psm_message_pub_;
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::PSM> psm_message_sub_;
+
             /**
             * @brief Initialize pub/sub and params.
             */
@@ -125,6 +128,12 @@ namespace cpp_message
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_bsm_message_callback(j2735_v2x_msgs::msg::BSM::UniquePtr msg);
+            /**
+            * @brief function callback when there is an outgoing psm message.
+            * @param msg container with PSM ros message. Passed to an encoding function in PSM_Message class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
+            void outbound_psm_message_callback(carma_v2x_msgs::msg::PSM::UniquePtr msg);
 
         public:
 
