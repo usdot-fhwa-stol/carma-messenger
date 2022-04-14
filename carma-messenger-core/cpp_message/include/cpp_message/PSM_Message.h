@@ -26,11 +26,6 @@ namespace cpp_message
 
         int PSM_TEST_ID_ = 32;
 
-        // Conversion constants between asn.1 message spec and carma message
-        float latitude_conversion_const_ = 0.0000001;
-        float longitude_conversion_const_ = 0.0000001;
-        float elevation_conversion_const_ = 0.1;
-
         public:
 
         /**

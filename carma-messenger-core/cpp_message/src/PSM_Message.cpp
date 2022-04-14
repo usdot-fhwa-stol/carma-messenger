@@ -69,7 +69,7 @@ namespace cpp_message
                 position.latitude = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
             }
             else{
-                float latitude = message->value.choice.PersonalSafetyMessage.position.lat * latitude_conversion_const_;
+                long latitude = message->value.choice.PersonalSafetyMessage.position.lat;
                 if (latitude >= j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX){
                     RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "Latitude greater than max, defaulting to max latitude");
                     latitude = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
@@ -86,7 +86,7 @@ namespace cpp_message
                 position.longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
             }
             else{
-                float longitude = message->value.choice.PersonalSafetyMessage.position.Long * longitude_conversion_const_;
+                long longitude = message->value.choice.PersonalSafetyMessage.position.Long;
                 if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
                     RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "Longitude greater than max, defaulting to max longitude");
                     longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
@@ -105,7 +105,7 @@ namespace cpp_message
             }
             else{
                 position.elevation_exists = true;
-                float elevation = *message->value.choice.PersonalSafetyMessage.position.elevation * elevation_conversion_const_;
+                long elevation = *message->value.choice.PersonalSafetyMessage.position.elevation;
                 if(elevation > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
                     RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "Elevation is greater than max, using max elevation");
                     elevation = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
@@ -632,20 +632,20 @@ namespace cpp_message
             //Latitude
         if(!plainMessage.position.latitude || plainMessage.position.latitude == j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
 
-            message->value.choice.PersonalSafetyMessage.position.lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE/ latitude_conversion_const_;
+            message->value.choice.PersonalSafetyMessage.position.lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
         
         }
         else{
-            long lat = (float(plainMessage.position.latitude)/float(latitude_conversion_const_));
-            if(lat < j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN/ float(latitude_conversion_const_)){
+            long lat = plainMessage.position.latitude;
+            if(lat < j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN){
 
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding latitude value less than min, setting to min");
-                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN /float(latitude_conversion_const_);
+                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN;
             }
-            else if(lat > j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX / float(latitude_conversion_const_)){
+            else if(lat > j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX){
 
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding latitude value greater than max, setting to max");
-                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX / float(latitude_conversion_const_);
+                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
             }
             
             message->value.choice.PersonalSafetyMessage.position.lat = lat;  
@@ -654,17 +654,17 @@ namespace cpp_message
         
             //Longitude
         if(!plainMessage.position.longitude || plainMessage.position.longitude == j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
-            message->value.choice.PersonalSafetyMessage.position.Long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE / longitude_conversion_const_;
+            message->value.choice.PersonalSafetyMessage.position.Long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
         }
         else{
-            long longitude = ((float) plainMessage.position.longitude / (float) longitude_conversion_const_);
-            if(longitude < j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN /(float) longitude_conversion_const_){
+            long longitude = plainMessage.position.longitude;
+            if(longitude < j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding longitude value less than min, setting to min");
-                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN /(float) longitude_conversion_const_;
+                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN;
             }
-            else if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX /(float) longitude_conversion_const_){
+            else if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding longitude value greater than max, setting to max");
-                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX /(float) longitude_conversion_const_;
+                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
             }
             
             message->value.choice.PersonalSafetyMessage.position.Long = longitude;
@@ -674,17 +674,17 @@ namespace cpp_message
         DSRC_Elevation_t* elevation_ptr = new DSRC_Elevation_t;
         if(!plainMessage.position.elevation_exists || plainMessage.position.elevation == j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE){
             
-            *elevation_ptr = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE /(float) elevation_conversion_const_;
+            *elevation_ptr = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
         }
         else{
-            long elevation = plainMessage.position.elevation / elevation_conversion_const_;
-            if(elevation < j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN /(float) elevation_conversion_const_){
+            long elevation = plainMessage.position.elevation;
+            if(elevation < j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding elevation value less than min, setting to min");
-                elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN /(float) elevation_conversion_const_;
+                elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN;
             }
-            else if (elevation > j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX /(float) elevation_conversion_const_){
+            else if (elevation > j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX){
                 RCLCPP_WARN_STREAM(node_logging_->get_logger(),"Encoding elevation value greater than max, setting to max");
-                elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX /(float) elevation_conversion_const_;
+                elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX;
             }
             *elevation_ptr = elevation;
             
