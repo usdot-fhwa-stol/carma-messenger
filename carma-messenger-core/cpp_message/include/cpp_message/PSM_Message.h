@@ -30,8 +30,6 @@ namespace cpp_message
         float latitude_conversion_const_ = 0.0000001;
         float longitude_conversion_const_ = 0.0000001;
         float elevation_conversion_const_ = 0.1;
-        float velocity_conversion_const_ = 0.02;
-        float heading_conversion_const_ = 0.0125;
 
         public:
 
@@ -48,25 +46,25 @@ namespace cpp_message
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
          */
-        boost::optional<carma_v2x_msgs::msg::PSM>decode_psm_message(std::vector<uint8_t>& binary_array);
+        boost::optional<j2735_v2x_msgs::msg::PSM>decode_psm_message(std::vector<uint8_t>& binary_array);
         /**
          * @brief Converts AccelerationSet4Way asn1 message to carma_v2x_msg.
          * @param message AccelerationSet4Way in asn.1 format.
          * @return carma_v2x_message version for AccelerationSet4Way. 
          */
-        carma_v2x_msgs::msg::AccelerationSet4Way decode_accel_set_message(AccelerationSet4Way_t& message);
+        j2735_v2x_msgs::msg::AccelerationSet4Way decode_accel_set_message(AccelerationSet4Way_t& message);
         /**
          * @brief Converts PathHistory asn1 message to carma_v2x_msg.
          * @param message PathHistory in asn.1 format.
          * @return carma_v2x_message version for PathHistory. 
          */
-        carma_v2x_msgs::msg::PathHistory decode_path_history_message(PathHistory_t& message);
+        j2735_v2x_msgs::msg::PathHistory decode_path_history_message(PathHistory_t& message);
         /**
          * @brief Converts PathPrediction asn1 message to carma_v2x_msg.
          * @param message PathPrediction in asn.1 format.
          * @return carma_v2x_message version for PathPrediction. 
          */
-        carma_v2x_msgs::msg::PathPrediction decode_path_prediction_message(PathPrediction_t& message);
+        j2735_v2x_msgs::msg::PathPrediction decode_path_prediction_message(PathPrediction_t& message);
         /**
          * @brief Converts PropelledInformation asn1 message to carma_v2x_msg.
          * @param message PropelledInformation in asn.1 format.
@@ -85,7 +83,7 @@ namespace cpp_message
          * @param plainMessage contains PSM ros message.
          * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
          */
-        boost::optional<std::vector<uint8_t>> encode_psm_message(const carma_v2x_msgs::msg::PSM& plainMessage);
+        boost::optional<std::vector<uint8_t>> encode_psm_message(const j2735_v2x_msgs::msg::PSM& plainMessage);
 
     };
 }

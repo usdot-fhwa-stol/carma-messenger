@@ -60,8 +60,8 @@ namespace cpp_message
         bsm_message_sub_=create_subscription<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm",5, std::bind(&Node::outbound_bsm_message_callback, this, std_ph::_1));
         spat_message_pub_ = create_publisher<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 5);
         map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 5);
-        psm_message_pub_ = create_publisher<carma_v2x_msgs::msg::PSM>("incoming_psm", 5);
-        psm_message_sub_ = create_subscription<carma_v2x_msgs::msg::PSM>("outgoing_psm", 5, std::bind(&Node::outbound_psm_message_callback, this, std_ph::_1));
+        psm_message_pub_ = create_publisher<j2735_v2x_msgs::msg::PSM>("incoming_psm", 5);
+        psm_message_sub_ = create_subscription<j2735_v2x_msgs::msg::PSM>("outgoing_psm", 5, std::bind(&Node::outbound_psm_message_callback, this, std_ph::_1));
 
         // Return success if everthing initialized successfully
         return CallbackReturn::SUCCESS;
@@ -355,7 +355,7 @@ namespace cpp_message
         }
     }
 
-    void Node::outbound_psm_message_callback(carma_v2x_msgs::msg::PSM::UniquePtr msg)
+    void Node::outbound_psm_message_callback(j2735_v2x_msgs::msg::PSM::UniquePtr msg)
     {//encode and publish as outbound binary message
         PSM_Message encode(this->get_node_logging_interface());
         auto res = encode.encode_psm_message(*msg.get());
