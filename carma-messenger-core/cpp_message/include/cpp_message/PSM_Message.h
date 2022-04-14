@@ -48,31 +48,31 @@ namespace cpp_message
          */
         boost::optional<j2735_v2x_msgs::msg::PSM>decode_psm_message(std::vector<uint8_t>& binary_array);
         /**
-         * @brief Converts AccelerationSet4Way asn1 message to carma_v2x_msg.
+         * @brief Converts AccelerationSet4Way asn1 message to j2735_v2x_msg.
          * @param message AccelerationSet4Way in asn.1 format.
          * @return carma_v2x_message version for AccelerationSet4Way. 
          */
         j2735_v2x_msgs::msg::AccelerationSet4Way decode_accel_set_message(AccelerationSet4Way_t& message);
         /**
-         * @brief Converts PathHistory asn1 message to carma_v2x_msg.
+         * @brief Converts PathHistory asn1 message to j2735_v2x_msg.
          * @param message PathHistory in asn.1 format.
          * @return carma_v2x_message version for PathHistory. 
          */
         j2735_v2x_msgs::msg::PathHistory decode_path_history_message(PathHistory_t& message);
         /**
-         * @brief Converts PathPrediction asn1 message to carma_v2x_msg.
+         * @brief Converts PathPrediction asn1 message to j2735_v2x_msg.
          * @param message PathPrediction in asn.1 format.
          * @return carma_v2x_message version for PathPrediction. 
          */
         j2735_v2x_msgs::msg::PathPrediction decode_path_prediction_message(PathPrediction_t& message);
         /**
-         * @brief Converts PropelledInformation asn1 message to carma_v2x_msg.
+         * @brief Converts PropelledInformation asn1 message to j2735_v2x_msg.
          * @param message PropelledInformation in asn.1 format.
          * @return carma_v2x_message version for PropelledInformation. 
          */
         j2735_v2x_msgs::msg::PropelledInformation decode_propulsion_message(PropelledInformation_t& message);
         /**
-         * @brief Converts PersonalDeviceUsageState asn1 message to carma_v2x_msg.
+         * @brief Converts PersonalDeviceUsageState asn1 message to j2735_v2x_msg.
          * @param message PersonalDeviceUsageState in asn.1 format.
          * @return carma_v2x_message version for PersonalDeviceUsageState. 
          */
