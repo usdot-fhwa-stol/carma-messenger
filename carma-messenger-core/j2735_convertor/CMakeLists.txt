@@ -36,6 +36,7 @@ include_directories(
 # Build
 ament_auto_add_library(j2735_conversions
   src/bsm_convertor.cpp
+  src/psm_convertor.cpp
   src/spat_convertor.cpp
   src/map_convertor.cpp
   src/control_message_convertor.cpp
