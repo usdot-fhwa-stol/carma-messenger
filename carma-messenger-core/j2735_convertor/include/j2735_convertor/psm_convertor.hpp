@@ -1,6 +1,6 @@
 #pragma once
 /*
- * Copyright (C) 2018-2021 LEIDOS.
+ * Copyright (C) 2022 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -233,6 +233,11 @@ class PSMConvertor
     float elevation_conversion_const_ = 0.1;
     float velocity_conversion_const_ = 0.02;
     float heading_conversion_const_ = 0.0125;
+    float confidence_conversion_const_ = 0.5;
+    float radius_of_curvature_const_ = 0.01;
+    float time_offset_cost_ = 0.01;
+    float semi_major_cost_ = 0.05;
+    float pos_accuracy_orientation_const_ = 0.0054932479;
 
   };
 }  // namespace j2735_convertor
