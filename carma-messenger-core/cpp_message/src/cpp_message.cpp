@@ -26,6 +26,7 @@
 #include "cpp_message/BSM_Message.h"
 #include "cpp_message/SPAT_Message.h"
 #include "cpp_message/Map_Message.h"
+#include "cpp_message/PSM_Message.h"
 
 
 namespace cpp_message
@@ -59,6 +60,8 @@ namespace cpp_message
         bsm_message_sub_=create_subscription<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm",5, std::bind(&Node::outbound_bsm_message_callback, this, std_ph::_1));
         spat_message_pub_ = create_publisher<j2735_v2x_msgs::msg::SPAT>("incoming_j2735_spat", 5);
         map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 5);
+        psm_message_pub_ = create_publisher<j2735_v2x_msgs::msg::PSM>("incoming_j2735_psm", 5);
+        psm_message_sub_ = create_subscription<j2735_v2x_msgs::msg::PSM>("outgoing_j2735_psm", 5, std::bind(&Node::outbound_psm_message_callback, this, std_ph::_1));
 
         // Return success if everthing initialized successfully
         return CallbackReturn::SUCCESS;
@@ -194,6 +197,18 @@ namespace cpp_message
             else
             {
                 RCLCPP_WARN_STREAM( get_logger(), "Cannot decode MapData Message");
+            }
+        }
+        else if(msg->message_type=="PSM"){
+            std::vector<uint8_t> array = msg->content;
+            PSM_Message decode(this->get_node_logging_interface());
+            auto output = decode.decode_psm_message(array);
+            if(output)
+            {
+                psm_message_pub_->publish(output.get());
+            }
+            else{
+                RCLCPP_WARN_STREAM(get_logger(), "Cannot decode PSM Message");
             }
         }
     }
@@ -339,6 +354,29 @@ namespace cpp_message
             RCLCPP_WARN_STREAM( get_logger(), "Cannot encode BSM message.");
         }
     }
+
+    void Node::outbound_psm_message_callback(j2735_v2x_msgs::msg::PSM::UniquePtr msg)
+    {//encode and publish as outbound binary message
+        PSM_Message encode(this->get_node_logging_interface());
+        auto res = encode.encode_psm_message(*msg.get());
+        if(res)
+        {
+            //copy to byte array msg
+            carma_driver_msgs::msg::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=this->now();
+            output.message_type="PSM";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_->publish(output);
+        }
+        else
+        {
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode PSM message.");
+        }
+
+    }
+
     boost::optional<j2735_v2x_msgs::msg::TrafficControlMessage> Node::decode_geofence_control(std::vector<uint8_t>& binary_array)
     {
         j2735_v2x_msgs::msg::TrafficControlMessage output;
