@@ -136,7 +136,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
       convert(in_msg.accel_set, out_msg.accel_set);
     }
 
-    if(in_msg.HAS_PATH_PREDICTION & in_msg.presence_vector) {
+    if(in_msg.HAS_PATH_PREDICTION == j2735_v2x_msgs::msg::PSM::HAS_PATH_PREDICTION & in_msg.presence_vector) {
       convert(in_msg.path_prediction, out_msg.path_prediction);
     }
 
@@ -146,63 +146,63 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
     convert(in_msg.heading, out_msg.heading);
     convert(in_msg.speed, out_msg.speed);
 
-    if(in_msg.HAS_PATH_HISTORY & in_msg.presence_vector) {
+    if((in_msg.HAS_PATH_HISTORY == j2735_v2x_msgs::msg::PSM::HAS_PATH_HISTORY) & in_msg.presence_vector) {
         convert(in_msg.path_history, out_msg.path_history);
     }
 
-    if(in_msg.HAS_ATTACHMENT_RADIUS & in_msg.presence_vector) {
+    if(in_msg.HAS_ATTACHMENT_RADIUS == j2735_v2x_msgs::msg::PSM::HAS_ATTACHMENT_RADIUS & in_msg.presence_vector) {
         convert(in_msg.attachment_radius, out_msg.attachment_radius);
     }
 
-    if(in_msg.HAS_ATTACHMENT & in_msg.presence_vector) {
+    if(in_msg.HAS_ATTACHMENT == j2735_v2x_msgs::msg::PSM::HAS_ATTACHMENT & in_msg.presence_vector) {
       out_msg.attachment = in_msg.attachment;
     }
 
-    if(in_msg.HAS_ANIMAL_TYPE & in_msg.presence_vector) {
+    if(in_msg.HAS_ANIMAL_TYPE == j2735_v2x_msgs::msg::PSM::HAS_ANIMAL_TYPE & in_msg.presence_vector) {
       out_msg.animal_type = in_msg.animal_type;
     }
 
-    if(in_msg.HAS_CLUSTER_SIZE & in_msg.presence_vector) {
+    if(in_msg.HAS_CLUSTER_SIZE == j2735_v2x_msgs::msg::PSM::HAS_CLUSTER_SIZE & in_msg.presence_vector) {
       out_msg.cluster_size = in_msg.cluster_size;
     }
 
-    if(in_msg.HAS_CLUSTER_RADIUS & in_msg.presence_vector) {
+    if(in_msg.HAS_CLUSTER_RADIUS == j2735_v2x_msgs::msg::PSM::HAS_CLUSTER_RADIUS & in_msg.presence_vector) {
       out_msg.cluster_radius = in_msg.cluster_radius;
     }
 
-    if(in_msg.HAS_CROSS_REQUEST & in_msg.presence_vector) {
+    if(in_msg.HAS_CROSS_REQUEST == j2735_v2x_msgs::msg::PSM::HAS_CROSS_REQUEST & in_msg.presence_vector) {
       out_msg.cross_request = in_msg.cross_request;
     }
 
-    if(in_msg.HAS_CROSS_STATE & in_msg.presence_vector) {
+    if(in_msg.HAS_CROSS_STATE == j2735_v2x_msgs::msg::PSM::HAS_CROSS_STATE & in_msg.presence_vector) {
       out_msg.cross_state = in_msg.cross_state;
     }
 
-    if(in_msg.HAS_USE_STATE & in_msg.presence_vector) {
+    if(in_msg.HAS_USE_STATE == j2735_v2x_msgs::msg::PSM::HAS_USE_STATE & in_msg.presence_vector) {
       out_msg.use_state = in_msg.use_state;
     }
 
-    if(in_msg.HAS_PROPULSION & in_msg.presence_vector) {
+    if(in_msg.HAS_PROPULSION == j2735_v2x_msgs::msg::PSM::HAS_PROPULSION & in_msg.presence_vector) {
       out_msg.propulsion = in_msg.propulsion;
     }
 
-    if(in_msg.HAS_EVENT_RESPONDER_TYPE & in_msg.presence_vector) {
+    if(in_msg.HAS_EVENT_RESPONDER_TYPE == j2735_v2x_msgs::msg::PSM::HAS_EVENT_RESPONDER_TYPE & in_msg.presence_vector) {
         out_msg.event_responder_type = in_msg.event_responder_type;
     }
     
-    if(in_msg.HAS_ACTIVITY_TYPE & in_msg.presence_vector){
+    if(in_msg.HAS_ACTIVITY_TYPE == j2735_v2x_msgs::msg::PSM::HAS_ACTIVITY_TYPE & in_msg.presence_vector){
       out_msg.activity_type = in_msg.activity_type;
     }
 
-    if(in_msg.HAS_ACTIVITY_SUB_TYPE & in_msg.presence_vector){
+    if(in_msg.HAS_ACTIVITY_SUB_TYPE == j2735_v2x_msgs::msg::PSM::HAS_ACTIVITY_SUB_TYPE & in_msg.presence_vector){
       out_msg.activity_sub_type = in_msg.activity_sub_type;
     }
 
-    if(in_msg.HAS_ASSIST_TYPE & in_msg.presence_vector) {
+    if(in_msg.HAS_ASSIST_TYPE == j2735_v2x_msgs::msg::PSM::HAS_ASSIST_TYPE & in_msg.presence_vector) {
       out_msg.assist_type = in_msg.assist_type;
     }
 
-    if(in_msg.HAS_SIZING & in_msg.presence_vector) {
+    if(in_msg.HAS_SIZING == j2735_v2x_msgs::msg::PSM::HAS_SIZING & in_msg.presence_vector) {
       out_msg.sizing = in_msg.sizing;
     }
 
