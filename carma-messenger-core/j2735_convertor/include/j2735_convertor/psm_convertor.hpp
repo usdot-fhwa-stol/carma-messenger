@@ -235,8 +235,8 @@ class PSMConvertor
     float heading_conversion_const_ = 0.0125;
     float confidence_conversion_const_ = 0.5;
     float radius_of_curvature_const_ = 0.01;
-    float time_offset_cost_ = 0.01;
-    float semi_major_cost_ = 0.05;
+    float time_offset_const_ = 0.01;
+    float semi_major_const_ = 0.05;
     float pos_accuracy_orientation_const_ = 0.0054932479;
 
   };
