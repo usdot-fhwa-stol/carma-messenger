@@ -46,6 +46,26 @@ namespace j2735_convertor
     // BSM Publisher
     outbound_j2735_bsm_pub_ = create_publisher<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
 
+    // J2735 PSM Subscriber
+    auto j2735_psm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_psm_options;
+    j2735_psm_options.callback_group = j2735_psm_cb_group;
+    j2735_psm_sub_ = create_subscription<j2735_v2x_msgs::msg::PSM>("incoming_j2735_psm", 100, std::bind(&Node::j2735PsmHandler, this, std_ph::_1), j2735_psm_options);
+
+    // PSM Publisher
+    converted_psm_pub_ = create_publisher<carma_v2x_msgs::msg::PSM>("incoming_psm", 100);
+
+    // Outgoing J2735 PSM Subscriber
+    auto outbound_psm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_psm_options;
+    outbound_psm_options.callback_group = outbound_psm_cb_group;
+    outbound_psm_sub_ = create_subscription<carma_v2x_msgs::msg::PSM>("outgoing_psm", 1, std::bind(&Node::PsmHandler,
+                                          this, std_ph::_1), outbound_psm_options);  // Queue size of 1 as we should never publish outdated PSMs
+
+    // PSM Publisher
+    outbound_j2735_psm_pub_ = create_publisher<j2735_v2x_msgs::msg::PSM>("outgoing_j2735_psm", 1);  // Queue size of 1 as we should never publish outdated PSMs
+
+
     // J2735 SPAT Subscriber
     auto j2735_spat_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     rclcpp::SubscriptionOptions j2735_spat_options;
@@ -110,6 +130,20 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::BSM converted_msg;
     BSMConvertor::convert(*message, converted_msg);  // Convert message
     converted_bsm_pub_->publish(converted_msg);       // Publish converted message
+  }
+
+  void Node::PsmHandler(const carma_v2x_msgs::msg::PSM::UniquePtr  message)
+  {
+    j2735_v2x_msgs::msg::PSM j2735_msg;
+    PSMConvertor::convert(*message, j2735_msg);  // Convert message
+    outbound_j2735_psm_pub_->publish(j2735_msg);  // Publish converted message
+  }
+
+  void Node::j2735PsmHandler(j2735_v2x_msgs::msg::PSM::UniquePtr message)
+  {
+    carma_v2x_msgs::msg::PSM converted_msg;
+    PSMConvertor::convert(*message, converted_msg);  // Convert message
+    converted_psm_pub_->publish(converted_msg);       // Publish converted message
   }
 
   void Node::j2735SpatHandler(j2735_v2x_msgs::msg::SPAT::UniquePtr message)
