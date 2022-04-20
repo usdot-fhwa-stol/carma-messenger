@@ -132,6 +132,20 @@ namespace j2735_convertor
     converted_bsm_pub_->publish(converted_msg);       // Publish converted message
   }
 
+  void Node::PsmHandler(const carma_v2x_msgs::msg::PSM::UniquePtr  message)
+  {
+    j2735_v2x_msgs::msg::PSM j2735_msg;
+    PSMConvertor::convert(*message, j2735_msg);  // Convert message
+    outbound_j2735_psm_pub_->publish(j2735_msg);  // Publish converted message
+  }
+
+  void Node::j2735PsmHandler(j2735_v2x_msgs::msg::PSM::UniquePtr message)
+  {
+    carma_v2x_msgs::msg::PSM converted_msg;
+    PSMConvertor::convert(*message, converted_msg);  // Convert message
+    converted_psm_pub_->publish(converted_msg);       // Publish converted message
+  }
+
   void Node::j2735SpatHandler(j2735_v2x_msgs::msg::SPAT::UniquePtr message)
   {
     carma_v2x_msgs::msg::SPAT converted_msg;

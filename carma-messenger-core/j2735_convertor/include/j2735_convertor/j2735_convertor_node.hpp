@@ -100,14 +100,14 @@ namespace j2735_convertor
     void j2735BsmHandler(j2735_v2x_msgs::msg::BSM::UniquePtr message);
 
     /**
-     * @brief Converts carma_v2x_msgs::msg::BSM messages to j2735_v2x_msgs::msg::BSM and publishes the converted messages
+     * @brief Converts carma_v2x_msgs::msg::PSM messages to j2735_v2x_msgs::msg::PSM and publishes the converted messages
      *
      * @param message The message to convert
      */
     void PsmHandler(const carma_v2x_msgs::msg::PSM::UniquePtr  message);
 
     /**
-     * @brief Converts j2735_v2x_msgs::msg::BSM messages to carma_v2x_msgs::msg::BSM and publishes the converted messages
+     * @brief Converts j2735_v2x_msgs::msg::PSM messages to carma_v2x_msgs::msg::PSM and publishes the converted messages
      *
      * @param message The message to convert
      */
