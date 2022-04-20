@@ -86,7 +86,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
     out_msg.initial_position.lon.unavailable = 0;
     out_msg.initial_position.elevation.unavailable = 0;
 
-    // in_msg.initial_position.speed.transmission.transmission_state = out_msg.initial_position.speed.transmission.transmission_state;
+    out_msg.initial_position.speed.transmission = in_msg.initial_position.speed.transmission;
 
     convert(in_msg.initial_position.heading, out_msg.initial_position.heading);
     convert(in_msg.initial_position.speed.speed, out_msg.initial_position.speed.speed);
@@ -114,15 +114,15 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, 
 };
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg) {
-        out_msg.heading = in_msg.heading * heading_conversion_const_;
-};
-
-void PSMConvertor::convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg) {
         out_msg.heading = in_msg.heading / heading_conversion_const_;
 };
 
+void PSMConvertor::convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg) {
+        out_msg.heading = in_msg.heading * heading_conversion_const_;
+};
+
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::Velocity& in_msg, carma_v2x_msgs::msg::Velocity& out_msg) {
-        out_msg.velocity = in_msg.velocity * velocity_conversion_const_;
+        out_msg.velocity = in_msg.velocity / velocity_conversion_const_;
 };
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::Velocity& in_msg, j2735_v2x_msgs::msg::Velocity& out_msg) {
@@ -143,8 +143,8 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
     convert(in_msg.accuracy, out_msg.accuracy);
     convert(in_msg.position, out_msg.position);
 
-        convert(in_msg.heading, out_msg.heading);
-        convert(in_msg.speed, out_msg.speed);
+    convert(in_msg.heading, out_msg.heading);
+    convert(in_msg.speed, out_msg.speed);
 
     if(in_msg.HAS_PATH_HISTORY) {
         convert(in_msg.path_history, out_msg.path_history);
