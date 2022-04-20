@@ -46,7 +46,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msgs::msg::PSM& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msgs::msg::PSM& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::PSM into a j2735_v2x_msgs::msg::PSM
@@ -56,32 +56,12 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::PSM& in_msg, j2735_v2x_msgs::msg::PSM& out_msg);
+     static void convert(const carma_v2x_msgs::msg::PSM& in_msg, j2735_v2x_msgs::msg::PSM& out_msg);
 
   private:
     ////
     // Convert j2735_msgs to cav_msgs
     ////
-
-    /**
-    * @brief Convert the contents of a j2735_v2x_msgs::msg::Position3D into a carma_v2x_msgs::msg::Position3D
-    *
-    * @param in_msg The message to be converted
-    * @param out_msg The message to store the output
-    *
-    * Unit conversions and presence flags are handled
-    */
-     void convert(const j2735_v2x_msgs::msg::Position3D& in_msg, carma_v2x_msgs::msg::Position3D& out_msg);
-
-    /**
-    * @brief Convert the contents of a j2735_v2x_msgs::msg::Position3D into a carma_v2x_msgs::msg::Position3D
-    *
-    * @param in_msg The message to be converted
-    * @param out_msg The message to store the output
-    *
-    * Unit conversions and presence flags are handled
-    */
-     void convert(const carma_v2x_msgs::msg::Position3D& in_msg, j2735_v2x_msgs::msg::Position3D& out_msg);
 
     /**
     * @brief Convert the contents of a j2735_v2x_msgs::msg::AccelerationSet4Way into a carma_v2x_msgs::msg::AccelerationSet4Way
@@ -91,7 +71,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg, carma_v2x_msgs::msg::AccelerationSet4Way& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg, carma_v2x_msgs::msg::AccelerationSet4Way& out_msg);
 
     /**
     * @brief Convert the contents of a j2735_v2x_msgs::msg::PositionalAccuracy into a carma_v2x_msgs::msg::PositionalAccuracy
@@ -101,7 +81,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::PositionalAccuracy& in_msg, carma_v2x_msgs::msg::PositionalAccuracy& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::PositionalAccuracy& in_msg, carma_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
     /**
     * @brief Convert the contents of a j2735_v2x_msgs::msg::PathPrediction into carma_v2x_msgs::msg::PathPrediction
@@ -111,7 +91,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::PathPrediction& in_msg, carma_v2x_msgs::msg::PathPrediction& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::PathPrediction& in_msg, carma_v2x_msgs::msg::PathPrediction& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::PathHistory into a j2735_v2x_msgs::msg::PathHistory
@@ -121,7 +101,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma_v2x_msgs::msg::PathHistory& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma_v2x_msgs::msg::PathHistory& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::AttachmentRadius into a j2735_v2x_msgs::msg::AttachmentRadius
@@ -131,7 +111,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, carma_v2x_msgs::msg::AttachmentRadius& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, carma_v2x_msgs::msg::AttachmentRadius& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::AttachmentRadius into a j2735_v2x_msgs::msg::AttachmentRadius
@@ -141,7 +121,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::AttachmentRadius into a j2735_v2x_msgs::msg::AttachmentRadius
@@ -151,7 +131,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg);
+     static void convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::AttachmentRadius into a j2735_v2x_msgs::msg::AttachmentRadius
@@ -161,7 +141,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const j2735_v2x_msgs::msg::Velocity& in_msg, carma_v2x_msgs::msg::Velocity& out_msg);
+     static void convert(const j2735_v2x_msgs::msg::Velocity& in_msg, carma_v2x_msgs::msg::Velocity& out_msg);
 
     ////
     // Convert cav_msgs to j2735_msgs
@@ -175,7 +155,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::AttachmentRadius& in_msg, j2735_v2x_msgs::msg::AttachmentRadius& out_msg);
+     static void convert(const carma_v2x_msgs::msg::AttachmentRadius& in_msg, j2735_v2x_msgs::msg::AttachmentRadius& out_msg);
 
 
     /**
@@ -186,7 +166,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::PathHistory& in_msg, j2735_v2x_msgs::msg::PathHistory& out_msg);
+     static void convert(const carma_v2x_msgs::msg::PathHistory& in_msg, j2735_v2x_msgs::msg::PathHistory& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::PathHistory into a j2735_v2x_msgs::msg::PathHistory
@@ -196,7 +176,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x_msgs::msg::PathPrediction& out_msg);
+     static void convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x_msgs::msg::PathPrediction& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::AccelerationSet4Way into a j2735_v2x_msgs::msg::AccelerationSet4Way
@@ -206,7 +186,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::AccelerationSet4Way& in_msg, j2735_v2x_msgs::msg::AccelerationSet4Way& out_msg);
+     static void convert(const carma_v2x_msgs::msg::AccelerationSet4Way& in_msg, j2735_v2x_msgs::msg::AccelerationSet4Way& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::PositionalAccuracy into a j2735_v2x_msgs::msg::PositionalAccuracy
@@ -216,7 +196,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::PositionalAccuracy& in_msg, j2735_v2x_msgs::msg::PositionalAccuracy& out_msg);
+     static void convert(const carma_v2x_msgs::msg::PositionalAccuracy& in_msg, j2735_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
     /**
     * @brief Convert the contents of a carma_v2x_msgs::msg::PSMCoreData into a j2735_v2x_msgs::msg::PSMCoreData
@@ -226,18 +206,7 @@ class PSMConvertor
     *
     * Unit conversions and presence flags are handled
     */
-     void convert(const carma_v2x_msgs::msg::Velocity& in_msg, j2735_v2x_msgs::msg::Velocity& out_msg);
-
-    float latitude_conversion_const_ = 0.0000001;
-    float longitude_conversion_const_ = 0.0000001;
-    float elevation_conversion_const_ = 0.1;
-    float velocity_conversion_const_ = 0.02;
-    float heading_conversion_const_ = 0.0125;
-    float confidence_conversion_const_ = 0.5;
-    float radius_of_curvature_const_ = 0.01;
-    float time_offset_const_ = 0.01;
-    float semi_major_const_ = 0.05;
-    float pos_accuracy_orientation_const_ = 0.0054932479;
+     static void convert(const carma_v2x_msgs::msg::Velocity& in_msg, j2735_v2x_msgs::msg::Velocity& out_msg);
 
   };
 }  // namespace j2735_convertor
