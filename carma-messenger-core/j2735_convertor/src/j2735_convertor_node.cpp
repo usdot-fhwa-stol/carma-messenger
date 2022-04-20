@@ -46,6 +46,26 @@ namespace j2735_convertor
     // BSM Publisher
     outbound_j2735_bsm_pub_ = create_publisher<j2735_v2x_msgs::msg::BSM>("outgoing_j2735_bsm", 1);  // Queue size of 1 as we should never publish outdated BSMs
 
+    // J2735 PSM Subscriber
+    auto j2735_psm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j2735_psm_options;
+    j2735_psm_options.callback_group = j2735_psm_cb_group;
+    j2735_psm_sub_ = create_subscription<j2735_v2x_msgs::msg::PSM>("incoming_j2735_psm", 100, std::bind(&Node::j2735PsmHandler, this, std_ph::_1), j2735_psm_options);
+
+    // PSM Publisher
+    converted_psm_pub_ = create_publisher<carma_v2x_msgs::msg::PSM>("incoming_psm", 100);
+
+    // Outgoing J2735 PSM Subscriber
+    auto outbound_psm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_psm_options;
+    outbound_psm_options.callback_group = outbound_psm_cb_group;
+    outbound_psm_sub_ = create_subscription<carma_v2x_msgs::msg::PSM>("outgoing_psm", 1, std::bind(&Node::PsmHandler,
+                                          this, std_ph::_1), outbound_psm_options);  // Queue size of 1 as we should never publish outdated PSMs
+
+    // PSM Publisher
+    outbound_j2735_psm_pub_ = create_publisher<j2735_v2x_msgs::msg::PSM>("outgoing_j2735_psm", 1);  // Queue size of 1 as we should never publish outdated PSMs
+
+
     // J2735 SPAT Subscriber
     auto j2735_spat_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     rclcpp::SubscriptionOptions j2735_spat_options;

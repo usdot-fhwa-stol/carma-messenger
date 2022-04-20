@@ -24,6 +24,7 @@
 #include <carma_ros2_utils/carma_lifecycle_node.hpp>
 
 #include <j2735_convertor/bsm_convertor.hpp>
+#include <j2735_convertor/psm_convertor.hpp>
 #include <j2735_convertor/control_message_convertor.hpp>
 #include <j2735_convertor/control_request_convertor.hpp>
 #include <j2735_convertor/map_convertor.hpp>
@@ -55,9 +56,11 @@ namespace j2735_convertor
   private:
     // Subscribers
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::BSM> j2735_bsm_sub_;
+    carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::PSM> j2735_psm_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::SPAT> j2735_spat_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::MapData> j2735_map_sub_;
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::BSM> outbound_bsm_sub_;
+    carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::PSM> outbound_psm_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> j2735_geofence_control_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::TrafficControlRequest> j2735_geofence_request_sub_;
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::TrafficControlMessage> outbound_geofence_control_sub_;
@@ -65,9 +68,11 @@ namespace j2735_convertor
 
     // Publishers
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::BSM> converted_bsm_pub_;
+    carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::PSM> converted_psm_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::SPAT> converted_spat_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MapData> converted_map_pub_;
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::BSM> outbound_j2735_bsm_pub_;
+    carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::PSM> outbound_j2735_psm_pub_;
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> outbound_j2735_geofence_control_pub_;
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlRequest> outbound_j2735_geofence_request_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::TrafficControlMessage> converted_geofence_control_pub_;
@@ -93,6 +98,20 @@ namespace j2735_convertor
      * @param message The message to convert
      */
     void j2735BsmHandler(j2735_v2x_msgs::msg::BSM::UniquePtr message);
+
+    /**
+     * @brief Converts carma_v2x_msgs::msg::BSM messages to j2735_v2x_msgs::msg::BSM and publishes the converted messages
+     *
+     * @param message The message to convert
+     */
+    void PsmHandler(const carma_v2x_msgs::msg::PSM::UniquePtr  message);
+
+    /**
+     * @brief Converts j2735_v2x_msgs::msg::BSM messages to carma_v2x_msgs::msg::BSM and publishes the converted messages
+     *
+     * @param message The message to convert
+     */
+    void j2735PsmHandler(j2735_v2x_msgs::msg::PSM::UniquePtr message);
 
     /**
      * @brief Converts j2735_v2x_msgs::msg::SPAT messages to carma_v2x_msgs::msg::SPAT and publishes the converted messages
