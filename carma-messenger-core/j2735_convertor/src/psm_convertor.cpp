@@ -69,7 +69,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PositionalAccuracy& in_msg
       in_msg.orientation, units::DEG_360_OVER_65535_PER_DEG, out_msg.presence_vector,
       carma_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_AVAILABLE,
       j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE);
-};
+}
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma_v2x_msgs::msg::PathHistory& out_msg)
 {
@@ -107,36 +107,36 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
         out_msg.crumb_data.points.push_back(j);
     }
 
-};
+}
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, carma_v2x_msgs::msg::AttachmentRadius& out_msg) {
     out_msg.attachment_radius = in_msg.attachment_radius;
-};
+}
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg) {
         out_msg.heading = in_msg.heading / heading_conversion_const_;
-};
+}
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg) {
         out_msg.heading = in_msg.heading * heading_conversion_const_;
-};
+}
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::Velocity& in_msg, carma_v2x_msgs::msg::Velocity& out_msg) {
         out_msg.velocity = in_msg.velocity / velocity_conversion_const_;
-};
+}
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::Velocity& in_msg, j2735_v2x_msgs::msg::Velocity& out_msg) {
         out_msg.velocity = in_msg.velocity * velocity_conversion_const_;
-};
+}
 
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msgs::msg::PSM& out_msg)
 {
-    if(in_msg.HAS_ACCEL_SET) {
+    if(in_msg.HAS_ACCEL_SET & in_msg.presence_vector) {
       convert(in_msg.accel_set, out_msg.accel_set);
     }
 
-    if(in_msg.HAS_PATH_PREDICTION) {
+    if(in_msg.HAS_PATH_PREDICTION & in_msg.presence_vector) {
       convert(in_msg.path_prediction, out_msg.path_prediction);
     }
 
@@ -146,63 +146,63 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
     convert(in_msg.heading, out_msg.heading);
     convert(in_msg.speed, out_msg.speed);
 
-    if(in_msg.HAS_PATH_HISTORY) {
+    if(in_msg.HAS_PATH_HISTORY & in_msg.presence_vector) {
         convert(in_msg.path_history, out_msg.path_history);
     }
 
-    if(in_msg.HAS_ATTACHMENT_RADIUS) {
+    if(in_msg.HAS_ATTACHMENT_RADIUS & in_msg.presence_vector) {
         convert(in_msg.attachment_radius, out_msg.attachment_radius);
     }
 
-    if(in_msg.HAS_ATTACHMENT) {
+    if(in_msg.HAS_ATTACHMENT & in_msg.presence_vector) {
       out_msg.attachment = in_msg.attachment;
     }
 
-    if(in_msg.HAS_ANIMAL_TYPE) {
+    if(in_msg.HAS_ANIMAL_TYPE & in_msg.presence_vector) {
       out_msg.animal_type = in_msg.animal_type;
     }
 
-    if(in_msg.HAS_CLUSTER_SIZE) {
+    if(in_msg.HAS_CLUSTER_SIZE & in_msg.presence_vector) {
       out_msg.cluster_size = in_msg.cluster_size;
     }
 
-    if(in_msg.HAS_CLUSTER_RADIUS) {
+    if(in_msg.HAS_CLUSTER_RADIUS & in_msg.presence_vector) {
       out_msg.cluster_radius = in_msg.cluster_radius;
     }
 
-    if(in_msg.HAS_CROSS_REQUEST) {
+    if(in_msg.HAS_CROSS_REQUEST & in_msg.presence_vector) {
       out_msg.cross_request = in_msg.cross_request;
     }
 
-    if(in_msg.HAS_CROSS_STATE) {
+    if(in_msg.HAS_CROSS_STATE & in_msg.presence_vector) {
       out_msg.cross_state = in_msg.cross_state;
     }
 
-    if(in_msg.HAS_USE_STATE) {
+    if(in_msg.HAS_USE_STATE & in_msg.presence_vector) {
       out_msg.use_state = in_msg.use_state;
     }
 
-    if(in_msg.HAS_PROPULSION) {
+    if(in_msg.HAS_PROPULSION & in_msg.presence_vector) {
       out_msg.propulsion = in_msg.propulsion;
     }
 
-    if(in_msg.HAS_EVENT_RESPONDER_TYPE) {
+    if(in_msg.HAS_EVENT_RESPONDER_TYPE & in_msg.presence_vector) {
         out_msg.event_responder_type = in_msg.event_responder_type;
     }
     
-    if(in_msg.HAS_ACTIVITY_TYPE){
+    if(in_msg.HAS_ACTIVITY_TYPE & in_msg.presence_vector){
       out_msg.activity_type = in_msg.activity_type;
     }
 
-    if(in_msg.HAS_ACTIVITY_SUB_TYPE){
+    if(in_msg.HAS_ACTIVITY_SUB_TYPE & in_msg.presence_vector){
       out_msg.activity_sub_type = in_msg.activity_sub_type;
     }
 
-    if(in_msg.HAS_ASSIST_TYPE) {
+    if(in_msg.HAS_ASSIST_TYPE & in_msg.presence_vector) {
       out_msg.assist_type = in_msg.assist_type;
     }
 
-    if(in_msg.HAS_SIZING) {
+    if(in_msg.HAS_SIZING & in_msg.presence_vector) {
       out_msg.sizing = in_msg.sizing;
     }
 
@@ -302,6 +302,8 @@ void PSMConvertor::convert(const carma_v2x_msgs::msg::PathHistory& in_msg, j2735
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::PSM& in_msg, j2735_v2x_msgs::msg::PSM& out_msg)
 {
+    out_msg.presence_vector = in_msg.presence_vector;
+
     if(in_msg.HAS_ACCEL_SET) {
       convert(in_msg.accel_set, out_msg.accel_set);
     }
