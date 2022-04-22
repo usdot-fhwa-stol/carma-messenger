@@ -17,7 +17,7 @@ version: '2'
 
 services:
   carma-messenger-ui:
-    image: usdotfhwastol/carma-messenger-ui:carma-system-4.0.0
+    image: usdotfhwastoldev/carma-messenger-ui:develop
     network_mode: host
     container_name: carma-messenger-ui
     environment:
