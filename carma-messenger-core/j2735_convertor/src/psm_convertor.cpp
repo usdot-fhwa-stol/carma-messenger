@@ -26,7 +26,7 @@ namespace j2735_convertor
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathPrediction& in_msg, carma_v2x_msgs::msg::PathPrediction& out_msg)
 {
   out_msg.radius_of_curvature = in_msg.radius_of_curvature / units::CENTI_DEG_PER_DEG;
-  out_msg.confidence = in_msg.confidence / 200;
+  out_msg.confidence = (double) in_msg.confidence / 200;
 }
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg, carma_v2x_msgs::msg::AccelerationSet4Way& out_msg)
