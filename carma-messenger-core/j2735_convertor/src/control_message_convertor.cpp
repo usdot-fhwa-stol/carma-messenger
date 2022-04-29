@@ -14,7 +14,7 @@
  * the License.
  */
 
-#include <j2735_convertor/control_message_convertor.hpp>
+#include <j2735_convertor/control_message_convertor.h>
 #include <ros/ros.h>
 #include <iostream>
 
