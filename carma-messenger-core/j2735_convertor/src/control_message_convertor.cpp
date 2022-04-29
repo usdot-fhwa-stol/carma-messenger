@@ -307,9 +307,9 @@ void convert(const j2735_msgs::TrafficControlSchedule& in_msg, cav_msgs::Traffic
 void convert(const cav_msgs::DailySchedule& in_msg, j2735_msgs::DailySchedule& out_msg)
 {
   ros::Time begin(in_msg.begin.sec , in_msg.begin.nanosec);
-  out_msg.begin = begin.seconds() / units::SEC_PER_MIN;
+  out_msg.begin = begin.toSec() / units::SEC_PER_MIN;
   ros::Time duration(in_msg.duration.sec  , in_msg.duration.nanosec);
-  out_msg.duration = duration.seconds() / units::SEC_PER_MIN;
+  out_msg.duration = duration.toSec() / units::SEC_PER_MIN;
 }
 
 void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg)
@@ -333,11 +333,11 @@ void convert(const cav_msgs::PathNode& in_msg, j2735_msgs::PathNode& out_msg)
 void convert(const cav_msgs::RepeatParams& in_msg, j2735_msgs::RepeatParams& out_msg)
 {
   ros::Time offset(in_msg.offset.sec , in_msg.offset.nanosec);
-  out_msg.offset =  offset.seconds() / units::SEC_PER_MIN;
+  out_msg.offset =  offset.toSec() / units::SEC_PER_MIN;
   ros::Time period(in_msg.period.sec  , in_msg.period.nanosec);
-  out_msg.period = period.seconds()/ units::SEC_PER_MIN;
+  out_msg.period = period.toSec()/ units::SEC_PER_MIN;
   ros::Time span(in_msg.span.sec , in_msg.span.nanosec);
-  out_msg.span = span.seconds()/ units::SEC_PER_MIN;
+  out_msg.span = span.toSec()/ units::SEC_PER_MIN;
 }
 
 void convert(const cav_msgs::TrafficControlDetail& in_msg, j2735_msgs::TrafficControlDetail& out_msg)
@@ -419,7 +419,7 @@ void convert(const cav_msgs::TrafficControlGeometry& in_msg, j2735_msgs::Traffic
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
   ros::Time reftime(in_msg.reftime.sec , in_msg.reftime.nanosec);
-  out_msg.reftime = reftime.seconds() / units::SEC_PER_MIN;
+  out_msg.reftime = reftime.toSec() / units::SEC_PER_MIN;
   out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.refelv = (int32_t)((in_msg.refelv + 409.6) * units::DECA_M_PER_M); // handle offset
@@ -476,7 +476,7 @@ void convert(const cav_msgs::TrafficControlMessageV01& in_msg, j2735_msgs::Traff
   // # updated EpochMins
   // time updated
   ros::Time updated(in_msg.updated.sec , in_msg.updated.nanosec);
-  out_msg.updated = updated.seconds() / units::SEC_PER_MIN;
+  out_msg.updated = updated.toSec() / units::SEC_PER_MIN;
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
   // j2735_msgs/TrafficControlPackage package
@@ -527,13 +527,13 @@ void convert(const cav_msgs::TrafficControlParams& in_msg, j2735_msgs::TrafficCo
 void convert(const cav_msgs::TrafficControlSchedule& in_msg, j2735_msgs::TrafficControlSchedule& out_msg)
 {
   ros::Time start(in_msg.start.sec, in_msg.start.nanosec);
-  out_msg.start = start.seconds()/ units::SEC_PER_MIN;
+  out_msg.start = start.toSec()/ units::SEC_PER_MIN;
 
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
   {
     ros::Time end(in_msg.end.sec , in_msg.end.nanosec);
-    out_msg.end = end.seconds()/ units::SEC_PER_MIN;
+    out_msg.end = end.toSec()/ units::SEC_PER_MIN;
   }
 
   out_msg.dow_exists = in_msg.dow_exists;
