@@ -15,7 +15,7 @@
  */
 
 #include <j2735_convertor/control_message_convertor.hpp>
-#include <rclcpp/time.hpp>
+#include <ros/ros.h>
 #include <iostream>
 
 namespace j2735_convertor
@@ -28,8 +28,8 @@ namespace geofence_control
 
 void convert(const j2735_v2x_msgs::msg::DailySchedule& in_msg, carma_v2x_msgs::msg::DailySchedule& out_msg)
 {
-  out_msg.begin = rclcpp::Duration(in_msg.begin * units::SEC_PER_MIN, 0);
-  out_msg.duration = rclcpp::Duration(in_msg.duration * units::SEC_PER_MIN,0);
+  out_msg.begin = ros::Duration(in_msg.begin * units::SEC_PER_MIN, 0);
+  out_msg.duration = ros::Duration(in_msg.duration * units::SEC_PER_MIN,0);
 }
 
 void convert(const j2735_v2x_msgs::msg::PathNode& in_msg, carma_v2x_msgs::msg::PathNode& out_msg)
@@ -52,9 +52,9 @@ void convert(const j2735_v2x_msgs::msg::PathNode& in_msg, carma_v2x_msgs::msg::P
 
 void convert(const j2735_v2x_msgs::msg::RepeatParams& in_msg, carma_v2x_msgs::msg::RepeatParams& out_msg)
 {
-  out_msg.offset = rclcpp::Duration(in_msg.offset * units::SEC_PER_MIN, 0);
-  out_msg.period = rclcpp::Duration(in_msg.period * units::SEC_PER_MIN, 0);
-  out_msg.span = rclcpp::Duration(in_msg.span * units::SEC_PER_MIN, 0);
+  out_msg.offset = ros::Duration(in_msg.offset * units::SEC_PER_MIN, 0);
+  out_msg.period = ros::Duration(in_msg.period * units::SEC_PER_MIN, 0);
+  out_msg.span = ros::Duration(in_msg.span * units::SEC_PER_MIN, 0);
 }
 
 void convert(const j2735_v2x_msgs::msg::TrafficControlDetail& in_msg, carma_v2x_msgs::msg::TrafficControlDetail& out_msg)
@@ -148,7 +148,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlGeometry& in_msg, carma_v2
     
   }
 
-  out_msg.reftime = rclcpp::Time(sec, 0);
+  out_msg.reftime = ros::Time(sec, 0);
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.refelv = (float)in_msg.refelv / units::DECA_M_PER_M - (float) 409.6; //handle offset
@@ -204,7 +204,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_
 
   // # updated EpochMins
   // time updated
-  out_msg.updated = rclcpp::Time(in_msg.updated * units::SEC_PER_MIN, 0);
+  out_msg.updated = ros::Time(in_msg.updated * units::SEC_PER_MIN, 0);
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
   // j2735_msgs/TrafficControlPackage package
@@ -254,7 +254,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlParams& in_msg, carma_v2x_
 
 void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2x_msgs::msg::TrafficControlSchedule& out_msg)
 {
-  out_msg.start = rclcpp::Time(in_msg.start * units::SEC_PER_MIN, 0);
+  out_msg.start = ros::Time(in_msg.start * units::SEC_PER_MIN, 0);
 
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
@@ -272,7 +272,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
       
     }
     
-    out_msg.end = rclcpp::Time(sec, 0);
+    out_msg.end = ros::Time(sec, 0);
     
   }
 
@@ -306,9 +306,9 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
 
 void convert(const carma_v2x_msgs::msg::DailySchedule& in_msg, j2735_v2x_msgs::msg::DailySchedule& out_msg)
 {
-  rclcpp::Time begin(in_msg.begin.sec , in_msg.begin.nanosec);
+  ros::Time begin(in_msg.begin.sec , in_msg.begin.nanosec);
   out_msg.begin = begin.seconds() / units::SEC_PER_MIN;
-  rclcpp::Time duration(in_msg.duration.sec  , in_msg.duration.nanosec);
+  ros::Time duration(in_msg.duration.sec  , in_msg.duration.nanosec);
   out_msg.duration = duration.seconds() / units::SEC_PER_MIN;
 }
 
@@ -332,11 +332,11 @@ void convert(const carma_v2x_msgs::msg::PathNode& in_msg, j2735_v2x_msgs::msg::P
 
 void convert(const carma_v2x_msgs::msg::RepeatParams& in_msg, j2735_v2x_msgs::msg::RepeatParams& out_msg)
 {
-  rclcpp::Time offset(in_msg.offset.sec , in_msg.offset.nanosec);
+  ros::Time offset(in_msg.offset.sec , in_msg.offset.nanosec);
   out_msg.offset =  offset.seconds() / units::SEC_PER_MIN;
-  rclcpp::Time period(in_msg.period.sec  , in_msg.period.nanosec);
+  ros::Time period(in_msg.period.sec  , in_msg.period.nanosec);
   out_msg.period = period.seconds()/ units::SEC_PER_MIN;
-  rclcpp::Time span(in_msg.span.sec , in_msg.span.nanosec);
+  ros::Time span(in_msg.span.sec , in_msg.span.nanosec);
   out_msg.span = span.seconds()/ units::SEC_PER_MIN;
 }
 
@@ -418,7 +418,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlGeometry& in_msg, j2735_v2
 {
   out_msg.proj = in_msg.proj;
   out_msg.datum = in_msg.datum;
-  rclcpp::Time reftime(in_msg.reftime.sec , in_msg.reftime.nanosec);
+  ros::Time reftime(in_msg.reftime.sec , in_msg.reftime.nanosec);
   out_msg.reftime = reftime.seconds() / units::SEC_PER_MIN;
   out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
@@ -475,7 +475,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_
 
   // # updated EpochMins
   // time updated
-  rclcpp::Time updated(in_msg.updated.sec , in_msg.updated.nanosec);
+  ros::Time updated(in_msg.updated.sec , in_msg.updated.nanosec);
   out_msg.updated = updated.seconds() / units::SEC_PER_MIN;
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
@@ -526,13 +526,13 @@ void convert(const carma_v2x_msgs::msg::TrafficControlParams& in_msg, j2735_v2x_
 
 void convert(const carma_v2x_msgs::msg::TrafficControlSchedule& in_msg, j2735_v2x_msgs::msg::TrafficControlSchedule& out_msg)
 {
-  rclcpp::Time start(in_msg.start.sec, in_msg.start.nanosec);
+  ros::Time start(in_msg.start.sec, in_msg.start.nanosec);
   out_msg.start = start.seconds()/ units::SEC_PER_MIN;
 
   out_msg.end_exists = in_msg.end_exists;
   if(out_msg.end_exists)
   {
-    rclcpp::Time end(in_msg.end.sec , in_msg.end.nanosec);
+    ros::Time end(in_msg.end.sec , in_msg.end.nanosec);
     out_msg.end = end.seconds()/ units::SEC_PER_MIN;
   }
 
