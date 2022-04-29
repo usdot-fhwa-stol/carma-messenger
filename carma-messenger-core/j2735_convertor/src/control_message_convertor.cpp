@@ -172,7 +172,7 @@ void convert(const j2735_msgs::TrafficControlMessage& in_msg, cav_msgs::TrafficC
       // Not implemented yet
       break;
     case j2735_msgs::TrafficControlMessage::TCMV01 : 
-      convert(in_msg.tcm_v01, out_msg.tcm_v01);
+      convert(in_msg.tcmV01, out_msg.tcmV01);
       break;
     default : 
       // Throw Error?
@@ -443,7 +443,7 @@ void convert(const cav_msgs::TrafficControlMessage& in_msg, j2735_msgs::TrafficC
       // Not implemented yet
       break;
     case cav_msgs::TrafficControlMessage::TCMV01 : 
-      convert(in_msg.tcm_v01, out_msg.tcm_v01);
+      convert(in_msg.tcmV01, out_msg.tcmV01);
       break;
     default : 
       // Throw Error?
