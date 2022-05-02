@@ -745,6 +745,16 @@ namespace cpp_message
                 output.minvehocc = message.choice.minvehocc;
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE;
                 break;
+            case TrafficControlDetail_PR_maxplatoonsize:
+                // 	maxplatoonsize INTEGER (1..63),
+                output.maxplatoonsize = message.choice.maxplatoonsize;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxplatoonhdwy:
+                // 	maxplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output.maxplatoonhdwy = message.choice.maxplatoonhdwy;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONHDWY_CHOICE;
+                break;
             default:
                 break;
         }
@@ -1427,6 +1437,19 @@ namespace cpp_message
                 output->present = TrafficControlDetail_PR_minvehocc;
                 // 	minvehocc INTEGER (1..15), 
                 output->choice.minvehocc = msg.minvehocc;
+            break;
+            }
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxplatoonsize;
+                // 	maxplatoonsize INTEGER (1..63),
+                output->choice.maxplatoonsize = msg.maxplatoonsize;
+            break;
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minplatoonhdwy;
+                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output->choice.minplatoonhdwy = msg.minplatoonhdwy;
             break;
             }
             default:

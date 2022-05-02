@@ -82,7 +82,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
     out_msg.initial_position.presence_vector |= in_msg.initial_position.presence_vector;
     out_msg.initial_position.lat.latitude = in_msg.initial_position.lat.latitude / units::TENTH_MICRO_DEG_PER_DEG;
     out_msg.initial_position.lon.longitude = in_msg.initial_position.lon.longitude / units::TENTH_MICRO_DEG_PER_DEG;
-    out_msg.initial_position.elevation.elevation = in_msg.initial_position.elevation.elevation / units::DECA_M_PER_M;
+    out_msg.initial_position.elevation.elevation = in_msg.initial_position.elevation.elevation / units::DECI_M_PER_M;
     out_msg.initial_position.utc_time = in_msg.initial_position.utc_time;
     out_msg.initial_position.time_confidence = in_msg.initial_position.time_confidence;
     out_msg.initial_position.pos_confidence = in_msg.initial_position.pos_confidence;
@@ -120,7 +120,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
     
     if(i.elevation_offset.offset != j2735_v2x_msgs::msg::VertOffsetB12::UNAVAILABLE){
       j.elevation_offset.unavailable = false;
-      j.elevation_offset.offset = i.elevation_offset.offset / units::DECA_M_PER_M;
+      j.elevation_offset.offset = i.elevation_offset.offset / units::DECI_M_PER_M;
     }
     else{
       j.elevation_offset.unavailable = true;
@@ -169,11 +169,11 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
 }
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, carma_v2x_msgs::msg::AttachmentRadius& out_msg) {
-    out_msg.attachment_radius = in_msg.attachment_radius / units::DECA_M_PER_M;
+    out_msg.attachment_radius = in_msg.attachment_radius / units::DECI_M_PER_M;
 }
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::AttachmentRadius& in_msg, j2735_v2x_msgs::msg::AttachmentRadius& out_msg) {
-    out_msg.attachment_radius = in_msg.attachment_radius * units::DECA_M_PER_M;
+    out_msg.attachment_radius = in_msg.attachment_radius * units::DECI_M_PER_M;
 }
 
 void PSMConvertor::convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg) {
@@ -233,7 +233,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
   out_msg.position.longitude = in_msg.position.longitude / units::TENTH_MICRO_DEG_PER_DEG;
   if(in_msg.position.elevation_exists){
     out_msg.position.elevation_exists = true;
-    out_msg.position.elevation = in_msg.position.elevation / units::DECA_M_PER_M;
+    out_msg.position.elevation = in_msg.position.elevation / units::DECI_M_PER_M;
   }
   
 
@@ -368,7 +368,7 @@ void PSMConvertor::convert(const carma_v2x_msgs::msg::PathHistory& in_msg, j2735
     out_msg.initial_position.presence_vector |= in_msg.initial_position.presence_vector;
     out_msg.initial_position.lat.latitude = in_msg.initial_position.lat.latitude * units::TENTH_MICRO_DEG_PER_DEG;
     out_msg.initial_position.lon.longitude = in_msg.initial_position.lon.longitude * units::TENTH_MICRO_DEG_PER_DEG;
-    out_msg.initial_position.elevation.elevation = in_msg.initial_position.elevation.elevation * units::DECA_M_PER_M;
+    out_msg.initial_position.elevation.elevation = in_msg.initial_position.elevation.elevation * units::DECI_M_PER_M;
     out_msg.initial_position.utc_time = in_msg.initial_position.utc_time;
     out_msg.initial_position.time_confidence = in_msg.initial_position.time_confidence;
     out_msg.initial_position.pos_confidence = in_msg.initial_position.pos_confidence;
@@ -400,7 +400,7 @@ void PSMConvertor::convert(const carma_v2x_msgs::msg::PathHistory& in_msg, j2735
     }
     
     if(!i.elevation_offset.unavailable){
-      j.elevation_offset.offset = i.elevation_offset.offset * units::DECA_M_PER_M;
+      j.elevation_offset.offset = i.elevation_offset.offset * units::DECI_M_PER_M;
     }
     else{
       j.elevation_offset.offset = j2735_v2x_msgs::msg::VertOffsetB12::UNAVAILABLE;
@@ -463,7 +463,7 @@ void PSMConvertor::convert(const carma_v2x_msgs::msg::PSM& in_msg, j2735_v2x_msg
 
     out_msg.position.latitude = in_msg.position.latitude * units::TENTH_MICRO_DEG_PER_DEG;
     out_msg.position.longitude = in_msg.position.longitude * units::TENTH_MICRO_DEG_PER_DEG;
-    out_msg.position.elevation = in_msg.position.elevation * units::DECA_M_PER_M;
+    out_msg.position.elevation = in_msg.position.elevation * units::DECI_M_PER_M;
 
     convert(in_msg.heading, out_msg.heading);
     convert(in_msg.speed, out_msg.speed);
