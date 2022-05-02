@@ -58,7 +58,7 @@ namespace cpp_message
             }
 
             //Temporary ID asn.1 definition: 4 octet random device identifier OCTET STRING (SIZE(4))
-            for(int i = 0; i < 4; i++){
+            for(int i = 0; i < message->value.choice.PersonalSafetyMessage.id.size; i++){
                 output.id.id.push_back(message->value.choice.PersonalSafetyMessage.id.buf[i]);   
             }
  
@@ -101,7 +101,7 @@ namespace cpp_message
             if(!message->value.choice.PersonalSafetyMessage.position.elevation){
                 position.elevation_exists = false;
                 RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "elevation Unavailable");
-                position.elevation = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
+                position.elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
             }
             else{
                 position.elevation_exists = true;
@@ -184,7 +184,7 @@ namespace cpp_message
                 output.cluster_size.cluster_size = *message->value.choice.PersonalSafetyMessage.clusterSize;
             }
 
-            if(*message->value.choice.PersonalSafetyMessage.clusterRadius){
+            if(message->value.choice.PersonalSafetyMessage.clusterRadius){
                 output.presence_vector |= j2735_v2x_msgs::msg::PSM::HAS_CLUSTER_RADIUS;
                 int cluster_radius = *message->value.choice.PersonalSafetyMessage.clusterRadius;
                 if(cluster_radius > j2735_v2x_msgs::msg::PersonalClusterRadius::CLUSTER_RADIUS_MAX){
@@ -199,7 +199,7 @@ namespace cpp_message
                 output.presence_vector |= j2735_v2x_msgs::msg::PSM::HAS_EVENT_RESPONDER_TYPE;
                 output.event_responder_type.type = *message->value.choice.PersonalSafetyMessage.eventResponderType;
             }
-            
+
             // PublicSafetyandRoadWorkerActivity 
             if(!message->value.choice.PersonalSafetyMessage.activityType){
                 output.activity_type.activities = j2735_v2x_msgs::msg::PublicSafetyAndRoadWorkerActivity::UNAVAILABLE;
@@ -371,44 +371,51 @@ namespace cpp_message
             }
 
             // pos accuracy 
-            if(message.crumbData.list.array[i]->posAccuracy->semiMajor && message.crumbData.list.array[i]->posAccuracy->semiMinor){
-                
-                float semi_major = message.crumbData.list.array[i]->posAccuracy->semiMajor;
-                if( semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
-                    RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy semi-major is greater than max, defined as unavailable - Value not assigned");
-                    semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
-                }
-                else if(semi_major < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
-                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy semi-major less than min, defaulted to min");
-                    semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
-                }
-                point.pos_accuracy.semi_major = semi_major;
+            if(message.crumbData.list.array[i]->posAccuracy){
+                if(message.crumbData.list.array[i]->posAccuracy->semiMajor && message.crumbData.list.array[i]->posAccuracy->semiMinor){
+                    
+                    float semi_major = message.crumbData.list.array[i]->posAccuracy->semiMajor;
+                    if( semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
+                        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy semi-major is greater than max, defined as unavailable - Value not assigned");
+                        semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+                    }
+                    else if(semi_major < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
+                        RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy semi-major less than min, defaulted to min");
+                        semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
+                    }
+                    point.pos_accuracy.semi_major = semi_major;
 
-                float semi_minor = message.crumbData.list.array[i]->posAccuracy->semiMinor;
-                if(semi_minor > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
-                    RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy semi-minor is greater than max, defined as unavailable - Value not assigned");
-                    semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
-                }
-                else if(semi_minor < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
-                    RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy semi-minor less than min, defaulted to min");
-                    semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
-                }
-                point.pos_accuracy.semi_minor = semi_minor;
+                    int semi_minor = message.crumbData.list.array[i]->posAccuracy->semiMinor;
+                    if(semi_minor > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
+                        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy semi-minor is greater than max, defined as unavailable - Value not assigned");
+                        semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+                    }
+                    else if(semi_minor < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
+                        RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy semi-minor less than min, defaulted to min");
+                        semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
+                    }
+                    point.pos_accuracy.semi_minor = semi_minor;
 
-            }
-
-            if(message.crumbData.list.array[i]->posAccuracy->orientation){
-                
-                float orientation = message.crumbData.list.array[i]->posAccuracy->orientation;
-                if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
-                    RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy orientation is greater than max, defined as unavailable - Value not assigned");
                 }
                 else{
-                    if(orientation < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN){
-                        RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy orientation less than min, defaulted to min");
-                        orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN;
+                    point.pos_accuracy.semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+                    point.pos_accuracy.semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+                }
+
+
+                if(message.crumbData.list.array[i]->posAccuracy->orientation){
+                    
+                    float orientation = message.crumbData.list.array[i]->posAccuracy->orientation;
+                    if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
+                        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy orientation is greater than max, defined as unavailable - Value not assigned");
                     }
-                    point.pos_accuracy.orientation = orientation;
+                    else{
+                        if(orientation < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN){
+                            RCLCPP_WARN_STREAM(node_logging_->get_logger(),"PathHistory accuracy orientation less than min, defaulted to min");
+                            orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN;
+                        }
+                        point.pos_accuracy.orientation = orientation;
+                    }
                 }
             }
 
@@ -432,7 +439,7 @@ namespace cpp_message
             crumb_data.points.push_back(point);
             
         }
-        
+
         output.crumb_data = crumb_data;
         
         if(message.initialPosition!=nullptr){
