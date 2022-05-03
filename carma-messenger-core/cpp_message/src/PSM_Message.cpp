@@ -374,7 +374,7 @@ namespace cpp_message
             if(message.crumbData.list.array[i]->posAccuracy){
                 if(message.crumbData.list.array[i]->posAccuracy->semiMajor && message.crumbData.list.array[i]->posAccuracy->semiMinor){
                     
-                    float semi_major = message.crumbData.list.array[i]->posAccuracy->semiMajor;
+                    int semi_major = message.crumbData.list.array[i]->posAccuracy->semiMajor;
                     if( semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
                         RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy semi-major is greater than max, defined as unavailable - Value not assigned");
                         semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
@@ -405,7 +405,7 @@ namespace cpp_message
 
                 if(message.crumbData.list.array[i]->posAccuracy->orientation){
                     
-                    float orientation = message.crumbData.list.array[i]->posAccuracy->orientation;
+                    int orientation = message.crumbData.list.array[i]->posAccuracy->orientation;
                     if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
                         RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory accuracy orientation is greater than max, defined as unavailable - Value not assigned");
                     }
@@ -420,7 +420,7 @@ namespace cpp_message
             }
 
             if(message.crumbData.list.array[i]->heading){
-                float heading = *message.crumbData.list.array[i]->heading;
+                int heading = *message.crumbData.list.array[i]->heading;
                 
                 if(heading > j2735_v2x_msgs::msg::CoarseHeading::MAX){
                     RCLCPP_WARN_STREAM(node_logging_->get_logger(), "PathHistory heading greater than max, defined as unavailable");
