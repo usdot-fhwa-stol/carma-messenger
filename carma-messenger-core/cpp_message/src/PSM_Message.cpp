@@ -106,13 +106,13 @@ namespace cpp_message
             else{
                 position.elevation_exists = true;
                 long elevation = *message->value.choice.PersonalSafetyMessage.position.elevation;
-                if(elevation > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
+                if(elevation > j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX){
                     RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "Elevation is greater than max, using max elevation");
-                    elevation = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
+                    elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX;
                 }
-                else if (elevation < j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN){
+                else if (elevation < j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN){
                     RCLCPP_DEBUG_STREAM(node_logging_->get_logger(), "Elevation in less than min, using min elevation");
-                    elevation = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN;
+                    elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MIN;
                 }
                 position.elevation = elevation;
             }
