@@ -750,11 +750,11 @@ namespace cpp_message
                 output.maxplatoonsize = message.choice.maxplatoonsize;
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
                 break;
-            case TrafficControlDetail_PR_maxplatoonhdwy:
-                // 	maxplatoonhdwy INTEGER (0..2047), -- tenths of meters
-                output.maxplatoonhdwy = message.choice.maxplatoonhdwy;
-                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONHDWY_CHOICE;
-                break;
+            // case TrafficControlDetail_PR_minplatoonhdwy:
+            //     // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+            //     output.minplatoonhdwy = message.choice.minplatoonhdwy;
+            //     output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
+            //     break;
             default:
                 break;
         }
@@ -1290,6 +1290,7 @@ namespace cpp_message
 
     TrafficControlDetail_t* Node::encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg)
     {
+        RCLCPP_INFO(get_logger(), "Checking choice");
         TrafficControlDetail_t* output;
         output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
         switch(msg.choice)
@@ -1441,17 +1442,19 @@ namespace cpp_message
             }
             case j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE:
             {
+                RCLCPP_INFO(get_logger(), "Encoding maxplatoonsize");
                 output->present = TrafficControlDetail_PR_maxplatoonsize;
                 // 	maxplatoonsize INTEGER (1..63),
                 output->choice.maxplatoonsize = msg.maxplatoonsize;
             break;
-            case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
-            {
-                output->present = TrafficControlDetail_PR_minplatoonhdwy;
-                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
-                output->choice.minplatoonhdwy = msg.minplatoonhdwy;
-            break;
             }
+            // case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
+            // {
+            //     output->present = TrafficControlDetail_PR_minplatoonhdwy;
+            //     // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+            //     output->choice.minplatoonhdwy = msg.minplatoonhdwy;
+            // break;
+            // }
             default:
                 output->present = TrafficControlDetail_PR_NOTHING;
             break;
