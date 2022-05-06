@@ -19,10 +19,10 @@
 
 TEST(CppMessageTest, testDecodeControlMsgPackage)
 {
-    std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                                    0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 193, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                                                     
+    std::vector<uint8_t> binar_input_package_only = {0, 245, 72, 48, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 
+                                                    20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    2, 241, 133, 58, 22, 30, 220, 193, 0, 0, 0, 0, 0, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};                                                    
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
 
@@ -47,11 +47,19 @@ TEST(CppMessageTest, testDecodeControlMsgPackage)
     
 }
 
+
 TEST(CppMessageTest, testDecodeControlMsgParams)
 {
-    std::vector<uint8_t> binar_input_params_only = {0, 245, 67, 40, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 0,
-                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 56, 0, 47, 0, 0, 0, 1, 226,
-                                                    64, 0, 0, 0, 1, 226, 64, 56, 1, 1, 1, 1, 1, 1, 1, 0, 0, 128, 32, 2, 0, 128, 28, 88};
+    std::vector<uint8_t> binar_input_params_only = {0, 245, 128, 183, 60, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 
+                                                    193, 0, 0, 0, 0, 0, 0, 4, 189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 
+                                                    189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 192, 0, 0, 0, 120, 144, 0, 0, 0, 0, 1, 47, 
+                                                    64, 0, 0, 32, 8, 0, 128, 32, 7, 22, 57, 211, 70, 158, 104, 52, 243, 65, 133, 7, 
+                                                    60, 59, 120, 108, 202, 131, 135, 45, 250, 144, 115, 233, 203, 78, 236, 238, 244, 
+                                                    209, 167, 154, 13, 60, 208, 97, 65, 207, 14, 222, 27, 50, 160, 201, 135, 167, 93, 
+                                                    168, 57, 244, 229, 167, 118, 112, 0, 0, 0, 0, 75, 214, 180, 157, 32, 6, 180, 157, 
+                                                    32, 34, 0, 32, 0, 0, 4, 7, 128, 1, 128, 1, 128, 0, 128, 224, 0, 96, 0, 96, 0, 32, 0};
+
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
 
@@ -65,9 +73,9 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
     ASSERT_EQ(msg.reqseq, 111);
     ASSERT_EQ(msg.msgnum, 5);
     ASSERT_EQ(msg.msgtot, 6);
-    ASSERT_FALSE(msg.geometry_exists);
+    ASSERT_TRUE(msg.geometry_exists);
     ASSERT_TRUE(msg.params_exists);
-    ASSERT_FALSE(msg.package_exists);
+    ASSERT_TRUE(msg.package_exists);
     ASSERT_EQ(msg.params.detail.choice, j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE);
     ASSERT_EQ(msg.params.schedule.between[0].begin, 1);
 
@@ -78,12 +86,15 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
 
 TEST(CppMessageTest, testDecodeControlMsgGeometry)
 {
-    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 120, 36, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 0, 0, 
-                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 57, 206, 154, 52, 243, 65, 
-                                                    167, 154, 12, 40, 57, 225, 219, 195, 102, 84, 28, 57, 111, 212, 131, 159, 78, 
-                                                    90, 119, 103, 119, 166, 141, 60, 208, 105, 230, 131, 10, 14, 120, 118, 240, 217, 
-                                                    149, 6, 76, 61, 58, 237, 65, 207, 167, 45, 59, 179, 128, 0, 0, 0, 2, 94, 181, 164, 
-                                                    233, 0, 53, 164, 233, 1, 16, 1, 0, 16, 30, 0, 6, 0, 6, 0, 6, 7, 128, 1, 128, 1, 128, 1, 129};
+    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 128, 183, 60, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 
+                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 
+                                                    193, 0, 0, 0, 0, 0, 0, 4, 189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 
+                                                    189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 192, 0, 0, 0, 120, 144, 0, 0, 0, 0, 1, 47, 
+                                                    64, 0, 0, 32, 8, 0, 128, 32, 7, 22, 57, 211, 70, 158, 104, 52, 243, 65, 133, 7, 
+                                                    60, 59, 120, 108, 202, 131, 135, 45, 250, 144, 115, 233, 203, 78, 236, 238, 244, 
+                                                    209, 167, 154, 13, 60, 208, 97, 65, 207, 14, 222, 27, 50, 160, 201, 135, 167, 93, 
+                                                    168, 57, 244, 229, 167, 118, 112, 0, 0, 0, 0, 75, 214, 180, 157, 32, 6, 180, 157, 
+                                                    32, 34, 0, 32, 0, 0, 4, 7, 128, 1, 128, 1, 128, 0, 128, 224, 0, 96, 0, 96, 0, 32, 0};
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
     auto res = worker->decode_geofence_control(binar_input_geometry_only);
@@ -97,8 +108,8 @@ TEST(CppMessageTest, testDecodeControlMsgGeometry)
     ASSERT_EQ(msg.msgnum, 5);
     ASSERT_EQ(msg.msgtot, 6);
     ASSERT_TRUE(msg.geometry_exists);
-    ASSERT_FALSE(msg.params_exists);
-    ASSERT_FALSE(msg.package_exists);
+    ASSERT_TRUE(msg.params_exists);
+    ASSERT_TRUE(msg.package_exists);
     ASSERT_EQ(msg.geometry.reftime, 1213);
     ASSERT_EQ(msg.geometry.refelv, 1);
 
@@ -265,7 +276,10 @@ TEST(CppMessageTest, testDecodeRequestMsg1)
 
 TEST(CppMessageTest, testDecodeRequestMsg2)
 {
-    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
+    std::vector<uint8_t> binar_input = {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 
+                                        157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
+
+    //  {0, 244, 37, 32, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 146, 134, 180, 157, 31, 246, 180, 157, 32, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 16, 0, 0};
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
 
