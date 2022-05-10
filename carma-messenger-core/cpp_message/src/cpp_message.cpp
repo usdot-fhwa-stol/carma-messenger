@@ -750,11 +750,11 @@ namespace cpp_message
                 output.maxplatoonsize = message.choice.maxplatoonsize;
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
                 break;
-            // case TrafficControlDetail_PR_minplatoonhdwy:
-            //     // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
-            //     output.minplatoonhdwy = message.choice.minplatoonhdwy;
-            //     output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
-            //     break;
+            case TrafficControlDetail_PR_minplatoonhdwy:
+                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output.minplatoonhdwy = message.choice.minplatoonhdwy;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
+                break;
             default:
                 break;
         }
@@ -1243,7 +1243,7 @@ namespace cpp_message
         auto array_length = (ec.encoded+7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        // for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
+        for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
@@ -1448,13 +1448,13 @@ namespace cpp_message
                 output->choice.maxplatoonsize = msg.maxplatoonsize;
             break;
             }
-            // case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
-            // {
-            //     output->present = TrafficControlDetail_PR_minplatoonhdwy;
-            //     // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
-            //     output->choice.minplatoonhdwy = msg.minplatoonhdwy;
-            // break;
-            // }
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minplatoonhdwy;
+                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output->choice.minplatoonhdwy = msg.minplatoonhdwy;
+            break;
+            }
             default:
                 output->present = TrafficControlDetail_PR_NOTHING;
             break;
