@@ -1290,7 +1290,6 @@ namespace cpp_message
 
     TrafficControlDetail_t* Node::encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg)
     {
-        RCLCPP_INFO(get_logger(), "Checking choice");
         TrafficControlDetail_t* output;
         output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
         switch(msg.choice)
@@ -1442,7 +1441,6 @@ namespace cpp_message
             }
             case j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE:
             {
-                RCLCPP_INFO(get_logger(), "Encoding maxplatoonsize");
                 output->present = TrafficControlDetail_PR_maxplatoonsize;
                 // 	maxplatoonsize INTEGER (1..63), -- vehicle count
                 output->choice.maxplatoonsize = msg.maxplatoonsize;
