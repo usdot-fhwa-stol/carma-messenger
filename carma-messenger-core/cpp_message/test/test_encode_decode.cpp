@@ -79,7 +79,9 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
     ASSERT_EQ(msg.params.detail.choice, j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE);
     ASSERT_EQ(msg.params.schedule.between[0].begin, 1);
 
-    auto res_encoded = worker->encode_geofence_control(res.get());
+    j2735_v2x_msgs::msg::TrafficControlMessage tcm;
+    tcm.tcm_v01 = msg;
+    auto res_encoded = worker->encode_geofence_control(tcm);
     if(res_encoded) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 }
@@ -113,7 +115,9 @@ TEST(CppMessageTest, testDecodeControlMsgGeometry)
     ASSERT_EQ(msg.geometry.reftime, 1213);
     ASSERT_EQ(msg.geometry.refelv, 1);
 
-    auto res_encoded = worker->encode_geofence_control(res.get());
+    j2735_v2x_msgs::msg::TrafficControlMessage tcm;
+    tcm.tcm_v01 = msg;
+    auto res_encoded = worker->encode_geofence_control(tcm);
     if(res_encoded) EXPECT_TRUE(true);
     else EXPECT_TRUE(false);
 }
@@ -203,10 +207,8 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     params.schedule = schedule;
     // TrafficControlDetails START
     j2735_v2x_msgs::msg::TrafficControlDetail detail;
-    detail.choice = j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE;
-    detail.closed = j2735_v2x_msgs::msg::TrafficControlDetail::OPENLEFT;
-    // detail.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
-    // detail.maxplatoonsize = 10;
+    detail.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
+    detail.minplatoonhdwy = 10;
 
     //boost::array<uint8_t, 2UL> stuff {{0 ,1}}; //
     //detail.latperm = stuff;

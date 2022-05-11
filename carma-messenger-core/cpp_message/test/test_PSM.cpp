@@ -21,28 +21,28 @@
 namespace cpp_message
 {
 
-    // TEST(PSMTest, testdDecodePSM){
-    //     //Convert hex string to byte message
-    //     std::vector<uint8_t> binary_input={ 0, 32, 95, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 189, 63, 71, 249, 125, 16, 40, 217, 217, 234, 146, 78, 32, 229, 141, 177, 219, 29, 159, 87, 38, 255, 254, 125, 20, 170, 40, 156, 65, 154, 52, 39, 112, 216, 178, 169, 248, 177, 253, 67, 206, 122, 95, 154, 207, 207, 234, 131, 61, 81, 184, 64, 15, 255, 255, 127, 255, 223, 221, 213, 3, 249, 188, 252, 254, 168, 61, 23, 253, 219, 34, 48, 131, 34, 148, 36, 56, 65, 112, 129, 11, 74};
-    //     rclcpp::NodeOptions options;
-    //     auto node = std::make_shared<rclcpp::Node>("base_node");
+    TEST(PSMTest, testdDecodePSM){
+        //Convert hex string to byte message
+        std::vector<uint8_t> binary_input={ 0, 32, 95, 127, 255, 195, 220, 140, 4, 4, 8, 12, 17, 77, 226, 92, 189, 63, 71, 249, 125, 16, 40, 217, 217, 234, 146, 78, 32, 229, 141, 177, 219, 29, 159, 87, 38, 255, 254, 125, 20, 170, 40, 156, 65, 154, 52, 39, 112, 216, 178, 169, 248, 177, 253, 67, 206, 122, 95, 154, 207, 207, 234, 131, 61, 81, 184, 64, 15, 255, 255, 127, 255, 223, 221, 213, 3, 249, 188, 252, 254, 168, 61, 23, 253, 219, 34, 48, 131, 34, 148, 36, 56, 65, 112, 129, 11, 74};
+        rclcpp::NodeOptions options;
+        auto node = std::make_shared<rclcpp::Node>("base_node");
         
-    //     rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_ = node->get_node_logging_interface();;
-    //     cpp_message::PSM_Message worker(node_logging_);
+        rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_ = node->get_node_logging_interface();;
+        cpp_message::PSM_Message worker(node_logging_);
 
-    //     boost::optional<j2735_v2x_msgs::msg::PSM> res = worker.decode_psm_message(binary_input);
-    //     if(res) {
-    //         auto psm_msg = res.get();
+        boost::optional<j2735_v2x_msgs::msg::PSM> res = worker.decode_psm_message(binary_input);
+        if(res) {
+            auto psm_msg = res.get();
             
-    //         EXPECT_EQ(int(psm_msg.basic_type.type), 1);
-    //         EXPECT_EQ(psm_msg.sec_mark.millisecond, 60998);
-    //         EXPECT_NEAR(psm_msg.position.latitude, 406680509, 0.00001);
-    //         EXPECT_NEAR(psm_msg.position.longitude, -738318466, 0.00001);
-    //         EXPECT_EQ(psm_msg.position.elevation, 40);
-    //     }
+            EXPECT_EQ(int(psm_msg.basic_type.type), 1);
+            EXPECT_EQ(psm_msg.sec_mark.millisecond, 60998);
+            EXPECT_NEAR(psm_msg.position.latitude, 406680509, 0.00001);
+            EXPECT_NEAR(psm_msg.position.longitude, -738318466, 0.00001);
+            EXPECT_EQ(psm_msg.position.elevation, 40);
+        }
 
         
-    // }
+    }
 
     TEST(PSMTest, testEncodePSM){
         
