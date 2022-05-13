@@ -207,8 +207,8 @@ TEST(CppMessageTest, testEncodeControlMsg2)
     params.schedule = schedule;
     // TrafficControlDetails START
     j2735_v2x_msgs::msg::TrafficControlDetail detail;
-    detail.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
-    detail.minplatoonhdwy = 10;
+    detail.choice = j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE;
+    detail.closed = j2735_v2x_msgs::msg::TrafficControlDetail::OPENLEFT;
 
     //boost::array<uint8_t, 2UL> stuff {{0 ,1}}; //
     //detail.latperm = stuff;
