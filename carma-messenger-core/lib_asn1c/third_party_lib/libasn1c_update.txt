@@ -43,7 +43,7 @@ Build:
 
 To generate code for the usage of our platform, run:
 
-asn1c -pdu=MessageFrame -fcompound-names -gen-PER -gen-OER ***.asn
+asn1c -pdu=MessageFrame -fcompound-names -gen-PER ***.asn
 
 Note: ***.asn here is the message spec file. We used J2735_201603.asn1 in Carma.
 
