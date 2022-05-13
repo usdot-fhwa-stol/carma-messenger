@@ -32,11 +32,11 @@ void SPATConvertor::convertTimeChangeDetails(const j2735_v2x_msgs::msg::TimeChan
   out_msg.likely_time_exists = in_msg.likely_time_exists;
   out_msg.next_time_exists = in_msg.next_time_exists;
   // Convert Time Marks
-  out_msg.start_time = (double)in_msg.start_time / units::DECA_S_PER_S;
-  out_msg.min_end_time = (double)in_msg.min_end_time / units::DECA_S_PER_S;
-  out_msg.max_end_time = (double)in_msg.max_end_time / units::DECA_S_PER_S;
-  out_msg.likely_time_exists = (double)in_msg.likely_time_exists / units::DECA_S_PER_S;
-  out_msg.next_time = (double)in_msg.next_time / units::DECA_S_PER_S;
+  out_msg.start_time = (double)in_msg.start_time / units::DECI_S_PER_S;
+  out_msg.min_end_time = (double)in_msg.min_end_time / units::DECI_S_PER_S;
+  out_msg.max_end_time = (double)in_msg.max_end_time / units::DECI_S_PER_S;
+  out_msg.likely_time_exists = (double)in_msg.likely_time_exists / units::DECI_S_PER_S;
+  out_msg.next_time = (double)in_msg.next_time / units::DECI_S_PER_S;
   // Done Conversion
 }
 
@@ -45,7 +45,7 @@ void SPATConvertor::convertAdvisorySpeed(const j2735_v2x_msgs::msg::AdvisorySpee
   out_msg.type = in_msg.type;
   out_msg.speed_exists = in_msg.speed_exists;
   // Convert Speed
-  out_msg.speed = (double)in_msg.speed / units::DECA_MPS_PER_MPS;
+  out_msg.speed = (double)in_msg.speed / units::DECI_MPS_PER_MPS;
   // Done Conversion
   out_msg.confidence = in_msg.confidence;
   out_msg.distance = in_msg.distance;

@@ -232,7 +232,7 @@ void MapConvertor::convertPosition3D(const j2735_v2x_msgs::msg::Position3D& in_m
   // Convert lat/lon
   out_msg.latitude = (double)in_msg.latitude / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.longitude = (double)in_msg.longitude / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.elevation = (double)in_msg.elevation / units::DECA_M_PER_M;
+  out_msg.elevation = (double)in_msg.elevation / units::DECI_M_PER_M;
   // Done Conversion
   out_msg.elevation_exists = in_msg.elevation_exists;
 }

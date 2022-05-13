@@ -736,14 +736,24 @@ namespace cpp_message
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
                 break;
             case TrafficControlDetail_PR_maxvehaxles:
-                // 	maxvehaxles INTEGER (2..15),
+                // 	maxvehaxles INTEGER (2..15), -- number of axles
                 output.maxvehaxles = message.choice.maxvehaxles;
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE;
                 break;
             case TrafficControlDetail_PR_minvehocc:
-                // 	minvehocc INTEGER (1..15), 
+                // 	minvehocc INTEGER (1..15), -- vehicle passenger count
                 output.minvehocc = message.choice.minvehocc;
                 output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE;
+                break;
+            case TrafficControlDetail_PR_maxplatoonsize:
+                // 	maxplatoonsize INTEGER (1..63), -- vehicle count
+                output.maxplatoonsize = message.choice.maxplatoonsize;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
+                break;
+            case TrafficControlDetail_PR_minplatoonhdwy:
+                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output.minplatoonhdwy = message.choice.minplatoonhdwy;
+                output.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
                 break;
             default:
                 break;
@@ -1418,15 +1428,29 @@ namespace cpp_message
             case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_maxvehaxles;
-                // 	maxvehaxles INTEGER (2..15),
+                // 	maxvehaxles INTEGER (2..15), -- number of axles
                 output->choice.maxvehaxles = msg.maxvehaxles;
             break;
             }
             case j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE:
             {
                 output->present = TrafficControlDetail_PR_minvehocc;
-                // 	minvehocc INTEGER (1..15), 
+                // 	minvehocc INTEGER (1..15), -- vehicle passenger count
                 output->choice.minvehocc = msg.minvehocc;
+            break;
+            }
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_maxplatoonsize;
+                // 	maxplatoonsize INTEGER (1..63), -- vehicle count
+                output->choice.maxplatoonsize = msg.maxplatoonsize;
+            break;
+            }
+            case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE:
+            {
+                output->present = TrafficControlDetail_PR_minplatoonhdwy;
+                // 	minplatoonhdwy INTEGER (0..2047), -- tenths of meters
+                output->choice.minplatoonhdwy = msg.minplatoonhdwy;
             break;
             }
             default:

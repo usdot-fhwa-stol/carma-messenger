@@ -24,12 +24,12 @@ namespace j2735_convertor
 
 namespace units
 {
-constexpr double DECA_MPS_PER_MPS = 10.0;
-constexpr double DECA_S_PER_S = 10.0;
+constexpr double DECI_MPS_PER_MPS = 10.0;
+constexpr double DECI_S_PER_S = 10.0;
 constexpr double MS_PER_S = 1000.0;
 constexpr double CM_PER_M = 100.0;
 constexpr double TENTH_MICRO_DEG_PER_DEG = 10000000.0;
-constexpr double DECA_M_PER_M = 10.0;
+constexpr double DECI_M_PER_M = 10.0;
 constexpr double TWENTIETH_M_PER_M = 20.0;
 constexpr double FIFTIETH_M_PER_M = 50.0;
 constexpr double FIFTIETH_G_PER_M_PER_SEC_SQR = 5.10204081633;
