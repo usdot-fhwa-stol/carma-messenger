@@ -271,7 +271,7 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
         
-        for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        // for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }
