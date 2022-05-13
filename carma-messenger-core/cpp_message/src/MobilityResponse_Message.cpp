@@ -114,9 +114,23 @@ namespace cpp_message
                 return boost::optional<carma_v2x_msgs::msg::MobilityResponse>{};
             }
             output.urgency=tmp;
+
             //get isaccepted bool
             bool isAccepted=message->value.choice.TestMessage01.body.isAccepted;
             output.is_accepted=isAccepted;
+
+            //get the mobility plan choice
+            MobilityPlanType_t planType_choice = message->value.choice.TestMessage01.body.planType;
+            output.plan_type.choice = planType_choice;
+            
+            //get the mobility reason choice
+            MobilityReason_t reason_choice = *message->value.choice.TestMessage01.body.reason;
+            output.reason.choice = reason_choice;
+            
+            //get the mobility repeat choice
+            MobilityRepeat_t repeat_choice = *message->value.choice.TestMessage01.body.repeat;
+            output.repeat.choice = repeat_choice;
+            
             return boost::optional<carma_v2x_msgs::msg::MobilityResponse>(output);
         }
         //else return an empty object
@@ -234,7 +248,15 @@ namespace cpp_message
         message->value.choice.TestMessage01.body.urgency=urgency; 
         //get isAccepted
         message->value.choice.TestMessage01.body.isAccepted=plainMessage.is_accepted;
-        
+        //get plantype
+        message->value.choice.TestMessage01.body.planType = plainMessage.plan_type.choice;
+        //get reason
+        long reason_choice = plainMessage.reason.choice;
+        message->value.choice.TestMessage01.body.reason = &reason_choice;
+        //get repeat
+        long repeat_choice = plainMessage.repeat.choice;
+        message->value.choice.TestMessage01.body.repeat = &repeat_choice;
+
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
 
@@ -249,7 +271,7 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
         
-        //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
+        for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
 
     }
