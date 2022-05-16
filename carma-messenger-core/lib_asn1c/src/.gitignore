@@ -446,12 +446,16 @@ MobilityPath.c
 MobilityPath.h
 MobilityPlanType.c
 MobilityPlanType.h
+MobilityReason.c
+MobilityReason.h
+MobilityRepeat.c
+MobilityRepeat.h
 MobilityRequest.c
 MobilityRequest.h
 MobilityResponse.c
+MobilityResponse.h
 MobilityResponseFlag.c
 MobilityResponseFlag.h
-MobilityResponse.h
 MobilityStaticID.c
 MobilityStaticID.h
 MobilityStrategy.c
