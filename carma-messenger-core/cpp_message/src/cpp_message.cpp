@@ -200,6 +200,8 @@ namespace cpp_message
             }
         }
         else if(msg->message_type=="PSM"){
+            auto current_time = this->now();
+            RCLCPP_DEBUG_STREAM(get_logger(), "Incoming PSM at timestamp sec:"<<current_time.seconds()<<" nanosec: "<<current_time.nanoseconds());
             std::vector<uint8_t> array = msg->content;
             PSM_Message decode(this->get_node_logging_interface());
             auto output = decode.decode_psm_message(array);
