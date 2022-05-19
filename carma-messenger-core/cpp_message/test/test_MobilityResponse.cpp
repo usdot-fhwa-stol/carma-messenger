@@ -41,7 +41,7 @@ TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
         }
         else EXPECT_TRUE(false);
         EXPECT_EQ(to_read.is_accepted, 1);
-        EXPECT_EQ(to_read.plan_type.choice, 7);
+        EXPECT_EQ(to_read.plan_type.type, 7);
         EXPECT_EQ(to_read.reason.choice, 3);
         EXPECT_EQ(to_read.repeat.choice, 1);
     }
@@ -62,7 +62,7 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
     message.m_header=header;
     message.urgency=50;
     message.is_accepted = 1;
-    message.plan_type.choice = 7;
+    message.plan_type.type = 7;
     message.reason.choice = 3;
     message.repeat.choice = 1;
     auto res = worker.encode_mobility_response_message(message);
@@ -95,7 +95,7 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
     message.m_header=header;
     message.urgency=0;
     message.is_accepted=0;
-    message.plan_type.choice = 0;
+    message.plan_type.type = 0;
     message.reason.choice = 0;
     message.repeat.choice = 0;
     auto res = worker.encode_mobility_response_message(message);
