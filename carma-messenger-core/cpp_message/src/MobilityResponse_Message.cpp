@@ -121,7 +121,7 @@ namespace cpp_message
 
             //get the mobility plan choice
             MobilityPlanType_t planType_choice = message->value.choice.TestMessage01.body.planType;
-            output.plan_type.choice = planType_choice;
+            output.plan_type.type = planType_choice;
             
             //get the mobility reason choice
             MobilityReason_t reason_choice = *message->value.choice.TestMessage01.body.reason;
@@ -249,7 +249,7 @@ namespace cpp_message
         //get isAccepted
         message->value.choice.TestMessage01.body.isAccepted=plainMessage.is_accepted;
         //get plantype
-        message->value.choice.TestMessage01.body.planType = plainMessage.plan_type.choice;
+        message->value.choice.TestMessage01.body.planType = plainMessage.plan_type.type;
         //get reason
         long reason_choice = plainMessage.reason.choice;
         message->value.choice.TestMessage01.body.reason = &reason_choice;
