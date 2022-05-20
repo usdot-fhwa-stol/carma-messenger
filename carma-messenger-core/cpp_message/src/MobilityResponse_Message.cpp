@@ -125,11 +125,11 @@ namespace cpp_message
             
             //get the mobility reason choice
             MobilityReason_t reason_choice = *message->value.choice.TestMessage01.body.reason;
-            output.reason.choice = reason_choice;
+            output.reason.reason = reason_choice;
             
             //get the mobility repeat choice
             MobilityRepeat_t repeat_choice = *message->value.choice.TestMessage01.body.repeat;
-            output.repeat.choice = repeat_choice;
+            output.repeat.repeat = repeat_choice;
             
             return boost::optional<carma_v2x_msgs::msg::MobilityResponse>(output);
         }
@@ -251,10 +251,10 @@ namespace cpp_message
         //get plantype
         message->value.choice.TestMessage01.body.planType = plainMessage.plan_type.type;
         //get reason
-        long reason_choice = plainMessage.reason.choice;
+        long reason_choice = plainMessage.reason.reason;
         message->value.choice.TestMessage01.body.reason = &reason_choice;
         //get repeat
-        long repeat_choice = plainMessage.repeat.choice;
+        long repeat_choice = plainMessage.repeat.repeat;
         message->value.choice.TestMessage01.body.repeat = &repeat_choice;
 
         //encode message

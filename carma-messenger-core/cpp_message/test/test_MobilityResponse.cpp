@@ -42,8 +42,8 @@ TEST(MobilityResponseMessageTest, testDecodeMobilityResponseMsg)
         else EXPECT_TRUE(false);
         EXPECT_EQ(to_read.is_accepted, 1);
         EXPECT_EQ(to_read.plan_type.type, 7);
-        EXPECT_EQ(to_read.reason.choice, 3);
-        EXPECT_EQ(to_read.repeat.choice, 1);
+        EXPECT_EQ(to_read.reason.reason, 3);
+        EXPECT_EQ(to_read.repeat.repeat, 1);
     }
     else EXPECT_TRUE(false);
 }
@@ -63,8 +63,8 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg)
     message.urgency=50;
     message.is_accepted = 1;
     message.plan_type.type = 7;
-    message.reason.choice = 3;
-    message.repeat.choice = 1;
+    message.reason.reason = 3;
+    message.repeat.repeat = 1;
     auto res = worker.encode_mobility_response_message(message);
     std::vector<uint8_t> to_read=res.get();
     auto len=to_read.size();
@@ -96,8 +96,8 @@ TEST(MobilityResponseMessageTest, testEncodeMobilityResponseMsg_base_case)
     message.urgency=0;
     message.is_accepted=0;
     message.plan_type.type = 0;
-    message.reason.choice = 0;
-    message.repeat.choice = 0;
+    message.reason.reason = 0;
+    message.repeat.repeat = 0;
     auto res = worker.encode_mobility_response_message(message);
     std::vector<uint8_t> to_read=res.get();
     auto len=to_read.size();
