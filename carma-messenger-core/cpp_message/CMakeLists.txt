@@ -49,7 +49,8 @@ ament_auto_add_library(${node_lib} SHARED
         src/BSM_Message.cpp
         src/SPAT_Message.cpp
         src/Map_Message.cpp
-)
+        src/PSM_Message.cpp
+        )
 
 
 add_library(testlib SHARED IMPORTED)
@@ -91,7 +92,9 @@ if(BUILD_TESTING)
                         test/test_MapMessage.cpp
                         test/test_SPAT.cpp
                         test/test_encode_decode.cpp
-                        test/node_test.cpp)
+                        test/test_PSM.cpp
+                        test/node_test.cpp
+                        )
 
   ament_target_dependencies(test_cpp_message_node ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
 
