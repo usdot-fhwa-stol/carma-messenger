@@ -1009,7 +1009,7 @@ namespace cpp_message
                 {
                     size_t label_size = msg_package.label.size();
                     uint8_t* label_content;
-                    label_content = (uint8_t*) calloc(1, sizeof(uint8_t));
+                    label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
                     for(auto i = 0; i < label_size; i++)
                     {
                         label_content[i] = (char)msg_package.label[i];
@@ -1022,15 +1022,16 @@ namespace cpp_message
                 }
 
                 // convert tcids from list of Id128b
+                // tcid is array of ids, each of which is a 16-bit pointer to an array of ids
                 auto tcids_len = msg_package.tcids.size();
                 TrafficControlPackage::TrafficControlPackage__tcids* tcids;
-                tcids = (TrafficControlPackage::TrafficControlPackage__tcids*)calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+                tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
                 for (auto i = 0; i < tcids_len; i++)
                 {
                     Id128b_t* output_128b;
+                    output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     j2735_v2x_msgs::msg::Id128b msg_128b;
                     msg_128b = msg_package.tcids[i];
-                    output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     
                     // Type uint8[16]
                     uint8_t val[16] = {0};
