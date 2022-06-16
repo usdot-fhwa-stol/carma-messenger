@@ -784,8 +784,17 @@ namespace cpp_message
         }
         output.datum = datum;
 
+        // // convert reftime
+        // // uint64_t reftime = 0;
+        // uint64_t* reftime = new uint64_t;
+        // for (auto i=0; i<message.reftime.size; i++){
+        //     *reftime |= message.reftime.buf[i];
+        //     //reftime |= message.reftime.buf[i];
+        //     if (i != message.reftime.size - 1) *reftime = *reftime << 8;
+        // }
+        // output.reftime = *reftime;
+        
         // convert reftime
-        std:: cout << std::endl;
         uint64_t reftime = 0;
         for (auto i=0; i<message.reftime.size; i++){
             reftime |= message.reftime.buf[i];
@@ -1021,30 +1030,107 @@ namespace cpp_message
                     output_package->label = label_p;
                 }
 
+
+                // // nodes
+                // auto nodes_len = msg_geometry.nodes.size();
+                // TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
+                // nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
+                
+                // for (auto i = 0; i < nodes_len; i ++)
+                // {
+                //     //=============== TCMV01 - GEOMETRY - NODE START ===========================
+                //     PathNode_t* output_node;
+                //     output_node = (PathNode_t*) calloc(1, sizeof(PathNode_t));
+                //     j2735_v2x_msgs::msg::PathNode msg_node;
+                //     msg_node = msg_geometry.nodes[i];
+                //     output_node->x = msg_node.x;
+                //     output_node->y = msg_node.y;
+                //     // optional fields
+                //     if (msg_node.z_exists) 
+                //     {
+                //         long z_temp = msg_node.z;
+                //         output_node->z = &z_temp;
+                //     }
+
+                //     if (msg_node.width_exists) 
+                //     {
+                //         long width_temp = msg_node.width;
+                //         output_node->width = &width_temp;
+                //     }
+                //     //================== TCMV01 - GEOMETRY - NODE END =============================
+                //     asn_sequence_add(&nodes_list->list, output_node);
+                // }
+                // output_geometry->nodes = *nodes_list;
+
+
                 // convert tcids from list of Id128b
                 // tcid is array of ids, each of which is a 16-bit pointer to an array of ids
                 auto tcids_len = msg_package.tcids.size();
                 TrafficControlPackage::TrafficControlPackage__tcids* tcids;
                 tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+                
+                // for (auto j = 0; j < tcids_len; j++)
+                // {
+                //     std::cout << "-1tcids " << j << ": [";
+                //     for (auto k = 0; k < 16; k++)
+                //     {
+                //         std::cout << +msg_package.tcids[j].id[k] << ", ";
+                //     }
+                //     std::cout << "\b\b]" << std::endl;
+                // }
+
                 for (auto i = 0; i < tcids_len; i++)
                 {
-                    Id128b_t* output_128b;
-                    output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+                    Id128b_t* output_128b = new Id128b_t;
+                    // output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     j2735_v2x_msgs::msg::Id128b msg_128b;
                     msg_128b = msg_package.tcids[i];
                     
                     // Type uint8[16]
-                    uint8_t val[16] = {0};
-                    for(auto i = 0; i < msg_128b.id.size(); i++)
+                    uint8_t* val;
+                    val = (uint8_t*) calloc(16, sizeof(uint8_t));
+                    // uint8_t val[16] = {0};// 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115};
+                    for(auto t = 0; t < msg_128b.id.size(); t++)
                     {
-                        val[i] = msg_128b.id[i];
+                        val[t] = msg_128b.id[t];
                     }
                     output_128b->buf = val;
                     output_128b->size = msg_128b.id.size();
+                    
                     asn_sequence_add(&tcids->list, output_128b);
                 }
                 
                 output_package->tcids = *tcids;
+
+                // for (auto j = 0; j < tcids_len; j++)
+                // {
+                //     std::cout << "-1tcids " << j << ": [";
+                //     for (auto k = 0; k < 16; k++)
+                //     {
+                //         std::cout << +msg_package.tcids[j].id[k] << ", ";
+                //     }
+                //     std::cout << "\b\b]" << std::endl;
+                // }
+
+                // for (auto j = 0; j < 2; j++)
+                // {
+                //     std::cout << "+1tcids " << j << ": [";
+                //     for (auto k = 0; k < 16; k++)
+                //     {
+                //         std::cout << +tcids->list.array[j]->buf[k] << ", ";
+                //     }
+                //     std::cout << "\b\b]" << std::endl;
+                // }
+
+                // for (auto j = 0; j < 2; j++)
+                // {
+                //     std::cout << "tcids " << j << ": [";
+                //     for (auto i = 0; i < 16; i++)
+                //     {
+                //         std::cout << +tcids->list.array[j]->buf[i] << ", ";
+                //     }
+                //     std::cout << "\b\b]" << std::endl;
+                // }
                 
                 // ================= PACKAGE END ==========================
                 output_v01->package = output_package;
@@ -1075,7 +1161,8 @@ namespace cpp_message
                 j2735_v2x_msgs::msg::TrafficControlSchedule msg_schedule;
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
-                uint8_t start_val[8] = {0};
+                uint8_t* start_val;
+                start_val = (uint8_t*) calloc(8, sizeof(uint8_t));
                 for(int k = 7; k >= 0; k--) {
                     start_val[7 - k] = msg_schedule.start >> (k * 8);
                 }
@@ -1088,7 +1175,9 @@ namespace cpp_message
                 // long int from 8-bit array for "end" (optional)
                 if (msg_schedule.end_exists)
                 {
-                    uint8_t end_val[8] = {0};
+                    uint8_t* end_val;
+                    end_val = (uint8_t*) calloc(8, sizeof(uint8_t));
+                    // uint8_t end_val[8] = {0};
                     for(int k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
@@ -1164,7 +1253,9 @@ namespace cpp_message
                 output_geometry->datum.buf = datum_content;
                 output_geometry->datum.size = datum_size;
                 
-                uint8_t reftime_val[8] = {0};
+                uint8_t* reftime_val;
+                reftime_val = (uint8_t*) calloc(8, sizeof(uint8_t));
+                // uint8_t reftime_val[8] = {0};
                 for(int k = 7; k >= 0; k--) {
                     reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
                 }
@@ -1202,16 +1293,20 @@ namespace cpp_message
                     output_node->x = msg_node.x;
                     output_node->y = msg_node.y;
                     // optional fields
+                    // NOTE: When a variable is declared in a loop like this, it will be overwritten the next time the loop is executed.
+                    // In this case, x and y are fine but z and width will be assigned to each as the value of the last node. 
                     if (msg_node.z_exists) 
                     {
-                        long z_temp = msg_node.z;
-                        output_node->z = &z_temp;
+                        long* z_temp = new long;
+                        *z_temp = msg_node.z;
+                        output_node->z = z_temp;
                     }
 
                     if (msg_node.width_exists) 
                     {
-                        long width_temp = msg_node.width;
-                        output_node->width = &width_temp;
+                        long* width_temp = new long;
+                        *width_temp = msg_node.width;
+                        output_node->width = width_temp;
                     }
                     //================== TCMV01 - GEOMETRY - NODE END =============================
                     asn_sequence_add(&nodes_list->list, output_node);
@@ -1244,7 +1339,8 @@ namespace cpp_message
         auto array_length = (ec.encoded+7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        // for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
+        for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
+        std::cout << "\n";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
@@ -1463,19 +1559,28 @@ namespace cpp_message
     
     DSRC_DayOfWeek_t* Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg)
     {
+        // j2735_v2x_msgs day of week:
+        // Array of [0, 1] for each day, with indices specified as an enum. 1 means that that day is active, 0 means inactive
+        // ex: turn on sunday and monday: [0, 0, 0, 0, 0, 1, 1], dow.SUN -> dow[6] -> 1
+
+        // DSRC day of week:
+        // 7-element bit string with a bit for each day,  means that that day is active, 0 means inactive
+        // ex: turn on sunday and monday: 00000110, dow.DSRC_DayOfWeek_sun -> 1
+
         DSRC_DayOfWeek_t* output;
         output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
         
         uint8_t* dow_val;
-        dow_val = (uint8_t*)calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
-        uint8_t tmp_binary;
+        dow_val = (uint8_t*) calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
+        // uint8_t tmp_binary = 0;
         for (auto i = 0; i < msg.dow.size(); i++)
         {
-            tmp_binary |= msg.dow[i];
-            tmp_binary = tmp_binary << 1;
+            *dow_val |= msg.dow[i];
+            *dow_val = *dow_val << 1;
         }
         output->buf = dow_val;
-        output->size = msg.dow.size();
+        output->size = 1; // 1 byte
+        output->bits_unused = 1; // uses the first 7 bits, last is unused
 
         return output;
     } 
@@ -1597,7 +1702,8 @@ namespace cpp_message
                 }
                 bounds_p->offsets = *offsets;
                 //convert a long value to an 8-bit array of length 8
-                uint8_t oldest_val[8];
+                uint8_t* oldest_val;
+                oldest_val = (uint8_t*) calloc(8, sizeof(uint8_t));
                 for(int k = 7; k >= 0; k--) {
                     oldest_val[7-k] = request_msg.tcr_v01.bounds[i].oldest >> (k * 8);
                 }
