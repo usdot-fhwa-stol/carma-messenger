@@ -765,43 +765,32 @@ namespace cpp_message
     j2735_v2x_msgs::msg::TrafficControlGeometry Node::decode_geofence_control_geometry (const TrafficControlGeometry_t& message)
     {
         j2735_v2x_msgs::msg::TrafficControlGeometry output;
-
+        
         // proj
-        std::string proj;
+        std::string* proj = new std::string;
         auto proj_len = message.proj.size;
         for(auto i = 0; i < proj_len; i++)
         {
-            proj += (char)message.proj.buf[i];
+            *proj += (char)message.proj.buf[i];
         }
-        output.proj = proj;
+        output.proj = *proj;
 
         // datum
-        std::string datum;
+        std::string* datum = new std::string;
         auto datum_len = message.datum.size;
         for(auto i = 0; i < datum_len; i++)
         {
-            datum += message.datum.buf[i];
+            *datum += message.datum.buf[i];
         }
-        output.datum = datum;
+        output.datum = *datum;
 
-        // // convert reftime
-        // // uint64_t reftime = 0;
-        // uint64_t* reftime = new uint64_t;
-        // for (auto i=0; i<message.reftime.size; i++){
-        //     *reftime |= message.reftime.buf[i];
-        //     //reftime |= message.reftime.buf[i];
-        //     if (i != message.reftime.size - 1) *reftime = *reftime << 8;
-        // }
-        // output.reftime = *reftime;
-        
         // convert reftime
-        uint64_t reftime = 0;
+        uint64_t* reftime = new uint64_t(0);
         for (auto i=0; i<message.reftime.size; i++){
-            reftime |= message.reftime.buf[i];
-            //reftime |= message.reftime.buf[i];
-            if (i != message.reftime.size - 1) reftime = reftime << 8;
+            *reftime |= message.reftime.buf[i];
+            if (i != message.reftime.size - 1) *reftime = *reftime << 8;
         }
-        output.reftime = reftime;
+        output.reftime = *reftime;
         
         // reflon
         output.reflon = message.reflon;
@@ -856,7 +845,7 @@ namespace cpp_message
         MessageFrame_t* message = 0;
         // copy from vector to array
         auto len = binary_array.size();
-        uint8_t buf[len];
+        uint8_t buf[len]; // Should be fine without calloc, because it's only used in this function
         for(auto i = 0; i < len; i++) {
             buf[i] = binary_array[i];
         }
@@ -876,7 +865,8 @@ namespace cpp_message
                 j2735_v2x_msgs::msg::TrafficControlRequestV01 tcrV01;
 
                 // decode id
-                uint8_t id[8];
+                uint8_t* id;
+                id = (uint8_t*) calloc(8, sizeof(uint8_t));
                 auto id_len = message->value.choice.TestMessage04.body.choice.tcrV01.reqid.size;
                 for(auto i = 0; i < id_len; i++)
                 {
@@ -963,8 +953,10 @@ namespace cpp_message
             j2735_v2x_msgs::msg::Id64b msg_64b;
             msg_64b = msg_v01.reqid;
             output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+            
             // Type uint8[8]
-            uint8_t val_64b[8] = {0};
+            uint8_t* val_64b;
+            val_64b = (uint8_t*) calloc(8, sizeof(uint8_t));
             for(auto i = 0; i < msg_64b.id.size(); i++)
             {
                 val_64b[i] = msg_64b.id[i];
@@ -985,7 +977,8 @@ namespace cpp_message
             output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
             
             // Type uint8[16]
-            uint8_t val_128b[16] = {0};
+            uint8_t* val_128b;
+            val_128b = (uint8_t*) calloc(16, sizeof(uint8_t));
             for(auto i = 0; i < msg_128b.id.size(); i++)
             {
                 val_128b[i] = msg_128b.id[i];
@@ -996,7 +989,8 @@ namespace cpp_message
 
             // encode updated
             // recover an 8-bit array from a long value 
-            uint8_t updated_val[8] = {0};
+            uint8_t* updated_val;
+            updated_val = (uint8_t*) calloc(8, sizeof(uint8_t));
             for(int k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
             }
@@ -1030,55 +1024,12 @@ namespace cpp_message
                     output_package->label = label_p;
                 }
 
-
-                // // nodes
-                // auto nodes_len = msg_geometry.nodes.size();
-                // TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
-                // nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
-                
-                // for (auto i = 0; i < nodes_len; i ++)
-                // {
-                //     //=============== TCMV01 - GEOMETRY - NODE START ===========================
-                //     PathNode_t* output_node;
-                //     output_node = (PathNode_t*) calloc(1, sizeof(PathNode_t));
-                //     j2735_v2x_msgs::msg::PathNode msg_node;
-                //     msg_node = msg_geometry.nodes[i];
-                //     output_node->x = msg_node.x;
-                //     output_node->y = msg_node.y;
-                //     // optional fields
-                //     if (msg_node.z_exists) 
-                //     {
-                //         long z_temp = msg_node.z;
-                //         output_node->z = &z_temp;
-                //     }
-
-                //     if (msg_node.width_exists) 
-                //     {
-                //         long width_temp = msg_node.width;
-                //         output_node->width = &width_temp;
-                //     }
-                //     //================== TCMV01 - GEOMETRY - NODE END =============================
-                //     asn_sequence_add(&nodes_list->list, output_node);
-                // }
-                // output_geometry->nodes = *nodes_list;
-
-
                 // convert tcids from list of Id128b
                 // tcid is array of ids, each of which is a 16-bit pointer to an array of ids
                 auto tcids_len = msg_package.tcids.size();
                 TrafficControlPackage::TrafficControlPackage__tcids* tcids;
                 tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
                 
-                // for (auto j = 0; j < tcids_len; j++)
-                // {
-                //     std::cout << "-1tcids " << j << ": [";
-                //     for (auto k = 0; k < 16; k++)
-                //     {
-                //         std::cout << +msg_package.tcids[j].id[k] << ", ";
-                //     }
-                //     std::cout << "\b\b]" << std::endl;
-                // }
-
                 for (auto i = 0; i < tcids_len; i++)
                 {
                     Id128b_t* output_128b = new Id128b_t;
@@ -1089,10 +1040,9 @@ namespace cpp_message
                     // Type uint8[16]
                     uint8_t* val;
                     val = (uint8_t*) calloc(16, sizeof(uint8_t));
-                    // uint8_t val[16] = {0};// 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115};
-                    for(auto t = 0; t < msg_128b.id.size(); t++)
+                    for(auto j = 0; j < msg_128b.id.size(); j++)
                     {
-                        val[t] = msg_128b.id[t];
+                        val[j] = msg_128b.id[j];
                     }
                     output_128b->buf = val;
                     output_128b->size = msg_128b.id.size();
@@ -1102,36 +1052,6 @@ namespace cpp_message
                 
                 output_package->tcids = *tcids;
 
-                // for (auto j = 0; j < tcids_len; j++)
-                // {
-                //     std::cout << "-1tcids " << j << ": [";
-                //     for (auto k = 0; k < 16; k++)
-                //     {
-                //         std::cout << +msg_package.tcids[j].id[k] << ", ";
-                //     }
-                //     std::cout << "\b\b]" << std::endl;
-                // }
-
-                // for (auto j = 0; j < 2; j++)
-                // {
-                //     std::cout << "+1tcids " << j << ": [";
-                //     for (auto k = 0; k < 16; k++)
-                //     {
-                //         std::cout << +tcids->list.array[j]->buf[k] << ", ";
-                //     }
-                //     std::cout << "\b\b]" << std::endl;
-                // }
-
-                // for (auto j = 0; j < 2; j++)
-                // {
-                //     std::cout << "tcids " << j << ": [";
-                //     for (auto i = 0; i < 16; i++)
-                //     {
-                //         std::cout << +tcids->list.array[j]->buf[i] << ", ";
-                //     }
-                //     std::cout << "\b\b]" << std::endl;
-                // }
-                
                 // ================= PACKAGE END ==========================
                 output_v01->package = output_package;
             }
@@ -1175,9 +1095,9 @@ namespace cpp_message
                 // long int from 8-bit array for "end" (optional)
                 if (msg_schedule.end_exists)
                 {
+                    // uint8_t end_val[8] = {0};
                     uint8_t* end_val;
                     end_val = (uint8_t*) calloc(8, sizeof(uint8_t));
-                    // uint8_t end_val[8] = {0};
                     for(int k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
@@ -1285,31 +1205,9 @@ namespace cpp_message
                 
                 for (auto i = 0; i < nodes_len; i ++)
                 {
-                    //=============== TCMV01 - GEOMETRY - NODE START ===========================
-                    PathNode_t* output_node;
-                    output_node = (PathNode_t*) calloc(1, sizeof(PathNode_t));
-                    j2735_v2x_msgs::msg::PathNode msg_node;
-                    msg_node = msg_geometry.nodes[i];
-                    output_node->x = msg_node.x;
-                    output_node->y = msg_node.y;
-                    // optional fields
-                    // NOTE: When a variable is declared in a loop like this, it will be overwritten the next time the loop is executed.
-                    // In this case, x and y are fine but z and width will be assigned to each as the value of the last node. 
-                    if (msg_node.z_exists) 
-                    {
-                        long* z_temp = new long;
-                        *z_temp = msg_node.z;
-                        output_node->z = z_temp;
-                    }
-
-                    if (msg_node.width_exists) 
-                    {
-                        long* width_temp = new long;
-                        *width_temp = msg_node.width;
-                        output_node->width = width_temp;
-                    }
+                    //=============== TCMV01 - GEOMETRY - NODE START ==============================
+                    asn_sequence_add(&nodes_list->list, encode_path_node(msg_geometry.nodes[i]));
                     //================== TCMV01 - GEOMETRY - NODE END =============================
-                    asn_sequence_add(&nodes_list->list, output_node);
                 }
                 output_geometry->nodes = *nodes_list;
                 
@@ -1339,8 +1237,7 @@ namespace cpp_message
         auto array_length = (ec.encoded+7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-        for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
-        std::cout << "\n";
+        // for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
@@ -1350,7 +1247,8 @@ namespace cpp_message
         output = (Id64b_t*) calloc(1, sizeof(Id64b_t));
         
         // Type uint8[8]
-        uint8_t val[8] = {0};
+        uint8_t* val;
+        val = (uint8_t*) calloc(8, sizeof(uint8_t));
         for(auto i = 0; i < msg.id.size(); i++)
         {
             val[i] = msg.id[i];
@@ -1364,8 +1262,10 @@ namespace cpp_message
     {
         Id128b_t* output;
         output = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+
         // Type uint8[16]
-        uint8_t val[16] = {0};
+        uint8_t* val;
+        val = (uint8_t*) calloc(16, sizeof(uint8_t));
         for(auto i = 0; i < msg.id.size(); i++)
         {
             val[i] = msg.id[i];
@@ -1572,7 +1472,6 @@ namespace cpp_message
         
         uint8_t* dow_val;
         dow_val = (uint8_t*) calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
-        // uint8_t tmp_binary = 0;
         for (auto i = 0; i < msg.dow.size(); i++)
         {
             *dow_val |= msg.dow[i];
@@ -1610,24 +1509,24 @@ namespace cpp_message
 
     PathNode_t* Node::encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg)
     {
-        PathNode_t* output;
-        output = (PathNode_t*) calloc(1, sizeof(PathNode_t));
+        PathNode_t* output = new PathNode_t;
 
         output->x = msg.x;
         output->y = msg.y;
         // optional fields
         if (msg.z_exists) 
         {
-            long z_temp = msg.z;
-            output->z = &z_temp;
+            long* z_temp = new long;
+            *z_temp = msg.z;
+            output->z = z_temp;
         }
 
         if (msg.width_exists) 
         {
-            long width_temp = msg.width;
-            output->width = &width_temp;
+            long* width_temp = new long;
+            *width_temp = msg.width;
+            output->width = width_temp;
         }
-           
         return output;
     }
 
@@ -1664,7 +1563,9 @@ namespace cpp_message
             Id64b_t* id64;
             id64 = (Id64b_t*)calloc(1, sizeof(Id64b_t));
 
-            uint8_t id_content[8];
+            uint8_t* id_content;
+            id_content = (uint8_t*) calloc(8, sizeof(uint8_t));
+            // uint8_t id_content[8];
             for(auto i = 0; i < 8; i++)
             {
                 id_content[i] = request_msg.tcr_v01.reqid.id[i];
