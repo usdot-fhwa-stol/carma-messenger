@@ -767,30 +767,30 @@ namespace cpp_message
         j2735_v2x_msgs::msg::TrafficControlGeometry output;
         
         // proj
-        std::string* proj = new std::string;
+        std::string proj;
         auto proj_len = message.proj.size;
         for(auto i = 0; i < proj_len; i++)
         {
-            *proj += (char)message.proj.buf[i];
+            proj += (char)message.proj.buf[i];
         }
-        output.proj = *proj;
+        output.proj = proj;
 
         // datum
-        std::string* datum = new std::string;
+        std::string datum;
         auto datum_len = message.datum.size;
         for(auto i = 0; i < datum_len; i++)
         {
-            *datum += message.datum.buf[i];
+            datum += message.datum.buf[i];
         }
-        output.datum = *datum;
+        output.datum = datum;
 
         // convert reftime
-        uint64_t* reftime = new uint64_t(0);
+        uint64_t reftime = 0;
         for (auto i=0; i<message.reftime.size; i++){
-            *reftime |= message.reftime.buf[i];
-            if (i != message.reftime.size - 1) *reftime = *reftime << 8;
+            reftime |= message.reftime.buf[i];
+            if (i != message.reftime.size - 1) reftime = reftime << 8;
         }
-        output.reftime = *reftime;
+        output.reftime = reftime;
         
         // reflon
         output.reflon = message.reflon;
