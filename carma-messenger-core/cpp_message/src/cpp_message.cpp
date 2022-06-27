@@ -1520,12 +1520,20 @@ namespace cpp_message
             *z_temp = msg.z;
             output->z = z_temp;
         }
+        else
+        {
+            output->z = NULL;
+        }
 
         if (msg.width_exists) 
         {
             long* width_temp = new long;
             *width_temp = msg.width;
             output->width = width_temp;
+        }
+        else
+        {
+            output->width = NULL;
         }
         return output;
     }
