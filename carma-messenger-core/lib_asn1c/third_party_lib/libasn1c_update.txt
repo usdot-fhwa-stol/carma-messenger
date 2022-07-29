@@ -12,6 +12,17 @@ For configurations and build steps, check https://github.com/vlm/asn1c/blob/mast
 
 To use asn1c, check https://github.com/vlm/asn1c/blob/master/doc/asn1c-usage.pdf
 
+To install:
+Pull 9925dbbda86b436896108439ea3e0a31280a6065
+Install the dependencies listed in REQUIREMENTS.MD
+  sudo apt install automake libtool bison flex g++-multilib
+follow the steps INSTALL.md
+  test -f configure || autoreconf -iv
+  sudo ./configure
+  sudo make
+  sudo make install
+follow the steps below
+
 A stable version ticket is: 59b1bc8, which is on Sep 19th 2017.
 
 To generate libasn1c_x86.so and libasn1c_x64 libraries, your workspace should have this structure:

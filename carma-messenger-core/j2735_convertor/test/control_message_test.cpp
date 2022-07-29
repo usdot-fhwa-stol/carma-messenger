@@ -464,8 +464,8 @@ namespace j2735_convertor
     ASSERT_EQ(out_msg.reftime.nanosec, 0.);
     ASSERT_NEAR(in_msg.reflon, out_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
     ASSERT_NEAR(in_msg.reflat, out_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG, 0.000001);
-    ASSERT_NEAR(in_msg.refelv - 4096, out_msg.refelv * units::DECA_M_PER_M, 0.001 );
-    ASSERT_NEAR(in_msg.heading, out_msg.heading * units::DECA_S_PER_S, 0.000001);
+    ASSERT_NEAR(in_msg.refelv - 4096, out_msg.refelv * units::DECI_M_PER_M, 0.001 );
+    ASSERT_NEAR(in_msg.heading, out_msg.heading * units::DECI_S_PER_S, 0.000001);
 
     for(int i = 0; i < NUM_NODES; i++)
     {
@@ -699,21 +699,21 @@ TEST(ControlMessage, convertTrafficControlDetailToCAV)
   in_msg.minspeed = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.minspeed, out_msg.minspeed * units::DECA_MPS_PER_MPS, 0.000001);
+  ASSERT_NEAR(in_msg.minspeed, out_msg.minspeed * units::DECI_MPS_PER_MPS, 0.000001);
 
   // MAXSPEED Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE;
   in_msg.maxspeed = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxspeed, out_msg.maxspeed * units::DECA_MPS_PER_MPS, 0.000001);
+  ASSERT_NEAR(in_msg.maxspeed, out_msg.maxspeed * units::DECI_MPS_PER_MPS, 0.000001);
 
   // MINHDWY Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE;
   in_msg.minhdwy = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.minhdwy, out_msg.minhdwy * units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.minhdwy, out_msg.minhdwy * units::DECI_M_PER_M, 0.000001);
 
   // MAXVEHMASS Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE;
@@ -727,21 +727,21 @@ TEST(ControlMessage, convertTrafficControlDetailToCAV)
   in_msg.maxvehheight = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehheight, out_msg.maxvehheight * units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehheight, out_msg.maxvehheight * units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHWIDTH Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE;
   in_msg.maxvehwidth = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehwidth, out_msg.maxvehwidth * units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehwidth, out_msg.maxvehwidth * units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHLENGTH Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
   in_msg.maxvehlength = 100;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehlength, out_msg.maxvehlength * units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehlength, out_msg.maxvehlength * units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHAXLES Test
   in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE;
@@ -757,6 +757,19 @@ TEST(ControlMessage, convertTrafficControlDetailToCAV)
   ASSERT_EQ(out_msg.choice, in_msg.choice);
   ASSERT_NEAR(in_msg.minvehocc, out_msg.minvehocc, 0.000001);
   
+  // MAXPLATOONSIZE Test
+  in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
+  in_msg.maxplatoonsize = 50;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+  ASSERT_NEAR(in_msg.maxplatoonsize, out_msg.maxplatoonsize, 0.000001);
+  
+  // MINPLATOONHDWY Test
+  in_msg.choice = j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
+  in_msg.minplatoonhdwy = 104;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+  ASSERT_NEAR(in_msg.minplatoonhdwy, out_msg.minplatoonhdwy * units::DECI_M_PER_M, 0.000001);
 }
 
 TEST(ControlMessage, convertTrafficControlGeometryToCAV)
@@ -974,21 +987,21 @@ TEST(ControlMessage, convertTrafficControlDetailToJ2735)
   in_msg.minspeed = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.minspeed, (float)out_msg.minspeed / units::DECA_MPS_PER_MPS, 0.000001);
+  ASSERT_NEAR(in_msg.minspeed, (float)out_msg.minspeed / units::DECI_MPS_PER_MPS, 0.000001);
 
   // MAXSPEED Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE;
   in_msg.maxspeed = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxspeed, (float)out_msg.maxspeed / units::DECA_MPS_PER_MPS, 0.000001);
+  ASSERT_NEAR(in_msg.maxspeed, (float)out_msg.maxspeed / units::DECI_MPS_PER_MPS, 0.000001);
 
   // MINHDWY Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE;
   in_msg.minhdwy = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.minhdwy, (float)out_msg.minhdwy / units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.minhdwy, (float)out_msg.minhdwy / units::DECI_M_PER_M, 0.000001);
 
   // MAXVEHMASS Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE;
@@ -1002,21 +1015,21 @@ TEST(ControlMessage, convertTrafficControlDetailToJ2735)
   in_msg.maxvehheight = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehheight, (float)out_msg.maxvehheight / units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehheight, (float)out_msg.maxvehheight / units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHWIDTH Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE;
   in_msg.maxvehwidth = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehwidth, (float)out_msg.maxvehwidth / units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehwidth, (float)out_msg.maxvehwidth / units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHLENGTH Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE;
   in_msg.maxvehlength = 10;
   j2735_convertor::geofence_control::convert(in_msg, out_msg);
   ASSERT_EQ(out_msg.choice, in_msg.choice);
-  ASSERT_NEAR(in_msg.maxvehlength, (float)out_msg.maxvehlength / units::DECA_M_PER_M, 0.000001);
+  ASSERT_NEAR(in_msg.maxvehlength, (float)out_msg.maxvehlength / units::DECI_M_PER_M, 0.000001);
   
   // MAXVEHAXLES Test
   in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE;
@@ -1032,6 +1045,19 @@ TEST(ControlMessage, convertTrafficControlDetailToJ2735)
   ASSERT_EQ(out_msg.choice, in_msg.choice);
   ASSERT_NEAR(in_msg.minvehocc, out_msg.minvehocc, 0.000001);
   
+  // MAXPLATOONSIZE Test
+  in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE;
+  in_msg.maxplatoonsize = 10;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+  ASSERT_NEAR(in_msg.maxplatoonsize, out_msg.maxplatoonsize, 0.000001);
+  
+  // MINPLATOONHDWY Test
+  in_msg.choice = carma_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE;
+  in_msg.minplatoonhdwy = 10;
+  j2735_convertor::geofence_control::convert(in_msg, out_msg);
+  ASSERT_EQ(out_msg.choice, in_msg.choice);
+  ASSERT_NEAR(in_msg.minplatoonhdwy, (float)out_msg.minplatoonhdwy / units::DECI_M_PER_M, 0.000001);
 }
 
 TEST(ControlMessage, convertTrafficControlGeometryToJ2735)

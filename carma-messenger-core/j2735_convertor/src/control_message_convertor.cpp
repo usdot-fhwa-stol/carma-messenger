@@ -99,31 +99,37 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlDetail& in_msg, carma_v2x_
       out_msg.parking = in_msg.parking;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE : 
-      out_msg.minspeed = (float)in_msg.minspeed / units::DECA_MPS_PER_MPS;
+      out_msg.minspeed = (float)in_msg.minspeed / units::DECI_MPS_PER_MPS;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE : 
-      out_msg.maxspeed = (float)in_msg.maxspeed / units::DECA_MPS_PER_MPS;
+      out_msg.maxspeed = (float)in_msg.maxspeed / units::DECI_MPS_PER_MPS;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE : 
-      out_msg.minhdwy = (float)in_msg.minhdwy / units::DECA_M_PER_M;
+      out_msg.minhdwy = (float)in_msg.minhdwy / units::DECI_M_PER_M;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE : 
       out_msg.maxvehmass = (float)in_msg.maxvehmass;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
-      out_msg.maxvehheight = (float)in_msg.maxvehheight / units::DECA_M_PER_M;
+      out_msg.maxvehheight = (float)in_msg.maxvehheight / units::DECI_M_PER_M;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
-      out_msg.maxvehwidth = (float)in_msg.maxvehwidth / units::DECA_M_PER_M;
+      out_msg.maxvehwidth = (float)in_msg.maxvehwidth / units::DECI_M_PER_M;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
-      out_msg.maxvehlength = (float)in_msg.maxvehlength / units::DECA_M_PER_M;
+      out_msg.maxvehlength = (float)in_msg.maxvehlength / units::DECI_M_PER_M;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
       out_msg.maxvehaxles = in_msg.maxvehaxles;
       break;
     case j2735_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
+      break;
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE : 
+      out_msg.maxplatoonsize = in_msg.maxplatoonsize;
+      break;
+    case j2735_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE : 
+      out_msg.minplatoonhdwy = (float)in_msg.minplatoonhdwy / units::DECI_M_PER_M;
       break;
     default : 
       // Throw Error?
@@ -151,8 +157,8 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlGeometry& in_msg, carma_v2
   out_msg.reftime = rclcpp::Time(sec, 0);
   out_msg.reflon = (double)in_msg.reflon / units::TENTH_MICRO_DEG_PER_DEG;
   out_msg.reflat = (double)in_msg.reflat / units::TENTH_MICRO_DEG_PER_DEG;
-  out_msg.refelv = (float)in_msg.refelv / units::DECA_M_PER_M - (float) 409.6; //handle offset
-  out_msg.heading = (float)in_msg.heading / units::DECA_S_PER_S;
+  out_msg.refelv = (float)in_msg.refelv / units::DECI_M_PER_M - (float) 409.6; //handle offset
+  out_msg.heading = (float)in_msg.heading / units::DECI_S_PER_S;
 
   for (auto in_node : in_msg.nodes)
   {
@@ -382,31 +388,37 @@ void convert(const carma_v2x_msgs::msg::TrafficControlDetail& in_msg, j2735_v2x_
       out_msg.parking = in_msg.parking;
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MINSPEED_CHOICE : 
-      out_msg.minspeed = (uint16_t)(in_msg.minspeed * units::DECA_MPS_PER_MPS);
+      out_msg.minspeed = (uint16_t)(in_msg.minspeed * units::DECI_MPS_PER_MPS);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXSPEED_CHOICE : 
-      out_msg.maxspeed = (uint16_t)(in_msg.maxspeed * units::DECA_MPS_PER_MPS);
+      out_msg.maxspeed = (uint16_t)(in_msg.maxspeed * units::DECI_MPS_PER_MPS);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MINHDWY_CHOICE : 
-      out_msg.minhdwy = (uint16_t)(in_msg.minhdwy * units::DECA_M_PER_M);
+      out_msg.minhdwy = (uint16_t)(in_msg.minhdwy * units::DECI_M_PER_M);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHMASS_CHOICE : 
       out_msg.maxvehmass = (uint16_t)in_msg.maxvehmass;
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHHEIGHT_CHOICE : 
-      out_msg.maxvehheight = (uint8_t)(in_msg.maxvehheight * units::DECA_M_PER_M);
+      out_msg.maxvehheight = (uint8_t)(in_msg.maxvehheight * units::DECI_M_PER_M);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHWIDTH_CHOICE : 
-      out_msg.maxvehwidth = (uint8_t)(in_msg.maxvehwidth * units::DECA_M_PER_M);
+      out_msg.maxvehwidth = (uint8_t)(in_msg.maxvehwidth * units::DECI_M_PER_M);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHLENGTH_CHOICE : 
-      out_msg.maxvehlength = (uint8_t)(in_msg.maxvehlength * units::DECA_M_PER_M);
+      out_msg.maxvehlength = (uint8_t)(in_msg.maxvehlength * units::DECI_M_PER_M);
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MAXVEHAXLES_CHOICE : 
       out_msg.maxvehaxles = in_msg.maxvehaxles;
       break;
     case carma_v2x_msgs::msg::TrafficControlDetail::MINVEHOCC_CHOICE : 
       out_msg.minvehocc = in_msg.minvehocc;
+      break;
+    case carma_v2x_msgs::msg::TrafficControlDetail::MAXPLATOONSIZE_CHOICE : 
+      out_msg.maxplatoonsize = in_msg.maxplatoonsize;
+      break;
+    case carma_v2x_msgs::msg::TrafficControlDetail::MINPLATOONHDWY_CHOICE : 
+      out_msg.minplatoonhdwy = (uint8_t)(in_msg.minplatoonhdwy * units::DECI_M_PER_M);
       break;
     default : 
       // Throw Error?
@@ -422,8 +434,8 @@ void convert(const carma_v2x_msgs::msg::TrafficControlGeometry& in_msg, j2735_v2
   out_msg.reftime = reftime.seconds() / units::SEC_PER_MIN;
   out_msg.reflon = (int32_t)(in_msg.reflon * units::TENTH_MICRO_DEG_PER_DEG);
   out_msg.reflat = (int32_t)(in_msg.reflat * units::TENTH_MICRO_DEG_PER_DEG);
-  out_msg.refelv = (int32_t)((in_msg.refelv + 409.6) * units::DECA_M_PER_M); // handle offset
-  out_msg.heading = (int32_t)(in_msg.heading * units::DECA_S_PER_S);
+  out_msg.refelv = (int32_t)((in_msg.refelv + 409.6) * units::DECI_M_PER_M); // handle offset
+  out_msg.heading = (int32_t)(in_msg.heading * units::DECI_S_PER_S);
 
   for (auto in_node : in_msg.nodes)
   {

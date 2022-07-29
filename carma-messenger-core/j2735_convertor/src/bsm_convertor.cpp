@@ -98,7 +98,7 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::BSMCoreData& in_msg, carma
       in_msg.longitude, units::TENTH_MICRO_DEG_PER_DEG, out_msg.presence_vector,
       carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE, j2735_v2x_msgs::msg::BSMCoreData::LONGITUDE_UNAVAILABLE);
 
-  out_msg.elev = ValueConvertor::valueJ2735ToCav<float>(in_msg.elev, units::DECA_M_PER_M, out_msg.presence_vector,
+  out_msg.elev = ValueConvertor::valueJ2735ToCav<float>(in_msg.elev, units::DECI_M_PER_M, out_msg.presence_vector,
                                                           carma_v2x_msgs::msg::BSMCoreData::ELEVATION_AVAILABLE,
                                                           j2735_v2x_msgs::msg::BSMCoreData::ELEVATION_UNAVAILABLE);
 
@@ -210,7 +210,7 @@ void BSMConvertor::convert(const carma_v2x_msgs::msg::BSMCoreData& in_msg, j2735
       in_msg.longitude, units::TENTH_MICRO_DEG_PER_DEG, in_msg.presence_vector,
       carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE, j2735_v2x_msgs::msg::BSMCoreData::LONGITUDE_UNAVAILABLE);
 
-  out_msg.elev = ValueConvertor::valueCavToJ2735<int32_t>(in_msg.elev, units::DECA_M_PER_M, in_msg.presence_vector,
+  out_msg.elev = ValueConvertor::valueCavToJ2735<int32_t>(in_msg.elev, units::DECI_M_PER_M, in_msg.presence_vector,
                                                           carma_v2x_msgs::msg::BSMCoreData::ELEVATION_AVAILABLE,
                                                           j2735_v2x_msgs::msg::BSMCoreData::ELEVATION_UNAVAILABLE);
 
