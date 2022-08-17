@@ -865,8 +865,8 @@ namespace cpp_message
                 j2735_v2x_msgs::msg::TrafficControlRequestV01 tcrV01;
 
                 // decode id
-                uint8_t* id;
-                id = (uint8_t*) calloc(8, sizeof(uint8_t));
+                // uint8_t* id;
+                // id = (uint8_t*) calloc(8, sizeof(uint8_t));
                 auto id_len = message->value.choice.TestMessage04.body.choice.tcrV01.reqid.size;
                 for(auto i = 0; i < id_len; i++)
                 {
@@ -925,7 +925,7 @@ namespace cpp_message
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
 	    MessageFrame_t* message;
-	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
+	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t)); // Freed
         // if mem allocation fails
 	    if (!message)
         {
@@ -934,7 +934,38 @@ namespace cpp_message
 
 	    //set message type to TestMessage05
 	    message->messageId = 245;
-        message->value.present = MessageFrame__value_PR_TestMessage05;        
+        message->value.present = MessageFrame__value_PR_TestMessage05; 
+
+        // TCM body definitions
+        TrafficControlMessageV01_t* output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
+        Id64b_t* output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+        uint8_t* val_64b = (uint8_t*) calloc(8, sizeof(uint8_t));
+        Id128b_t* output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+        uint8_t* val_128b = (uint8_t*) calloc(16, sizeof(uint8_t));
+        uint8_t* updated_val = (uint8_t*) calloc(8, sizeof(uint8_t));
+        // TCM package definitions
+        TrafficControlPackage_t* output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
+
+        IA5String_t* label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+        TrafficControlPackage::TrafficControlPackage__tcids* tcids;
+        tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+        
+        auto tcids_len = 1;
+        size_t label_size = 1;
+        if (control_msg.tcm_v01.package_exists)
+        {
+            tcids_len = control_msg.tcm_v01.package.tcids.size();
+            label_size = control_msg.tcm_v01.package.label.size();
+        }
+        uint8_t* label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
+        Id128b_t** tcid_output_128b = (Id128b_t**) calloc(tcids_len, sizeof(Id128b_t*));
+        uint8_t** tcid_val = (uint8_t**) calloc(tcids_len, sizeof(uint8_t*));
+        for ( int i = 0; i < tcids_len; i++ )
+        {
+            tcid_output_128b[i] = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+            tcid_val[i] = (uint8_t*) calloc(16, sizeof(uint8_t));
+        }
+        
         //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
         {
@@ -944,26 +975,30 @@ namespace cpp_message
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
             // ======================== TCMV01 START =============================
-            TrafficControlMessageV01_t* output_v01;
-            output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
+            // TrafficControlMessageV01_t* output_v01;
+            // output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t)); // Freed
             j2735_v2x_msgs::msg::TrafficControlMessageV01 msg_v01;
             msg_v01 = control_msg.tcm_v01;
             // encode reqid
-            Id64b_t* output_64b;
             j2735_v2x_msgs::msg::Id64b msg_64b;
             msg_64b = msg_v01.reqid;
-            output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+            // Id64b_t* output_64b;
+            // output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t)); // Freed
             
             // Type uint8[8]
-            uint8_t* val_64b;
-            val_64b = (uint8_t*) calloc(8, sizeof(uint8_t));
+            // uint8_t* val_64b;
+            // val_64b = (uint8_t*) calloc(8, sizeof(uint8_t)); // Freed
+            // std::cout << val_64b << std::endl;
             for(auto i = 0; i < msg_64b.id.size(); i++)
             {
                 val_64b[i] = msg_64b.id[i];
             }
             output_64b->buf = val_64b;
+            // std::cout << output_64b->buf << std::endl;
             output_64b->size = msg_64b.id.size();
             output_v01->reqid = *output_64b;
+            // free(output_64b);
+            
             // encode reqseq 
             output_v01->reqseq = msg_v01.reqseq;
             // encode msgtot
@@ -971,14 +1006,14 @@ namespace cpp_message
             // encode msgnum
             output_v01->msgnum = msg_v01.msgnum;
             // encode id
-            Id128b_t* output_128b;
             j2735_v2x_msgs::msg::Id128b msg_128b;
             msg_128b = msg_v01.id;
-            output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+            // Id128b_t* output_128b;
+            // output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t)); // Freed
             
             // Type uint8[16]
-            uint8_t* val_128b;
-            val_128b = (uint8_t*) calloc(16, sizeof(uint8_t));
+            // uint8_t* val_128b;
+            // val_128b = (uint8_t*) calloc(16, sizeof(uint8_t)); // Freed
             for(auto i = 0; i < msg_128b.id.size(); i++)
             {
                 val_128b[i] = msg_128b.id[i];
@@ -986,11 +1021,12 @@ namespace cpp_message
             output_128b->buf = val_128b;
             output_128b->size = msg_128b.id.size();
             output_v01->id = *output_128b;
+            // free(output_128b);
 
             // encode updated
             // recover an 8-bit array from a long value 
-            uint8_t* updated_val;
-            updated_val = (uint8_t*) calloc(8, sizeof(uint8_t));
+            // uint8_t* updated_val;
+            // updated_val = (uint8_t*) calloc(8, sizeof(uint8_t)); // Freed
             for(int k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
             }
@@ -1001,8 +1037,8 @@ namespace cpp_message
             if (msg_v01.package_exists)
             {
                 //===================PACKAGE START==================
-                TrafficControlPackage_t* output_package;
-                output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
+                // TrafficControlPackage_t* output_package;
+                // output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t)); // Freed
                 
                 j2735_v2x_msgs::msg::TrafficControlPackage msg_package;
                 msg_package = msg_v01.package;
@@ -1011,14 +1047,14 @@ namespace cpp_message
                 if (msg_package.label_exists)
                 {
                     size_t label_size = msg_package.label.size();
-                    uint8_t* label_content;
-                    label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
+                    // uint8_t* label_content;
+                    // label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
                     for(auto i = 0; i < label_size; i++)
                     {
                         label_content[i] = (char)msg_package.label[i];
                     }
-                    IA5String_t* label_p;
-                    label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
+                    // IA5String_t* label_p;
+                    // label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
                     label_p->buf = label_content;
                     label_p->size = label_size;
                     output_package->label = label_p;
@@ -1027,27 +1063,27 @@ namespace cpp_message
                 // convert tcids from list of Id128b
                 // tcid is array of ids, each of which is a 16-bit pointer to an array of ids
                 auto tcids_len = msg_package.tcids.size();
-                TrafficControlPackage::TrafficControlPackage__tcids* tcids;
-                tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+                // TrafficControlPackage::TrafficControlPackage__tcids* tcids;
+                // tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids)); // Freed
                 
                 for (auto i = 0; i < tcids_len; i++)
                 {
-                    Id128b_t* output_128b = new Id128b_t;
+                    // Id128b_t* output_128b;
                     // output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
                     j2735_v2x_msgs::msg::Id128b msg_128b;
                     msg_128b = msg_package.tcids[i];
                     
                     // Type uint8[16]
-                    uint8_t* val;
-                    val = (uint8_t*) calloc(16, sizeof(uint8_t));
+                    // uint8_t* val;
+                    // val = (uint8_t*) calloc(16, sizeof(uint8_t)); // Freed
                     for(auto j = 0; j < msg_128b.id.size(); j++)
                     {
-                        val[j] = msg_128b.id[j];
+                        tcid_val[i][j] = msg_128b.id[j];
                     }
-                    output_128b->buf = val;
-                    output_128b->size = msg_128b.id.size();
+                    tcid_output_128b[i]->buf = tcid_val[i];
+                    tcid_output_128b[i]->size = msg_128b.id.size();
                     
-                    asn_sequence_add(&tcids->list, output_128b);
+                    asn_sequence_add(&tcids->list, tcid_output_128b[i]);
                 }
                 
                 output_package->tcids = *tcids;
@@ -1061,23 +1097,24 @@ namespace cpp_message
             {
                 // ===================== TCMV01 - PARAMS START =====================
                 TrafficControlParams_t* output_params;
-                output_params = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t));
+                output_params = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t)); // Freed
                 j2735_v2x_msgs::msg::TrafficControlParams msg_params;
                 msg_params = msg_v01.params;
                 // convert vlasses
                 auto vclasses_size = msg_params.vclasses.size();
                 TrafficControlParams::TrafficControlParams__vclasses* vclasses_list;
-                vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
+                vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses)); // Freed
                 
                 for (auto i = 0; i < vclasses_size; i ++)
                 {
                     asn_sequence_add(&vclasses_list->list, encode_geofence_control_veh_class(msg_params.vclasses[i]));
                 }
                 output_params->vclasses = *vclasses_list;
+                // free(vclasses_list);
 
                 // ======================= TCMV01 - PARAMS - SCHEDULE START ===================================
                 TrafficControlSchedule_t* output_schedule;
-                output_schedule = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t));
+                output_schedule = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t)); // Freed
                 j2735_v2x_msgs::msg::TrafficControlSchedule msg_schedule;
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
@@ -1091,6 +1128,8 @@ namespace cpp_message
                 start_p->buf = start_val;
                 start_p->size = 8;
                 output_schedule->start = *start_p;
+                // free(start_val);
+                // free(start_p);
 
                 // long int from 8-bit array for "end" (optional)
                 if (msg_schedule.end_exists)
@@ -1132,6 +1171,7 @@ namespace cpp_message
                 }
                 // ======================= TCMV01 - PARAMS - SCHEDULE END =============================
                 output_params->schedule = *output_schedule;
+                // free(output_schedule);
 
                 // regulatory
                 output_params->regulatory = msg_params.regulatory;
@@ -1217,6 +1257,7 @@ namespace cpp_message
             }
             //============================TCMV01 END=====================
             message->value.choice.TestMessage05.body.choice.tcmV01 = *output_v01;
+            // free(output_v01);
         }
         else
         {
@@ -1238,6 +1279,46 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         // for(auto i = 0; i < array_length; i++) std::cout<< (int)b_array[i]<< ", ";
+
+        free(output_64b);
+        free(val_64b);
+        free(output_128b);
+        free(val_128b);
+        free(updated_val);
+        free(output_package);
+        free(label_p);
+        free(tcids);
+        free(label_content);
+        free(tcid_output_128b);
+        free(tcid_val);
+        // if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01)
+        // {
+        //     auto short_tcmV01 = message->value.choice.TestMessage05.body.choice.tcmV01;
+        //     free(short_tcmV01.reqid.buf);
+        //     free(short_tcmV01.id.buf);
+        //     free(short_tcmV01.updated.buf);
+        //     // if ()
+        //     j2735_v2x_msgs::msg::TrafficControlMessageV01 msg_v01;
+        //     msg_v01 = control_msg.tcm_v01;
+        //     if (msg_v01.package_exists)
+        //     {
+        //         if (msg_v01.package.label_exists)
+        //         {
+        //             free(short_tcmV01.package->label->buf);
+        //             free(short_tcmV01.package->label);
+        //         }
+        //         free(short_tcmV01.package);
+        //     }
+        //     if (msg_v01.params_exists)
+        //     {
+        //         free(short_tcmV01.params);
+        //     }
+        //     if (msg_v01.geometry_exists)
+        //     {
+        //         free(short_tcmV01.geometry);
+        //     }
+        //     free(message);
+        // }
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 

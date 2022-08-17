@@ -29,6 +29,7 @@ int main(int argc, char ** argv)
     //Initialize ROS
     rclcpp::init(argc, argv);
     
+    ::testing::GTEST_FLAG(filter) = "CppMessage*";
     bool success = RUN_ALL_TESTS();
 
     //shutdown ROS
