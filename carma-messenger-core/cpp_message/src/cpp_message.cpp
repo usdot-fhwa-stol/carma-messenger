@@ -1621,6 +1621,46 @@ namespace cpp_message
 	    message->messageId = 244;
         message->value.present = MessageFrame__value_PR_TestMessage04;
 
+        // create 
+        TrafficControlRequestV01_t* tcr;
+        tcr = (TrafficControlRequestV01_t*)calloc(1, sizeof(TrafficControlRequestV01_t));
+            
+        //convert id string to integer array
+        Id64b_t* id64;
+        id64 = (Id64b_t*)calloc(1, sizeof(Id64b_t));
+        uint8_t* id_content;
+        id_content = (uint8_t*) calloc(8, sizeof(uint8_t));
+        TrafficControlRequestV01::TrafficControlRequestV01__bounds* bounds_list;
+        bounds_list = (TrafficControlRequestV01::TrafficControlRequestV01__bounds*)calloc(1, sizeof(TrafficControlRequestV01::TrafficControlRequestV01__bounds));
+        auto count = 1;
+        auto offset_count = 1;
+        if(request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01)
+        {
+            count = request_msg.tcr_v01.bounds.size();
+        }
+        TrafficControlBounds_t** bounds_p;
+        bounds_p = (TrafficControlBounds_t**) calloc(count, sizeof(TrafficControlBounds_t*));
+        TrafficControlBounds::TrafficControlBounds__offsets** offsets;
+        offsets = (TrafficControlBounds::TrafficControlBounds__offsets**) calloc(count, sizeof(TrafficControlBounds::TrafficControlBounds__offsets*));
+        uint8_t** oldest_val;
+        oldest_val = (uint8_t**) calloc(count, sizeof(uint8_t*));
+        OffsetPoint_t*** offset_p;
+        offset_p = (OffsetPoint_t***) calloc(count, sizeof(OffsetPoint_t**));
+        for(auto i = 0; i < count; i++) 
+        {
+            bounds_p[i] = (TrafficControlBounds_t*) calloc(1, sizeof(TrafficControlBounds_t));
+            offsets[i] = (TrafficControlBounds::TrafficControlBounds__offsets*) calloc(1, sizeof(TrafficControlBounds::TrafficControlBounds__offsets));
+            oldest_val[i] = (uint8_t*) calloc(8, sizeof(uint8_t));
+            OffsetPoint_t*** offset_p;
+
+            offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
+            offset_p[i] = (OffsetPoint_t**) calloc(offset_count, sizeof(OffsetPoint_t*));
+            for(auto j = 0; j < offset_count; j++)
+            {
+                offset_p[i][j] = (OffsetPoint_t*) calloc(1, sizeof(OffsetPoint_t));
+            }
+        }
+
         // Check and copy TrafficControlRequest choice
         if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::RESERVED){
             message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_reserved;
@@ -1628,16 +1668,7 @@ namespace cpp_message
         else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01) {
             message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_tcrV01;
         
-            // create 
-            TrafficControlRequestV01_t* tcr;
-            tcr = (TrafficControlRequestV01_t*)calloc(1, sizeof(TrafficControlRequestV01_t));
-            
-            //convert id string to integer array
-            Id64b_t* id64;
-            id64 = (Id64b_t*)calloc(1, sizeof(Id64b_t));
 
-            uint8_t* id_content;
-            id_content = (uint8_t*) calloc(8, sizeof(uint8_t));
             for(auto i = 0; i < 8; i++)
             {
                 id_content[i] = request_msg.tcr_v01.reqid.id[i];
@@ -1652,48 +1683,37 @@ namespace cpp_message
             tcr->scale = request_msg.tcr_v01.scale;
             
             // copy bounds
-            auto count = request_msg.tcr_v01.bounds.size();
-            TrafficControlRequestV01::TrafficControlRequestV01__bounds* bounds_list;
-            bounds_list = (TrafficControlRequestV01::TrafficControlRequestV01__bounds*)calloc(1, sizeof(TrafficControlRequestV01::TrafficControlRequestV01__bounds));
-            
-            for(auto i = 0; i < count; i++) {
+            for(auto i = 0; i < count; i++) 
+            {
                 // construct control bounds
-                TrafficControlBounds_t* bounds_p;
-                bounds_p = (TrafficControlBounds_t*) calloc(1, sizeof(TrafficControlBounds_t));
-                bounds_p->reflat = request_msg.tcr_v01.bounds[i].reflat;
-                bounds_p->reflon = request_msg.tcr_v01.bounds[i].reflon;
+                bounds_p[i]->reflat = request_msg.tcr_v01.bounds[i].reflat;
+                bounds_p[i]->reflon = request_msg.tcr_v01.bounds[i].reflon;
                 // copy offsets from array to C list struct
-                TrafficControlBounds::TrafficControlBounds__offsets* offsets;
-                offsets = (TrafficControlBounds::TrafficControlBounds__offsets*)calloc(1, sizeof(TrafficControlBounds::TrafficControlBounds__offsets));
-                auto offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
+                offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
                 for(auto j = 0; j < offset_count; j++) {
-                    OffsetPoint_t* offset_p;
-                    offset_p = (OffsetPoint_t*) calloc(1, sizeof(OffsetPoint_t));
-                    offset_p->deltax = request_msg.tcr_v01.bounds[i].offsets[j].deltax;
-                    offset_p->deltay = request_msg.tcr_v01.bounds[i].offsets[j].deltay;
-                    asn_sequence_add(&offsets->list, offset_p);
+                    offset_p[i][j]->deltax = request_msg.tcr_v01.bounds[i].offsets[j].deltax;
+                    offset_p[i][j]->deltay = request_msg.tcr_v01.bounds[i].offsets[j].deltay;
+                    asn_sequence_add(&offsets[i]->list, offset_p[i][j]);
                 }
-                bounds_p->offsets = *offsets;
+                bounds_p[i]->offsets = *offsets[i];
                 //convert a long value to an 8-bit array of length 8
-                uint8_t* oldest_val;
-                oldest_val = (uint8_t*) calloc(8, sizeof(uint8_t));
                 for(int k = 7; k >= 0; k--) {
-                    oldest_val[7-k] = request_msg.tcr_v01.bounds[i].oldest >> (k * 8);
+                    oldest_val[i][7-k] = request_msg.tcr_v01.bounds[i].oldest >> (k * 8);
                 }
-                bounds_p->oldest.size = 8;
-                bounds_p->oldest.buf = oldest_val;
-                asn_sequence_add(&bounds_list->list, bounds_p);
-        }
+                bounds_p[i]->oldest.size = 8;
+                bounds_p[i]->oldest.buf = oldest_val[i];
+                asn_sequence_add(&bounds_list->list, bounds_p[i]);
+            }
+            tcr->bounds = *bounds_list;
 
-        tcr->bounds = *bounds_list;
-
-        message->value.choice.TestMessage04.body.choice.tcrV01 = *tcr;
+            message->value.choice.TestMessage04.body.choice.tcrV01 = *tcr;
         }
 
         // encode message
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
-        if(ec.encoded == -1) {
+        if(ec.encoded == -1) 
+        {
             return boost::optional<std::vector<uint8_t>>{};
         }
         // copy to byte array msg
@@ -1701,6 +1721,29 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
         // for(auto i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";//For unit test purposes
+
+        free(message);
+        free(tcr);
+        free(id64);
+        free(id_content);
+        free(bounds_list);
+        for(auto i = 0; i < count; i++) 
+        {
+            offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
+            for(auto j = 0; j < offset_count; j++)
+            {
+                free(offset_p[i][j]);
+            }
+            free(bounds_p[i]);
+            free(offsets[i]);
+            free(oldest_val[i]);
+            free(offset_p[i]);
+        }
+        free(bounds_p);
+        free(offsets);
+        free(oldest_val);
+        free(offset_p);
+
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
