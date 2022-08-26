@@ -989,21 +989,21 @@ namespace cpp_message
         TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
         latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
         
-        auto signal_size = 1
-        if (control_msg.tcm_v01.params.detail == j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE)
+        auto signal_size = 1;
+        if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE)
         {
-            signal_size = msg.signal.size();
+            signal_size = control_msg.tcm_v01.params.detail.signal.size();
         }
-        long* signal_content = (long*) calloc(signal_size, sizeof(long));
+        uint8_t* signal_content = (uint8_t*) calloc(signal_size, sizeof(uint8_t));
         auto latperm_size = 1;
-        long** latperm_items = (long**) calloc(latperm_size, sizeof(long*));
-        if (control_msg.tcm_v01.params.detail == j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE):
+        if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE)
         {
-            latperm_size = control_msg.tcm_v01.params.latperm.size();
-            for(auto i = 0; i < latperm_size; i++)
-            {
-                latperm_items[i] = (long*) calloc(1, sizeof(long));
-            }
+            latperm_size = control_msg.tcm_v01.params.detail.latperm.size(); 
+        }
+        long** latperm_items = (long**) calloc(latperm_size, sizeof(long*));
+        for(auto i = 0; i < latperm_size; i++)
+        {
+            latperm_items[i] = (long*) calloc(1, sizeof(long));
         }
 
         // TCM geometry definitions
@@ -1322,6 +1322,13 @@ namespace cpp_message
         free(schedule_output);
         free(repeat_output);
         free(detail_output);
+        free(signal_content);
+        for(auto i = 0; i < latperm_size; i++)
+        {
+            free(latperm_items[i]);
+        }
+        free(latperm_items);
+        free(latperm_p);
         
         // TCM geometry
         free(output_geometry);
