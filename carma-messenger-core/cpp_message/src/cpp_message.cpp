@@ -845,7 +845,7 @@ namespace cpp_message
         MessageFrame_t* message = 0;
         // copy from vector to array
         auto len = binary_array.size();
-        uint8_t buf[len]; // Should be fine without calloc, because it's only used in this function
+        uint8_t buf[len];
         for(auto i = 0; i < len; i++) {
             buf[i] = binary_array[i];
         }
@@ -1638,7 +1638,6 @@ namespace cpp_message
 
             uint8_t* id_content;
             id_content = (uint8_t*) calloc(8, sizeof(uint8_t));
-            // uint8_t id_content[8];
             for(auto i = 0; i < 8; i++)
             {
                 id_content[i] = request_msg.tcr_v01.reqid.id[i];
