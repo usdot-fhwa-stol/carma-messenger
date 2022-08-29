@@ -599,4 +599,12 @@ TEST(CppMessageTest, testEncodeRequestMsg2)
         std::cout << "encoding failed!\n";
         EXPECT_TRUE(false);
     }
+    auto res_decoded = worker->decode_geofence_request(res.get());
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    EXPECT_EQ(request, res_decoded.get());
 }

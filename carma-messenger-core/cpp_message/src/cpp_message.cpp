@@ -1651,7 +1651,6 @@ namespace cpp_message
             bounds_p[i] = (TrafficControlBounds_t*) calloc(1, sizeof(TrafficControlBounds_t));
             offsets[i] = (TrafficControlBounds::TrafficControlBounds__offsets*) calloc(1, sizeof(TrafficControlBounds::TrafficControlBounds__offsets));
             oldest_val[i] = (uint8_t*) calloc(8, sizeof(uint8_t));
-            OffsetPoint_t*** offset_p;
 
             offset_count = request_msg.tcr_v01.bounds[i].offsets.size();
             offset_p[i] = (OffsetPoint_t**) calloc(offset_count, sizeof(OffsetPoint_t*));
@@ -1668,7 +1667,6 @@ namespace cpp_message
         else if (request_msg.choice == j2735_v2x_msgs::msg::TrafficControlRequest::TCRV01) {
             message->value.choice.TestMessage04.body.present = TrafficControlRequest_PR_tcrV01;
         
-
             for(auto i = 0; i < 8; i++)
             {
                 id_content[i] = request_msg.tcr_v01.reqid.id[i];
@@ -1683,8 +1681,7 @@ namespace cpp_message
             tcr->scale = request_msg.tcr_v01.scale;
             
             // copy bounds
-            for(auto i = 0; i < count; i++) 
-            {
+            for(auto i = 0; i < count; i++) {
                 // construct control bounds
                 bounds_p[i]->reflat = request_msg.tcr_v01.bounds[i].reflat;
                 bounds_p[i]->reflon = request_msg.tcr_v01.bounds[i].reflon;
