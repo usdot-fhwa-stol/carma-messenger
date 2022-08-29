@@ -166,12 +166,13 @@ namespace cpp_message
             // sub-helper functions for encoding TrafficControlMessage
             Id64b_t* encode_id64b(const j2735_v2x_msgs::msg::Id64b& msg);
             Id128b_t*    encode_id128b(const j2735_v2x_msgs::msg::Id128b& msg);
-            TrafficControlVehClass_t*    encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg);
-            TrafficControlDetail_t*  encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg);
-            DSRC_DayOfWeek_t*    encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg);
-            DailySchedule_t* encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg);
-            RepeatParams_t*  encode_repeat_params(const j2735_v2x_msgs::msg::RepeatParams& msg);
-            PathNode_t*  encode_path_node(const j2735_v2x_msgs::msg::PathNode& msg);
+            void encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg, TrafficControlVehClass_t* output);
+            void encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg, TrafficControlDetail_t* output, 
+                        uint8_t* signal_content, TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p, long** item_p);
+            void encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg, DSRC_DayOfWeek_t* output, uint8_t* dow_val);
+            void encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg, DailySchedule_t* output);
+            void encode_repeat_params (const j2735_v2x_msgs::msg::RepeatParams& msg, RepeatParams_t* output);
+            void encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg, PathNode_t* output, long* z_temp, long* width_temp);
 
     };
 }
