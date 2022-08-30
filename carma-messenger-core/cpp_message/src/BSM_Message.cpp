@@ -141,7 +141,6 @@ namespace cpp_message
         temp_id->buf = id_content; 
         temp_id->size = 4;
         core_data->id = *temp_id;
-        free(temp_id);
         core_data->secMark = plain_msg.core_data.sec_mark;
 
         core_data->lat = plain_msg.core_data.latitude;
@@ -153,7 +152,6 @@ namespace cpp_message
         pos_acc->semiMajor = plain_msg.core_data.accuracy.semi_major;
         pos_acc->semiMinor = plain_msg.core_data.accuracy.semi_minor;
         core_data->accuracy = *pos_acc;
-        free(pos_acc);
         core_data->transmission = plain_msg.core_data.transmission.transmission_state;
         core_data->speed = plain_msg.core_data.speed;
         core_data->heading = plain_msg.core_data.heading;
@@ -165,13 +163,11 @@ namespace cpp_message
         accel->vert= plain_msg.core_data.accel_set.vert;
         accel->yaw = plain_msg.core_data.accel_set.yaw_rate;
         core_data->accelSet = *accel;
-        free(accel);
         VehicleSize_t* vehicle_size;
         vehicle_size = (VehicleSize_t*) calloc(1, sizeof(VehicleSize_t));
         vehicle_size->length = plain_msg.core_data.size.vehicle_length;
         vehicle_size->width = plain_msg.core_data.size.vehicle_width;
         core_data->size = *vehicle_size;
-        free(vehicle_size);
         BrakeSystemStatus_t* brakes;
         brakes = (BrakeSystemStatus_t*) calloc(1, sizeof(BrakeSystemStatus_t));
     
@@ -197,16 +193,12 @@ namespace cpp_message
         brakes->wheelBrakes = *brake_applied_status;
         
         core_data->brakes = *brakes;
-        free(brakes);
         bsm_msg->coreData = *core_data;
-        free(core_data);
         message->value.choice.BasicSafetyMessage = *bsm_msg;
-        free(bsm_msg);
         //encode message
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
         // Uncomment below to enable logging in human readable form
         //asn_fprint(fp, &asn_DEF_MessageFrame, message);
-        free(message);
         
         //log a warning if that fails
         if(ec.encoded == -1) {
@@ -219,6 +211,16 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
+
+        free(message);
+        free(bsm_msg);
+        free(core_data);
+        free(temp_id);
+        free(pos_acc);
+        free(accel);
+        free(vehicle_size);
+        free(brakes);
+        free(brake_applied_status);
                 
         //Debugging/Unit Testing
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";

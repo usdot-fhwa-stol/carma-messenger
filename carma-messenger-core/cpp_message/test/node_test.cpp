@@ -29,6 +29,8 @@ int main(int argc, char ** argv)
     //Initialize ROS
     rclcpp::init(argc, argv);
     
+    // Running specific unit tests
+    //::testing::GTEST_FLAG(filter) = "BSM*";
     bool success = RUN_ALL_TESTS();
 
     //shutdown ROS
