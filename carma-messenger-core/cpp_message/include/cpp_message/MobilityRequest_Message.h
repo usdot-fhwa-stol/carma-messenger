@@ -41,9 +41,6 @@ namespace cpp_message
         static const int OFFSET_MAX=500;
         static const int OFFSET_UNAVAILABLE=501;
 
-        //a vector of pointers to MobilityECEFOffset messages,for deleting unsafely allocated offset messages while encoding.
-        std::vector<MobilityECEFOffset_t*> Offset_ptrs;  
-
         public:
         /**
         * \brief constructor 
@@ -67,7 +64,5 @@ namespace cpp_message
          * @return encoded byte array returns an empty optional if encoding fails. 
          */
         boost::optional<std::vector<uint8_t>> encode_mobility_request_message(carma_v2x_msgs::msg::MobilityRequest plainMessage);
-
-        ~Mobility_Request();
     };
 }
