@@ -149,14 +149,8 @@ namespace cpp_message
         size_t buffer_size=sizeof(buffer);
         
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
-        //if mem allocation fails
-        if(!message_shared)
-        {
-            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Cannot allocate mem for MobilityOperation message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-        }
-        MessageFrame_t* message=message_shared.get();
+        auto message_shared = std::make_shared<MessageFrame_t>();
+        MessageFrame_t* message = message_shared.get();
         //set message type to TestMessage03
         message->messageId=MOBILITY_OPERATION_TEST_ID;  
         message->value.present=MessageFrame__value_PR_TestMessage03;    
@@ -297,8 +291,4 @@ namespace cpp_message
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
-    
-   
-
-
 }
