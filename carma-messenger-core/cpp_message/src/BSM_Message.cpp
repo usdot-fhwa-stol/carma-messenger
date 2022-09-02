@@ -108,81 +108,62 @@ namespace cpp_message
         uint8_t buffer[544];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t* message;
-        message = (MessageFrame_t*) calloc(1, sizeof(MessageFrame_t));
-        
-
-        //if mem allocation fails
-        if(!message)
-        {
-            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for BasicSafetyMessage encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-        }
+        MessageFrame_t message;
 
         //set message type to BasicSafetyMessage
-        message->messageId = 20;  
-        message->value.present = MessageFrame__value_PR_BasicSafetyMessage;
+        message.messageId = 20;  
+        message.value.present = MessageFrame__value_PR_BasicSafetyMessage;
 
-        BasicSafetyMessage* bsm_msg;
-        bsm_msg = (BasicSafetyMessage*) calloc(1, sizeof(BasicSafetyMessage));
+        BasicSafetyMessage bsm_msg;
+        bsm_msg.partII = nullptr;
+        bsm_msg.regional = nullptr;
 
         // Encode coreData
-        BSMcoreData_t* core_data;
-        core_data = (BSMcoreData_t*) calloc(1, sizeof(BSMcoreData_t));
-        core_data->msgCnt = plain_msg.core_data.msg_count;
+        BSMcoreData_t core_data;
+        core_data.msgCnt = plain_msg.core_data.msg_count;
         //Set the fields
         uint8_t id_content[4] = {0};
         for(auto i = 0; i < 4; i++)
         {
             id_content[i] = (char) plain_msg.core_data.id[i];
         }
-        TemporaryID_t* temp_id;
-        temp_id = (TemporaryID_t*) calloc(1, sizeof(TemporaryID_t));
-        temp_id->buf = id_content; 
-        temp_id->size = 4;
-        core_data->id = *temp_id;
-        free(temp_id);
-        core_data->secMark = plain_msg.core_data.sec_mark;
+        TemporaryID_t temp_id;
+        temp_id.buf = id_content; 
+        temp_id.size = 4;
+        core_data.id = temp_id;
+        core_data.secMark = plain_msg.core_data.sec_mark;
 
-        core_data->lat = plain_msg.core_data.latitude;
-        core_data->Long = plain_msg.core_data.longitude;
-        core_data->elev = plain_msg.core_data.elev;
-        PositionalAccuracy_t* pos_acc;
-        pos_acc = (PositionalAccuracy_t*) calloc(1, sizeof(PositionalAccuracy_t));
-        pos_acc->orientation = plain_msg.core_data.accuracy.orientation;
-        pos_acc->semiMajor = plain_msg.core_data.accuracy.semi_major;
-        pos_acc->semiMinor = plain_msg.core_data.accuracy.semi_minor;
-        core_data->accuracy = *pos_acc;
-        free(pos_acc);
-        core_data->transmission = plain_msg.core_data.transmission.transmission_state;
-        core_data->speed = plain_msg.core_data.speed;
-        core_data->heading = plain_msg.core_data.heading;
-        core_data->angle = plain_msg.core_data.angle;
-        AccelerationSet4Way_t* accel;
-        accel = (AccelerationSet4Way_t*) calloc(1, sizeof(AccelerationSet4Way_t));
-        accel->lat = plain_msg.core_data.accel_set.lateral;
-        accel->Long = plain_msg.core_data.accel_set.longitudinal;
-        accel->vert= plain_msg.core_data.accel_set.vert;
-        accel->yaw = plain_msg.core_data.accel_set.yaw_rate;
-        core_data->accelSet = *accel;
-        free(accel);
-        VehicleSize_t* vehicle_size;
-        vehicle_size = (VehicleSize_t*) calloc(1, sizeof(VehicleSize_t));
-        vehicle_size->length = plain_msg.core_data.size.vehicle_length;
-        vehicle_size->width = plain_msg.core_data.size.vehicle_width;
-        core_data->size = *vehicle_size;
-        free(vehicle_size);
-        BrakeSystemStatus_t* brakes;
-        brakes = (BrakeSystemStatus_t*) calloc(1, sizeof(BrakeSystemStatus_t));
+        core_data.lat = plain_msg.core_data.latitude;
+        core_data.Long = plain_msg.core_data.longitude;
+        core_data.elev = plain_msg.core_data.elev;
+        PositionalAccuracy_t pos_acc;
+        pos_acc.orientation = plain_msg.core_data.accuracy.orientation;
+        pos_acc.semiMajor = plain_msg.core_data.accuracy.semi_major;
+        pos_acc.semiMinor = plain_msg.core_data.accuracy.semi_minor;
+        core_data.accuracy = pos_acc;
+        core_data.transmission = plain_msg.core_data.transmission.transmission_state;
+        core_data.speed = plain_msg.core_data.speed;
+        core_data.heading = plain_msg.core_data.heading;
+        core_data.angle = plain_msg.core_data.angle;
+        AccelerationSet4Way_t accel;
+        accel.lat = plain_msg.core_data.accel_set.lateral;
+        accel.Long = plain_msg.core_data.accel_set.longitudinal;
+        accel.vert= plain_msg.core_data.accel_set.vert;
+        accel.yaw = plain_msg.core_data.accel_set.yaw_rate;
+        core_data.accelSet = accel;
+        VehicleSize_t vehicle_size;
+        vehicle_size.length = plain_msg.core_data.size.vehicle_length;
+        vehicle_size.width = plain_msg.core_data.size.vehicle_width;
+        core_data.size = vehicle_size;
+        BrakeSystemStatus_t brakes;
     
-        brakes->traction = plain_msg.core_data.brakes.traction.traction_control_status;
-        brakes->abs = plain_msg.core_data.brakes.abs.anti_lock_brake_status;
-        brakes->scs = plain_msg.core_data.brakes.scs.stability_control_status;
-        brakes->brakeBoost = plain_msg.core_data.brakes.brake_boost.brake_boost_applied;
-        brakes->auxBrakes = plain_msg.core_data.brakes.aux_brakes.auxiliary_brake_status;
+        brakes.traction = plain_msg.core_data.brakes.traction.traction_control_status;
+        brakes.abs = plain_msg.core_data.brakes.abs.anti_lock_brake_status;
+        brakes.scs = plain_msg.core_data.brakes.scs.stability_control_status;
+        brakes.brakeBoost = plain_msg.core_data.brakes.brake_boost.brake_boost_applied;
+        brakes.auxBrakes = plain_msg.core_data.brakes.aux_brakes.auxiliary_brake_status;
         
-        BrakeAppliedStatus_t* brake_applied_status;
-        brake_applied_status = (BrakeAppliedStatus_t*) calloc(1, sizeof(BrakeAppliedStatus_t));
+        BrakeAppliedStatus_t brake_applied_status;
         
         uint8_t wheel_brake[1] = {8}; // dummy 8 value
 
@@ -191,22 +172,18 @@ namespace cpp_message
         // so num in brackets indicate the position in the bit string:
         // unavailable: 0b10000000, leftFront: 0b01000000 etc
         wheel_brake[0] = (char) (8 << (4 - plain_msg.core_data.brakes.wheel_brakes.brake_applied_status)); 
-        brake_applied_status->buf = wheel_brake;
-        brake_applied_status->size = 1;
-        brake_applied_status->bits_unused = 3;
-        brakes->wheelBrakes = *brake_applied_status;
+        brake_applied_status.buf = wheel_brake;
+        brake_applied_status.size = 1;
+        brake_applied_status.bits_unused = 3;
+        brakes.wheelBrakes = brake_applied_status;
         
-        core_data->brakes = *brakes;
-        free(brakes);
-        bsm_msg->coreData = *core_data;
-        free(core_data);
-        message->value.choice.BasicSafetyMessage = *bsm_msg;
-        free(bsm_msg);
+        core_data.brakes = brakes;
+        bsm_msg.coreData = core_data;
+        message.value.choice.BasicSafetyMessage = bsm_msg;
         //encode message
-        ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
+        ec=uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , &message , buffer , buffer_size);
         // Uncomment below to enable logging in human readable form
         //asn_fprint(fp, &asn_DEF_MessageFrame, message);
-        free(message);
         
         //log a warning if that fails
         if(ec.encoded == -1) {
@@ -219,7 +196,7 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
-                
+        
         //Debugging/Unit Testing
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return boost::optional<std::vector<uint8_t>>(b_array);
