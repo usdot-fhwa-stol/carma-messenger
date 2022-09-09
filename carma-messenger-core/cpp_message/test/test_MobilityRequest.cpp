@@ -145,6 +145,96 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg)
     }
 }
 
+TEST(MobilityRequestMessageTest, testEncodeDecodeMobilityRequestMsg)
+{
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Request worker(node->get_node_logging_interface());
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityRequest message;
+    header.sender_id="USDOT-45100";
+    header.recipient_id="USDOT-45095";
+    header.sender_bsm_id="10ABCDEF";
+    header.plan_id="11111111-2222-3333-AAAA-111111111111";
+    header.timestamp = 9223372036854775807;
+    message.m_header=header;   
+
+    //body
+    message.strategy="Carma/Platooning";
+    message.plan_type.type=4;
+    message.urgency=50;
+    
+        //location
+    carma_v2x_msgs::msg::LocationECEF starting_location;
+    starting_location.ecef_x=0;
+    starting_location.ecef_y=1;
+    starting_location.ecef_z=2;
+    starting_location.timestamp=1223372036854775807;
+
+    message.location=starting_location;
+        //strategy_params
+    message.strategy_params="vin_number:1FUJGHDV0CLBP8834,license_plate:DOT-10003,carrier_name:Silver Truck FHWA TFHRC,carrier_id:USDOT 0000001,weight:,ads_software_version:System Version Unknown,date_of_last_state_inspection:YYYY-MM-DD,date_of_last_ads_calibration:YYYY-MM-DD,pre_trip_ads_health_check:Green,ads_status:Red,iss_score:49,permit_required:0,timestamp:1585836731814";
+        //trajectory
+    carma_v2x_msgs::msg::Trajectory trajectory;
+    carma_v2x_msgs::msg::LocationECEF trajectory_start;
+    trajectory_start.ecef_x=5;
+    trajectory_start.ecef_y=1;
+    trajectory_start.ecef_z=2;
+    trajectory_start.timestamp=9023372036854775807;
+    trajectory.location=trajectory_start;
+
+            //offsets
+    carma_v2x_msgs::msg::LocationOffsetECEF offset1;
+    offset1.offset_x=1;
+    offset1.offset_y=1;
+    offset1.offset_z=1;
+
+    trajectory.offsets.push_back(offset1);
+ 
+    carma_v2x_msgs::msg::LocationOffsetECEF offset2;
+    offset2.offset_x=2;
+    offset2.offset_y=2;
+    offset2.offset_z=2;
+
+    trajectory.offsets.push_back(offset2);
+
+    message.trajectory=trajectory;
+    //expiration
+    message.expiration=1523372036854775807;
+    boost::optional<std::vector<uint8_t>> res = worker.encode_mobility_request_message(message);
+    
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res_decoded = worker.decode_mobility_request_message(res.get());
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    carma_v2x_msgs::msg::MobilityRequest result = res_decoded.get();
+    EXPECT_EQ(message, result);
+
+    auto res2 = worker.encode_mobility_request_message(result);
+    if(res2) EXPECT_TRUE(true);
+    else 
+    {
+        std::cout << "Encoding failed while unit testing BSM encoder!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res2_decoded = worker.decode_mobility_request_message(res2.get());
+    if(res2_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    EXPECT_EQ(message, res2_decoded.get());
+}
+
 TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
 {
     auto node = std::make_shared<rclcpp::Node>("test_node");
@@ -209,6 +299,3 @@ TEST(MobilityRequestMessageTest, testEncodeMobilityRequestMsg_base_case)
         EXPECT_TRUE(false);
     }
 }
-
-
-

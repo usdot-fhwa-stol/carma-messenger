@@ -259,13 +259,7 @@ namespace cpp_message
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
-        //if mem allocation fails
-        if(!message_shared)
-        {
-            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for MobilityRequest message encoding");
-            return boost::optional<std::vector<uint8_t>>{};            
-        }
+        auto message_shared = std::make_shared<MessageFrame_t>();
         MessageFrame_t* message=message_shared.get();
         message->messageId=MOBILITY_REQUEST_TEST_ID_;
         message->value.present=MessageFrame__value_PR_TestMessage00;
@@ -442,84 +436,69 @@ namespace cpp_message
         
         //Trajectory
             //trajectoryStart
-        std::shared_ptr<MobilityLocation>trajectory_location_shared(new MobilityLocation);
-        if(!trajectory_location_shared)
-        {
-            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for trajectory.location encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-        }
-        MobilityLocation* trajectory_location=trajectory_location_shared.get();
+        MobilityLocation trajectory_location;
         long trajectory_start;
         trajectory_start=plainMessage.trajectory.location.ecef_x;
         if(trajectory_start> LOCATION_MAX || trajectory_start<LOCATION_MIN){
             // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        trajectory_location->ecefX=trajectory_start;
+        trajectory_location.ecefX=trajectory_start;
         
         trajectory_start=plainMessage.trajectory.location.ecef_y;
         if(trajectory_start> LOCATION_MAX || trajectory_start<LOCATION_MIN){
             // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        trajectory_location->ecefY=trajectory_start;
+        trajectory_location.ecefY=trajectory_start;
 
-        trajectory_start=plainMessage.trajectory.location.ecef_z;
-        if(trajectory_start> LOCATION_MAX_Z || trajectory_start<LOCATION_MIN_Z){
+        trajectory_start = plainMessage.trajectory.location.ecef_z;
+        if(trajectory_start > LOCATION_MAX_Z || trajectory_start < LOCATION_MIN_Z){
             // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
             return boost::optional<std::vector<uint8_t>>{};
         }
-        trajectory_location->ecefZ=trajectory_start;
+        trajectory_location.ecefZ = trajectory_start;
 
         //get location timestamp and convert to char array
-        uint64_t trajectory_time=plainMessage.trajectory.location.timestamp;
-        std::string trajectory_timestamp=std::to_string(trajectory_time);
-        size_t trajectory_timestamp_string_size=trajectory_timestamp.size();
+        uint64_t trajectory_time = plainMessage.trajectory.location.timestamp;
+        std::string trajectory_timestamp = std::to_string(trajectory_time);
+        size_t trajectory_timestamp_string_size = trajectory_timestamp.size();
         //append 0's if size is lower than required
         if(trajectory_timestamp_string_size<Header.TIMESTAMP_MESSAGE_LENGTH){
-            trajectory_timestamp=std::string((Header.TIMESTAMP_MESSAGE_LENGTH-trajectory_timestamp_string_size),'0').append(timestamp);
+            trajectory_timestamp = std::string((Header.TIMESTAMP_MESSAGE_LENGTH - trajectory_timestamp_string_size), '0').append(timestamp);
         }
-        else if(trajectory_timestamp_string_size>Header.TIMESTAMP_MESSAGE_LENGTH){
+        else if(trajectory_timestamp_string_size > Header.TIMESTAMP_MESSAGE_LENGTH){
             // RCLCPP_WARN(get_logger(),"Unacceptable trajectory timestamp value, changing to default");
-            trajectory_timestamp=std::string(Header.TIMESTAMP_MESSAGE_LENGTH,'0');
+            trajectory_timestamp = std::string(Header.TIMESTAMP_MESSAGE_LENGTH, '0');
         }
-        trajectory_timestamp_string_size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        trajectory_timestamp_string_size = Header.TIMESTAMP_MESSAGE_LENGTH;
         uint8_t string_trajectory_timestamp[trajectory_timestamp_string_size];
-        for(size_t i=0;i<Header.TIMESTAMP_MESSAGE_LENGTH;i++)
+        for(size_t i = 0; i < Header.TIMESTAMP_MESSAGE_LENGTH; i++)
         {
-            string_trajectory_timestamp[i]=trajectory_timestamp[i];
+            string_trajectory_timestamp[i] = trajectory_timestamp[i];
         }
-        trajectory_location->timestamp.buf=string_trajectory_timestamp;
-        trajectory_location->timestamp.size=trajectory_timestamp_string_size;
-        message->value.choice.TestMessage00.body.trajectoryStart=trajectory_location;
+        trajectory_location.timestamp.buf = string_trajectory_timestamp;
+        trajectory_location.timestamp.size = trajectory_timestamp_string_size;
+        message->value.choice.TestMessage00.body.trajectoryStart = &trajectory_location;
             //trajectory offsets
-        size_t offset_count=plainMessage.trajectory.offsets.size();
+        size_t offset_count = plainMessage.trajectory.offsets.size();
         
-        if(offset_count>MAX_POINTS_IN_MESSAGE){
+        if(offset_count > MAX_POINTS_IN_MESSAGE){
             // RCLCPP_WARN_STREAM( get_logger(), "offset count greater than 60.");
             return boost::optional<std::vector<uint8_t>>{};
         }
 
-        std::shared_ptr <MobilityLocationOffsets>offsets_list_shared ((MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets)),free);
-        if(!offsets_list_shared)
-        {
-            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for offsets list encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-        }
-        MobilityLocationOffsets* offsets_list=offsets_list_shared.get();    
+        auto offsets_list_shared = std::make_shared<MobilityLocationOffsets>();
+        MobilityLocationOffsets* offsets_list = offsets_list_shared.get();
 
-        for(size_t i=0;i<offset_count;i++){
-            MobilityECEFOffset* Offsets=new MobilityECEFOffset;
-            if(!Offsets)
-            {
-                // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for Offsets encoding");
-                return boost::optional<std::vector<uint8_t>>{};
-            }
-            Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
-            Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
-            Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;
-            asn_sequence_add(&offsets_list->list,Offsets);
-            Offset_ptrs.push_back(Offsets);
+        std::vector<std::shared_ptr<MobilityECEFOffset>> offset_ptrs; // keep references to the offsets until the encoding is complete
+        for(size_t i = 0; i < offset_count; i++){
+            auto offsets = std::make_shared<MobilityECEFOffset>();
+            offsets->offsetX = plainMessage.trajectory.offsets[i].offset_x;
+            offsets->offsetY = plainMessage.trajectory.offsets[i].offset_y;
+            offsets->offsetZ = plainMessage.trajectory.offsets[i].offset_z;
+            asn_sequence_add(&offsets_list->list,offsets.get());
+            offset_ptrs.push_back(offsets);
         }
 
         message->value.choice.TestMessage00.body.trajectory=offsets_list;
@@ -542,16 +521,10 @@ namespace cpp_message
             expiration_array[i]=expiration_string[i];
         }
 
-        std::shared_ptr<MobilityTimestamp_t>expiration_time_shared(new MobilityTimestamp_t);
-        if(!expiration_time_shared)
-        {
-            // RCLCPP_WARN_STREAM( get_logger(), "Cannot allocate mem for expiration message encoding");
-            return boost::optional<std::vector<uint8_t>>{};
-        }
-        MobilityTimestamp_t* expiration_time=expiration_time_shared.get();
-        expiration_time->size=Header.TIMESTAMP_MESSAGE_LENGTH;
-        expiration_time->buf=expiration_array;
-        message->value.choice.TestMessage00.body.expiration=expiration_time;
+        MobilityTimestamp_t expiration_time;
+        expiration_time.size=Header.TIMESTAMP_MESSAGE_LENGTH;
+        expiration_time.buf=expiration_array;
+        message->value.choice.TestMessage00.body.expiration=&expiration_time;
 
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
@@ -567,15 +540,5 @@ namespace cpp_message
         }
 
         return boost::optional<std::vector<uint8_t>>(b_array);
-
     }
-
-    Mobility_Request::~Mobility_Request(){
-        if(!Offset_ptrs.empty()){
-            for(size_t i=0;i<Offset_ptrs.size();i++){
-                delete Offset_ptrs[i];
-            }
-        }
-    }
-
 }
