@@ -35,329 +35,346 @@ namespace cpp_message
         //use asn1c lib to decode
         
         rval=uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf, len, 0, 0);
-        if(rval.code == RC_OK)
+        if(rval.code != RC_OK)
         {
+            return boost::optional<j2735_v2x_msgs::msg::MapData>{};
+        }
 
+        auto map_msg = message->value.choice.MapData;
 
-            auto map_msg = message->value.choice.MapData;
+        //Time Stamp
+        if(map_msg.timeStamp)
+        {
+            output.time_stamp_exists = true;
 
-            //Time Stamp
-            if(map_msg.timeStamp)
+            output.time_stamp = *map_msg.timeStamp;
+        }
+        else
+        {
+            output.time_stamp_exists = false;
+        }
+
+        output.msg_issue_revision = map_msg.msgIssueRevision;
+
+        output.layer_type.layer_type = *map_msg.layerType;
+
+        
+        //Layer ID
+        if(map_msg.layerID)
+        {
+            output.layer_id_exists = true;
+            output.layer_id = *map_msg.layerID;
+
+        }//end layer ID
+        else
+        {
+            output.layer_id_exists = false;
+        }
+
+        IntersectionGeometry_t *map_msg_intersections = 0;
+        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::GenericLane>> gl_ptrs; // keep references to the GenericLane objects until the encoding is complete
+        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::IntersectionGeometry>> new_intersection_ptrs;
+        std::vector<std::shared_ptr<DescriptiveName_t>> nm_ptrs;
+        std::vector<std::shared_ptr<std::string>> nm_n_ptrs;
+        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::SignalControlZone>> signal_control_zone_ptrs;
+        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::RegulatorySpeedLimit>> regulatory_speed_limit_ptrs;
+
+        //Intersection Handling
+        if(map_msg.intersections)
+        {   
+            output.intersections_exists = true;
+            //Map Intersections
+            for(size_t i = 0; i < map_msg.intersections->list.count; i++)
             {
-                output.time_stamp_exists = true;
+                map_msg_intersections = map_msg.intersections->list.array[i];
+                auto new_intersection_shared = std::make_shared<j2735_v2x_msgs::msg::IntersectionGeometry>();
+                new_intersection_ptrs.push_back(new_intersection_shared);
+                auto new_intersection = *new_intersection_shared.get();
 
-                output.time_stamp = *map_msg.timeStamp;
-            }
-            else
-            {
-                output.time_stamp_exists = false;
-            }
+                new_intersection.id.id = map_msg_intersections->id.id;
 
-            output.msg_issue_revision = map_msg.msgIssueRevision;
-
-            output.layer_type.layer_type = *map_msg.layerType;
-
-            
-            //Layer ID
-            if(map_msg.layerID)
-            {
-                output.layer_id_exists = true;
-                output.layer_id = *map_msg.layerID;
-
-            }//end layer ID
-            else
-            {
-                output.layer_id_exists = false;
-            }
-
-            IntersectionGeometry_t *map_msg_intersections = new IntersectionGeometry_t;
-
-            //Intersection Handling
-            if(map_msg.intersections)
-             {   
-                 
-                output.intersections_exists = true;
-                //Map Intersections
-                for(size_t i = 0; i < map_msg.intersections->list.count; i++)
+                if(map_msg_intersections->id.region)
                 {
-                    map_msg_intersections = map_msg.intersections->list.array[i];
-                    j2735_v2x_msgs::msg::IntersectionGeometry new_intersection;
-                    new_intersection.id.id = map_msg_intersections->id.id;
+                    new_intersection.id.region_exists = true; //TODO: Implement intersection ID Region
+                    new_intersection.id.region = *map_msg_intersections->id.region;
+                }
+                else
+                {
+                    new_intersection.id.region_exists = false;
+                    new_intersection.id.region = j2735_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
+                }
+                
+                for(size_t i =0; i < map_msg_intersections->laneSet.list.count;i++)
+                {
+                    auto gl = std::make_shared<j2735_v2x_msgs::msg::GenericLane>();
+                    gl_ptrs.push_back(gl);
+                    *gl = decode_generic_lane(map_msg_intersections->laneSet.list.array[i]);
+                    new_intersection.lane_set.lane_list.push_back(*gl.get());
+                }
+                
+                if(map_msg_intersections->name)
+                {
+                    new_intersection.name_exists=true;
 
-                    if(map_msg_intersections->id.region)
+                    auto nm_shared = std::make_shared<DescriptiveName_t>();
+                    nm_ptrs.push_back(nm_shared);
+                    auto nm = nm_shared.get();
+                    nm = map_msg_intersections->name;
+
+                    auto nm_n_shared = std::make_shared<std::string>();
+                    nm_n_ptrs.push_back(nm_n_shared);
+                    auto n = *nm_n_shared.get();
+                    
+                    for (size_t x = 0; x < nm->size;x++)
                     {
-                        new_intersection.id.region_exists = true; //TODO: Implement intersection ID Region
-                        new_intersection.id.region = *map_msg_intersections->id.region;
+                        n.push_back(nm->buf[x]);
                     }
-                    else
+                    new_intersection.name = n;
+                }
+                else
+                {
+                    new_intersection.name_exists = false;
+                }
+                
+                if(map_msg_intersections->laneWidth)
+                {
+                    new_intersection.lane_width_exists = true;
+                    new_intersection.lane_width = *map_msg_intersections->laneWidth;
+                }
+                else
+                {
+                    new_intersection.lane_width_exists = false;
+                }        
+
+                if(map_msg_intersections->preemptPriorityData)
+                {
+                    new_intersection.preempt_priority_data_exists = true;
+
+                    for(size_t p = 0; i<map_msg_intersections->preemptPriorityData->list.count; p++)
                     {
-                        new_intersection.id.region_exists = false;
-                        new_intersection.id.region = j2735_v2x_msgs::msg::IntersectionReferenceID::REGION_UNAVAILABLE;
+                        // SignalControlZone_t* sig = new SignalControlZone_t;
+                        // sig = map_msg_intersections->preemptivePriorityData->list.array[p];
+
+                        auto signal_control_zone_shared = std::make_shared<j2735_v2x_msgs::msg::SignalControlZone>();
+                        signal_control_zone_ptrs.push_back(signal_control_zone_shared);
+                        auto signal_control_zone = *signal_control_zone_shared.get();
+
+                        /*SignalControlZone.msg states that RegionalExtension has not yet been implemented*/
+                        new_intersection.preempt_priority_data.preempt_priority_list.push_back(signal_control_zone);
                     }
                     
-
-                    for(size_t i =0; i < map_msg_intersections->laneSet.list.count;i++)
-                    {
-                        
-                        auto gl = decode_generic_lane(map_msg_intersections->laneSet.list.array[i]);
-                        
-                        new_intersection.lane_set.lane_list.push_back(gl);
-                    }
+                }
+                else
+                {
+                    new_intersection.preempt_priority_data_exists = false;
+                }
+                
+                if(map_msg_intersections->speedLimits)
+                {
+                    new_intersection.speed_limits_exists = true;
                     
-                    
-                    if(map_msg_intersections->name)
+                    for(size_t s = 0; s < map_msg_intersections->speedLimits->list.count ; s++)
                     {
-                        new_intersection.name_exists=true;
+                        RegulatorySpeedLimit_t *speedLimit = new RegulatorySpeedLimit_t;
 
-                        DescriptiveName_t *nm = new DescriptiveName_t;
+                        speedLimit = map_msg_intersections->speedLimits->list.array[s];
 
-                        nm = map_msg_intersections->name;
-                        std::string n;
+                        auto regulatory_speed_limit_shared = std::make_shared<j2735_v2x_msgs::msg::RegulatorySpeedLimit>();
+                        regulatory_speed_limit_ptrs.push_back(regulatory_speed_limit_shared);
                         
-                        for (size_t x = 0; x < nm->size;x++)
-                        {
-                            n.push_back(nm->buf[x]);
-                        }
-                        new_intersection.name = n;
-
+                        auto regulatory_speed_limit = *regulatory_speed_limit_shared.get();
+                        // j2735_v2x_msgs::msg::RegulatorySpeedLimit regulatory_speed_limit;
+                        regulatory_speed_limit.speed = speedLimit->speed;
+                        regulatory_speed_limit.type.speed_limit_type = speedLimit->type;
+                        new_intersection.speed_limits.speed_limits.push_back(regulatory_speed_limit);
                     }
-                    else
-                    {
-                        new_intersection.name_exists = false;
-                    }
-                    
-                    if(map_msg_intersections->laneWidth)
-                    {
-                        new_intersection.lane_width_exists = true;
-                        new_intersection.lane_width = *map_msg_intersections->laneWidth;
-                    }
-                    else
-                    {
-                        new_intersection.lane_width_exists = false;
-                    }        
+                }
+                else
+                {
+                    new_intersection.speed_limits_exists = false;
+                }
 
-                    if(map_msg_intersections->preemptPriorityData)
-                    {
-                        new_intersection.preempt_priority_data_exists = true;
-
-                        for(size_t p = 0; i<map_msg_intersections->preemptPriorityData->list.count; p++)
-                        {
-                            SignalControlZone_t *sig = new SignalControlZone_t;
-                            sig = map_msg_intersections->preemptPriorityData->list.array[p];
-                            
-                            j2735_v2x_msgs::msg::SignalControlZone s;
-
-                            /*SignalControlZone.msg states that RegionalExtension has not yet been implemented*/
-
-                            new_intersection.preempt_priority_data.preempt_priority_list.push_back(s);
-                        }
-                        
-                    }
-                    else
-                    {
-                        new_intersection.preempt_priority_data_exists = false;
-                    }
-                    
-                    if(map_msg_intersections->speedLimits)
-                    {
-                        new_intersection.speed_limits_exists = true;
-                        
-                        for(size_t s = 0; s < map_msg_intersections->speedLimits->list.count ; s++)
-                        {
-                            RegulatorySpeedLimit_t *speedLimit = new RegulatorySpeedLimit_t;
-
-                            speedLimit = map_msg_intersections->speedLimits->list.array[s];
-
-                            j2735_v2x_msgs::msg::RegulatorySpeedLimit rsl;
-                            rsl.speed = speedLimit->speed;
-                            rsl.type.speed_limit_type = speedLimit->type;
-                            new_intersection.speed_limits.speed_limits.push_back(rsl);
-                        }
-                    }
-                    else
-                    {
-                        new_intersection.speed_limits_exists = false;
-                    }
-
+                if(map_msg_intersections->refPoint.elevation) 
                     if(map_msg_intersections->refPoint.elevation) 
-                    {
+                if(map_msg_intersections->refPoint.elevation) 
+                {
+                    new_intersection.ref_point.elevation_exists = true;                        
                         new_intersection.ref_point.elevation_exists = true;                        
-                        DSRC_Elevation_t *dsrc_el = new DSRC_Elevation_t;
-                        dsrc_el = map_msg_intersections->refPoint.elevation;
+                    new_intersection.ref_point.elevation_exists = true;                        
+                    DSRC_Elevation_t *dsrc_el = new DSRC_Elevation_t;
+                    dsrc_el = map_msg_intersections->refPoint.elevation;
 
-                        new_intersection.ref_point.elevation = *dsrc_el;
-                    }
-                    else
-                    {
-                        new_intersection.ref_point.elevation_exists = false;
-                    }
-                    new_intersection.ref_point.latitude = map_msg_intersections->refPoint.lat;
-                    new_intersection.ref_point.longitude = map_msg_intersections->refPoint.Long;
-                    
-
-                    new_intersection.revision = map_msg_intersections->revision;
+                    new_intersection.ref_point.elevation = *dsrc_el;
+                }
+                else
+                {
+                    new_intersection.ref_point.elevation_exists = false;
+                }
+                new_intersection.ref_point.latitude = map_msg_intersections->refPoint.lat;
+                new_intersection.ref_point.longitude = map_msg_intersections->refPoint.Long;
                 
 
-                    output.intersections.push_back(new_intersection);
+                new_intersection.revision = map_msg_intersections->revision;
+            
+
+                output.intersections.push_back(new_intersection);
+            }
+
+        }//end intersection handling
+        else
+        {
+            output.intersections_exists = false;
+        }
+        
+        //Road Segment
+        if(map_msg.roadSegments)
+        {
+
+            output.road_segments_exists = true;
+
+            RoadSegment_t *rseg = new RoadSegment_t;
+
+            for(size_t i = 0; i< map_msg.roadSegments->list.count;i++)
+            {
+                rseg = map_msg.roadSegments->list.array[i];
+
+                j2735_v2x_msgs::msg::RoadSegment rs;
+
+                if(rseg->laneWidth)
+                {
+                    rs.lane_width_exists = true;
+                    rs.lane_width = *rseg->laneWidth;
+                }
+                else
+                {
+                    rs.lane_width_exists = false;
                 }
 
-            }//end intersection handling
-            else
-            {
-                output.intersections_exists = false;
-            }
-            
-            //Road Segment
-            if(map_msg.roadSegments)
-            {
-
-                output.road_segments_exists = true;
-
-                RoadSegment_t *rseg = new RoadSegment_t;
-
-                for(size_t i = 0; i< map_msg.roadSegments->list.count;i++)
+                //Road Segment Name
+                if(rseg->name)
                 {
-                    rseg = map_msg.roadSegments->list.array[i];
-
-                    j2735_v2x_msgs::msg::RoadSegment rs;
-
-                    if(rseg->laneWidth)
-                    {
-                        rs.lane_width_exists = true;
-                        rs.lane_width = *rseg->laneWidth;
-                    }
-                    else
-                    {
-                        rs.lane_width_exists = false;
-                    }
-
-                    //Road Segment Name
-                    if(rseg->name)
-                    {
-                        rs.name_exists = true;
-                        
-                        DescriptiveName_t *nm = new DescriptiveName_t;
-
-                        nm = rseg->name;
-                        std::string n;
-                        
-                        for (size_t i = 0; i < nm->size;i++)
-                        {
-                            n.push_back(nm->buf[i]);
-                        }
-                        rs.name = n;
-                    }
-                    else
-                    {
-                        rs.name_exists = false;
-                    }
-
-                    if(rseg->speedLimits)
-                    {
-                        rs.speed_limits_exists = true;
-
-                        RegulatorySpeedLimit_t *speedL = new RegulatorySpeedLimit_t;
-
-                        for (size_t i = 0; i < rseg->speedLimits->list.count;i++)
-                        {
-                            j2735_v2x_msgs::msg::RegulatorySpeedLimit sl;
-
-                            speedL = rseg->speedLimits->list.array[i];
-
-                            sl.speed = speedL->speed;
-                            sl.type.speed_limit_type = speedL->type;
-                            rs.speed_limits.speed_limits.push_back(sl);
-                        }
-                    }//end speed limits
-                    else
-                    {
-                        rs.speed_limits_exists = false;
-                    }
-
-                    if(rseg->refPoint.elevation)
-                    {
-                        rs.ref_point.elevation_exists = true;
-                        rs.ref_point.elevation = *rseg->refPoint.elevation;
-                       
-                    }
-                    else
-                    {
-                        rs.ref_point.elevation_exists = false;
-                    } 
-                    rs.ref_point.latitude = rseg->refPoint.lat;
-                    rs.ref_point.longitude = rseg->refPoint.Long;
-
-                    //RLS
+                    rs.name_exists = true;
                     
-                    for(size_t i =0; i < rseg->roadLaneSet.list.count;i++)
-                    {
-                        auto gl = decode_generic_lane(rseg->roadLaneSet.list.array[i]);
-                        rs.road_lane_set.road_lane_set_list.push_back(gl);
-                    }
+                    DescriptiveName_t *nm = new DescriptiveName_t;
+
+                    nm = rseg->name;
+                    std::string n;
                     
-                    output.road_segments.road_segment_list.push_back(rs);
+                    for (size_t i = 0; i < nm->size;i++)
+                    {
+                        n.push_back(nm->buf[i]);
+                    }
+                    rs.name = n;
                 }
-            }//end Road Segments
-            
-            //Data Parameters
-            if(map_msg.dataParameters)
+                else
+                {
+                    rs.name_exists = false;
+                }
+
+                if(rseg->speedLimits)
+                {
+                    rs.speed_limits_exists = true;
+
+                    RegulatorySpeedLimit_t *speedL = new RegulatorySpeedLimit_t;
+
+                    for (size_t i = 0; i < rseg->speedLimits->list.count;i++)
+                    {
+                        j2735_v2x_msgs::msg::RegulatorySpeedLimit sl;
+
+                        speedL = rseg->speedLimits->list.array[i];
+
+                        sl.speed = speedL->speed;
+                        sl.type.speed_limit_type = speedL->type;
+                        rs.speed_limits.speed_limits.push_back(sl);
+                    }
+                }//end speed limits
+                else
+                {
+                    rs.speed_limits_exists = false;
+                }
+
+                if(rseg->refPoint.elevation)
+                {
+                    rs.ref_point.elevation_exists = true;
+                    rs.ref_point.elevation = *rseg->refPoint.elevation;
+                    
+                }
+                else
+                {
+                    rs.ref_point.elevation_exists = false;
+                } 
+                rs.ref_point.latitude = rseg->refPoint.lat;
+                rs.ref_point.longitude = rseg->refPoint.Long;
+
+                //RLS
+                
+                for(size_t i =0; i < rseg->roadLaneSet.list.count;i++)
+                {
+                    auto gl = decode_generic_lane(rseg->roadLaneSet.list.array[i]);
+                    rs.road_lane_set.road_lane_set_list.push_back(gl);
+                }
+                
+                output.road_segments.road_segment_list.push_back(rs);
+            }
+        }//end Road Segments
+        
+        //Data Parameters
+        if(map_msg.dataParameters)
+        {
+            output.data_parameters_exists = true;
+
+
+            for(size_t i = 0; i < map_msg.dataParameters->geoidUsed->size; i++)
             {
-                output.data_parameters_exists = true;
-
-
-                for(size_t i = 0; i < map_msg.dataParameters->geoidUsed->size; i++)
-                {
-                    output.data_parameters.geoid_used.push_back(map_msg.dataParameters->geoidUsed->buf[i]);
-
-                }
-
-                for(size_t i = 0; i < map_msg.dataParameters->lastCheckedDate->size; i++)
-                {
-                    output.data_parameters.last_checked_date.push_back(map_msg.dataParameters->lastCheckedDate->buf[i]);
-                }
-
-                for(size_t i = 0; i < map_msg.dataParameters->processAgency->size; i++)
-                {
-                    output.data_parameters.process_agency.push_back(map_msg.dataParameters->processAgency->buf[i]);
-                }
-
-                for(size_t i = 0; i < map_msg.dataParameters->processMethod->size; i++)
-                {
-                    output.data_parameters.last_checked_date.push_back(map_msg.dataParameters->processMethod->buf[i]);
-                }
-
-
+                output.data_parameters.geoid_used.push_back(map_msg.dataParameters->geoidUsed->buf[i]);
 
             }
-            else
+
+            for(size_t i = 0; i < map_msg.dataParameters->lastCheckedDate->size; i++)
             {
-                output.data_parameters_exists = false;
+                output.data_parameters.last_checked_date.push_back(map_msg.dataParameters->lastCheckedDate->buf[i]);
             }
-            
-            //Restriction List
-            if(map_msg.restrictionList)
+
+            for(size_t i = 0; i < map_msg.dataParameters->processAgency->size; i++)
             {
-                output.restriction_list_exists = true;
-
-                RestrictionClassAssignment_t *rca = new RestrictionClassAssignment_t;
-
-                for(size_t i = 0; i < map_msg.restrictionList->list.count; i++)
-                {
-                    rca = map_msg.restrictionList->list.array[i];
-
-                    j2735_v2x_msgs::msg::RestrictionClassAssignment rclass;
-                    rclass.id = rca->id;
-                    output.restriction_list.restriction_class_list.push_back(rclass);
-                }
-            }//end Restriction List
-            else
-            {
-                output.restriction_list_exists = false;
+                output.data_parameters.process_agency.push_back(map_msg.dataParameters->processAgency->buf[i]);
             }
+
+            for(size_t i = 0; i < map_msg.dataParameters->processMethod->size; i++)
+            {
+                output.data_parameters.last_checked_date.push_back(map_msg.dataParameters->processMethod->buf[i]);
+            }
+
+
 
         }
-        return boost::optional<j2735_v2x_msgs::msg::MapData>(output);
+        else
+        {
+            output.data_parameters_exists = false;
+        }
+        
+        //Restriction List
+        if(map_msg.restrictionList)
+        {
+            output.restriction_list_exists = true;
 
+            RestrictionClassAssignment_t *rca = new RestrictionClassAssignment_t;
+
+            for(size_t i = 0; i < map_msg.restrictionList->list.count; i++)
+            {
+                rca = map_msg.restrictionList->list.array[i];
+
+                j2735_v2x_msgs::msg::RestrictionClassAssignment rclass;
+                rclass.id = rca->id;
+                output.restriction_list.restriction_class_list.push_back(rclass);
+            }
+        }//end Restriction List
+        else
+        {
+            output.restriction_list_exists = false;
+        }
+
+        return output;
     }
 
 
@@ -737,7 +754,6 @@ namespace cpp_message
             
         }
 
-
         if (g_lane->overlays)
         {
             gl.overlay_lane_list_exists = true;
@@ -750,14 +766,7 @@ namespace cpp_message
                 
                 gl.overlay_lane_list.overlay_lane_list.push_back(*ln);
             }
-
         }
-
         return gl;
     }
-                    
-    
-
-
-
 }
