@@ -102,6 +102,81 @@ TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg)
     }
 }
 
+TEST(MobilityPathMessageTest, testEncodeDecodeMobilityPathMsg)
+{
+    //Mobility_Operation::Mobility_Operation_Message worker;
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Path worker(node->get_node_logging_interface());
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityPath message;     
+    header.sender_id="USDOT-45100";
+    header.recipient_id="USDOT-45095";
+    header.sender_bsm_id="100ABCEF";
+    header.plan_id="11111111-2222-3333-AAAA-111111111111";
+    header.timestamp = 9223372036854775807;
+    message.m_header=header;
+    
+    //body-location and trajectory- for encoding provide ros message
+    //start location
+    carma_v2x_msgs::msg::Trajectory trajectory;
+    carma_v2x_msgs::msg::LocationECEF starting_location;
+    starting_location.ecef_x=0;
+    starting_location.ecef_y=1;
+    starting_location.ecef_z=2;
+    starting_location.timestamp=9223372036854775807;
+    
+    trajectory.location=starting_location;
+    //offsets
+    carma_v2x_msgs::msg::LocationOffsetECEF offset1;
+    offset1.offset_x=1;
+    offset1.offset_y=1;
+    offset1.offset_z=1;
+
+    trajectory.offsets.push_back(offset1);
+    
+    carma_v2x_msgs::msg::LocationOffsetECEF offset2;
+    offset2.offset_x=2;
+    offset2.offset_y=2;
+    offset2.offset_z=2;
+
+    trajectory.offsets.push_back(offset2);
+    
+    message.trajectory=trajectory;
+    auto res = worker.encode_mobility_path_message(message);
+    
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed while unit testing Mobility Path encoder! \n";
+        EXPECT_TRUE(false);
+    }
+    auto res_decoded = worker.decode_mobility_path_message(res.get());
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "Decoding failed while unit testing Mobility Path encoder! \n";
+        EXPECT_TRUE(false);
+    }
+    carma_v2x_msgs::msg::MobilityPath result = res_decoded.get();
+    EXPECT_EQ(message, result);
+
+    auto res2 = worker.encode_mobility_path_message(result);
+    if(res2) EXPECT_TRUE(true);
+    else 
+    {
+        std::cout << "Encoding failed second time while unit testing Mobility Path encoder! \n";
+        EXPECT_TRUE(false);
+    }
+    auto res2_decoded = worker.decode_mobility_path_message(res2.get());
+    if(res2_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "Decoding failed second time while unit testing Mobility Path encoder! \n";
+        EXPECT_TRUE(false);
+    }
+    EXPECT_EQ(message, res2_decoded.get());
+}
+
 TEST(MobilityPathMessageTest, testEncodeMobilityPathMsg_base_case)
 {
     //Mobility_Operation::Mobility_Operation_Message worker;

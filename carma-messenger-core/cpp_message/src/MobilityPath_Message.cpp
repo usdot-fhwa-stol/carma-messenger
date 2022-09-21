@@ -187,14 +187,8 @@ namespace cpp_message
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
-        //if mem allocation fails
-        if(!message_shared)
-        {
-            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for MobilityPath message encoding");
-            return boost::optional<std::vector<uint8_t>>{};            
-        }
-        MessageFrame_t* message=message_shared.get();
+        auto message_shared = std::make_shared<MessageFrame_t>();
+        MessageFrame_t* message = message_shared.get();
         
         message->messageId=MOBILITYPATH_TEST_ID;
         message->value.present=MessageFrame__value_PR_TestMessage02;
@@ -346,29 +340,20 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
 
-        MobilityLocationOffsets* offsets_list;
-        offsets_list=(MobilityLocationOffsets*)calloc(1,sizeof(MobilityLocationOffsets));
-        if(!offsets_list)
-        {
-            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for offsets list");
-            return boost::optional<std::vector<uint8_t>>{}; 
+        auto offsets_list_shared = std::make_shared<MobilityLocationOffsets>();
+        MobilityLocationOffsets* offsets_list = offsets_list_shared.get();
+
+        std::vector<std::shared_ptr<MobilityECEFOffset>> offset_ptrs; // keep references to the offsets until the encoding is complete
+        for(size_t i = 0; i < offset_count; i++){
+            auto offsets = std::make_shared<MobilityECEFOffset>();
+            offsets->offsetX = plainMessage.trajectory.offsets[i].offset_x;
+            offsets->offsetY = plainMessage.trajectory.offsets[i].offset_y;
+            offsets->offsetZ = plainMessage.trajectory.offsets[i].offset_z;
+            asn_sequence_add(&offsets_list->list,offsets.get());
+            offset_ptrs.push_back(offsets);
         }
 
-        MobilityECEFOffset* Offsets;    
-        for(size_t i=0;i<offset_count;i++){
-            Offsets=(MobilityECEFOffset*)calloc(1,sizeof(MobilityECEFOffset));
-            if(!Offsets)
-            {
-                RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for offsets");
-                return boost::optional<std::vector<uint8_t>>{};
-            }
-            Offsets->offsetX=plainMessage.trajectory.offsets[i].offset_x;
-            Offsets->offsetY=plainMessage.trajectory.offsets[i].offset_y;
-            Offsets->offsetZ=plainMessage.trajectory.offsets[i].offset_z;
-            asn_sequence_add(&offsets_list->list,Offsets);
-        }
-
-        message->value.choice.TestMessage02.body.trajectory=*offsets_list;
+        message->value.choice.TestMessage02.body.trajectory = *offsets_list;
 
         ec=uper_encode_to_buffer(&asn_DEF_MessageFrame,0, message, buffer, buffer_size);
         //log a warning if it fails
