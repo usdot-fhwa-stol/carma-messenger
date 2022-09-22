@@ -19,6 +19,14 @@
 
 namespace cpp_message
 {
+    template <typename T>
+    T* create_store_shared(std::vector<std::shared_ptr<void>> &shared_pointers)
+    {
+        auto obj_shared = std::make_shared<T>();
+        shared_pointers.push_back(obj_shared);
+        return obj_shared.get();
+    }
+
     boost::optional<j2735_v2x_msgs::msg::MapData> Map_Message::decode_map_message(std::vector<uint8_t>& binary_array)
     {
         j2735_v2x_msgs::msg::MapData output;
@@ -71,13 +79,8 @@ namespace cpp_message
             output.layer_id_exists = false;
         }
 
-        IntersectionGeometry_t *map_msg_intersections = 0;
-        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::GenericLane>> gl_ptrs; // keep references to the GenericLane objects until the encoding is complete
-        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::IntersectionGeometry>> new_intersection_ptrs;
-        std::vector<std::shared_ptr<DescriptiveName_t>> nm_ptrs;
-        std::vector<std::shared_ptr<std::string>> nm_n_ptrs;
-        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::SignalControlZone>> signal_control_zone_ptrs;
-        std::vector<std::shared_ptr<j2735_v2x_msgs::msg::RegulatorySpeedLimit>> regulatory_speed_limit_ptrs;
+        IntersectionGeometry_t *map_msg_intersections = nullptr;
+        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
 
         //Intersection Handling
         if(map_msg.intersections)
@@ -87,9 +90,8 @@ namespace cpp_message
             for(size_t i = 0; i < map_msg.intersections->list.count; i++)
             {
                 map_msg_intersections = map_msg.intersections->list.array[i];
-                auto new_intersection_shared = std::make_shared<j2735_v2x_msgs::msg::IntersectionGeometry>();
-                new_intersection_ptrs.push_back(new_intersection_shared);
-                auto new_intersection = *new_intersection_shared.get();
+                j2735_v2x_msgs::msg::IntersectionGeometry new_intersection;
+                // auto new_intersection = *create_store_shared<j2735_v2x_msgs::msg::IntersectionGeometry>(shared_ptrs);
 
                 new_intersection.id.id = map_msg_intersections->id.id;
 
@@ -106,24 +108,19 @@ namespace cpp_message
                 
                 for(size_t i =0; i < map_msg_intersections->laneSet.list.count;i++)
                 {
-                    auto gl = std::make_shared<j2735_v2x_msgs::msg::GenericLane>();
-                    gl_ptrs.push_back(gl);
-                    *gl = decode_generic_lane(map_msg_intersections->laneSet.list.array[i]);
-                    new_intersection.lane_set.lane_list.push_back(*gl.get());
+                    auto gl = *create_store_shared<j2735_v2x_msgs::msg::GenericLane>(shared_ptrs);
+                    gl = decode_generic_lane(map_msg_intersections->laneSet.list.array[i], shared_ptrs);
+                    new_intersection.lane_set.lane_list.push_back(gl);
                 }
                 
                 if(map_msg_intersections->name)
                 {
                     new_intersection.name_exists=true;
 
-                    auto nm_shared = std::make_shared<DescriptiveName_t>();
-                    nm_ptrs.push_back(nm_shared);
-                    auto nm = nm_shared.get();
+                    auto nm = create_store_shared<DescriptiveName_t>(shared_ptrs);
                     nm = map_msg_intersections->name;
 
-                    auto nm_n_shared = std::make_shared<std::string>();
-                    nm_n_ptrs.push_back(nm_n_shared);
-                    auto n = *nm_n_shared.get();
+                    auto n = *create_store_shared<std::string>(shared_ptrs);
                     
                     for (size_t x = 0; x < nm->size;x++)
                     {
@@ -152,12 +149,7 @@ namespace cpp_message
 
                     for(size_t p = 0; i<map_msg_intersections->preemptPriorityData->list.count; p++)
                     {
-                        // SignalControlZone_t* sig = new SignalControlZone_t;
-                        // sig = map_msg_intersections->preemptivePriorityData->list.array[p];
-
-                        auto signal_control_zone_shared = std::make_shared<j2735_v2x_msgs::msg::SignalControlZone>();
-                        signal_control_zone_ptrs.push_back(signal_control_zone_shared);
-                        auto signal_control_zone = *signal_control_zone_shared.get();
+                        auto signal_control_zone = *create_store_shared<j2735_v2x_msgs::msg::SignalControlZone>(shared_ptrs);
 
                         /*SignalControlZone.msg states that RegionalExtension has not yet been implemented*/
                         new_intersection.preempt_priority_data.preempt_priority_list.push_back(signal_control_zone);
@@ -173,19 +165,13 @@ namespace cpp_message
                 {
                     new_intersection.speed_limits_exists = true;
                     
-                    for(size_t s = 0; s < map_msg_intersections->speedLimits->list.count ; s++)
+                    for(size_t s = 0; s < map_msg_intersections->speedLimits->list.count; s++)
                     {
-                        RegulatorySpeedLimit_t *speedLimit = new RegulatorySpeedLimit_t;
+                        auto regulatory_speed_limit = *create_store_shared<j2735_v2x_msgs::msg::RegulatorySpeedLimit>(shared_ptrs);
 
-                        speedLimit = map_msg_intersections->speedLimits->list.array[s];
-
-                        auto regulatory_speed_limit_shared = std::make_shared<j2735_v2x_msgs::msg::RegulatorySpeedLimit>();
-                        regulatory_speed_limit_ptrs.push_back(regulatory_speed_limit_shared);
-                        
-                        auto regulatory_speed_limit = *regulatory_speed_limit_shared.get();
                         // j2735_v2x_msgs::msg::RegulatorySpeedLimit regulatory_speed_limit;
-                        regulatory_speed_limit.speed = speedLimit->speed;
-                        regulatory_speed_limit.type.speed_limit_type = speedLimit->type;
+                        regulatory_speed_limit.speed = map_msg_intersections->speedLimits->list.array[s]->speed;
+                        regulatory_speed_limit.type.speed_limit_type = map_msg_intersections->speedLimits->list.array[s]->type;
                         new_intersection.speed_limits.speed_limits.push_back(regulatory_speed_limit);
                     }
                 }
@@ -198,12 +184,12 @@ namespace cpp_message
                     if(map_msg_intersections->refPoint.elevation) 
                 if(map_msg_intersections->refPoint.elevation) 
                 {
-                    new_intersection.ref_point.elevation_exists = true;                        
-                        new_intersection.ref_point.elevation_exists = true;                        
-                    new_intersection.ref_point.elevation_exists = true;                        
-                    DSRC_Elevation_t *dsrc_el = new DSRC_Elevation_t;
-                    dsrc_el = map_msg_intersections->refPoint.elevation;
+                    new_intersection.ref_point.elevation_exists = true;
+                        new_intersection.ref_point.elevation_exists = true;
+                    new_intersection.ref_point.elevation_exists = true;
 
+                    auto dsrc_el = create_store_shared<DSRC_Elevation_t>(shared_ptrs);
+                    dsrc_el = map_msg_intersections->refPoint.elevation;
                     new_intersection.ref_point.elevation = *dsrc_el;
                 }
                 else
@@ -229,16 +215,15 @@ namespace cpp_message
         //Road Segment
         if(map_msg.roadSegments)
         {
-
             output.road_segments_exists = true;
-
-            RoadSegment_t *rseg = new RoadSegment_t;
+            auto rseg = create_store_shared<RoadSegment_t>(shared_ptrs);
 
             for(size_t i = 0; i< map_msg.roadSegments->list.count;i++)
             {
                 rseg = map_msg.roadSegments->list.array[i];
 
-                j2735_v2x_msgs::msg::RoadSegment rs;
+                auto rs = *create_store_shared<j2735_v2x_msgs::msg::RoadSegment>(shared_ptrs);
+                // j2735_v2x_msgs::msg::RoadSegment rs;
 
                 if(rseg->laneWidth)
                 {
@@ -255,10 +240,10 @@ namespace cpp_message
                 {
                     rs.name_exists = true;
                     
-                    DescriptiveName_t *nm = new DescriptiveName_t;
-
+                    auto nm = create_store_shared<DescriptiveName_t>(shared_ptrs);
                     nm = rseg->name;
-                    std::string n;
+
+                    auto n = *create_store_shared<std::string>(shared_ptrs);
                     
                     for (size_t i = 0; i < nm->size;i++)
                     {
@@ -275,16 +260,12 @@ namespace cpp_message
                 {
                     rs.speed_limits_exists = true;
 
-                    RegulatorySpeedLimit_t *speedL = new RegulatorySpeedLimit_t;
-
                     for (size_t i = 0; i < rseg->speedLimits->list.count;i++)
                     {
-                        j2735_v2x_msgs::msg::RegulatorySpeedLimit sl;
+                        auto sl = *create_store_shared<j2735_v2x_msgs::msg::RegulatorySpeedLimit>(shared_ptrs);
 
-                        speedL = rseg->speedLimits->list.array[i];
-
-                        sl.speed = speedL->speed;
-                        sl.type.speed_limit_type = speedL->type;
+                        sl.speed = rseg->speedLimits->list.array[i]->speed;
+                        sl.type.speed_limit_type = rseg->speedLimits->list.array[i]->type;
                         rs.speed_limits.speed_limits.push_back(sl);
                     }
                 }//end speed limits
@@ -310,7 +291,8 @@ namespace cpp_message
                 
                 for(size_t i =0; i < rseg->roadLaneSet.list.count;i++)
                 {
-                    auto gl = decode_generic_lane(rseg->roadLaneSet.list.array[i]);
+                    auto gl = *create_store_shared<j2735_v2x_msgs::msg::GenericLane>(shared_ptrs);
+                    gl = decode_generic_lane(rseg->roadLaneSet.list.array[i], shared_ptrs);
                     rs.road_lane_set.road_lane_set_list.push_back(gl);
                 }
                 
@@ -358,13 +340,13 @@ namespace cpp_message
         {
             output.restriction_list_exists = true;
 
-            RestrictionClassAssignment_t *rca = new RestrictionClassAssignment_t;
+            auto rca = create_store_shared<RestrictionClassAssignment_t>(shared_ptrs);
 
             for(size_t i = 0; i < map_msg.restrictionList->list.count; i++)
             {
                 rca = map_msg.restrictionList->list.array[i];
 
-                j2735_v2x_msgs::msg::RestrictionClassAssignment rclass;
+                auto rclass = *create_store_shared<j2735_v2x_msgs::msg::RestrictionClassAssignment>(shared_ptrs);
                 rclass.id = rca->id;
                 output.restriction_list.restriction_class_list.push_back(rclass);
             }
@@ -378,7 +360,7 @@ namespace cpp_message
     }
 
 
-    j2735_v2x_msgs::msg::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane)
+    j2735_v2x_msgs::msg::GenericLane Map_Message::decode_generic_lane(GenericLane_t* g_lane, std::vector<std::shared_ptr<void>> &shared_ptrs)
     {
         j2735_v2x_msgs::msg::GenericLane gl;
         //Egress Approach
@@ -440,13 +422,13 @@ namespace cpp_message
         if(g_lane->connectsTo)
         {
             gl.connects_to_exists = true;
-            Connection_t *ct = new Connection_t;
+            auto ct = create_store_shared<Connection_t>(shared_ptrs);
 
             for(size_t c = 0; c< g_lane->connectsTo->list.count; c++)
             {
                 ct = g_lane->connectsTo->list.array[c];
 
-                j2735_v2x_msgs::msg::Connection entry;
+                auto entry = *create_store_shared<j2735_v2x_msgs::msg::Connection>(shared_ptrs);
 
                 //Connection ID
                 if(ct->connectionID)
@@ -465,9 +447,10 @@ namespace cpp_message
                 {
                     entry.connecting_lane.maneuver_exists = true;
                     uint16_t binary = ct->connectingLane.maneuver->buf[0] >> 4;
-                    unsigned int maneuver_type = 4;
-                        // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
-
+                    auto maneuver_type = *create_store_shared<unsigned int>(shared_ptrs);
+                    maneuver_type = 4;
+                    
+                    // e.g. shift the binary right until it equals to 1 (0b00000001) to determine the location of the non-zero bit
                     for (int m = 0; m < ct->connectingLane.maneuver->size; m ++)
                     {
                         if ((int)binary == 1) 
@@ -481,7 +464,6 @@ namespace cpp_message
                             binary = binary >> 1;
                         }
                     }
-
 
                 }
                 else
@@ -598,19 +580,20 @@ namespace cpp_message
         //Nodes
         for(size_t n =0;n< g_lane->nodeList.choice.nodes.list.count; n++)
         {
-            j2735_v2x_msgs::msg::NodeXY node;
+            auto node = *create_store_shared<j2735_v2x_msgs::msg::NodeXY>(shared_ptrs);
 
             //Attributes
             if(g_lane->nodeList.choice.nodes.list.array[n]->attributes)
             {
-                auto attributes = g_lane->nodeList.choice.nodes.list.array[n]->attributes;
+                auto attributes = create_store_shared<NodeAttributeSetXY>(shared_ptrs);
+                attributes = g_lane->nodeList.choice.nodes.list.array[n]->attributes;
                 node.attributes_exists = true;
                 
                 //Attribute Data
                 if(attributes->data)
                 {
                     node.attributes.data_exists = true;
-                    j2735_v2x_msgs::msg::LaneDataAttribute data;
+                    auto data = *create_store_shared<j2735_v2x_msgs::msg::LaneDataAttribute>(shared_ptrs);
                     for(size_t d =0; d< attributes->data->list.count; d++)
                     {
                         data.lane_angle = attributes->data->list.array[d]->choice.laneAngle;
@@ -621,7 +604,7 @@ namespace cpp_message
 
                         for(size_t sl = 0; sl < attributes->data->list.array[d]->choice.speedLimits.list.count; sl++)
                         {
-                            j2735_v2x_msgs::msg::RegulatorySpeedLimit speedLimit;
+                            auto speedLimit = *create_store_shared<j2735_v2x_msgs::msg::RegulatorySpeedLimit>(shared_ptrs);
                             speedLimit.speed = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->speed;
                             speedLimit.type.speed_limit_type = attributes->data->list.array[d]->choice.speedLimits.list.array[sl]->type;
                                 data.speed_limits.speed_limits.push_back(speedLimit);
@@ -651,19 +634,16 @@ namespace cpp_message
                 if(attributes->disabled)
                 {
                     node.attributes.disabled_exists = true;
-                    SegmentAttributeXY_t *sa_xy = new SegmentAttributeXY_t;
                     for(size_t sa = 0; sa < attributes->disabled->list.count; sa++)
                     {
-                        sa_xy = attributes->disabled->list.array[sa];
-                        j2735_v2x_msgs::msg::SegmentAttributeXY sxy;
-                        sxy.segment_attribute_xy = *sa_xy;
+                        auto sxy = *create_store_shared<j2735_v2x_msgs::msg::SegmentAttributeXY>(shared_ptrs);
+                        sxy.segment_attribute_xy = *attributes->disabled->list.array[sa];
                         node.attributes.disabled.segment_attribute_xy.push_back(sxy);
                     }
                 }
                 else
                 {
                     node.attributes.disabled_exists = false;
-                    
                 }//end Attributes Disabled
 
                 //Attributes DWidth
@@ -681,14 +661,10 @@ namespace cpp_message
                 if(attributes->enabled)
                 {
                     node.attributes.enabled_exists = true;
-                    
-                    SegmentAttributeXY_t *sa_xy = new SegmentAttributeXY_t;
                     for(size_t en = 0; en < attributes->enabled->list.count; en++)
                     {
-                        sa_xy = attributes->enabled->list.array[en];
-
-                        j2735_v2x_msgs::msg::SegmentAttributeXY enabled;
-                        enabled.segment_attribute_xy = *sa_xy;
+                        auto enabled = *create_store_shared<j2735_v2x_msgs::msg::SegmentAttributeXY>(shared_ptrs);
+                        enabled.segment_attribute_xy = *attributes->enabled->list.array[en];
                         node.attributes.enabled.segment_attribute_xy.push_back(enabled);
                     }
                 }
@@ -697,19 +673,14 @@ namespace cpp_message
                     node.attributes.enabled_exists = false;
                 }//end Attributes Enabled
 
-
                 //Attribute Local Node
                 if(attributes->localNode)
                 {
                     node.attributes.local_node_exists = true;
-
-                    NodeAttributeXY_t *na = new NodeAttributeXY_t;
-
                     for(size_t ln = 0; ln < attributes->localNode->list.count; ln++)
                     {
-                        j2735_v2x_msgs::msg::NodeAttributeXY n_att;
-                        na = attributes->localNode->list.array[ln];
-                        n_att.node_attribute_xy = *na;
+                        auto n_att = *create_store_shared<j2735_v2x_msgs::msg::NodeAttributeXY>(shared_ptrs);
+                        n_att.node_attribute_xy = *attributes->localNode->list.array[ln];
                         node.attributes.local_node.node_attribute_xy_list.push_back(n_att);
                         
                     }
@@ -760,10 +731,8 @@ namespace cpp_message
             
             for(size_t o = 0; o < g_lane->overlays->list.count;o++)
             {
-                LaneID_t *ln = new LaneID_t;
+                auto ln = create_store_shared<LaneID_t>(shared_ptrs);
                 ln = g_lane->overlays->list.array[o];
-                
-                
                 gl.overlay_lane_list.overlay_lane_list.push_back(*ln);
             }
         }

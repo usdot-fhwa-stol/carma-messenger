@@ -20,6 +20,14 @@
 
 namespace cpp_message
 {
+    /**
+     * @brief Create an object and store a shared pointer controlling its memory allocation to a larger-scoped vector
+     * 
+     * @param shared_pointers Vector of shared pointers
+     * @return pointer to a new object of type T 
+     */
+    template <typename T> T* create_store_shared(std::vector<std::shared_ptr<void>> &shared_pointers);
+
     class Map_Message
     {
         public:
@@ -37,7 +45,7 @@ namespace cpp_message
              * @brief Construct a new map message object
              * 
              * @param binary_array Container with binary input.
-             *  @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
+             * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
              */
             boost::optional<j2735_v2x_msgs::msg::MapData>decode_map_message(std::vector<uint8_t>& binary_array);
 
@@ -45,8 +53,9 @@ namespace cpp_message
              * @brief Construct Generic lane j2735 ROS MAP.msg
              * 
              * @param g_lane Pointer that has decoded GenericLane object to convert into ROS
+             * @param shared_pointers Vector of shared pointers
              * @return Generic Lane j2735 ROS Msg
              */
-            j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t* g_lane);
+            j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t* g_lane, std::vector<std::shared_ptr<void>> &shared_pointers);
     };
 }

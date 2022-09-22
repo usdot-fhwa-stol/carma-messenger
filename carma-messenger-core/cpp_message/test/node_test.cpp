@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
     rclcpp::init(argc, argv);
     
     // Running specific unit tests
-    ::testing::GTEST_FLAG(filter) = "MapMessage*";
+    ::testing::GTEST_FLAG(filter) = "BSM*";
     bool success = RUN_ALL_TESTS();
 
     //shutdown ROS
