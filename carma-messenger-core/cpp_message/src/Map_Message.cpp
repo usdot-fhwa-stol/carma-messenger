@@ -346,6 +346,7 @@ namespace cpp_message
             output.restriction_list_exists = false;
         }
 
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return output;
     }
 
