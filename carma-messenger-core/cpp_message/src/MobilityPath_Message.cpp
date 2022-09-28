@@ -22,8 +22,17 @@
 
 namespace cpp_message
 {
+    template <typename T>
+    T *create_store_shared(std::vector<std::shared_ptr<void>> &shared_pointers)
+    {
+        auto obj_shared = std::make_shared<T>();
+        shared_pointers.push_back(obj_shared);
+        return obj_shared.get();
+    }
+
     boost::optional<carma_v2x_msgs::msg::MobilityPath> Mobility_Path::decode_mobility_path_message(std::vector<uint8_t> &binary_array)
     {
+        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
         carma_v2x_msgs::msg::MobilityHeader header;
         carma_v2x_msgs::msg::Trajectory trajectory;
         carma_v2x_msgs::msg::MobilityPath output;
@@ -38,172 +47,180 @@ namespace cpp_message
         std::copy(binary_array.begin(), binary_array.end(), buf);
         // use asn1c lib to decode
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **)&message, buf, len, 0, 0);
-        if (rval.code == RC_OK)
+        if (rval.code != RC_OK)
         {
-            Mobility_Header Header_constant;
-            std::string sender_id, recipient_id, sender_bsm_id, plan_id;
-            uint64_t timestamp;
-            // get sender id
-            size_t str_len = message->value.choice.TestMessage02.header.hostStaticId.size;
-            if (str_len <= Header_constant.STATIC_ID_MAX_LENGTH && str_len >= Header_constant.STATIC_ID_MIN_LENGTH)
-            {
-                for (size_t i = 0; i < str_len; i++)
-                {
-                    sender_id += message->value.choice.TestMessage02.header.hostStaticId.buf[i];
-                }
-            }
-            else
-                sender_id = Header_constant.STRING_DEFAULT;
-
-            header.sender_id = sender_id;
-
-            // get recepient id
-            str_len = message->value.choice.TestMessage02.header.targetStaticId.size;
-            if (str_len <= Header_constant.STATIC_ID_MAX_LENGTH && str_len >= Header_constant.STATIC_ID_MIN_LENGTH)
-            {
-                for (size_t i = 0; i < str_len; i++)
-                {
-                    recipient_id += message->value.choice.TestMessage02.header.targetStaticId.buf[i];
-                }
-            }
-            else
-                recipient_id = Header_constant.STRING_DEFAULT;
-
-            header.recipient_id = recipient_id;
-
-            // get bsm id
-            // sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
-            str_len = message->value.choice.TestMessage02.header.hostBSMId.size;
-            for (size_t i = 0; i < str_len; i++)
-            {
-                sender_bsm_id += message->value.choice.TestMessage02.header.hostBSMId.buf[i];
-            }
-
-            if (str_len < Header_constant.BSM_ID_LENGTH)
-            {
-                sender_bsm_id = std::string((Header_constant.BSM_ID_LENGTH - str_len), '0').append(sender_bsm_id);
-            }
-            else if (str_len > Header_constant.BSM_ID_LENGTH)
-            {
-                // RCLCPP_WARN(get_logger(),"BSM ID -size greater than limit, changing to default");
-                sender_bsm_id = Header_constant.BSM_ID_DEFAULT;
-            }
-            header.sender_bsm_id = sender_bsm_id;
-
-            // get plan id
-            str_len = message->value.choice.TestMessage02.header.planId.size;
-            if (str_len == Header_constant.GUID_LENGTH)
-            {
-                for (size_t i = 0; i < str_len; i++)
-                {
-                    plan_id += message->value.choice.TestMessage02.header.planId.buf[i];
-                }
-            }
-            else
-                plan_id = Header_constant.GUID_DEFAULT;
-
-            header.plan_id = plan_id;
-
-            // recover uint64_t timestamp from string
-            str_len = message->value.choice.TestMessage02.header.timestamp.size;
-            timestamp = 0;
-            char timestamp_ch[str_len];
-            for (size_t i = 0; i < str_len; i++)
-            {
-                timestamp_ch[i] = message->value.choice.TestMessage02.header.timestamp.buf[i];
-            }
-            timestamp = atoll(timestamp_ch);
-            header.timestamp = timestamp;
-            output.m_header = header;
-            // Trajectory
-            carma_v2x_msgs::msg::LocationECEF location;
-            long tmp = message->value.choice.TestMessage02.body.location.ecefX;
-            if (tmp > LOCATION_MAX || tmp < LOCATION_MIN)
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefX is out of range");
-                return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
-            }
-            location.ecef_x = tmp;
-
-            tmp = message->value.choice.TestMessage02.body.location.ecefY;
-            if (tmp > LOCATION_MAX || tmp < LOCATION_MIN)
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefY is out of range");
-                return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
-            }
-            location.ecef_y = tmp;
-
-            tmp = message->value.choice.TestMessage02.body.location.ecefZ;
-            if (tmp > LOCATION_MAX_Z || tmp < LOCATION_MIN_Z)
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefZ is out of range");
-                return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
-            }
-            location.ecef_z = tmp;
-
-            // convert location timestamp from string in asn1 to uint64 for ros message
-            str_len = message->value.choice.TestMessage02.body.location.timestamp.size;
-            uint64_t location_timestamp = 0;
-            char location_timestamp_ch[str_len];
-            for (size_t i = 0; i < str_len; i++)
-            {
-                location_timestamp_ch[i] = message->value.choice.TestMessage02.body.location.timestamp.buf[i];
-            }
-            location_timestamp = atoll(location_timestamp_ch);
-            location.timestamp = location_timestamp;
-
-            trajectory.location = location;
-
-            // Trajectory-offset
-            int offset_count = message->value.choice.TestMessage02.body.trajectory.list.count;
-
-            if (offset_count > MAX_POINTS_IN_MESSAGE)
-            {
-                RCLCPP_WARN_STREAM(node_logging_->get_logger(), "offset count greater than 60.");
-                return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
-            }
-
-            for (int i = 0; i < offset_count; i++)
-            {
-                carma_v2x_msgs::msg::LocationOffsetECEF Offsets;
-
-                Offsets.offset_x = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetX;
-                if (Offsets.offset_x < OFFSET_MIN || Offsets.offset_x > OFFSET_MAX)
-                {
-                    Offsets.offset_x = OFFSET_UNAVAILABLE;
-                }
-
-                Offsets.offset_y = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetY;
-                if (Offsets.offset_y < OFFSET_MIN || Offsets.offset_y > OFFSET_MAX)
-                {
-                    Offsets.offset_y = OFFSET_UNAVAILABLE;
-                }
-
-                Offsets.offset_z = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetZ;
-                if (Offsets.offset_z < OFFSET_MIN || Offsets.offset_z > OFFSET_MAX)
-                {
-                    Offsets.offset_z = OFFSET_UNAVAILABLE;
-                }
-
-                trajectory.offsets.push_back(Offsets);
-            }
-
-            output.trajectory = trajectory;
-
-            return boost::optional<carma_v2x_msgs::msg::MobilityPath>(output);
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Decoding mobility path message failed");
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+            return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
         }
-        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Decoding mobility path message failed");
-        return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
+        Mobility_Header Header_constant;
+        std::string sender_id, recipient_id, sender_bsm_id, plan_id;
+        uint64_t timestamp;
+        // get sender id
+        size_t str_len = message->value.choice.TestMessage02.header.hostStaticId.size;
+        if (str_len <= Header_constant.STATIC_ID_MAX_LENGTH && str_len >= Header_constant.STATIC_ID_MIN_LENGTH)
+        {
+            for (size_t i = 0; i < str_len; i++)
+            {
+                sender_id += message->value.choice.TestMessage02.header.hostStaticId.buf[i];
+            }
+        }
+        else
+            sender_id = Header_constant.STRING_DEFAULT;
+
+        header.sender_id = sender_id;
+
+        // get recepient id
+        str_len = message->value.choice.TestMessage02.header.targetStaticId.size;
+        if (str_len <= Header_constant.STATIC_ID_MAX_LENGTH && str_len >= Header_constant.STATIC_ID_MIN_LENGTH)
+        {
+            for (size_t i = 0; i < str_len; i++)
+            {
+                recipient_id += message->value.choice.TestMessage02.header.targetStaticId.buf[i];
+            }
+        }
+        else
+            recipient_id = Header_constant.STRING_DEFAULT;
+
+        header.recipient_id = recipient_id;
+
+        // get bsm id
+        // sender_bsm_id is meant to represent the vehicle BSM id in hex string (Ex: FFFFFFFF)
+        str_len = message->value.choice.TestMessage02.header.hostBSMId.size;
+        for (size_t i = 0; i < str_len; i++)
+        {
+            sender_bsm_id += message->value.choice.TestMessage02.header.hostBSMId.buf[i];
+        }
+
+        if (str_len < Header_constant.BSM_ID_LENGTH)
+        {
+            sender_bsm_id = std::string((Header_constant.BSM_ID_LENGTH - str_len), '0').append(sender_bsm_id);
+        }
+        else if (str_len > Header_constant.BSM_ID_LENGTH)
+        {
+            // RCLCPP_WARN(get_logger(),"BSM ID -size greater than limit, changing to default");
+            sender_bsm_id = Header_constant.BSM_ID_DEFAULT;
+        }
+        header.sender_bsm_id = sender_bsm_id;
+
+        // get plan id
+        str_len = message->value.choice.TestMessage02.header.planId.size;
+        if (str_len == Header_constant.GUID_LENGTH)
+        {
+            for (size_t i = 0; i < str_len; i++)
+            {
+                plan_id += message->value.choice.TestMessage02.header.planId.buf[i];
+            }
+        }
+        else
+            plan_id = Header_constant.GUID_DEFAULT;
+
+        header.plan_id = plan_id;
+
+        // recover uint64_t timestamp from string
+        str_len = message->value.choice.TestMessage02.header.timestamp.size;
+        timestamp = 0;
+        char timestamp_ch[str_len + 1];
+        for (size_t i = 0; i < str_len; i++)
+        {
+            timestamp_ch[i] = message->value.choice.TestMessage02.header.timestamp.buf[i];
+        }
+        timestamp_ch[str_len] = 0; // String needs a null terminator
+        timestamp = atoll(timestamp_ch);
+        header.timestamp = timestamp;
+        output.m_header = header;
+        // Trajectory
+        carma_v2x_msgs::msg::LocationECEF location;
+        long tmp = message->value.choice.TestMessage02.body.location.ecefX;
+        if (tmp > LOCATION_MAX || tmp < LOCATION_MIN)
+        {
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefX is out of range");
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+            return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
+        }
+        location.ecef_x = tmp;
+
+        tmp = message->value.choice.TestMessage02.body.location.ecefY;
+        if (tmp > LOCATION_MAX || tmp < LOCATION_MIN)
+        {
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefY is out of range");
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+            return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
+        }
+        location.ecef_y = tmp;
+
+        tmp = message->value.choice.TestMessage02.body.location.ecefZ;
+        if (tmp > LOCATION_MAX_Z || tmp < LOCATION_MIN_Z)
+        {
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Location ecefZ is out of range");
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+            return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
+        }
+        location.ecef_z = tmp;
+
+        // convert location timestamp from string in asn1 to uint64 for ros message
+        str_len = message->value.choice.TestMessage02.body.location.timestamp.size;
+        uint64_t location_timestamp = 0;
+        char location_timestamp_ch[str_len + 1];
+        for (size_t i = 0; i < str_len; i++)
+        {
+            location_timestamp_ch[i] = message->value.choice.TestMessage02.body.location.timestamp.buf[i];
+        }
+        location_timestamp_ch[str_len] = 0; // String needs a null terminator
+        location_timestamp = atoll(location_timestamp_ch);
+        location.timestamp = location_timestamp;
+
+        trajectory.location = location;
+
+        // Trajectory-offset
+        int offset_count = message->value.choice.TestMessage02.body.trajectory.list.count;
+
+        if (offset_count > MAX_POINTS_IN_MESSAGE)
+        {
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "offset count greater than 60.");
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+            return boost::optional<carma_v2x_msgs::msg::MobilityPath>{};
+        }
+
+        for (int i = 0; i < offset_count; i++)
+        {
+            auto Offsets = *create_store_shared<carma_v2x_msgs::msg::LocationOffsetECEF>(shared_ptrs);
+            // carma_v2x_msgs::msg::LocationOffsetECEF Offsets;
+
+            Offsets.offset_x = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetX;
+            if (Offsets.offset_x < OFFSET_MIN || Offsets.offset_x > OFFSET_MAX)
+            {
+                Offsets.offset_x = OFFSET_UNAVAILABLE;
+            }
+
+            Offsets.offset_y = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetY;
+            if (Offsets.offset_y < OFFSET_MIN || Offsets.offset_y > OFFSET_MAX)
+            {
+                Offsets.offset_y = OFFSET_UNAVAILABLE;
+            }
+
+            Offsets.offset_z = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetZ;
+            if (Offsets.offset_z < OFFSET_MIN || Offsets.offset_z > OFFSET_MAX)
+            {
+                Offsets.offset_z = OFFSET_UNAVAILABLE;
+            }
+
+            trajectory.offsets.push_back(Offsets);
+        }
+
+        output.trajectory = trajectory;
+
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+        return boost::optional<carma_v2x_msgs::msg::MobilityPath>(output);
     }
 
     boost::optional<std::vector<uint8_t>> Mobility_Path::encode_mobility_path_message(carma_v2x_msgs::msg::MobilityPath plainMessage)
     {
-
+        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
         uint8_t buffer[1472];
         size_t buffer_size = sizeof(buffer);
         asn_enc_rval_t ec;
-        auto message_shared = std::make_shared<MessageFrame_t>();
-        MessageFrame_t *message = message_shared.get();
+        MessageFrame_t *message = create_store_shared<MessageFrame_t>(shared_ptrs);
 
         message->messageId = MOBILITYPATH_TEST_ID;
         message->value.present = MessageFrame__value_PR_TestMessage02;
@@ -364,18 +381,14 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
 
-        auto offsets_list_shared = std::make_shared<MobilityLocationOffsets>();
-        MobilityLocationOffsets *offsets_list = offsets_list_shared.get();
-
-        std::vector<std::shared_ptr<MobilityECEFOffset>> offset_ptrs; // keep references to the offsets until the encoding is complete
+        auto offsets_list = create_store_shared<MobilityLocationOffsets>(shared_ptrs);
         for (size_t i = 0; i < offset_count; i++)
         {
-            auto offsets = std::make_shared<MobilityECEFOffset>();
-            offsets->offsetX = plainMessage.trajectory.offsets[i].offset_x;
-            offsets->offsetY = plainMessage.trajectory.offsets[i].offset_y;
-            offsets->offsetZ = plainMessage.trajectory.offsets[i].offset_z;
-            asn_sequence_add(&offsets_list->list, offsets.get());
-            offset_ptrs.push_back(offsets);
+            auto Offsets = create_store_shared<MobilityECEFOffset>(shared_ptrs);
+            Offsets->offsetX = plainMessage.trajectory.offsets[i].offset_x;
+            Offsets->offsetY = plainMessage.trajectory.offsets[i].offset_y;
+            Offsets->offsetZ = plainMessage.trajectory.offsets[i].offset_z;
+            asn_sequence_add(&offsets_list->list, Offsets);
         }
 
         message->value.choice.TestMessage02.body.trajectory = *offsets_list;
@@ -393,7 +406,8 @@ namespace cpp_message
         for (size_t i = 0; i < array_length; i++)
             b_array[i] = buffer[i];
 
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+        // ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_MobilityLocationOffsets, &offsets_list);
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
-
 }
