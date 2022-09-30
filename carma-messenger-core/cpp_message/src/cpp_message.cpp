@@ -1267,9 +1267,6 @@ namespace cpp_message
 
         // ===================== CONTROL MESSAGE end =====================
         // encode message
-        void *buffer_void = NULL;
-        asn_per_constraints_s *constraints = NULL;
-        ssize_t ec_new = uper_encode_to_new_buffer(&asn_DEF_MessageFrame, constraints, message, &buffer_void);
 	    ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if fails
         if(ec.encoded == -1) {
@@ -1279,7 +1276,6 @@ namespace cpp_message
         auto array_length = (ec.encoded+7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-
 
         // TCM body
         free(message);
