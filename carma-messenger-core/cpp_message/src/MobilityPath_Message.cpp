@@ -38,7 +38,7 @@ namespace cpp_message
         carma_v2x_msgs::msg::MobilityPath output;
         // decode results - stored in binary_array
         asn_dec_rval_t rval;
-        MessageFrame_t *message = 0;
+        MessageFrame_t *message = nullptr;
 
         // copy from vector to array
         size_t len = binary_array.size();
@@ -184,8 +184,7 @@ namespace cpp_message
 
         for (int i = 0; i < offset_count; i++)
         {
-            auto Offsets = *create_store_shared<carma_v2x_msgs::msg::LocationOffsetECEF>(shared_ptrs);
-            // carma_v2x_msgs::msg::LocationOffsetECEF Offsets;
+            carma_v2x_msgs::msg::LocationOffsetECEF Offsets;
 
             Offsets.offset_x = message->value.choice.TestMessage02.body.trajectory.list.array[i]->offsetX;
             if (Offsets.offset_x < OFFSET_MIN || Offsets.offset_x > OFFSET_MAX)
@@ -220,7 +219,9 @@ namespace cpp_message
         uint8_t buffer[1472];
         size_t buffer_size = sizeof(buffer);
         asn_enc_rval_t ec;
-        MessageFrame_t *message = create_store_shared<MessageFrame_t>(shared_ptrs);
+        MessageFrame_t message_val;
+        MessageFrame_t *message = &message_val;
+        // MessageFrame_t *message = *MessageFrame_t;
 
         message->messageId = MOBILITYPATH_TEST_ID;
         message->value.present = MessageFrame__value_PR_TestMessage02;
@@ -381,17 +382,17 @@ namespace cpp_message
             return boost::optional<std::vector<uint8_t>>{};
         }
 
-        auto offsets_list = create_store_shared<MobilityLocationOffsets>(shared_ptrs);
+        MobilityLocationOffsets offsets_list = {0};
         for (size_t i = 0; i < offset_count; i++)
         {
-            auto Offsets = create_store_shared<MobilityECEFOffset>(shared_ptrs);
+            MobilityECEFOffset* Offsets = (MobilityECEFOffset*) calloc(1, sizeof(MobilityECEFOffset));
             Offsets->offsetX = plainMessage.trajectory.offsets[i].offset_x;
             Offsets->offsetY = plainMessage.trajectory.offsets[i].offset_y;
             Offsets->offsetZ = plainMessage.trajectory.offsets[i].offset_z;
-            asn_sequence_add(&offsets_list->list, Offsets);
+            asn_sequence_add(&offsets_list.list, Offsets);
         }
 
-        message->value.choice.TestMessage02.body.trajectory = *offsets_list;
+        message->value.choice.TestMessage02.body.trajectory = offsets_list;
 
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
         // log a warning if it fails
@@ -406,8 +407,8 @@ namespace cpp_message
         for (size_t i = 0; i < array_length; i++)
             b_array[i] = buffer[i];
 
-        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
-        // ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_MobilityLocationOffsets, &offsets_list);
+        ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_MobilityLocationOffsets, &offsets_list);
+        // ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_MessageFrame, message);
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 }
