@@ -57,6 +57,6 @@ namespace cpp_message
          * @param shared_pointers Vector of shared pointers
          * @return Generic Lane j2735 ROS Msg
          */
-        j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t *g_lane, std::vector<std::shared_ptr<void>> &shared_pointers);
+        j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t *g_lane);
     };
 }
