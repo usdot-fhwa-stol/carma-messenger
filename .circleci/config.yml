@@ -102,4 +102,3 @@ jobs:
           path: ~/junit
       - store_artifacts:
           path: /reports
-
