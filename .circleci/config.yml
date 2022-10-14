@@ -103,11 +103,3 @@ jobs:
       - store_artifacts:
           path: /reports
 
-workflows:
-  version: 2
-  build:
-    jobs:
-      - build:
-          filters:
-           branches:
-              ignore: gh-pages
