@@ -49,9 +49,6 @@ jobs:
         doxyfile-path: "./Doxyfile" # default is ./Doxyfile
         # Working directory
         working-directory: "." # default is .
-        enable-latex: true
-    - name: Copy pdf to html dir
-      run: sudo cp ./docs/latex/refman.pdf ./docs/html/carma-messenger.pdf
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
