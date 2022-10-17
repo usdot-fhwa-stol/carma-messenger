@@ -406,8 +406,6 @@ namespace cpp_message
         for (size_t i = 0; i < array_length; i++)
             b_array[i] = buffer[i];
 
-        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
-        // ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_MobilityLocationOffsets, &offsets_list);
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 }
