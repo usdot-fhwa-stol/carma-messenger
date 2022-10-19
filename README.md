@@ -28,6 +28,8 @@ To implement each CARMA messenger feature, different ROS nodes can be built to s
 ![](docs/media/carma-messenger-diagram.png)
 <br>
 As shown in the diagram, any given piece of functionality may require client nodes running on the CARMA Platform which are configued to address the specific scenario under test. 
+<br>
+Additional documentation can be found on the [Doxygen Source Code Documentation page](https://usdot-fhwa-stol.github.io/documentation/carma-messenger).
 
 ## System Configuration and Installation
 
