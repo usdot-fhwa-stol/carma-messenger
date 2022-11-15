@@ -31,6 +31,14 @@
 
 namespace cpp_message
 {
+    template <typename T>
+    T *create_store_shared(std::vector<std::shared_ptr<void>> &shared_pointers)
+    {
+        auto obj_shared = std::make_shared<T>();
+        shared_pointers.push_back(obj_shared);
+        return obj_shared.get();
+    }
+
     namespace std_ph = std::placeholders;
 
     Node::Node(const rclcpp::NodeOptions &options): carma_ros2_utils::CarmaLifecycleNode(options)
@@ -936,20 +944,21 @@ namespace cpp_message
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05; 
 
+        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
+
         // TCM body definitions 
-        TrafficControlMessageV01_t* output_v01_testtest = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
-        TrafficControlMessageV01_t* output_v01 = (TrafficControlMessageV01_t*) calloc(1, sizeof(TrafficControlMessageV01_t));
-        Id64b_t* output_64b = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+        auto output_v01_testtest = create_store_shared<TrafficControlMessageV01_t>(shared_ptrs);
+        auto output_v01 = create_store_shared<TrafficControlMessageV01_t>(shared_ptrs);
+        auto output_64b = create_store_shared<Id64b_t>(shared_ptrs);
         uint8_t val_64b[8] = {0};
-        Id128b_t* output_128b = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+        auto output_128b = create_store_shared<Id128b_t>(shared_ptrs);
         uint8_t val_128b[16] = {0};
         uint8_t updated_val[8] = {0};
         
         // TCM package definitions
-        TrafficControlPackage_t* output_package = (TrafficControlPackage_t*) calloc(1, sizeof(TrafficControlPackage_t));
-        IA5String_t* label_p = (IA5String_t*) calloc(1, sizeof(IA5String_t));
-        TrafficControlPackage::TrafficControlPackage__tcids* tcids;
-        tcids = (TrafficControlPackage::TrafficControlPackage__tcids*) calloc(1, sizeof(TrafficControlPackage::TrafficControlPackage__tcids));
+        auto output_package = create_store_shared<TrafficControlPackage_t>(shared_ptrs);
+        auto label_p = create_store_shared<IA5String_t>(shared_ptrs);
+        auto tcids = create_store_shared<TrafficControlPackage::TrafficControlPackage__tcids>(shared_ptrs);
         auto tcids_len = 1;
         size_t label_size = 1;
         if (control_msg.tcm_v01.package_exists)
@@ -957,42 +966,38 @@ namespace cpp_message
             tcids_len = control_msg.tcm_v01.package.tcids.size();
             label_size = control_msg.tcm_v01.package.label.size();
         }
+        auto tcids = create_store_shared<TrafficControlPackage::TrafficControlPackage__tcids>(shared_ptrs);
         uint8_t* label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
-        Id128b_t** tcid_output_128b = (Id128b_t**) calloc(tcids_len, sizeof(Id128b_t*));
-        uint8_t** tcid_val = (uint8_t**) calloc(tcids_len, sizeof(uint8_t*));
+        auto tcid_output_128b = create_store_shared<Id128b_t>(shared_ptrs);
+        auto tcid_val = create_store_shared<uint8_t>(shared_ptrs);
         for ( int i = 0; i < tcids_len; i++ )
         {
-            tcid_output_128b[i] = (Id128b_t*) calloc(1, sizeof(Id128b_t));
-            tcid_val[i] = (uint8_t*) calloc(16, sizeof(uint8_t));
         }
 
         // TCM params definitions
-        TrafficControlParams_t* output_params = (TrafficControlParams_t*) calloc(1, sizeof(TrafficControlParams_t));
-        TrafficControlParams::TrafficControlParams__vclasses* vclasses_list;
-        vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
-        TrafficControlSchedule_t* output_schedule = (TrafficControlSchedule_t*) calloc(1, sizeof(TrafficControlSchedule_t));
+        TrafficControlParams::TrafficControlParams__vclasses* vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
+        auto output_schedule = create_store_shared<TrafficControlSchedule_t*>(shared_ptrs);
         uint8_t start_val[8] = {0};
-        EpochMins_t* start_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+        auto start_p = create_store_shared<EpochMins_t*>(shared_ptrs);
         uint8_t end_val[8] = {0};
-        EpochMins_t* end_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
-        TrafficControlSchedule::TrafficControlSchedule__between* between_list;
-        between_list = (TrafficControlSchedule::TrafficControlSchedule__between*) calloc(1, sizeof(TrafficControlSchedule::TrafficControlSchedule__between));
+        auto end_p = create_store_shared<EpochMins_t*>(shared_ptrs);
+        auto between_list = create_store_shared<TrafficControlSchedule::TrafficControlSchedule__between>(shared_ptrs);
         
-        DSRC_DayOfWeek_t* dow_output = (DSRC_DayOfWeek_t*) calloc(1, sizeof(DSRC_DayOfWeek_t));
-        uint8_t* dow_val = (uint8_t*) calloc(1, sizeof(uint8_t)); // 8 bits are sufficient for bit-wise encoding for 7 days
-        TrafficControlVehClass_t* vclass_output = (TrafficControlVehClass_t*) calloc(1, sizeof(TrafficControlVehClass_t));
-        DailySchedule_t* schedule_output = (DailySchedule_t*) calloc(1, sizeof(DailySchedule_t));
-        RepeatParams_t* repeat_output = (RepeatParams_t*) calloc(1, sizeof(RepeatParams_t));
-        TrafficControlDetail_t* detail_output = (TrafficControlDetail_t*) calloc(1, sizeof(TrafficControlDetail_t));
+        auto dow_output = create_store_shared<DSRC_DayOfWeek_t*>(shared_ptrs);
+        auto dow_val = create_store_shared<uint8_t*>(shared_ptrs); // 8 bits are sufficient for bit-wise encoding for 7 days
+        auto vclass_output = create_store_shared<TrafficControlVehClass_t*>(shared_ptrs);
+        auto schedule_output = create_store_shared<DailySchedule_t*>(shared_ptrs);
+        auto repeat_output = create_store_shared<RepeatParams_t*>(shared_ptrs);
+        auto detail_output = create_store_shared<TrafficControlDetail_t*>(shared_ptrs);
 
-        TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p;
-        latperm_p = (TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm*) calloc(1, sizeof(TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm));
+        auto latperm_p = create_store_shared<TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm>(shared_ptrs);
         
         auto signal_size = 1;
         if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE)
         {
             signal_size = control_msg.tcm_v01.params.detail.signal.size();
         }
+        auto latperm_p = create_store_shared<TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm>(shared_ptrs);
         uint8_t* signal_content = (uint8_t*) calloc(signal_size, sizeof(uint8_t));
         auto latperm_size = 1;
         if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE)
@@ -1002,11 +1007,11 @@ namespace cpp_message
         long** latperm_items = (long**) calloc(latperm_size, sizeof(long*));
         for(auto i = 0; i < latperm_size; i++)
         {
-            latperm_items[i] = (long*) calloc(1, sizeof(long));
+           auto latperm_items[i] = create_store_shared<>(shared_ptrs);
         }
 
         // TCM geometry definitions
-        TrafficControlGeometry_t* output_geometry = (TrafficControlGeometry_t*) calloc(1, sizeof(TrafficControlGeometry_t));
+        auto output_geometry = create_store_shared<TrafficControlGeometry_t*>(shared_ptrs);
         size_t proj_size = 1;
         size_t datum_size = 1;
         auto nodes_len = 1;
@@ -1023,14 +1028,14 @@ namespace cpp_message
         long** width_temp = (long**) calloc(nodes_len, sizeof(long*));
         for ( int i = 0; i < nodes_len; i++ )
         {
-            pathnode_output[i] = (PathNode_t*) calloc(1, sizeof(PathNode_t));
-            z_temp[i] = (long*) calloc(1, sizeof(long));
-            width_temp[i] = (long*) calloc(1, sizeof(long));
+           auto pathnode_output[i] = create_store_shared<>(shared_ptrs);
+           auto z_temp[i] = create_store_shared<>(shared_ptrs);
+           auto width_temp[i] = create_store_shared<>(shared_ptrs);
         }
         uint8_t* reftime_val = (uint8_t*) calloc(8, sizeof(uint8_t));
-        EpochMins_t* reftime_p = ((EpochMins_t*) calloc(1, sizeof(EpochMins_t)));
+        auto reftime_p = create_store_shared<EpochMins_t*>(shared_ptrs);
         TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
-        nodes_list = (TrafficControlGeometry::TrafficControlGeometry__nodes*) calloc(1, sizeof(TrafficControlGeometry::TrafficControlGeometry__nodes));
+       auto nodes_list = create_store_shared<>(shared_ptrs);
 
         //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
@@ -1129,6 +1134,7 @@ namespace cpp_message
             if (msg_v01.params_exists)
             {
                 // ===================== TCMV01 - PARAMS START =====================
+                auto output_params = create_store_shared<TrafficControlParams_t>(shared_ptrs);
                 j2735_v2x_msgs::msg::TrafficControlParams msg_params;
                 msg_params = msg_v01.params;
                 // convert vlasses
