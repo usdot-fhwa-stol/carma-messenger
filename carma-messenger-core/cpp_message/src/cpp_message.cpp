@@ -39,6 +39,14 @@ namespace cpp_message
         return obj_shared.get();
     }
 
+    template <typename T>
+    T *create_store_shared_array(std::vector<std::shared_ptr<void>> &shared_pointers, int size)
+    {
+        std::shared_ptr<T[]> array_shared(new T[size]{0});
+        shared_pointers.push_back(array_shared);
+        return array_shared.get();
+    }
+
     namespace std_ph = std::placeholders;
 
     Node::Node(const rclcpp::NodeOptions &options): carma_ros2_utils::CarmaLifecycleNode(options)
@@ -917,8 +925,10 @@ namespace cpp_message
             output.tcr_v01 = tcrV01;
             }
 
+            // ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>(output);
         }
+        // ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>{};
     }
     
@@ -927,116 +937,18 @@ namespace cpp_message
     // structure, while refactoring what is possible (those that don't further call calloc functions)
     boost::optional<std::vector<uint8_t>> Node::encode_geofence_control(j2735_v2x_msgs::msg::TrafficControlMessage control_msg)
     {
+        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
         // encode result placeholder
         uint8_t buffer[512] = {0};
         void * buffer_new;
 	    size_t buffer_size = sizeof(buffer);
 	    asn_enc_rval_t ec;
-	    MessageFrame_t* message;
-	    message = (MessageFrame_t*)calloc(1, sizeof(MessageFrame_t));
-        // if mem allocation fails
-	    if (!message)
-        {
-            return boost::optional<std::vector<uint8_t>>{};
-	    }
+        MessageFrame_t *message = create_store_shared<MessageFrame_t>(shared_ptrs);
 
 	    //set message type to TestMessage05
 	    message->messageId = 245;
         message->value.present = MessageFrame__value_PR_TestMessage05; 
-
-        std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
-
-        // TCM body definitions 
-        auto output_v01_testtest = create_store_shared<TrafficControlMessageV01_t>(shared_ptrs);
-        auto output_v01 = create_store_shared<TrafficControlMessageV01_t>(shared_ptrs);
-        auto output_64b = create_store_shared<Id64b_t>(shared_ptrs);
-        uint8_t val_64b[8] = {0};
-        auto output_128b = create_store_shared<Id128b_t>(shared_ptrs);
-        uint8_t val_128b[16] = {0};
-        uint8_t updated_val[8] = {0};
         
-        // TCM package definitions
-        auto output_package = create_store_shared<TrafficControlPackage_t>(shared_ptrs);
-        auto label_p = create_store_shared<IA5String_t>(shared_ptrs);
-        auto tcids = create_store_shared<TrafficControlPackage::TrafficControlPackage__tcids>(shared_ptrs);
-        auto tcids_len = 1;
-        size_t label_size = 1;
-        if (control_msg.tcm_v01.package_exists)
-        {
-            tcids_len = control_msg.tcm_v01.package.tcids.size();
-            label_size = control_msg.tcm_v01.package.label.size();
-        }
-        auto tcids = create_store_shared<TrafficControlPackage::TrafficControlPackage__tcids>(shared_ptrs);
-        uint8_t* label_content = (uint8_t*) calloc(label_size, sizeof(uint8_t));
-        auto tcid_output_128b = create_store_shared<Id128b_t>(shared_ptrs);
-        auto tcid_val = create_store_shared<uint8_t>(shared_ptrs);
-        for ( int i = 0; i < tcids_len; i++ )
-        {
-        }
-
-        // TCM params definitions
-        TrafficControlParams::TrafficControlParams__vclasses* vclasses_list = (TrafficControlParams::TrafficControlParams__vclasses*)calloc(1, sizeof(TrafficControlParams::TrafficControlParams__vclasses));
-        auto output_schedule = create_store_shared<TrafficControlSchedule_t*>(shared_ptrs);
-        uint8_t start_val[8] = {0};
-        auto start_p = create_store_shared<EpochMins_t*>(shared_ptrs);
-        uint8_t end_val[8] = {0};
-        auto end_p = create_store_shared<EpochMins_t*>(shared_ptrs);
-        auto between_list = create_store_shared<TrafficControlSchedule::TrafficControlSchedule__between>(shared_ptrs);
-        
-        auto dow_output = create_store_shared<DSRC_DayOfWeek_t*>(shared_ptrs);
-        auto dow_val = create_store_shared<uint8_t*>(shared_ptrs); // 8 bits are sufficient for bit-wise encoding for 7 days
-        auto vclass_output = create_store_shared<TrafficControlVehClass_t*>(shared_ptrs);
-        auto schedule_output = create_store_shared<DailySchedule_t*>(shared_ptrs);
-        auto repeat_output = create_store_shared<RepeatParams_t*>(shared_ptrs);
-        auto detail_output = create_store_shared<TrafficControlDetail_t*>(shared_ptrs);
-
-        auto latperm_p = create_store_shared<TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm>(shared_ptrs);
-        
-        auto signal_size = 1;
-        if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE)
-        {
-            signal_size = control_msg.tcm_v01.params.detail.signal.size();
-        }
-        auto latperm_p = create_store_shared<TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm>(shared_ptrs);
-        uint8_t* signal_content = (uint8_t*) calloc(signal_size, sizeof(uint8_t));
-        auto latperm_size = 1;
-        if (control_msg.tcm_v01.params.detail.choice == j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE)
-        {
-            latperm_size = control_msg.tcm_v01.params.detail.latperm.size(); 
-        }
-        long** latperm_items = (long**) calloc(latperm_size, sizeof(long*));
-        for(auto i = 0; i < latperm_size; i++)
-        {
-           auto latperm_items[i] = create_store_shared<>(shared_ptrs);
-        }
-
-        // TCM geometry definitions
-        auto output_geometry = create_store_shared<TrafficControlGeometry_t*>(shared_ptrs);
-        size_t proj_size = 1;
-        size_t datum_size = 1;
-        auto nodes_len = 1;
-        if (control_msg.tcm_v01.geometry_exists)
-        {
-            proj_size = control_msg.tcm_v01.geometry.proj.size();
-            datum_size = control_msg.tcm_v01.geometry.datum.size();
-            nodes_len = control_msg.tcm_v01.geometry.nodes.size();
-        }
-        uint8_t* proj_content = (uint8_t*) calloc(proj_size, sizeof(uint8_t));
-        uint8_t* datum_content = (uint8_t*) calloc(datum_size, sizeof(uint8_t));
-        PathNode_t** pathnode_output = (PathNode_t**) calloc(nodes_len, sizeof(PathNode_t*));
-        long** z_temp = (long**) calloc(nodes_len, sizeof(long*));
-        long** width_temp = (long**) calloc(nodes_len, sizeof(long*));
-        for ( int i = 0; i < nodes_len; i++ )
-        {
-           auto pathnode_output[i] = create_store_shared<>(shared_ptrs);
-           auto z_temp[i] = create_store_shared<>(shared_ptrs);
-           auto width_temp[i] = create_store_shared<>(shared_ptrs);
-        }
-        uint8_t* reftime_val = (uint8_t*) calloc(8, sizeof(uint8_t));
-        auto reftime_p = create_store_shared<EpochMins_t*>(shared_ptrs);
-        TrafficControlGeometry::TrafficControlGeometry__nodes* nodes_list;
-       auto nodes_list = create_store_shared<>(shared_ptrs);
-
         //======================== CONTROL MESSAGE START =====================
         if (control_msg.choice == j2735_v2x_msgs::msg::TrafficControlMessage::RESERVED)
         {
@@ -1046,12 +958,17 @@ namespace cpp_message
         {
             message->value.choice.TestMessage05.body.present = TrafficControlMessage_PR_tcmV01;
             // ======================== TCMV01 START =============================
+            // TCM body definitions 
+            auto output_v01 = create_store_shared<TrafficControlMessageV01_t>(shared_ptrs);
             j2735_v2x_msgs::msg::TrafficControlMessageV01 msg_v01;
             msg_v01 = control_msg.tcm_v01;
+            
             // encode reqid
+            // output_v01->reqid = *encode_id64b(msg_v01.reqid, shared_ptrs);
             j2735_v2x_msgs::msg::Id64b msg_64b;
             msg_64b = msg_v01.reqid;
-            
+            auto output_64b = create_store_shared<Id64b_t>(shared_ptrs);
+            auto val_64b = create_store_shared_array<uint8_t>(shared_ptrs, 8);
             for(auto i = 0; i < msg_64b.id.size(); i++)
             {
                 val_64b[i] = msg_64b.id[i];
@@ -1066,10 +983,13 @@ namespace cpp_message
             output_v01->msgtot = msg_v01.msgtot;
             // encode msgnum
             output_v01->msgnum = msg_v01.msgnum;
+
             // encode id
+            // output_v01->id = *encode_id128b(msg_v01.id, shared_ptrs);
             j2735_v2x_msgs::msg::Id128b msg_128b;
             msg_128b = msg_v01.id;
-            
+            auto output_128b = create_store_shared<Id128b_t>(shared_ptrs);
+            auto val_128b = create_store_shared_array<uint8_t>(shared_ptrs, 16);
             for(auto i = 0; i < msg_128b.id.size(); i++)
             {
                 val_128b[i] = msg_128b.id[i];
@@ -1079,7 +999,8 @@ namespace cpp_message
             output_v01->id = *output_128b;
 
             // encode updated
-            // recover an 8-bit array from a long value 
+            // recover an 8-bit array from a long value
+            auto updated_val = create_store_shared_array<uint8_t>(shared_ptrs, 8);
             for(int k = 7; k >= 0; k--) {
                 updated_val[7 - k] = msg_v01.updated >> (k * 8);
             }
@@ -1089,7 +1010,8 @@ namespace cpp_message
             // encode package optional
             if (msg_v01.package_exists)
             {
-                //===================PACKAGE START==================                
+                //===================PACKAGE START==================   
+                auto output_package = create_store_shared<TrafficControlPackage_t>(shared_ptrs);             
                 j2735_v2x_msgs::msg::TrafficControlPackage msg_package;
                 msg_package = msg_v01.package;
                 //convert label string to char array (optional)
@@ -1097,10 +1019,12 @@ namespace cpp_message
                 if (msg_package.label_exists)
                 {
                     size_t label_size = msg_package.label.size();
+                    auto label_content = create_store_shared_array<uint8_t>(shared_ptrs, label_size);
                     for(auto i = 0; i < label_size; i++)
                     {
                         label_content[i] = (char)msg_package.label[i];
                     }
+                    auto label_p = create_store_shared<IA5String_t>(shared_ptrs);
                     label_p->buf = label_content;
                     label_p->size = label_size;
                     output_package->label = label_p;
@@ -1109,19 +1033,24 @@ namespace cpp_message
                 // convert tcids from list of Id128b
                 // tcid is array of ids, each of which is a 16-bit pointer to an array of ids
 
+                size_t tcids_len = msg_package.tcids.size();
+                auto tcids = create_store_shared<TrafficControlPackage::TrafficControlPackage__tcids>(shared_ptrs);
                 for (auto i = 0; i < tcids_len; i++)
                 {
+                    auto output_128b = create_store_shared<Id128b_t>(shared_ptrs);
                     j2735_v2x_msgs::msg::Id128b msg_128b;
                     msg_128b = msg_package.tcids[i];
                     
+                    auto val = create_store_shared_array<uint8_t>(shared_ptrs, 16);
                     for(auto j = 0; j < msg_128b.id.size(); j++)
                     {
-                        tcid_val[i][j] = msg_128b.id[j];
+                        val[j] = msg_128b.id[j];
                     }
-                    tcid_output_128b[i]->buf = tcid_val[i];
-                    tcid_output_128b[i]->size = msg_128b.id.size();
+                    output_128b->buf = val;
+                    output_128b->size = msg_128b.id.size();
                     
-                    asn_sequence_add(&tcids->list, tcid_output_128b[i]);
+                    asn_sequence_add(&tcids->list, output_128b);
+                    // asn_sequence_add(&tcids->list, encode_id128b(msg_package.tcids[i].id, shared_ptrs));
                 }
                 
                 output_package->tcids = *tcids;
@@ -1137,13 +1066,13 @@ namespace cpp_message
                 auto output_params = create_store_shared<TrafficControlParams_t>(shared_ptrs);
                 j2735_v2x_msgs::msg::TrafficControlParams msg_params;
                 msg_params = msg_v01.params;
+
                 // convert vlasses
                 auto vclasses_size = msg_params.vclasses.size();
-   
+                auto vclasses_list = create_store_shared<TrafficControlParams::TrafficControlParams__vclasses>(shared_ptrs);
                 for (auto i = 0; i < vclasses_size; i ++)
                 {
-                    encode_geofence_control_veh_class(msg_params.vclasses[i], vclass_output);
-                    asn_sequence_add(&vclasses_list->list, vclass_output);
+                    asn_sequence_add(&vclasses_list->list, encode_geofence_control_veh_class(msg_params.vclasses[i], shared_ptrs));
                 }
                 output_params->vclasses = *vclasses_list;
 
@@ -1151,9 +1080,13 @@ namespace cpp_message
                 j2735_v2x_msgs::msg::TrafficControlSchedule msg_schedule;
                 msg_schedule = msg_params.schedule;
                 // 8-bit array from long int for "start"
+                auto output_schedule = create_store_shared<TrafficControlSchedule_t>(shared_ptrs);
+                
+                auto start_val = create_store_shared_array<uint8_t>(shared_ptrs, 8);
                 for(int k = 7; k >= 0; k--) {
                     start_val[7 - k] = msg_schedule.start >> (k * 8);
                 }
+                auto start_p = create_store_shared<EpochMins_t>(shared_ptrs);
                 start_p->buf = start_val;
                 start_p->size = 8;
                 output_schedule->start = *start_p;
@@ -1161,36 +1094,37 @@ namespace cpp_message
                 // long int from 8-bit array for "end" (optional)
                 if (msg_schedule.end_exists)
                 {
+                    auto end_val = create_store_shared_array<uint8_t>(shared_ptrs, 8);
                     for(int k = 7; k >= 0; k--) {
                         end_val[7 - k] = msg_schedule.end >> (k * 8);
                     }
+                    auto end_p = create_store_shared<EpochMins_t>(shared_ptrs);
                     end_p->buf = end_val;
                     end_p->size = 8;
                     output_schedule->end = end_p;
                 }
+
                 // recover the dow array (optional)d
                 if (msg_schedule.dow_exists)
                 {
-                    encode_day_of_week(msg_schedule.dow, dow_output, dow_val);
-                    output_schedule->dow = dow_output;
+                    output_schedule->dow = encode_day_of_week(msg_schedule.dow, shared_ptrs);
                 }
                 // recover the dailyschedule between (optional)
                 if (msg_schedule.between_exists)
                 {
+                    auto between_list = create_store_shared<TrafficControlSchedule::TrafficControlSchedule__between>(shared_ptrs);
                     auto between_len = msg_schedule.between.size();
 
                     for (auto i = 0; i < between_len; i ++)
                     {
-                        encode_daily_schedule(msg_schedule.between[i], schedule_output);
-                        asn_sequence_add(&between_list->list, schedule_output);
+                        asn_sequence_add(&between_list->list, encode_daily_schedule(msg_schedule.between[i], shared_ptrs));
                     }
                     output_schedule->between = between_list;
                 }
                 // recover the repeat parameter (optional)
                 if (msg_schedule.repeat_exists)
                 {
-                    encode_repeat_params(msg_schedule.repeat, repeat_output);
-                    output_schedule->repeat = repeat_output;
+                    output_schedule->repeat = encode_repeat_params(msg_schedule.repeat, shared_ptrs);
                 }
                 // ======================= TCMV01 - PARAMS - SCHEDULE END =============================
                 output_params->schedule = *output_schedule;
@@ -1199,8 +1133,7 @@ namespace cpp_message
                 output_params->regulatory = msg_params.regulatory;
 
                 // detail
-                encode_geofence_control_detail(msg_params.detail, detail_output, signal_content, latperm_p, latperm_items);
-                output_params->detail = *detail_output;
+                output_params->detail = *encode_geofence_control_detail(msg_params.detail, shared_ptrs);
                 // ===================== TCMV01 - PARAMS END =====================
                 output_v01->params = output_params;
             }
@@ -1209,10 +1142,13 @@ namespace cpp_message
             if (msg_v01.geometry_exists)
             {
                 // ====================== TCMV01 - GEOMETRY START ==========================
+                auto output_geometry = create_store_shared<TrafficControlGeometry_t>(shared_ptrs);
                 j2735_v2x_msgs::msg::TrafficControlGeometry msg_geometry;
                 msg_geometry = msg_v01.geometry;
+
                 // convert proj string to char array
                 size_t proj_size = msg_geometry.proj.size();
+                auto proj_content = create_store_shared_array<uint8_t>(shared_ptrs, proj_size);
                 for(auto i = 0; i < proj_size; i++)
                 {
                     proj_content[i] = msg_geometry.proj[i];
@@ -1222,6 +1158,7 @@ namespace cpp_message
 
                 // convert datum string to char array
                 size_t datum_size = msg_geometry.datum.size();
+                auto datum_content = create_store_shared_array<uint8_t>(shared_ptrs, datum_size);
                 for(auto i = 0; i < datum_size; i++)
                 {
                     datum_content[i] = msg_geometry.datum[i]; 
@@ -1229,10 +1166,12 @@ namespace cpp_message
                 output_geometry->datum.buf = datum_content;
                 output_geometry->datum.size = datum_size;
                 
+                auto reftime_val = create_store_shared_array<uint8_t>(shared_ptrs, 8);
                 for(int k = 7; k >= 0; k--) {
                     reftime_val[7 - k] = msg_geometry.reftime >> (k * 8);
                 }
 
+                auto reftime_p = create_store_shared<EpochMins_t>(shared_ptrs);
                 reftime_p->buf = reftime_val;
                 reftime_p->size = 8;
                 output_geometry->reftime = *reftime_p;
@@ -1250,11 +1189,12 @@ namespace cpp_message
                 output_geometry->heading = msg_geometry.heading;
                 
                 // nodes
+                auto nodes_len = msg_geometry.nodes.size();
+                auto nodes_list = create_store_shared<TrafficControlGeometry::TrafficControlGeometry__nodes>(shared_ptrs);
                 for (auto i = 0; i < nodes_len; i ++)
                 {
                     //=============== TCMV01 - GEOMETRY - NODE START ==============================
-                    encode_path_node(msg_geometry.nodes[i], pathnode_output[i], z_temp[i], width_temp[i]);
-                    asn_sequence_add(&nodes_list->list, pathnode_output[i]);
+                    asn_sequence_add(&nodes_list->list, encode_path_node(msg_geometry.nodes[i], shared_ptrs));
                     //================== TCMV01 - GEOMETRY - NODE END =============================
                 }
                 output_geometry->nodes = *nodes_list;
@@ -1286,76 +1226,15 @@ namespace cpp_message
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
 
-
-        // TCM body
-        free(message);
-        free(output_v01_testtest);
-        free(output_v01);
-        free(output_64b);
-        free(output_128b);
-
-        // TCM package
-        free(output_package);
-        free(label_p);
-        free(tcids);
-        free(label_content);
-        for ( int i = 0; i < tcids_len; i++ )
-        {
-            free(tcid_output_128b[i]);
-            free(tcid_val[i]);
-        }
-        free(tcid_output_128b);
-        free(tcid_val);
-
-        // TCM params
-        free(output_params);
-        free(vclasses_list);
-        free(output_schedule);
-        free(start_p);
-        free(end_p);
-        free(between_list);
-        free(dow_output);
-        free(dow_val);
-        free(vclass_output);
-        free(schedule_output);
-        free(repeat_output);
-        free(detail_output);
-        free(signal_content);
-        for(auto i = 0; i < latperm_size; i++)
-        {
-            free(latperm_items[i]);
-        }
-        free(latperm_items);
-        free(latperm_p);
-        
-        // TCM geometry
-        free(output_geometry);
-        free(proj_content);
-        free(datum_content);
-        free(reftime_val);
-        free(reftime_p);
-        free(nodes_list);
-        for ( int i = 0; i < nodes_len; i++ )
-        {
-            free(pathnode_output[i]);
-            free(z_temp[i]);
-            free(width_temp[i]);
-        }
-        free(pathnode_output);
-        free(z_temp);
-        free(width_temp);
-
         return boost::optional<std::vector<uint8_t>>(b_array);
     }
 
-    Id64b_t* Node::encode_id64b (const j2735_v2x_msgs::msg::Id64b& msg)
+    Id64b_t* Node::encode_id64b (const j2735_v2x_msgs::msg::Id64b& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
-        Id64b_t* output;
-        output = (Id64b_t*) calloc(1, sizeof(Id64b_t));
+        auto output = create_store_shared<Id64b_t>(shared_pointers);
         
         // Type uint8[8]
-        uint8_t* val;
-        val = (uint8_t*) calloc(8, sizeof(uint8_t));
+        auto val = create_store_shared_array<uint8_t>(shared_pointers, 8);
         for(auto i = 0; i < msg.id.size(); i++)
         {
             val[i] = msg.id[i];
@@ -1365,14 +1244,12 @@ namespace cpp_message
         return output;
     }
     
-    Id128b_t* Node::encode_id128b (const j2735_v2x_msgs::msg::Id128b& msg)
+    Id128b_t* Node::encode_id128b (const j2735_v2x_msgs::msg::Id128b& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
-        Id128b_t* output;
-        output = (Id128b_t*) calloc(1, sizeof(Id128b_t));
+        auto output = create_store_shared<Id128b_t>(shared_pointers);
 
         // Type uint8[16]
-        uint8_t* val;
-        val = (uint8_t*) calloc(16, sizeof(uint8_t));
+        auto val = create_store_shared_array<uint8_t>(shared_pointers, 8);
         for(auto i = 0; i < msg.id.size(); i++)
         {
             val[i] = msg.id[i];
@@ -1383,14 +1260,15 @@ namespace cpp_message
         return output;
     }
 
-    void Node::encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg, TrafficControlVehClass_t* output)
+    TrafficControlVehClass_t* Node::encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
+        auto output = create_store_shared<TrafficControlVehClass_t>(shared_pointers);
         *output = msg.vehicle_class;
     }
 
-    void Node::encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg, TrafficControlDetail_t* output, 
-                uint8_t* signal_content, TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p, long** item_p)
+    TrafficControlDetail_t* Node::encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
+        auto output = create_store_shared<TrafficControlDetail_t>(shared_pointers);
         switch(msg.choice)
         {
             case j2735_v2x_msgs::msg::TrafficControlDetail::SIGNAL_CHOICE:
@@ -1398,6 +1276,7 @@ namespace cpp_message
                 output->present = TrafficControlDetail_PR_signal;
                 // signal OCTET STRING SIZE(0..63),
                 auto signal_size = msg.signal.size();
+                auto signal_content = create_store_shared_array<uint8_t>(shared_pointers, signal_size); 
                 for (auto i = 0; i < signal_size; i ++)
                     signal_content[i] = msg.signal[i];
                 output->choice.signal.buf = signal_content;
@@ -1454,10 +1333,12 @@ namespace cpp_message
                 // 	latperm SEQUENCE (SIZE(2)) OF ENUMERATED {none, permitted, passing-only, emergency-only},
                 auto latperm_size = msg.latperm.size();
                 
+                auto latperm_p = create_store_shared<TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm>(shared_pointers);
                 for(auto i = 0; i < latperm_size; i++)
                 {
-                    *item_p[i] = msg.latperm[i];
-                    asn_sequence_add(&latperm_p->list, item_p[i]);
+                    auto item_p = create_store_shared<long>(shared_pointers); 
+                    *item_p = msg.latperm[i];
+                    asn_sequence_add(&latperm_p->list, item_p);
                 }
                 output->choice.latperm = *latperm_p;
             break;
@@ -1550,9 +1431,10 @@ namespace cpp_message
                 output->present = TrafficControlDetail_PR_NOTHING;
             break;
         }
+        return output;
     }
     
-    void Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg, DSRC_DayOfWeek_t* output, uint8_t* dow_val)
+    DSRC_DayOfWeek_t* Node::encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
         // j2735_v2x_msgs day of week:
         // Array of [0, 1] for each day, with indices specified as an enum. 1 means that that day is active, 0 means inactive
@@ -1562,6 +1444,8 @@ namespace cpp_message
         // 7-element bit string with a bit for each day,  means that that day is active, 0 means inactive
         // ex: turn on sunday and monday: 00000110, dow.DSRC_DayOfWeek_sun -> 1
 
+        auto output = create_store_shared<DSRC_DayOfWeek_t>(shared_pointers);
+        auto dow_val = create_store_shared<uint8_t>(shared_pointers);
         for (auto i = 0; i < msg.dow.size(); i++)
         {
             *dow_val |= msg.dow[i];
@@ -1570,28 +1454,35 @@ namespace cpp_message
         output->buf = dow_val;
         output->size = 1; // 1 byte
         output->bits_unused = 1; // uses the first 7 bits, last is unused
+        return output;
     } 
 
-    void Node::encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg, DailySchedule_t* output)
+    DailySchedule_t* Node::encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
+        auto output = create_store_shared<DailySchedule_t>(shared_pointers);
         output->begin = msg.begin;
         output->duration = msg.duration;
+        return output;
     } 
 
-    void Node::encode_repeat_params (const j2735_v2x_msgs::msg::RepeatParams& msg, RepeatParams_t* output)
+    RepeatParams_t* Node::encode_repeat_params (const j2735_v2x_msgs::msg::RepeatParams& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
+        auto output = create_store_shared<RepeatParams_t>(shared_pointers);
         output->offset = msg.offset;
         output->period = msg.period; 
         output->span = msg.span;
+        return output;
     }
 
-    void Node::encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg, PathNode_t* output, long* z_temp, long* width_temp)
+    PathNode_t* Node::encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg, std::vector<std::shared_ptr<void>> &shared_pointers)
     {
+        auto output = create_store_shared<PathNode_t>(shared_pointers);
         output->x = msg.x;
         output->y = msg.y;
         // optional fields
         if (msg.z_exists)
         {
+            auto z_temp = create_store_shared<long>(shared_pointers);
             *z_temp = msg.z;
             output->z = z_temp;
         }
@@ -1602,6 +1493,7 @@ namespace cpp_message
 
         if (msg.width_exists) 
         {
+            auto width_temp = create_store_shared<long>(shared_pointers);
             *width_temp = msg.width;
             output->width = width_temp;
         }
@@ -1609,6 +1501,7 @@ namespace cpp_message
         {
             output->width = NULL;
         }
+        return output;
     }
 
     boost::optional<std::vector<uint8_t>> Node::encode_geofence_request(j2735_v2x_msgs::msg::TrafficControlRequest request_msg)
