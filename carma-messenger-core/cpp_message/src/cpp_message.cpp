@@ -406,8 +406,10 @@ namespace cpp_message
                 output.choice = j2735_v2x_msgs::msg::TrafficControlMessage::TCMV01;
                 output.tcm_v01 = decode_geofence_control_v01(message->value.choice.TestMessage05.body.choice.tcmV01);
             }
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return output;
         }
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::TrafficControlMessage>{};
     }
 
@@ -908,9 +910,11 @@ namespace cpp_message
 
             output.tcr_v01 = tcrV01;
             }
-
+            
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>(output);
         }
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::TrafficControlRequest>{};
     }
     
@@ -1279,7 +1283,6 @@ namespace cpp_message
         auto array_length = (ec.encoded+7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(auto i = 0; i < array_length; i++) b_array[i] = buffer[i];
-
 
         // TCM body
         free(message);

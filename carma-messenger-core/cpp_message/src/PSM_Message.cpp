@@ -263,9 +263,11 @@ namespace cpp_message
             }
             
 
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::PSM>(output);
         }
 
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::PSM>{};
     }
 

@@ -90,9 +90,11 @@ namespace cpp_message
             output.core_data.size.vehicle_length = core_data_msg.size.length;
             output.core_data.size.vehicle_width = core_data_msg.size.width;
             
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::BSM>(output);
         }
         RCLCPP_WARN_STREAM( node_logging_->get_logger(), "BasicSafetyMessage decoding failed");
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::BSM>{};
 
     }

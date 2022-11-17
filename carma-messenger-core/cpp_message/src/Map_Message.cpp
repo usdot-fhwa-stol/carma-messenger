@@ -37,6 +37,7 @@ namespace cpp_message
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **) &message, buf, len, 0, 0);
         if (rval.code != RC_OK)
         {
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::MapData>{};
         }
 
