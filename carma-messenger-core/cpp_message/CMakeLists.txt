@@ -84,6 +84,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
 
   ament_add_gtest(test_cpp_message_node 
+                        test/test_EmergencyVehicleResponse.cpp
                         test/test_MobilityOperations.cpp
                         test/test_MobilityResponse.cpp
                         test/test_MobilityPath.cpp
