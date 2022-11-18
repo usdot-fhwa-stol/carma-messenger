@@ -32,6 +32,14 @@ namespace cpp_message
         return obj_shared.get();
     }
 
+    template <typename T>
+    T *create_store_shared_array(std::vector<std::shared_ptr<void>> &shared_pointers, int size)
+    {
+        std::shared_ptr<T[]> array_shared(new T[size]{0});
+        shared_pointers.push_back(array_shared);
+        return array_shared.get();
+    }
+
     boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse> Emergency_Vehicle_Response::decode_emergency_vehicle_response_message(std::vector<uint8_t> &binary_array)
     {
 
@@ -48,7 +56,9 @@ namespace cpp_message
         std::copy(binary_array.begin(), binary_array.end(), buf);
         // use asn1c lib to decode
 
+        RCLCPP_WARN(node_logging_->get_logger(), "starting decoding");
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **)&message, buf, len, 0, 0);
+        RCLCPP_WARN(node_logging_->get_logger(), "decoded");
 
         // if decode success
         if (rval.code == RC_OK)
@@ -56,7 +66,7 @@ namespace cpp_message
 
             // copy can_change_lanes boolean (TestMessage06 for EmergencyVehicleResponse)
             Mobility_Header Header_constant;
-            std::string sender_id, recipient_id, sender_bsm_id, plan_id, timestamp_string, can_change_lanes, reason;
+            std::string sender_id, recipient_id, sender_bsm_id, plan_id, timestamp_string, reason;
             uint64_t timestamp;
             // get sender id
             size_t str_len = message->value.choice.TestMessage06.header.hostStaticId.size;
@@ -134,9 +144,11 @@ namespace cpp_message
             // get can_change_lanes
             output.can_change_lanes = message->value.choice.TestMessage06.body.canChangeLanes;
 
-            output.reason = "";
+            output.reason_exists = false;
             if (message->value.choice.TestMessage06.body.reason)
             {
+                RCLCPP_WARN(node_logging_->get_logger(), "reason exists");
+                output.reason_exists = true;
                 // get reason
                 str_len = message->value.choice.TestMessage06.body.reason->size;
                 if (str_len >= REASON_MIN_LENGTH && str_len <= REASON_MAX_LENGTH)
@@ -151,6 +163,10 @@ namespace cpp_message
                     reason = REASON_STRING_DEFAULT;
 
                 output.reason = reason;
+            }
+            else
+            {
+                RCLCPP_WARN(node_logging_->get_logger(), "reason doesn't exist");
             }
             
 
@@ -271,26 +287,29 @@ namespace cpp_message
         message->value.choice.TestMessage06.body.canChangeLanes = plainMessage.can_change_lanes;
 
         // convert parameters string to char array
-        if (plainMessage.reason_exists)
-        {
-            std::string reason = plainMessage.reason;
-            string_size = reason.size();
-            if (string_size < REASON_MIN_LENGTH || string_size > REASON_MAX_LENGTH)
-            {
-                RCLCPP_WARN(node_logging_->get_logger(), "Unacceptable reason value, changing to default");
-                reason = REASON_STRING_DEFAULT;
-                string_size = REASON_STRING_DEFAULT.size();
-            }
-            uint8_t string_content_params = create_store_shared<MessageFrame_t>(shared_ptrs);
-            uint8_t string_content_params[string_size];
-            for (size_t i = 0; i < string_size; i++)
-            {
-                string_content_params[i] = reason[i];
-            }
-            message->value.choice.TestMessage06.body.reason->buf = string_content_params;
-            message->value.choice.TestMessage06.body.reason->size = string_size;
-        }
+        // if (plainMessage.reason_exists)
+        // {
+        //     auto output_reason = create_store_shared<IA5String_t>(shared_ptrs);
+        //     std::string reason = plainMessage.reason;
+        //     string_size = reason.size();
+        //     if (string_size < REASON_MIN_LENGTH || string_size > REASON_MAX_LENGTH)
+        //     {
+        //         RCLCPP_WARN(node_logging_->get_logger(), "Unacceptable reason value, changing to default");
+        //         reason = REASON_STRING_DEFAULT;
+        //         string_size = REASON_STRING_DEFAULT.size();
+        //     }
+            
+        //     auto string_content_params = create_store_shared_array<uint8_t>(shared_ptrs, string_size);
+        //     for (size_t i = 0; i < string_size; i++)
+        //     {
+        //         string_content_params[i] = reason[i];
+        //     }
+        //     output_reason->buf = string_content_params;
+        //     output_reason->size = string_size;
+        //     message->value.choice.TestMessage06.body.reason = output_reason;
+        // }
 
+        RCLCPP_WARN(node_logging_->get_logger(), "starting encoding");
         // encode message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
 

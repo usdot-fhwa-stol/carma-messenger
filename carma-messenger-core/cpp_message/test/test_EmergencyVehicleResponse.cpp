@@ -84,7 +84,8 @@ TEST(EmergencyVehicleResponseMessageTest, testEncodeDecodeEmergencyVehicleRespon
     header.timestamp = 9223372036854775807;
     message.m_header = header;
     message.can_change_lanes = 1;
-    message.reason = "";
+    message.reason = "rrrrrrr";
+    message.reason_exists = 1;
     auto res = worker.encode_emergency_vehicle_response_message(message);
 
     if (res)
