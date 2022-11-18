@@ -19,22 +19,21 @@
 
 namespace cpp_message
 {
-    class Emergency_Vehicle_Response 
+    class Emergency_Vehicle_Response
     {
-        private:
-        //constants
-            static const int STRATEGY_MIN_LENGTH=2;
-            static const int STRATEGY_MAX_LENGTH=50;
-            static const int REASON_MIN_LENGTH=2;
-            static const int REASON_MAX_LENGTH=128;
-            static const int Emergency_Vehicle_Response_TEST_ID=243;
-            std::string REASON_STRING_DEFAULT="[]";
+    private:
+        // constants
+        static const int REASON_MIN_LENGTH = 2;
+        static const int REASON_MAX_LENGTH = 128;
+        static const int Emergency_Vehicle_Response_TEST_ID = 243;
+        std::string REASON_STRING_DEFAULT = "";
 
-        public:
+    public:
         /**
-        * \brief constructor 
-        */
-        explicit Emergency_Vehicle_Response(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging) {
+         * \brief constructor
+         */
+        explicit Emergency_Vehicle_Response(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging)
+        {
 
             node_logging_ = node_logging;
         };
@@ -42,17 +41,17 @@ namespace cpp_message
         rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
 
         /**
-         * @brief Mobility Operation message decoding function.
+         * @brief Emergency Vehicle Response message decoding function.
          * @param binary_array Container with binary input.
-         * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
+         * @return decoded ros message, returns ROS warning and an empty optional if decoding fails.
          */
-        boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse>decode_Emergency_Vehicle_Response_message(std::vector<uint8_t>& binary_array);
+        boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse> decode_emergency_vehicle_response_message(std::vector<uint8_t> &binary_array);
 
         /**
-         * @brief helper functions for Mobility Operation message encoding.
-         * @param plainMessage contains mobility operation ros message.
-         * @return encoded byte array, returns ROS warning and an empty optional if encoding fails. 
+         * @brief helper functions for Emergency Vehicle Response message encoding.
+         * @param plainMessage contains emergency vehicle response ros message.
+         * @return encoded byte array, returns ROS warning and an empty optional if encoding fails.
          */
-        boost::optional<std::vector<uint8_t>> encode_Emergency_Vehicle_Response_message(carma_v2x_msgs::msg::EmergencyVehicleResponse plainMessage);
+        boost::optional<std::vector<uint8_t>> encode_emergency_vehicle_response_message(carma_v2x_msgs::msg::EmergencyVehicleResponse plainMessage);
     };
 }
