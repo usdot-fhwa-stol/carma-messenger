@@ -25,8 +25,8 @@ namespace cpp_message
         // constants
         static const int REASON_MIN_LENGTH = 2;
         static const int REASON_MAX_LENGTH = 128;
-        static const int Emergency_Vehicle_Response_TEST_ID = 243;
-        std::string REASON_STRING_DEFAULT = "";
+        static const int Emergency_Vehicle_Response_TEST_ID = 246;
+        std::string REASON_STRING_DEFAULT = "reason unavailable";
 
     public:
         /**

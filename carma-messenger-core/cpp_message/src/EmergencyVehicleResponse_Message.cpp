@@ -15,7 +15,7 @@
  */
 
 /**
- * CPP File containing Mobility Operation Message method implementations
+ * CPP File containing Emergency Vehicle Response Message method implementations
  */
 
 #include "cpp_message/EmergencyVehicleResponse_Message.h"
@@ -56,9 +56,7 @@ namespace cpp_message
         std::copy(binary_array.begin(), binary_array.end(), buf);
         // use asn1c lib to decode
 
-        RCLCPP_WARN(node_logging_->get_logger(), "starting decoding");
         rval = uper_decode(0, &asn_DEF_MessageFrame, (void **)&message, buf, len, 0, 0);
-        RCLCPP_WARN(node_logging_->get_logger(), "decoded");
 
         // if decode success
         if (rval.code == RC_OK)
@@ -147,7 +145,6 @@ namespace cpp_message
             output.reason_exists = false;
             if (message->value.choice.TestMessage06.body.reason)
             {
-                RCLCPP_WARN(node_logging_->get_logger(), "reason exists");
                 output.reason_exists = true;
                 // get reason
                 str_len = message->value.choice.TestMessage06.body.reason->size;
@@ -164,16 +161,12 @@ namespace cpp_message
 
                 output.reason = reason;
             }
-            else
-            {
-                RCLCPP_WARN(node_logging_->get_logger(), "reason doesn't exist");
-            }
             
 
             ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse>(output);
         }
-        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "mobility operation decoding failed");
+        RCLCPP_WARN_STREAM(node_logging_->get_logger(), "emergency vehicle response decoding failed");
         ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse>{};
     }
@@ -187,6 +180,7 @@ namespace cpp_message
 
         asn_enc_rval_t ec;
         MessageFrame_t *message = create_store_shared<MessageFrame_t>(shared_ptrs);
+        
         // set message type to TestMessage06
         message->messageId = Emergency_Vehicle_Response_TEST_ID;
         message->value.present = MessageFrame__value_PR_TestMessage06;
@@ -287,36 +281,52 @@ namespace cpp_message
         message->value.choice.TestMessage06.body.canChangeLanes = plainMessage.can_change_lanes;
 
         // convert parameters string to char array
-        // if (plainMessage.reason_exists)
-        // {
-        //     auto output_reason = create_store_shared<IA5String_t>(shared_ptrs);
-        //     std::string reason = plainMessage.reason;
-        //     string_size = reason.size();
-        //     if (string_size < REASON_MIN_LENGTH || string_size > REASON_MAX_LENGTH)
-        //     {
-        //         RCLCPP_WARN(node_logging_->get_logger(), "Unacceptable reason value, changing to default");
-        //         reason = REASON_STRING_DEFAULT;
-        //         string_size = REASON_STRING_DEFAULT.size();
-        //     }
+        if (plainMessage.reason_exists)
+        {
+            auto output_reason = create_store_shared<IA5String_t>(shared_ptrs);
+            std::string reason = plainMessage.reason;
+            string_size = reason.size();
+            if (string_size < REASON_MIN_LENGTH || string_size > REASON_MAX_LENGTH)
+            {
+                RCLCPP_WARN(node_logging_->get_logger(), "Unacceptable reason value, changing to default");
+                reason = REASON_STRING_DEFAULT;
+                string_size = REASON_STRING_DEFAULT.size();
+            }
             
-        //     auto string_content_params = create_store_shared_array<uint8_t>(shared_ptrs, string_size);
-        //     for (size_t i = 0; i < string_size; i++)
-        //     {
-        //         string_content_params[i] = reason[i];
-        //     }
-        //     output_reason->buf = string_content_params;
-        //     output_reason->size = string_size;
-        //     message->value.choice.TestMessage06.body.reason = output_reason;
+            auto string_content_params = create_store_shared_array<uint8_t>(shared_ptrs, string_size);
+            for (size_t i = 0; i < string_size; i++)
+            {
+                string_content_params[i] = reason[i];
+            }
+            output_reason->buf = string_content_params;
+            output_reason->size = string_size;
+            message->value.choice.TestMessage06.body.reason = output_reason;
+        }
+
+        // int ret; /* Return value */
+        // char errbuf[128]; /* Buffer for error message */
+        // size_t errlen = sizeof(errbuf); /* Size of the buffer */
+        // ret = asn_check_constraints(&asn_DEF_MessageFrame, message, errbuf, &errlen);
+        // /* assert(errlen < sizeof(errbuf)); // you may rely on that */
+        // if(ret) {
+        //     std::cout << "constraints check failed: " << errbuf << std::endl;
+        // }
+        // else
+        // {
+        //     std::cout << "constraints check passed" << std::endl;
         // }
 
-        RCLCPP_WARN(node_logging_->get_logger(), "starting encoding");
+        // asn_fprint(stdout, &asn_DEF_MessageFrame, message);
+
         // encode message
+        // asn_fprint(stdout, &asn_DEF_MessageFrame, message);
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
+
 
         // log a warning if that fails
         if (ec.encoded == -1)
         {
-            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding for Mobility Operation Message failed");
+            RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding for Emergency Vehicle Response Message failed");
             return boost::optional<std::vector<uint8_t>>{};
         }
 
