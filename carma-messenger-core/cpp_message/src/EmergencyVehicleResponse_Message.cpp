@@ -130,11 +130,12 @@ namespace cpp_message
             // recover uint64_t timestamp from string
             str_len = message->value.choice.TestMessage06.header.timestamp.size;
             timestamp = 0;
-            char timestamp_ch[str_len];
+            char timestamp_ch[str_len + 1];
             for (size_t i = 0; i < str_len; i++)
             {
                 timestamp_ch[i] = message->value.choice.TestMessage06.header.timestamp.buf[i];
             }
+            timestamp_ch[str_len] = 0; // String needs a null terminator
             timestamp = atoll(timestamp_ch);
             header.timestamp = timestamp;
             output.m_header = header;
@@ -175,7 +176,7 @@ namespace cpp_message
     {
         std::vector<std::shared_ptr<void>> shared_ptrs; // keep references to the objects until the encoding is complete
         // encode result placeholder
-        uint8_t buffer[1472] = {0};
+        uint8_t buffer[512] = {0};
         size_t buffer_size = sizeof(buffer);
 
         asn_enc_rval_t ec;
@@ -303,25 +304,7 @@ namespace cpp_message
             message->value.choice.TestMessage06.body.reason = output_reason;
         }
 
-        // int ret; /* Return value */
-        // char errbuf[128]; /* Buffer for error message */
-        // size_t errlen = sizeof(errbuf); /* Size of the buffer */
-        // ret = asn_check_constraints(&asn_DEF_MessageFrame, message, errbuf, &errlen);
-        // /* assert(errlen < sizeof(errbuf)); // you may rely on that */
-        // if(ret) {
-        //     std::cout << "constraints check failed: " << errbuf << std::endl;
-        // }
-        // else
-        // {
-        //     std::cout << "constraints check passed" << std::endl;
-        // }
-
-        // asn_fprint(stdout, &asn_DEF_MessageFrame, message);
-
-        // encode message
-        // asn_fprint(stdout, &asn_DEF_MessageFrame, message);
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0, message, buffer, buffer_size);
-
 
         // log a warning if that fails
         if (ec.encoded == -1)
