@@ -135,7 +135,7 @@ namespace cpp_message
             {
                 timestamp_ch[i] = message->value.choice.TestMessage06.header.timestamp.buf[i];
             }
-            timestamp_ch[str_len] = 0; // String needs a null terminator
+            timestamp_ch[str_len] = '\0'; // String needs a null terminator
             timestamp = atoll(timestamp_ch);
             header.timestamp = timestamp;
             output.m_header = header;
