@@ -20,6 +20,7 @@
 
 #include "cpp_message/cpp_message.h"
 #include "cpp_message/MobilityOperation_Message.h"
+#include "cpp_message/EmergencyVehicleResponse_Message.h"
 #include "cpp_message/MobilityResponse_Message.h"
 #include "cpp_message/MobilityPath_Message.h"
 #include "cpp_message/MobilityRequest_Message.h"
@@ -48,8 +49,9 @@ namespace cpp_message
         
         inbound_geofence_control_message_pub_ = create_publisher<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 5);
         mobility_operation_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityOperation>("incoming_mobility_operation",5);
-
         mobility_operation_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityOperation>("outgoing_mobility_operation", 5, std::bind(&Node::outbound_mobility_operation_message_callback, this, std_ph::_1));
+        emergency_vehicle_response_message_pub_=create_publisher<carma_v2x_msgs::msg::EmergencyVehicleResponse>("incoming_emergency_vehicle_response",5);
+        emergency_vehicle_response_message_sub_=create_subscription<carma_v2x_msgs::msg::EmergencyVehicleResponse>("outgoing_emergency_vehicle_response", 5, std::bind(&Node::outbound_emergency_vehicle_response_message_callback, this, std_ph::_1));
         mobility_response_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityResponse>("incoming_mobility_response",5);
         mobility_response_message_sub_=create_subscription<carma_v2x_msgs::msg::MobilityResponse>("outgoing_mobility_response",5, std::bind(&Node::outbound_mobility_response_message_callback, this, std_ph::_1));
         mobility_path_message_pub_=create_publisher<carma_v2x_msgs::msg::MobilityPath>("incoming_mobility_path",5);
@@ -108,6 +110,22 @@ namespace cpp_message
             else
             {
                 RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Mobility Operation message");
+            }
+
+        }
+
+        else if(msg->message_type=="EmergencyVehicleResponse")   
+        {
+            std::vector<uint8_t> array=msg->content;
+            Emergency_Vehicle_Response decode(this->get_node_logging_interface());
+            auto output=decode.decode_emergency_vehicle_response_message(array);
+            if(output)
+            {
+                emergency_vehicle_response_message_pub_->publish(output.get());
+            }
+            else
+            {
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode Emergency Vehicle Response message");
             }
 
         }
@@ -273,6 +291,27 @@ namespace cpp_message
         else
         {
             RCLCPP_WARN_STREAM( get_logger(), "Cannot encode mobility operation message.");
+        }
+    }
+
+    void Node::outbound_emergency_vehicle_response_message_callback(carma_v2x_msgs::msg::EmergencyVehicleResponse::UniquePtr msg)
+    {//encode and publish as outbound binary message
+        Emergency_Vehicle_Response encode(this->get_node_logging_interface());
+        auto res=encode.encode_emergency_vehicle_response_message(*msg.get());
+        if(res)
+        {
+            //copy to byte array msg
+            carma_driver_msgs::msg::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=this->now();
+            output.message_type="EmergencyVehicleResponse";
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_->publish(output);
+        }
+        else
+        {
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode Emergency Vehicle Response message.");
         }
     }
 

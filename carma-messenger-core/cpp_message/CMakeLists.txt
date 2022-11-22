@@ -43,6 +43,7 @@ ament_export_include_directories(include)
 ament_auto_add_library(${node_lib} SHARED
         src/cpp_message.cpp
         src/MobilityOperation_Message.cpp
+        src/EmergencyVehicleResponse_Message.cpp
         src/MobilityResponse_Message.cpp
         src/MobilityPath_Message.cpp
         src/MobilityRequest_Message.cpp
@@ -85,6 +86,7 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_cpp_message_node 
                         test/test_MobilityOperations.cpp
+                        test/test_EmergencyVehicleResponse.cpp
                         test/test_MobilityResponse.cpp
                         test/test_MobilityPath.cpp
                         test/test_MobilityRequest.cpp
