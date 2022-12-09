@@ -1398,7 +1398,7 @@ void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::BSMPartIIExten
             j2735_v2x_msgs::msg::VehicleSafetyExtensions out_vehicle_safety_extensions;
             convert(in_msg[i].vehicle_safety_extensions, out_part_ii_extension.vehicle_safety_extensions);
         }
-        if(in_msg[i].part_ii_id == carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT){
+        else if(in_msg[i].part_ii_id == carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT){
             j2735_v2x_msgs::msg::SpecialVehicleExtensions out_special_vehicle_extensions;
             convert(in_msg[i].special_vehicle_extensions, out_part_ii_extension.special_vehicle_extensions);
         }
