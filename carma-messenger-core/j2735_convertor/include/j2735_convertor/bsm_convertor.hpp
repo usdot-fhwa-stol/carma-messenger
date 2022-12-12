@@ -33,12 +33,22 @@ namespace j2735_convertor
  * @class BSMConvertor
  * @brief Is the class responsible for converting J2735 BSMs to CARMA usable BSMs
  *
- * Handles conversion between BSMs in the j2735_msgs and cav_msgs packages.
+ * Handles conversion between BSMs in the j2735_v2x_msgs and carma_v2x_msgs packages.
  * Unit conversions and presence flags are also handled
  */
 class BSMConvertor
 {
 public:
+
+  /**
+   * @brief Convert the contents of a std::vector<j2735_v2x_msgs::msg::Position3D> into a std::vector<carma_v2x_msgs::msg::Position3D>
+   *
+   * @param in_msg The std::vector<j2735_v2x_msgs::msg::Position3D> message to be converted
+   * @param out_msg The std::vector<carma_v2x_msgs::msg::Position3D> message to store the output
+   *
+   * Unit conversions and presence flags are handled
+   */
+  static void convert(const std::vector<j2735_v2x_msgs::msg::Position3D>& in_msg, std::vector<carma_v2x_msgs::msg::Position3D>& out_msg);
 
   /**
    * @brief Convert the contents of a j2735_v2x_msgs::msg::PathPrediction into a carma_v2x_msgs::msg::PathPrediction
@@ -111,6 +121,16 @@ public:
   static void convert(const j2735_v2x_msgs::msg::SpecialVehicleExtensions& in_msg, carma_v2x_msgs::msg::SpecialVehicleExtensions& out_msg);
 
   /**
+   * @brief Convert the contents of a std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension> into a std::vector<carma_v2x_msgs::msg::BSMRegionalExtension>
+   *
+   * @param in_msg The std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension> to be converted
+   * @param out_msg The std::vector<carma_v2x_msgs::msg::BSMRegionalExtension> to store the output
+   *
+   * Unit conversions and presence flags are handled
+   */
+  static void convert(const std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension>& in_msg, std::vector<carma_v2x_msgs::msg::BSMRegionalExtension>& out_msg);
+
+  /**
    * @brief Convert the contents of a std::vector<j2735_v2x_msgs::msg::BSMPartIIExtension> into a std::vector<carma_v2x_msgs::msg::BSMPartIIExtension>
    *
    * @param in_msg The std::vector<j2735_v2x_msgs::msg::BSMPartIIExtension> to be converted
@@ -142,7 +162,7 @@ public:
 
 private:
   ////
-  // Convert j2735_msgs to cav_msgs
+  // Convert j2735_v2x_msgs to carma_v2x_msgs
   ////
 
   /**
@@ -186,8 +206,18 @@ private:
   static void convert(const j2735_v2x_msgs::msg::BSMCoreData& in_msg, carma_v2x_msgs::msg::BSMCoreData& out_msg);
 
   ////
-  // Convert cav_msgs to j2735_msgs
+  // Convert carma_v2x_msgs to j2735_v2x_msgs
   ////
+
+  /**
+   * @brief Convert the contents of a std::vector<carma_v2x_msgs::msg::Position3D> into a std::vector<j2735_v2x_msgs::msg::Position3D>
+   *
+   * @param in_msg The std::vector<carma_v2x_msgs::msg::Position3D> message to be converted
+   * @param out_msg The std::vector<j2735_v2x_msgs::msg::Position3D> message to store the output
+   *
+   * Unit conversions and presence flags are handled
+   */
+  static void convert(const std::vector<carma_v2x_msgs::msg::Position3D>& in_msg, std::vector<j2735_v2x_msgs::msg::Position3D>& out_msg);
 
   /**
    * @brief Convert the contents of a carma_v2x_msgs::msg::PathPrediction into a j2735_v2x_msgs::msg::PathPrediction
@@ -258,6 +288,16 @@ static void convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x
    * Unit conversions and presence flags are handled
    */
   static void convert(const carma_v2x_msgs::msg::SpecialVehicleExtensions& in_msg, j2735_v2x_msgs::msg::SpecialVehicleExtensions& out_msg);
+
+  /**
+   * @brief Convert the contents of a std::vector<carma_v2x_msgs::msg::BSMRegionalExtension> into a std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension>
+   *
+   * @param in_msg The std::vector<carma_v2x_msgs::msg::BSMRegionalExtension> to be converted
+   * @param out_msg The std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension> to store the output
+   *
+   * Unit conversions and presence flags are handled
+   */
+  static void convert(const std::vector<carma_v2x_msgs::msg::BSMRegionalExtension>& in_msg, std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension>& out_msg);
 
   /**
    * @brief Convert the contents of a std::vector<carma_v2x_msgs::msg::BSMPartIIExtension> into a std::vector<j2735_v2x_msgs::msg::BSMPartIIExtension>

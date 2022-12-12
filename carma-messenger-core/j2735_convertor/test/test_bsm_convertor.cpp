@@ -327,6 +327,29 @@ TEST(ControlRequest, convertBSMj2735ToCAV)
 
     message.part_ii.push_back(part_ii_safety);
 
+    // Regional Extension
+    message.presence_vector |= j2735_v2x_msgs::msg::BSM::HAS_REGIONAL;
+
+    // BSMRegionalExtension.route_destination_points
+    j2735_v2x_msgs::msg::BSMRegionalExtension regional_ext;
+    regional_ext.regional_extension_id = j2735_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS;
+
+    j2735_v2x_msgs::msg::Position3D position1;
+    position1.latitude = 405000000;
+    position1.longitude = -1602000000;
+    position1.elevation_exists = true;
+    position1.elevation = 1300;
+
+    j2735_v2x_msgs::msg::Position3D position2;
+    position2.latitude = 435000000;
+    position2.longitude = -1422000000;
+    position2.elevation_exists = true;
+    position2.elevation = 1100;
+
+    regional_ext.route_destination_points.push_back(position1);
+    regional_ext.route_destination_points.push_back(position2);
+    message.regional.push_back(regional_ext);
+
     // Convert 'message' (j2735_v2x_msgs::msg::BSM) to 'out_message' (carma_v2x_msgs::msg::BSM)
     carma_v2x_msgs::msg::BSM out_message;
     j2735_convertor::BSMConvertor::convert(message, out_message);
@@ -357,7 +380,7 @@ TEST(ControlRequest, convertBSMj2735ToCAV)
     ASSERT_EQ(out_message.core_data.size.vehicle_length, 20);
 
     // Verify BSM Part II Content
-    ASSERT_EQ(out_message.presence_vector, carma_v2x_msgs::msg::BSM::HAS_PART_II);
+    ASSERT_EQ(out_message.presence_vector, message.presence_vector);
 
     // Verify BSM.part_ii[0] (SpecialVehicleExtensions)
     ASSERT_EQ(out_message.part_ii[0].part_ii_id, carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT);
@@ -479,6 +502,15 @@ TEST(ControlRequest, convertBSMj2735ToCAV)
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_history.initial_position.speed_confidence.throttle.confidence, j2735_v2x_msgs::msg::ThrottleConfidence::PREC_1_PERCENT);
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_prediction.radius_of_curvature, 100);
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_prediction.confidence, 0.5);
+
+    // Verify BSM.regional[0] (ROUTE_DESTINATIONS)
+    ASSERT_EQ(out_message.regional[0].regional_extension_id, carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].latitude, 40.5);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].longitude, -160.2);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].elevation, 130);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].latitude, 43.5);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].longitude, -142.2);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].elevation, 110);
 }
 
 TEST(ControlRequest, convertBSMcavToJ2735)
@@ -806,6 +838,29 @@ TEST(ControlRequest, convertBSMcavToJ2735)
 
     message.part_ii.push_back(part_ii_safety);
 
+    // Regional Extension
+    message.presence_vector |= carma_v2x_msgs::msg::BSM::HAS_REGIONAL;
+
+    // BSMRegionalExtension.route_destination_points
+    carma_v2x_msgs::msg::BSMRegionalExtension regional_ext;
+    regional_ext.regional_extension_id = carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS;
+
+    carma_v2x_msgs::msg::Position3D position1;
+    position1.latitude = 40.5;
+    position1.longitude = -160.2;
+    position1.elevation_exists = true;
+    position1.elevation = 130;
+
+    carma_v2x_msgs::msg::Position3D position2;
+    position2.latitude = 43.5;
+    position2.longitude = -142.2;
+    position2.elevation_exists = true;
+    position2.elevation = 110;
+
+    regional_ext.route_destination_points.push_back(position1);
+    regional_ext.route_destination_points.push_back(position2);
+    message.regional.push_back(regional_ext);
+
     // Convert 'message' (carma_v2x_msgs::msg::BSM) to 'out_message' (j2735_v2x_msgs::msg::BSM)
     j2735_v2x_msgs::msg::BSM out_message;
     j2735_convertor::BSMConvertor::convert(message, out_message);
@@ -836,7 +891,7 @@ TEST(ControlRequest, convertBSMcavToJ2735)
     ASSERT_EQ(out_message.core_data.size.vehicle_length, 2000);
 
     // Verify BSM Part II Content
-    ASSERT_EQ(out_message.presence_vector, j2735_v2x_msgs::msg::BSM::HAS_PART_II);
+    ASSERT_EQ(out_message.presence_vector, message.presence_vector);
 
     // Verify BSM.part_ii[0] (SpecialVehicleExtensions)
     ASSERT_EQ(out_message.part_ii[0].part_ii_id, j2735_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT);
@@ -958,6 +1013,15 @@ TEST(ControlRequest, convertBSMcavToJ2735)
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_history.initial_position.speed_confidence.throttle.confidence, j2735_v2x_msgs::msg::ThrottleConfidence::PREC_1_PERCENT);
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_prediction.radius_of_curvature, 10000);
     ASSERT_EQ(out_message.part_ii[2].vehicle_safety_extensions.path_prediction.confidence, 100);
+
+    // Verify BSM.regional[0] (ROUTE_DESTINATIONS)
+    ASSERT_EQ(out_message.regional[0].regional_extension_id, j2735_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].latitude, 405000000);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].longitude, -1602000000);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[0].elevation, 1300);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].latitude, 435000000);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].longitude, -1422000000);
+    ASSERT_EQ(out_message.regional[0].route_destination_points[1].elevation, 1100);
 }
 
 }// namespace j2735_convertor*/

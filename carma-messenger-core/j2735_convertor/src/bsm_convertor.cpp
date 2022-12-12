@@ -22,6 +22,40 @@
 
 namespace j2735_convertor
 {
+void BSMConvertor::convert(const std::vector<j2735_v2x_msgs::msg::Position3D>& in_msg, std::vector<carma_v2x_msgs::msg::Position3D>& out_msg)
+{
+    for(size_t i = 0; i < in_msg.size(); i++){
+        j2735_v2x_msgs::msg::Position3D in_position_3d = in_msg[i];
+        carma_v2x_msgs::msg::Position3D out_position_3d;
+                
+        // latitude
+        if(in_position_3d.latitude == j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
+            out_position_3d.latitude = carma_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
+        }
+        else{
+            out_position_3d.latitude = in_position_3d.latitude / units::TENTH_MICRO_DEG_PER_DEG;
+        }
+
+        // longitude
+        if(in_position_3d.longitude == j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
+            out_position_3d.longitude = carma_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
+        }
+        else{
+            out_position_3d.longitude = in_position_3d.longitude / units::TENTH_MICRO_DEG_PER_DEG;
+        }                
+
+        // elevation
+        if(in_position_3d.elevation_exists){
+            out_position_3d.elevation = in_position_3d.elevation / units::DECI_M_PER_M;
+        }
+        else{
+            out_position_3d.elevation = carma_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
+        }
+
+        out_msg.push_back(out_position_3d);
+    }
+}
+
 void BSMConvertor::convert(const j2735_v2x_msgs::msg::PathPrediction& in_msg, carma_v2x_msgs::msg::PathPrediction& out_msg)
 {
     out_msg.radius_of_curvature = in_msg.radius_of_curvature / units::CENTI_DEG_PER_DEG;
@@ -693,6 +727,20 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::SpecialVehicleExtensions& 
     }
 }
 
+void BSMConvertor::convert(const std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension>& in_msg, std::vector<carma_v2x_msgs::msg::BSMRegionalExtension>& out_msg)
+{
+    for(size_t i = 0; i < in_msg.size(); i++){
+        carma_v2x_msgs::msg::BSMRegionalExtension out_regional_extension;
+        out_regional_extension.regional_extension_id = in_msg[i].regional_extension_id;
+
+        if(in_msg[i].regional_extension_id == j2735_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS){
+            convert(in_msg[i].route_destination_points, out_regional_extension.route_destination_points);
+        }
+
+        out_msg.push_back(out_regional_extension);
+    }
+}
+
 void BSMConvertor::convert(const std::vector<j2735_v2x_msgs::msg::BSMPartIIExtension>& in_msg, std::vector<carma_v2x_msgs::msg::BSMPartIIExtension>& out_msg)
 {
     for(size_t i = 0; i < in_msg.size(); i++){
@@ -774,11 +822,50 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::BSM& in_msg, carma_v2x_msg
   if(in_msg.presence_vector & j2735_v2x_msgs::msg::BSM::HAS_PART_II){
     convert(in_msg.part_ii, out_msg.part_ii);
   }
+
+
+  if(in_msg.presence_vector & j2735_v2x_msgs::msg::BSM::HAS_REGIONAL){
+    convert(in_msg.regional, out_msg.regional);
+  }
 }
 
 ////
-// Convert cav_msgs to j2735_msgs
+// Convert carma_v2x_msgs to j2735_msgs
 ////
+
+void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::Position3D>& in_msg, std::vector<j2735_v2x_msgs::msg::Position3D>& out_msg)
+{
+    for(size_t i = 0; i < in_msg.size(); i++){
+        carma_v2x_msgs::msg::Position3D in_position_3d = in_msg[i];
+        j2735_v2x_msgs::msg::Position3D out_position_3d;
+                
+        // latitude
+        if(in_position_3d.latitude == carma_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
+            out_position_3d.latitude = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
+        }
+        else{
+            out_position_3d.latitude = in_position_3d.latitude * units::TENTH_MICRO_DEG_PER_DEG;
+        }
+
+        // longitude
+        if(in_position_3d.longitude == carma_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
+            out_position_3d.longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
+        }
+        else{
+            out_position_3d.longitude = in_position_3d.longitude * units::TENTH_MICRO_DEG_PER_DEG;
+        }                
+
+        // elevation
+        if(in_position_3d.elevation_exists){
+            out_position_3d.elevation = in_position_3d.elevation * units::DECI_M_PER_M;
+        }
+        else{
+            out_position_3d.elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
+        }
+
+        out_msg.push_back(out_position_3d);
+    }
+}
 
 void BSMConvertor::convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x_msgs::msg::PathPrediction& out_msg)
 {
@@ -1388,6 +1475,20 @@ void BSMConvertor::convert(const carma_v2x_msgs::msg::SpecialVehicleExtensions& 
     }
 }
 
+void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::BSMRegionalExtension>& in_msg, std::vector<j2735_v2x_msgs::msg::BSMRegionalExtension>& out_msg)
+{
+    for(size_t i = 0; i < in_msg.size(); i++){
+        j2735_v2x_msgs::msg::BSMRegionalExtension out_regional_extension;
+        out_regional_extension.regional_extension_id = in_msg[i].regional_extension_id;
+
+        if(in_msg[i].regional_extension_id == carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS){
+            convert(in_msg[i].route_destination_points, out_regional_extension.route_destination_points);
+        }
+
+        out_msg.push_back(out_regional_extension);
+    }
+}
+
 void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::BSMPartIIExtension>& in_msg, std::vector<j2735_v2x_msgs::msg::BSMPartIIExtension>& out_msg)
 {
     for(size_t i = 0; i < in_msg.size(); i++){
@@ -1522,6 +1623,10 @@ void BSMConvertor::convert(const carma_v2x_msgs::msg::BSM& in_msg, j2735_v2x_msg
   
   if(in_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_PART_II){
     convert(in_msg.part_ii, out_msg.part_ii);
+  }
+
+  if(in_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_REGIONAL){
+    convert(in_msg.regional, out_msg.regional);
   }
 }
 
