@@ -1204,11 +1204,16 @@ namespace cpp_message
                 // TODO
             }
             
+            // Release memory from ASN uper_decode operations to avoid memory leakage 
             ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+
             return boost::optional<j2735_v2x_msgs::msg::BSM>(output);
         }
         RCLCPP_WARN_STREAM( node_logging_->get_logger(), "BasicSafetyMessage decoding failed");
+
+        // Release memory from ASN uper_decode operations to avoid memory leakage 
         ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+        
         return boost::optional<j2735_v2x_msgs::msg::BSM>{};
 
     }
