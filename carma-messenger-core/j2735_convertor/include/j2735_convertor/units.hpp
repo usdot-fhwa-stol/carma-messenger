@@ -49,6 +49,7 @@ constexpr double TENTH_GRAM_PER_GRAM = 10;
 constexpr double TWO_TENTHS_MICRO = 0.02;
 constexpr double FORTY_DEGREES_C = 40.0;
 constexpr double HPA_PER_TWO_PA = 0.002;
+constexpr double HALF_PERCENT_PER_HUNDRED_PERCENT = 200.0;
 
 
 // Integer Varients

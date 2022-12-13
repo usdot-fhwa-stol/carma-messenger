@@ -99,9 +99,9 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::PathHistory& in_msg, carma
         out_msg.initial_position.pos_confidence = in_msg.initial_position.pos_confidence;
         out_msg.initial_position.speed_confidence = in_msg.initial_position.speed_confidence;
 
-        out_msg.initial_position.lat.unavailable = 0;
-        out_msg.initial_position.lon.unavailable = 0;
-        out_msg.initial_position.elevation.unavailable = 0;
+        out_msg.initial_position.lat.unavailable = false;
+        out_msg.initial_position.lon.unavailable = false;
+        out_msg.initial_position.elevation.unavailable = false;
 
         out_msg.initial_position.speed.transmission = in_msg.initial_position.speed.transmission;
 
@@ -301,7 +301,11 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::SupplementalVehicleExtensi
                 out_msg.vehicle_data.mass.unavailable = true;
             }
             else{
-                // NOTE: Refer to J2735 ASN Specification for more details regarding this conversion.
+                // NOTE: Details regarding this conversion to kg can be found in the 2016 J2735 ASN Specification. A brief summary is provided below:
+                // -- Values 000 to 080 in steps of 50kg 
+                // -- Values 081 to 200 in steps of 500kg (81 represents 4500 kg)
+                // -- Values 201 to 253 in steps of 2000kg (201 represents 66000 kg)
+                // -- Value 254 represents weights above 170000 kg
                 if(in_msg.vehicle_data.mass.vehicle_mass <= 80){
                     out_msg.vehicle_data.mass.vehicle_mass = in_msg.vehicle_data.mass.vehicle_mass * 50;
                 }
@@ -309,7 +313,7 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::SupplementalVehicleExtensi
                     out_msg.vehicle_data.mass.vehicle_mass = 4000 + (in_msg.vehicle_data.mass.vehicle_mass - 80) * 500;
                 }
                 else if(in_msg.vehicle_data.mass.vehicle_mass <= 253){
-                    out_msg.vehicle_data.mass.vehicle_mass = 54000 + (in_msg.vehicle_data.mass.vehicle_mass - 200) * 2000;
+                    out_msg.vehicle_data.mass.vehicle_mass = 64000 + (in_msg.vehicle_data.mass.vehicle_mass - 200) * 2000;
                 }
                 else{
                     out_msg.vehicle_data.mass.vehicle_mass = carma_v2x_msgs::msg::VehicleMass::MASS_MAX;
@@ -870,7 +874,7 @@ void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::Position3D>& i
 void BSMConvertor::convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x_msgs::msg::PathPrediction& out_msg)
 {
   out_msg.radius_of_curvature = in_msg.radius_of_curvature * units::CENTI_DEG_PER_DEG;
-  out_msg.confidence = in_msg.confidence * 200;
+  out_msg.confidence = in_msg.confidence * units::HALF_PERCENT_PER_HUNDRED_PERCENT;
 }
 
 void BSMConvertor::convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg) {
@@ -1049,15 +1053,19 @@ void BSMConvertor::convert(const carma_v2x_msgs::msg::SupplementalVehicleExtensi
                 out_msg.vehicle_data.mass.vehicle_mass = j2735_v2x_msgs::msg::VehicleMass::MASS_UNAVAILABLE;
             }
             else{
-                // NOTE: Refer to J2735 ASN Specification for more details regarding this conversion.
+                // NOTE: Details regarding this conversion from kg can be found in the 2016 J2735 ASN Specification. A brief summary is provided below:
+                // -- Values 000 to 080 in steps of 50kg 
+                // -- Values 081 to 200 in steps of 500kg (81 represents 4500 kg)
+                // -- Values 201 to 253 in steps of 2000kg (201 represents 66000 kg)
+                // -- Value 254 represents weights above 170000 kg
                 if(in_msg.vehicle_data.mass.vehicle_mass <= 4000){
                     out_msg.vehicle_data.mass.vehicle_mass = in_msg.vehicle_data.mass.vehicle_mass / 50;
                 }
-                else if(in_msg.vehicle_data.mass.vehicle_mass <= 54500){
+                else if(in_msg.vehicle_data.mass.vehicle_mass <= 64000){
                     out_msg.vehicle_data.mass.vehicle_mass = 80 + ((in_msg.vehicle_data.mass.vehicle_mass - 4000) / 500);
                 }
                 else if(in_msg.vehicle_data.mass.vehicle_mass <= 170000){
-                    out_msg.vehicle_data.mass.vehicle_mass = 180 + ((in_msg.vehicle_data.mass.vehicle_mass - 54500) / 2000);
+                    out_msg.vehicle_data.mass.vehicle_mass = 200 + ((in_msg.vehicle_data.mass.vehicle_mass - 64000) / 2000);
                 }
                 else{
                     out_msg.vehicle_data.mass.vehicle_mass = 254;
