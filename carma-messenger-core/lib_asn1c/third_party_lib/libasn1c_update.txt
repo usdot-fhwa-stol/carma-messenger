@@ -1,32 +1,14 @@
-To update or change this libasn1c.so library, please follow those steps:
+# Navigate to directory where asn1c github repository will be cloned, and run the following commands:
+sudo apt install automake libtool bison flex g++-multilib
+git clone https://github.com/mouse07410/asn1c
+cd asn1c
+git checkout ebed802c88b3049cfe67326e4df780cefc6da49e
+test -f configure || autoreconf -iv
+sudo ./configure
+sudo make
+sudo make install
 
-Preparation:
-
-Make sure asn1c is working in your system.
-
-A 64-bit build system is strongly recommended for asn1c operation. The following operations is performed on a 64-bit machine.
-
-For the complete list of dependencies, check https://github.com/vlm/asn1c/blob/master/REQUIREMENTS.md
-
-For configurations and build steps, check https://github.com/vlm/asn1c/blob/master/INSTALL.md
-
-To use asn1c, check https://github.com/vlm/asn1c/blob/master/doc/asn1c-usage.pdf
-
-To install:
-Pull 9925dbbda86b436896108439ea3e0a31280a6065
-Install the dependencies listed in REQUIREMENTS.MD
-  sudo apt install automake libtool bison flex g++-multilib
-follow the steps INSTALL.md
-  test -f configure || autoreconf -iv
-  sudo ./configure
-  sudo make
-  sudo make install
-follow the steps below
-
-A stable version ticket is: 59b1bc8, which is on Sep 19th 2017.
-
-To generate libasn1c_x86.so and libasn1c_x64 libraries, your workspace should have this structure:
-
+# Create a workspace with the following structue:
 Note: Workspace in this context is a temporary folder ouside the Carma code tree for creating the third party shared library.
 
 Workspace
@@ -34,20 +16,14 @@ Workspace
   ------include
   |
   ------src
-
-All generated header files from asn1c and the JNI header files shoube be in the include folder.
-
-All generated source files from asn1c(except for converter-sample.c) and the wrapper.c shoube be in src folder.
-
-Build:
+  
+Navigate into this workspace and run the following commands:
 
 To generate code for the usage of our platform, run:
 
-asn1c -pdu=MessageFrame -fcompound-names -gen-PER ***.asn
-
-Note: ***.asn here is the message spec file. We used J2735_201603.asn1 in Carma.
-
-In Workspace, make changes on wrapper.c.
+asn1c -pdu=MessageFrame -fcompound-names -no-gen-APER -no-gen-JER ***.asn
+Note: All generated header files from asn1c and the JNI header files should be moved to the include folder.
+Note: All generated source files from asn1c(except for converter-sample.c) and the wrapper.c should be moved to the src folder.
 
 To generate the x64 shared library, run:
 
@@ -62,7 +38,3 @@ Note: In order to use m32 flag, you should have the package libc6-dev-i386 ready
 Copy the new generated shared libraries in your Workspace.
 
 Paste and replace the old libraries in this folder.
-
-Post Build:
-
-Make sure to update the wrapper.c file in ../src as well.
