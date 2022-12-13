@@ -431,6 +431,24 @@ TEST(BSMTest, testEncodeDecodeBSM)
 
     message.part_ii.push_back(extension3);
 
+    // Add BSM Regional Extension with type 'ROUTE_DESTINATIONS'
+    message.presence_vector |= j2735_v2x_msgs::msg::BSM::HAS_REGIONAL;
+
+    j2735_v2x_msgs::msg::BSMRegionalExtension regional_ext;
+    regional_ext.regional_extension_id = j2735_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS;
+
+    j2735_v2x_msgs::msg::Position3D position1;
+    position1.latitude = 405011000;
+    position1.longitude = -1602000000;
+
+    j2735_v2x_msgs::msg::Position3D position2;
+    position2.latitude = 435000000;
+    position2.longitude = -1422000000;
+
+    regional_ext.route_destination_points.push_back(position1);
+    regional_ext.route_destination_points.push_back(position2);
+    message.regional.push_back(regional_ext);
+
     // Test that j2735_v2x_msgs::msg::BSM can be encoded
     auto res = worker.encode_bsm_message(message);
     if(res) EXPECT_TRUE(true);
@@ -449,6 +467,13 @@ TEST(BSMTest, testEncodeDecodeBSM)
         EXPECT_TRUE(false);
     }
     j2735_v2x_msgs::msg::BSM result = res_decoded.get();
+
+    // if(result.regional.size() == message.regional.size()){
+    //     std::cout<<"Size equal: " << result.regional.size() << "\n";
+    // }
+    // if(result.regional[0] == message.regional[0]){
+    //     std::cout<<"Element 0 equal\n";
+    // }
 
     // Test that BSM is unchanged after being encoded and decoded
     EXPECT_EQ(message, result);
