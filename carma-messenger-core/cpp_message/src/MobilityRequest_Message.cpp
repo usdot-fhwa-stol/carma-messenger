@@ -141,6 +141,7 @@ namespace cpp_message
             long tmp_l=message->value.choice.TestMessage00.body.location.ecefX;
             if(tmp_l>LOCATION_MAX || tmp_l<LOCATION_MIN){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_x=tmp_l;
@@ -148,6 +149,7 @@ namespace cpp_message
             tmp_l=message->value.choice.TestMessage00.body.location.ecefY;
             if(tmp_l>LOCATION_MAX || tmp_l<LOCATION_MIN){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_y=tmp_l;
@@ -155,6 +157,7 @@ namespace cpp_message
             tmp_l=message->value.choice.TestMessage00.body.location.ecefZ;
             if(tmp>LOCATION_MAX_Z || tmp<LOCATION_MIN_Z){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefZ is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             location.ecef_z=tmp_l;
@@ -186,6 +189,7 @@ namespace cpp_message
             long tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefX;
             if(tmp_t>LOCATION_MAX || tmp_t<LOCATION_MIN){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefX is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_x=tmp_t;
@@ -193,6 +197,7 @@ namespace cpp_message
             tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefY;
             if(tmp_t>LOCATION_MAX || tmp_t<LOCATION_MIN){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefY is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_y=tmp_t;
@@ -200,6 +205,7 @@ namespace cpp_message
             tmp_t=message->value.choice.TestMessage00.body.trajectoryStart->ecefZ;
             if(tmp_t>LOCATION_MAX_Z || tmp_t<LOCATION_MIN_Z){
                 // RCLCPP_WARN_STREAM( get_logger(), "Location ecefZ is out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             }
             trajectory_start.ecef_z=tmp_t;
@@ -220,8 +226,9 @@ namespace cpp_message
             int offset_count=message->value.choice.TestMessage00.body.trajectory->list.count;
 
             if(offset_count>MAX_POINTS_IN_MESSAGE){
-            // RCLCPP_WARN_STREAM( get_logger(), "offset count greater than 60.");
-            return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
+                // RCLCPP_WARN_STREAM( get_logger(), "offset count greater than 60.");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
+                return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
             } 
 
             for(size_t i=0;i<offset_count;i++){
@@ -249,8 +256,10 @@ namespace cpp_message
             expiration=atoll(expiration_ch);
             output.expiration=expiration;
 
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<carma_v2x_msgs::msg::MobilityRequest>(output);
         }
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<carma_v2x_msgs::msg::MobilityRequest>{};
     }
 

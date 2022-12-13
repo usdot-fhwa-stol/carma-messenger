@@ -111,6 +111,7 @@ namespace cpp_message
             long tmp=message->value.choice.TestMessage01.body.urgency;
             if(tmp>URGENCY_MAX || tmp<URGENCY_MIN){
                 RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Urgency message out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityResponse>{};
             }
             output.urgency=tmp;
@@ -131,10 +132,12 @@ namespace cpp_message
             MobilityRepeat_t repeat_choice = *message->value.choice.TestMessage01.body.repeat;
             output.repeat.repeat = repeat_choice;
             
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<carma_v2x_msgs::msg::MobilityResponse>(output);
         }
         //else return an empty object
         RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Decoding mobility response message failed");
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<carma_v2x_msgs::msg::MobilityResponse>{};
     }
 

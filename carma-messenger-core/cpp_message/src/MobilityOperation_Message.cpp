@@ -135,9 +135,11 @@ namespace cpp_message
             
             output.strategy_params=strategy_params;
 
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<carma_v2x_msgs::msg::MobilityOperation>(output);
         }
         RCLCPP_WARN_STREAM(node_logging_->get_logger(), "mobility operation decoding failed");
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<carma_v2x_msgs::msg::MobilityOperation>{};
 
     }
