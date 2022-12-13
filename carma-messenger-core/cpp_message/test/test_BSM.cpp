@@ -468,13 +468,6 @@ TEST(BSMTest, testEncodeDecodeBSM)
     }
     j2735_v2x_msgs::msg::BSM result = res_decoded.get();
 
-    // if(result.regional.size() == message.regional.size()){
-    //     std::cout<<"Size equal: " << result.regional.size() << "\n";
-    // }
-    // if(result.regional[0] == message.regional[0]){
-    //     std::cout<<"Element 0 equal\n";
-    // }
-
     // Test that BSM is unchanged after being encoded and decoded
     EXPECT_EQ(message, result);
 
