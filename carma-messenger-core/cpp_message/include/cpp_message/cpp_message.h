@@ -70,6 +70,9 @@ namespace cpp_message
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_pub_;  //incoming mobility operation message after decoded
             carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_sub_; //outgoing plain mobility operation message 
 
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::EmergencyVehicleAck> emergency_vehicle_ack_message_pub_;  //incoming emergency vehicle response message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleAck> emergency_vehicle_ack_message_sub_; //outgoing emergency vehicle response message 
+
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_pub_;  //incoming emergency vehicle response message after decoded
             carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_sub_; //outgoing emergency vehicle response message 
 
@@ -111,6 +114,12 @@ namespace cpp_message
             /**
             * @brief function callback when there is an outgoing mobility response message. .
             * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
+            void outbound_emergency_vehicle_ack_message_callback(carma_v2x_msgs::msg::EmergencyVehicleAck::UniquePtr msg);  
+            /**
+            * @brief function callback when there is an outgoing emergency vehicle response message. .
+            * @param msg container with emergency vehicle acknowledgement ros message. Passed to an encoding function in Emergency_Vehicle_Response class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_emergency_vehicle_response_message_callback(carma_v2x_msgs::msg::EmergencyVehicleResponse::UniquePtr msg);  
