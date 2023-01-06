@@ -18,27 +18,28 @@
 #include <gtest/gtest.h>
 #include <boost/optional/optional_io.hpp> //to print boost::optional
 
-// TEST(EmergencyVehicleAckMessageTest, testDecodeEmergencyVehicleAckMsg)
-// {
-//     // binary copied from the output of testEncodeEmergencyVehicleAckMsg below
-//     std::vector<uint8_t> binary_input = {0, 246, 76, 77, 90, 113, 39, 212, 90, 209, 171, 22, 12, 38, 173, 56, 147, 234, 45, 104, 213, 131, 150, 172, 88, 65, 133, 14, 36, 88, 204, 88, 177, 98, 197, 139, 22, 43, 89, 50, 100, 201, 107, 54, 108, 217, 173, 131, 6, 12, 21, 172, 88, 177, 98, 197, 139, 22, 44, 88, 177, 98, 229, 147, 38, 108, 219, 178, 96, 205, 179, 134, 173, 27, 183, 106, 225, 131, 112, 0, 246, 76, 77, 90, 113, 39, 212, 90, 209, 171, 22, 12, 38, 173, 56, 147, 234, 45, 104, 213, 131, 150, 172, 88, 65, 133, 14, 36, 88, 204, 88, 177, 98, 197, 139, 22, 43, 89, 50, 100, 201, 107, 54, 108, 217, 173, 131, 6, 12, 21, 172, 88, 177, 98, 197, 139, 22, 44, 88, 177, 98, 229, 147, 38, 108, 219, 178, 96, 205, 179, 134, 173, 27, 183, 106, 225, 131, 112};
-//     auto node = std::make_shared<rclcpp::Node>("test_node");
-//     cpp_message::Emergency_Vehicle_Ack worker(node->get_node_logging_interface());
-//     auto res = worker.decode_emergency_vehicle_ack_message(binary_input);
-//     carma_v2x_msgs::msg::EmergencyVehicleAck to_read;
-//     if (res)
-//     {
-//         to_read = res.get();
-//         if (to_read.m_header.plan_id == "11111111-2222-3333-AAAA-111111111111" && to_read.acknowledgement == 1)
-//         {
-//             EXPECT_TRUE(true);
-//         }
-//         else
-//             EXPECT_TRUE(false);
-//     }
-//     else
-//         EXPECT_TRUE(false);
-// }
+TEST(EmergencyVehicleAckMessageTest, testDecodeEmergencyVehicleAckMsg)
+{
+    // binary copied from the output of testEncodeEmergencyVehicleAckMsg below
+    
+    std::vector<uint8_t> binary_input = {0, 247, 76, 77, 90, 113, 39, 212, 90, 209, 171, 22, 12, 38, 173, 56, 147, 234, 45, 104, 213, 131, 150, 172, 88, 65, 133, 14, 36, 88, 204, 88, 177, 98, 197, 139, 22, 43, 89, 50, 100, 201, 107, 54, 108, 217, 173, 131, 6, 12, 21, 172, 88, 177, 98, 197, 139, 22, 44, 88, 177, 98, 229, 147, 38, 108, 219, 178, 96, 205, 179, 134, 173, 27, 183, 106, 225, 131, 112};
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Emergency_Vehicle_Ack worker(node->get_node_logging_interface());
+    auto res = worker.decode_emergency_vehicle_ack_message(binary_input);
+    carma_v2x_msgs::msg::EmergencyVehicleAck to_read;
+    if (res)
+    {
+        to_read = res.get();
+        if (to_read.m_header.plan_id == "11111111-2222-3333-AAAA-111111111111" && to_read.acknowledgement == 0)
+        {
+            EXPECT_TRUE(true);
+        }
+        else
+            EXPECT_TRUE(false);
+    }
+    else
+        EXPECT_TRUE(false);
+}
 
 TEST(EmergencyVehicleAckMessageTest, testEncodeEmergencyVehicleAckMsg)
 {
