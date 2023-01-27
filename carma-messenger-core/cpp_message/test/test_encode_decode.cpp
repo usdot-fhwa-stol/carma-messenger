@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2021 LEIDOS.
+ * Copyright (C) 2019-2023 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -52,15 +52,12 @@ TEST(CppMessageTest, testDecodeControlMsgPackage)
 
 TEST(CppMessageTest, testDecodeControlMsgParams)
 {
-    std::vector<uint8_t> binar_input_params_only = {0, 245, 128, 183, 60, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 
-                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 
-                                                    193, 0, 0, 0, 0, 0, 0, 4, 189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 
-                                                    189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 192, 0, 0, 0, 120, 144, 0, 0, 0, 0, 1, 47, 
-                                                    64, 0, 0, 32, 8, 0, 128, 32, 7, 22, 57, 211, 70, 158, 104, 52, 243, 65, 133, 7, 
-                                                    60, 59, 120, 108, 202, 131, 135, 45, 250, 144, 115, 233, 203, 78, 236, 238, 244, 
-                                                    209, 167, 154, 13, 60, 208, 97, 65, 207, 14, 222, 27, 50, 160, 201, 135, 167, 93, 
-                                                    168, 57, 244, 229, 167, 118, 112, 0, 0, 0, 0, 75, 214, 180, 157, 32, 6, 180, 157, 
-                                                    32, 34, 0, 32, 0, 0, 4, 7, 128, 1, 128, 1, 128, 0, 128, 224, 0, 96, 0, 96, 0, 32, 0};
+    // NOTE: Binary obtained from running testEncodeControlMsg2 with only TrafficControlParams included (TrafficControlPackage and TrafficControlGeometry not included) 
+    std::vector<uint8_t> binar_input_params_only = {0, 245, 61, 40, 0, 4, 8, 12, 16, 20, 24, 29, 188, 0, 24, 0, 20, 80, 84, 88, 92, 
+                                                96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 0, 0, 2, 241, 133, 56, 0, 
+                                                47, 0, 0, 0, 15, 15, 243, 0, 0, 0, 9, 251, 241, 7, 190, 0, 1, 0, 64, 4, 4, 128, 57, 34};
+
+
 
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
@@ -75,10 +72,8 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
     ASSERT_EQ(msg.reqseq, 111);
     ASSERT_EQ(msg.msgnum, 5);
     ASSERT_EQ(msg.msgtot, 6);
-    ASSERT_TRUE(msg.geometry_exists);
     ASSERT_TRUE(msg.params_exists);
-    ASSERT_TRUE(msg.package_exists);
-    ASSERT_EQ(msg.params.detail.choice, j2735_v2x_msgs::msg::TrafficControlDetail::CLOSED_CHOICE);
+    ASSERT_EQ(msg.params.detail.choice, j2735_v2x_msgs::msg::TrafficControlDetail::LATPERM_CHOICE);
     ASSERT_EQ(msg.params.schedule.between[0].begin, 1);
 
     auto res_encoded = worker->encode_geofence_control(res.get());
@@ -88,15 +83,14 @@ TEST(CppMessageTest, testDecodeControlMsgParams)
 
 TEST(CppMessageTest, testDecodeControlMsgGeometry)
 {
-    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 128, 183, 60, 0, 0, 0, 0, 0, 0, 0, 1, 188, 0, 24, 0, 20, 0, 0, 0, 
-                                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 133, 58, 22, 30, 220, 
-                                                    193, 0, 0, 0, 0, 0, 0, 4, 189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 
-                                                    189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 192, 0, 0, 0, 120, 144, 0, 0, 0, 0, 1, 47, 
-                                                    64, 0, 0, 32, 8, 0, 128, 32, 7, 22, 57, 211, 70, 158, 104, 52, 243, 65, 133, 7, 
-                                                    60, 59, 120, 108, 202, 131, 135, 45, 250, 144, 115, 233, 203, 78, 236, 238, 244, 
-                                                    209, 167, 154, 13, 60, 208, 97, 65, 207, 14, 222, 27, 50, 160, 201, 135, 167, 93, 
-                                                    168, 57, 244, 229, 167, 118, 112, 0, 0, 0, 0, 75, 214, 180, 157, 32, 6, 180, 157, 
-                                                    32, 34, 0, 32, 0, 0, 4, 7, 128, 1, 128, 1, 128, 0, 128, 224, 0, 96, 0, 96, 0, 32, 0};
+    // NOTE: Binary obtained from running testEncodeControlMsg2 with only TrafficControlGeometry included (TrafficControlPackage and TrafficControlParams not included) 
+    std::vector<uint8_t> binar_input_geometry_only = {0, 245, 120, 36, 0, 4, 8, 12, 16, 20, 24, 29, 188, 0, 24, 0, 20, 80, 84, 88, 92, 96, 100, 104, 
+                                                    108, 112, 116, 120, 124, 128, 132, 136, 140, 0, 0, 2, 241, 133, 56, 231, 77, 26, 121, 160, 211, 
+                                                    205, 6, 20, 28, 240, 237, 225, 179, 42, 14, 28, 183, 234, 65, 207, 167, 45, 59, 179, 187, 211, 70, 
+                                                    158, 104, 52, 243, 65, 133, 7, 60, 59, 120, 108, 202, 131, 38, 30, 157, 118, 160, 231, 211, 150, 157, 
+                                                    217, 192, 0, 0, 0, 1, 172, 90, 210, 116, 128, 26, 210, 116, 133, 8, 125, 0, 8, 15, 0, 3, 0, 3, 0, 3, 
+                                                    3, 64, 0, 64, 0, 192, 0, 0};
+
     rclcpp::NodeOptions options;
     auto worker = std::make_shared<cpp_message::Node>(options);
     auto res = worker->decode_geofence_control(binar_input_geometry_only);
@@ -110,10 +104,8 @@ TEST(CppMessageTest, testDecodeControlMsgGeometry)
     ASSERT_EQ(msg.msgnum, 5);
     ASSERT_EQ(msg.msgtot, 6);
     ASSERT_TRUE(msg.geometry_exists);
-    ASSERT_TRUE(msg.params_exists);
-    ASSERT_TRUE(msg.package_exists);
-    ASSERT_EQ(msg.geometry.reftime, 1213);
-    ASSERT_EQ(msg.geometry.refelv, 1);
+    ASSERT_EQ(msg.geometry.reftime, 1713);
+    ASSERT_EQ(msg.geometry.refelv, 250);
 
     auto res_encoded = worker->encode_geofence_control(res.get());
     if(res_encoded) EXPECT_TRUE(true);
