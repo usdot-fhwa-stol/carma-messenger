@@ -2,6 +2,10 @@
 //Load global session variables
 var EventSessionFormFields = LoadSessionVariables();
 
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+  
 $(document).ready(function () {
     $('#card-truck-inspection').click(function(){
        $('#divCarmaMessengerView').css('display','');
@@ -19,6 +23,7 @@ $(document).ready(function () {
        $('#divCarmaMessengerView').css('display','');
        $('#divWidgetArea').css('display','none');
        $('#divWidgetAreaEventManagement').css('display','');
+       $('#divWidgetAreaEmergencyResponse').css('display','none');
        $('#Messenger_back_arrow').css('display','inline-block');
        $('#divCarmaMessengerMenu').css('display','none');
 
@@ -26,6 +31,19 @@ $(document).ready(function () {
        CarmaJS.WidgetFramework.closeEventManagementWidgets();
        CarmaJS.WidgetFramework.loadEventManagementWidgets();
     });
+
+    $('#card-emergency-response').click(function(){
+        $('#divCarmaMessengerView').css('display','');
+        $('#divWidgetArea').css('display','none');
+        $('#divWidgetAreaEventManagement').css('display','none');
+        $('#divWidgetAreaEmergencyResponse').css('display','');        
+        $('#Messenger_back_arrow').css('display','inline-block');
+        $('#divCarmaMessengerMenu').css('display','none');
+ 
+        //show event management widget
+        CarmaJS.WidgetFramework.closeEmergencyResponseWidgets();
+        CarmaJS.WidgetFramework.loadEmergencyResponseWidgets();
+     });
 
     //check whether there is any active event broadcasting
     console.log("EventSessionFormFields.BCStatus: " + EventSessionFormFields.BCStatus);
