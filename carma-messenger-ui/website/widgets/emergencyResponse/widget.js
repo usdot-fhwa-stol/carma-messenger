@@ -2,6 +2,80 @@
 * Create a unique namespace for each plugin widget to minimize collision of same name variables or functions.
 ***/
 CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
+const UNAVAILABLE_SPEED = 8191;
+const SPEED50TH = 0.02;
+//enumeration values for siren_in_use:
+const siren_in_use = {
+    UNAVAILABLE: 0,
+    NOT_IN_USE: 1,
+    IN_USE: 2,
+    RESERVED: 3
+}
+
+
+// enumeration values for lightbar_in_use:
+const lightbar_in_use = {
+    UNAVAILABLE: 0,
+    NOT_IN_USE: 1,
+    IN_USE: 2,
+    YELLOW_CAUTION_LIGHTS: 3,
+    SCHOOL_BUS_LIGHTS: 4,
+    ARROW_SIGNS_ACTIVE: 5,
+    SLOW_MOVING_VEHICLE: 6,
+    FREQ_STOPS: 7
+}
+
+var subscribe_bsm = () => {
+    console.log('subscribe_bsm called');
+    var listenerBSM = new ROSLIB.Topic({
+        ros: ros,
+        name: '/bsm_outbound',
+        messageType: 'cav_msgs/BSM'
+    });
+
+    listenerBSM.subscribe(function (message) {
+        if (message.core_data != undefined && message.core_data.latitude != undefined && message.core_data.longitude != undefined) {
+            $("#positionValue").text(message.core_data.latitude + "," + message.core_data.longitude);
+        }
+
+        if (message.core_data != undefined && message.core_data.id != undefined) {
+            if (message.core_data.id.length != 0) {
+                $("#bsmIdValue").text(message.core_data.id);
+            }
+        }
+
+        if (message.core_data != undefined && message.core_data.speed != undefined) {
+            if (message.core_data.speed != UNAVAILABLE_SPEED) {
+                let speedMPH = message.core_data.speed / SPEED50TH;
+                $("#velocityValue").text(speedMPH + " MPH");
+            }
+        }
+
+        if (message.part_ii != undefined && message.part_ii.length > 0 && message.part_ii[0].special_vehicle_extensions != undefined
+            && message.part_ii[0].special_vehicle_extensions.vehicle_alerts != undefined
+            && message.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use != undefined) {
+            if (message.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use["siren_in_use"] == siren_in_use.IN_USE) {
+                $("#sirenValue").text("ON");
+            } else if (message.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use["siren_in_use"] == siren_in_use.NOT_IN_USE) {
+                $("#sirenValue").text("OFF");
+            } else {
+                $("#sirenValue").text("NA");
+            }
+        }
+
+        if (message.part_ii != undefined && message.part_ii.length > 0 && message.part_ii[0].special_vehicle_extensions != undefined
+            && message.part_ii[0].special_vehicle_extensions.vehicle_alerts != undefined
+            && message.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use != undefined) {
+            if (message.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use["lightbar_in_use"] == lightbar_in_use.IN_USE) {
+                $("#lightValue").text("ON");
+            } else if (message.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use["lightbar_in_use"] == lightbar_in_use.NOT_IN_USE) {
+                $("#lightValue").text("OFF");
+            } else {
+                $("#lightValue").text("NA");
+            }
+        }
+    });
+}
 
 CarmaJS.WidgetFramework.emergencyResponse = (function () {
     $.widget("CarmaJS.emergencyResponse", {
@@ -20,26 +94,28 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             titleCol.appendChild(img);
             let titleLbl = document.createElement('Label');
             titleLbl.innerHTML = "Emergency Response Vehicle Information";
+            titleLbl.className = "titleLbl";
             titleCol.appendChild(titleLbl);
             titleRow.appendChild(titleCol);
 
             /**
-             * create Vehicle status div: License plate, position, velocity, siren status, light status
+             * create Vehicle status div: bsm_id, position, velocity, siren status, light status
              */
             let vehicleStatusRow = document.createElement('div');
             vehicleStatusRow.className = "row vehicle-status-row";
 
-            //License plate
-            let licenseCol = document.createElement('div');
-            licenseCol.className = "col"
-            var licenseLabel = document.createElement('Label');
-            licenseLabel.innerHTML = "License Plate";
-            licenseLabel.className = "license-plate-lbl";
-            var licenseValue = document.createElement('Label');
-            licenseValue.innerHTML = "######";
-            licenseCol.appendChild(licenseLabel);
-            licenseCol.appendChild(licenseValue);
-            vehicleStatusRow.appendChild(licenseCol);
+            //bsm_id 
+            let bsm_idCol = document.createElement('div');
+            bsm_idCol.className = "col"
+            var bsm_idLabel = document.createElement('Label');
+            bsm_idLabel.innerHTML = "BSM ID";
+            bsm_idLabel.className = "bsm-id-lbl";
+            var bsm_idValue = document.createElement('Label');
+            bsm_idValue.innerHTML = "NA";
+            bsm_idValue.id = "bsmIdValue";
+            bsm_idCol.appendChild(bsm_idLabel);
+            bsm_idCol.appendChild(bsm_idValue);
+            vehicleStatusRow.appendChild(bsm_idCol);
 
             //position
             let positionCol = document.createElement('div');
@@ -48,7 +124,8 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             positionLabel.innerHTML = "Position";
             positionLabel.className = "position-lbl";
             var positionValue = document.createElement('Label');
-            positionValue.innerHTML = "######";
+            positionValue.innerHTML = "NA";
+            positionValue.id = "positionValue";
             positionCol.appendChild(positionLabel);
             positionCol.appendChild(positionValue);
             vehicleStatusRow.appendChild(positionCol);
@@ -60,7 +137,8 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             velocityLabel.innerHTML = "Velocity";
             velocityLabel.className = "velocity-lbl";
             var velocityValue = document.createElement('Label');
-            velocityValue.innerHTML = "######";
+            velocityValue.innerHTML = "NA";
+            velocityValue.id = "velocityValue";
             velocityCol.appendChild(velocityLabel);
             velocityCol.appendChild(velocityValue);
             vehicleStatusRow.appendChild(velocityCol);
@@ -72,7 +150,8 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             sirenLabel.innerHTML = "Siren Status";
             sirenLabel.className = "siren-lbl";
             var sirenValue = document.createElement('Label');
-            sirenValue.innerHTML = "######";
+            sirenValue.innerHTML = "NA";
+            sirenValue.id = "sirenValue";
             sirenCol.appendChild(sirenLabel);
             sirenCol.appendChild(sirenValue);
             vehicleStatusRow.appendChild(sirenCol);
@@ -84,7 +163,8 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             lightLabel.innerHTML = "Light Status";
             lightLabel.className = "light-lbl";
             var lightValue = document.createElement('Label');
-            lightValue.innerHTML = "######";
+            lightValue.innerHTML = "NA";
+            lightValue.id = "lightValue";
             lightCol.appendChild(lightLabel);
             lightCol.appendChild(lightValue);
             vehicleStatusRow.appendChild(lightCol);
@@ -114,7 +194,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let destinationItem = document.createElement('a');
             destinationItem.className = "dropdown-item";
             destinationItem.href = "#";
-            destinationItem.innerHTML = "route 1";
+            destinationItem.innerHTML = "route 1s";
             destinationMenu.appendChild(destinationItem);
             destinationCol.appendChild(destinationMenu);
             destBtnGrp.appendChild(destinationMenu);
@@ -152,7 +232,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             container.appendChild(alertRow);
             $(this.element).append(container);
         },
-        subscribe_bsm: function () { },
+        subscribe_bsm: function () {
+            subscribe_bsm();
+        },
         service_get_awailable_routes: function () { },
         service_set_route: function () { },
         _destroy: function () {

@@ -39,7 +39,7 @@ services:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
     # Use the dynamic_bridge instead of the parameter bridge as the number of topics is small enough to pose less of a latency issue
-    command: bash -c 'source ~/.base-image/workspace/install/setup.bash && ros2 run ros1_bridge dynamic_bridge'
+    command: bash -c 'wait-for-it.sh localhost:11311 -- rosparam load /opt/carma/vehicle/config/bridge.yml && source ~/.base-image/workspace/install/setup.bash && ros2 run ros1_bridge dynamic_bridge'
 
   messenger:
     image: usdotfhwastoldev/carma-messenger-core:develop
