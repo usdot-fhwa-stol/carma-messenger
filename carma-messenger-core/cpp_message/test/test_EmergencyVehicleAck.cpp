@@ -58,10 +58,6 @@ TEST(EmergencyVehicleAckMessageTest, testEncodeEmergencyVehicleAckMsg)
 
     if (res)
     {
-        // std::vector<uint8_t> to_read=res.get();
-        // size_t len=to_read.size();
-        // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
-        // std::cout<<"\n";
         EXPECT_TRUE(true);
     }
     else
@@ -120,6 +116,7 @@ TEST(EmergencyVehicleAckMessageTest, testEncodeDecodeEmergencyVehicleAckMsg)
         std::cout << "decoding of encoded file failed! \n";
         EXPECT_TRUE(false);
     }
+
     EXPECT_EQ(message, res2_decoded.get());
 }
 
@@ -140,10 +137,6 @@ TEST(EmergencyVehicleAckMessageTest, testEncodeDecodeEmergencyVehicleAckMsg_base
 
     if (res)
     {
-        // std::vector<uint8_t> to_read=res.get();
-        // size_t len=to_read.size();
-        // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
-        // std::cout<<"\n";
         EXPECT_TRUE(true);
     }
     else
