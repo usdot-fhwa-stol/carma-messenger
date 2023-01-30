@@ -1,5 +1,7 @@
 .emergency-response-container {
     margin: 0px 20px;
+    height: 100%;
+    position: relative;
 }
 
 .title-row {
@@ -24,4 +26,11 @@
 .dest-btn{
     margin-top: 150px;
     display: block;
+}
+
+.alert-row{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    right: 20px;
 }
