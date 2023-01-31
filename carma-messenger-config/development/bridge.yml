@@ -7,4 +7,8 @@ topics:
     topic: /bsm_outbound
     type: carma_v2x_msgs/msg/BSM
     queue_size: 1
+  -
+    topic: /emergency_vehicle_ui_warning
+    type: carma_msgs/msg/UIInstructions
+    queue_size: 1
 services_1_to_2: []

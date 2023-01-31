@@ -25,8 +25,8 @@ const lightbar_in_use = {
     FREQ_STOPS: 7
 }
 
+//Display vehicle information
 var subscribe_bsm = () => {
-    console.log('subscribe_bsm called');
     var listenerBSM = new ROSLIB.Topic({
         ros: ros,
         name: '/bsm_outbound',
@@ -77,6 +77,70 @@ var subscribe_bsm = () => {
     });
 }
 
+//Display alert and play sound
+var subscribe_alert = () => {
+    var listenerAlert = new ROSLIB.Topic({
+        ros: ros,
+        name: '/emergency_vehicle_ui_warning',
+        messageType: 'cav_msgs/UIInstructions'
+    });
+    listenerAlert.subscribe(function (message) {
+        if (message != undefined && message.msg != undefined) {
+            if ($("#emergencyAlert").length != 0) {
+                document.getElementById("emergencyAlertMsg").innerHTML = "<strong>" + message.msg + "</strong>";
+                $("#emergencyAlert").addClass("show");
+                document.getElementById('audioAlert3').play();
+            }
+
+        }
+    });
+}
+
+//Reset alert and sounds every 5 secs
+setInterval(() => {
+    if ($("#emergencyAlert").length == 0) {
+        let alert = createAlertDiv("");
+        document.getElementById("alert-col").appendChild(alert);
+    }
+    $("#emergencyAlert").removeClass("show");
+    document.getElementById('audioAlert3').pause();
+}, 5000);
+
+//Create alert element
+var createAlertDiv = (message) => {
+    let alert = document.createElement('div');
+    alert.className = "alert alert-danger alert-dismissible fade";
+    alert.id = "emergencyAlert";
+    let alertTxt = document.createElement("span");
+    alertTxt.innerHTML = "<string>" + message + "</strong>";
+    alertTxt.id = "emergencyAlertMsg";
+    alert.appendChild(alertTxt);
+    let alertCloseBtn = document.createElement('button');
+    alertCloseBtn.className = "close";
+    alertCloseBtn.setAttribute("data-dismiss", "alert");
+    alertCloseBtn.setAttribute("aria-label", "Close");
+    let alertSpan = document.createElement('span');
+    alertSpan.setAttribute("aria-hidden", "true");
+    alertSpan.innerHTML = "&times;";
+    alertCloseBtn.appendChild(alertSpan);
+    alert.appendChild(alertCloseBtn);
+    return alert;
+}
+
+var goToEventManagement = () => {
+    $('#divCarmaMessengerView').css('display', '');
+    $('#divWidgetArea').css('display', 'none');
+    $('#divWidgetAreaEventManagement').css('display', '');
+    $('#divWidgetAreaEmergencyResponse').css('display', 'none');
+    $('#Messenger_back_arrow').css('display', 'inline-block');
+    $('#divCarmaMessengerMenu').css('display', 'none');
+
+    //show event management widget
+    CarmaJS.WidgetFramework.closeEventManagementWidgets();
+    CarmaJS.WidgetFramework.loadEventManagementWidgets();
+}
+
+//Load wiget on startup
 CarmaJS.WidgetFramework.emergencyResponse = (function () {
     $.widget("CarmaJS.emergencyResponse", {
         _create: function () {
@@ -175,31 +239,25 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let destinationRow = document.createElement('div');
             destinationRow.className = "row destination-row";
             let destinationCol = document.createElement('div');
-            destinationCol.className = "col col-5";
+            destinationCol.className = "col col-4";
             var destLbl = document.createElement('Label');
             destLbl.innerHTML = "Emergency Destination";
             destLbl.className = "dest-lbl";
             destinationCol.appendChild(destLbl);
             let destTbl = document.createElement('table');
-            destTbl.className ="table";
+            destTbl.className = "table";
             let destHeader = document.createElement('thead');
             let destTr = document.createElement('tr');
             let destThRouteName = document.createElement('th');
             destThRouteName.textContent = "Route Name";
-            let destThSuccess = document.createElement('th');
-            destThSuccess.textContent = "Selected";
             destTr.appendChild(destThRouteName);
-            destTr.appendChild(destThSuccess);
             destHeader.appendChild(destTr);
             destTbl.appendChild(destHeader);
             let destBody = document.createElement('tbody');
             let destTr1 = document.createElement('tr');
             let destTrRouteName = document.createElement('th');
             destTrRouteName.textContent = "NA";
-            let destTrSuccess = document.createElement('th');
-            destTrSuccess.textContent = "NA";
             destTr1.appendChild(destTrRouteName);
-            destTr1.appendChild(destTrSuccess);
             destBody.appendChild(destTr1);
             destTbl.appendChild(destBody);
             destinationCol.appendChild(destTbl);
@@ -208,26 +266,20 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             destBtn.className = "btn btn-danger dest-btn btn-lg";
             destBtn.innerHTML = "Arrive at destination";
             destBtn.setAttribute("title", "You will be redirected to event management page.");
+            destBtn.onclick = () => {
+                console.log("click")
+                goToEventManagement();
+            };
             destinationCol.appendChild(destBtn);
             destinationRow.appendChild(destinationCol);
 
             //Alert popup 
             let alertRow = document.createElement('div');
-            alertRow.className = "row alert-row  hide";
+            alertRow.className = "row alert-row";
             let alertCol = document.createElement('div');
             alertCol.className = "col offset-sm-7";
-            let alert = document.createElement('div');
-            alert.className = "alert alert-danger alert-dismissible fade show";
-            alert.innerHTML = "<strong>This is a sample alert!</strong>";
-            let alertCloseBtn = document.createElement('button');
-            alertCloseBtn.className = "close";
-            alertCloseBtn.setAttribute("data-dismiss", "alert");
-            alertCloseBtn.setAttribute("aria-label", "Close");
-            let alertSpan = document.createElement('span');
-            alertSpan.setAttribute("aria-hidden", "true");
-            alertSpan.innerHTML = "&times;";
-            alertCloseBtn.appendChild(alertSpan);
-            alert.appendChild(alertCloseBtn);
+            alertCol.id = "alert-col";
+            let alert = createAlertDiv("");
             alertCol.appendChild(alert);
             alertRow.appendChild(alertCol);
             container.appendChild(titleRow);
@@ -240,7 +292,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             subscribe_bsm();
         },
         service_get_awailable_routes: function () { },
-        subscribe_alert: function () { },
+        subscribe_alert: function () {
+            subscribe_alert();
+        },
         _destroy: function () {
             this.element.empty();
             this._super();
