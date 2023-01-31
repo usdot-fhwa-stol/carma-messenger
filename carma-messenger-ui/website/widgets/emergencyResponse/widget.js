@@ -2,6 +2,9 @@
 * Create a unique namespace for each plugin widget to minimize collision of same name variables or functions.
 ***/
 CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
+var listenerAlert;
+var listenerBSM;
+
 const UNAVAILABLE_SPEED = 8191;
 const SPEED50TH = 0.02;
 //enumeration values for siren_in_use:
@@ -27,7 +30,7 @@ const lightbar_in_use = {
 
 //Display vehicle information
 var subscribe_bsm = () => {
-    var listenerBSM = new ROSLIB.Topic({
+    listenerBSM = new ROSLIB.Topic({
         ros: ros,
         name: '/bsm_outbound',
         messageType: 'cav_msgs/BSM'
@@ -79,7 +82,7 @@ var subscribe_bsm = () => {
 
 //Display alert and play sound
 var subscribe_alert = () => {
-    var listenerAlert = new ROSLIB.Topic({
+    listenerAlert = new ROSLIB.Topic({
         ros: ros,
         name: '/emergency_vehicle_ui_warning',
         messageType: 'cav_msgs/UIInstructions'
@@ -128,6 +131,15 @@ var createAlertDiv = (message) => {
 }
 
 var goToEventManagement = () => {
+    $("#emergencyAlert").remove();
+    if (listenerAlert != undefined) {
+        listenerAlert.unsubscribe();
+    }
+    if (listenerBSM != undefined) {
+        listenerBSM.unsubscribe();
+    }
+
+    document.getElementById('audioAlert3').pause();
     $('#divCarmaMessengerView').css('display', '');
     $('#divWidgetArea').css('display', 'none');
     $('#divWidgetAreaEventManagement').css('display', '');
@@ -267,7 +279,6 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             destBtn.innerHTML = "Arrive at destination";
             destBtn.setAttribute("title", "You will be redirected to event management page.");
             destBtn.onclick = () => {
-                console.log("click")
                 goToEventManagement();
             };
             destinationCol.appendChild(destBtn);
