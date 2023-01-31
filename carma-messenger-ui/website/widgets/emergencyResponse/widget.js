@@ -175,30 +175,35 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let destinationRow = document.createElement('div');
             destinationRow.className = "row destination-row";
             let destinationCol = document.createElement('div');
-            destinationCol.className = "col";
+            destinationCol.className = "col col-5";
             var destLbl = document.createElement('Label');
             destLbl.innerHTML = "Emergency Destination";
             destLbl.className = "dest-lbl";
             destinationCol.appendChild(destLbl);
-            let destBtnGrp = document.createElement('div');
-            destBtnGrp.className = "btn-group dropright";
-            let destDropDownBtn = document.createElement('button');
-            destDropDownBtn.className = "btn btn-outline-secondary btn-lg dropdown-toggle";
-            destDropDownBtn.id = "dropdownMenuButton";
-            destDropDownBtn.innerHTML = "<i class=\"fas fa-route\"></i>&nbsp; Select a route &nbsp;";
-            destDropDownBtn.setAttribute("data-toggle", "dropdown");
-            destBtnGrp.appendChild(destDropDownBtn);
-            let destinationMenu = document.createElement('div');
-            destinationMenu.className = "dropdown-menu";
-            destinationMenu.setAttribute("aria-labelledby", "dropdownMenuButton");
-            let destinationItem = document.createElement('a');
-            destinationItem.className = "dropdown-item";
-            destinationItem.href = "#";
-            destinationItem.innerHTML = "route 1s";
-            destinationMenu.appendChild(destinationItem);
-            destinationCol.appendChild(destinationMenu);
-            destBtnGrp.appendChild(destinationMenu);
-            destinationCol.appendChild(destBtnGrp);
+            let destTbl = document.createElement('table');
+            destTbl.className ="table";
+            let destHeader = document.createElement('thead');
+            let destTr = document.createElement('tr');
+            let destThRouteName = document.createElement('th');
+            destThRouteName.textContent = "Route Name";
+            let destThSuccess = document.createElement('th');
+            destThSuccess.textContent = "Selected";
+            destTr.appendChild(destThRouteName);
+            destTr.appendChild(destThSuccess);
+            destHeader.appendChild(destTr);
+            destTbl.appendChild(destHeader);
+            let destBody = document.createElement('tbody');
+            let destTr1 = document.createElement('tr');
+            let destTrRouteName = document.createElement('th');
+            destTrRouteName.textContent = "NA";
+            let destTrSuccess = document.createElement('th');
+            destTrSuccess.textContent = "NA";
+            destTr1.appendChild(destTrRouteName);
+            destTr1.appendChild(destTrSuccess);
+            destBody.appendChild(destTr1);
+            destTbl.appendChild(destBody);
+            destinationCol.appendChild(destTbl);
+            //Destination Button
             let destBtn = document.createElement('button');
             destBtn.className = "btn btn-danger dest-btn btn-lg";
             destBtn.innerHTML = "Arrive at destination";
@@ -208,7 +213,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
 
             //Alert popup 
             let alertRow = document.createElement('div');
-            alertRow.className = "row alert-row";
+            alertRow.className = "row alert-row  hide";
             let alertCol = document.createElement('div');
             alertCol.className = "col offset-sm-7";
             let alert = document.createElement('div');
@@ -225,7 +230,6 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             alert.appendChild(alertCloseBtn);
             alertCol.appendChild(alert);
             alertRow.appendChild(alertCol);
-
             container.appendChild(titleRow);
             container.appendChild(vehicleStatusRow);
             container.appendChild(destinationRow);
@@ -236,7 +240,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             subscribe_bsm();
         },
         service_get_awailable_routes: function () { },
-        service_set_route: function () { },
+        subscribe_alert: function () { },
         _destroy: function () {
             this.element.empty();
             this._super();
@@ -248,8 +252,8 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         //create Emergency Response page
         container.emergencyResponse();
         container.emergencyResponse("subscribe_bsm", null);
+        container.emergencyResponse("subscribe_alert", null);
         container.emergencyResponse("service_get_awailable_routes", null);
-        container.emergencyResponse("service_set_route", null);
     };
 
     //*** Public API  ***

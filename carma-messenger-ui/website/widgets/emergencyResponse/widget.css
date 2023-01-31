@@ -26,6 +26,11 @@
     color: rgb(80, 78, 78);
     display: block;
 }
+.table th{
+    color: rgb(80, 78, 78);
+    font-size: 90%;
+}
+
 
 .dest-btn{
     margin-top: 150px;
@@ -37,4 +42,8 @@
     width: 100%;
     bottom: 20px;
     right: 20px;
+}
+
+.hide{
+    display: none;
 }
