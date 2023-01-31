@@ -1,6 +1,6 @@
 #pragma once
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) 2020-2023 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,7 +17,7 @@
 
 extern "C"
 {
-#include "MessageFrame.h"
+    #include "MessageFrame.h"
 }
 
 #include <vector>
@@ -30,6 +30,7 @@ extern "C"
 #include "j2735_v2x_msgs/msg/byte_array.hpp"
 #include "carma_v2x_msgs/msg/mobility_header.hpp"
 #include "carma_v2x_msgs/msg/mobility_operation.hpp"
+#include "carma_v2x_msgs/msg/emergency_vehicle_ack.hpp"
 #include "carma_v2x_msgs/msg/emergency_vehicle_response.hpp"
 #include "carma_v2x_msgs/msg/mobility_response.hpp"
 #include "carma_v2x_msgs/msg/mobility_path.hpp"
@@ -47,11 +48,11 @@ extern "C"
 
 namespace cpp_message
 {
-/**
- * @class Message
- * @brief Is the class responsible for DSRC message encoding and decoding
- * 
- */
+    /**
+     * @class Message
+     * @brief Is the class responsible for DSRC message encoding and decoding
+     * 
+     */
 
     class Node : public carma_ros2_utils::CarmaLifecycleNode
     {
@@ -68,25 +69,28 @@ namespace cpp_message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> inbound_geofence_control_message_pub_;
 
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_pub_;  //incoming mobility operation message after decoded
-            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_sub_; //outgoing plain mobility operation message 
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_sub_;  //outgoing plain mobility operation message 
+
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::EmergencyVehicleAck> emergency_vehicle_ack_message_pub_;  //incoming emergency vehicle acknowledgement message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleAck> emergency_vehicle_ack_message_sub_;  //outgoing emergency vehicle acknowledgement message 
 
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_pub_;  //incoming emergency vehicle response message after decoded
-            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_sub_; //outgoing emergency vehicle response message 
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_sub_;  //outgoing emergency vehicle response message 
 
-            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_pub_;     //incoming mobility response message after decoded
-            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_sub_; //outgoing plain mobility response message
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_pub_;  //incoming mobility response message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_sub_;  //outgoing plain mobility response message
 
-            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityPath> mobility_path_message_pub_;     //incoming mobility path message after decoded
-            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityPath> mobility_path_message_sub_;    //outgoing plain mobility path message
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityPath> mobility_path_message_pub_;  //incoming mobility path message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityPath> mobility_path_message_sub_;  //outgoing plain mobility path message
 
-            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityRequest> mobility_request_message_pub_;     //incoming mobility request message after decoded
-            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityRequest> mobility_request_message_sub_;    //outgoing plain mobility request message
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityRequest> mobility_request_message_pub_;  //incoming mobility request message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityRequest> mobility_request_message_sub_;  //outgoing plain mobility request message
 
-            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::BSM> bsm_message_pub_;     //incoming bsm message
-            carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::BSM> bsm_message_sub_;    //outgoing plain bsm message
+            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::BSM> bsm_message_pub_;  //incoming bsm message
+            carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::BSM> bsm_message_sub_;  //outgoing plain bsm message
 
-            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::SPAT> spat_message_pub_;    //incoming spat message
-            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::MapData> map_message_pub_; //incoming map message
+            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::SPAT> spat_message_pub_;  //incoming spat message
+            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::MapData> map_message_pub_;  //incoming map message
 
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::PSM> psm_message_pub_;
             carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::PSM> psm_message_sub_;
@@ -98,36 +102,56 @@ namespace cpp_message
             carma_ros2_utils::CallbackReturn handle_on_configure(const rclcpp_lifecycle::State &);
 
             // callbacks for subscribers
+            /**
+            * @brief function callback when there is an incoming binary message.
+            * @param msg container with binary message. Filtered for message type and passed to the function below designed to handle it. 
+            * If the binary message doesn't match any defined message type, it is ignored. 
+            */
             void inbound_binary_callback(carma_driver_msgs::msg::ByteArray::UniquePtr msg);
+            /**
+            * @brief function callback when there is an outgoing traffic control (TCM) message.
+            * @param msg container with Traffic Control ros message. Passed to an encoding function in the Node (this) class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
             void outbound_control_message_callback(j2735_v2x_msgs::msg::TrafficControlMessage::UniquePtr msg);
-
+            /**
+            * @brief function callback when there is an outgoing traffic control Request (TCR) message.
+            * @param msg container with Traffic Control Request ros message. Passed to an encoding function in the Node (this) class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
             void outbound_control_request_callback(j2735_v2x_msgs::msg::TrafficControlRequest::UniquePtr msg);
             /**
-            * @brief function callback when there is an outgoing mobility operation message. .
+            * @brief function callback when there is an outgoing mobility operation message.
             * @param msg container with Mobility Operation ros message. Passed to an encoding function in Mobility_Operation class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_mobility_operation_message_callback(carma_v2x_msgs::msg::MobilityOperation::UniquePtr msg);  
             /**
-            * @brief function callback when there is an outgoing mobility response message. .
-            * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
+            * @brief function callback when there is an outgoing emergency vehicle acknowledgement message.
+            * @param msg container with Emergency Vehicle Acknowledgement ros message. Passed to an encoding function in Emergency_Vehicle_Ack class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
+            void outbound_emergency_vehicle_ack_message_callback(carma_v2x_msgs::msg::EmergencyVehicleAck::UniquePtr msg);  
+            /**
+            * @brief function callback when there is an outgoing emergency vehicle response message.
+            * @param msg container with emergency vehicle acknowledgement ros message. Passed to an encoding function in Emergency_Vehicle_Response class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_emergency_vehicle_response_message_callback(carma_v2x_msgs::msg::EmergencyVehicleResponse::UniquePtr msg);  
             /**
-            * @brief function callback when there is an outgoing emergency vehicle response message. .
-            * @param msg container with emergency vehicle response ros message. Passed to an encoding function in Emergency_Vehicle_Response class.
+            * @brief function callback when there is an outgoing mobility response message.
+            * @param msg container with mobility response ros message. Passed to an encoding function in Mobility_Response class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_mobility_response_message_callback(carma_v2x_msgs::msg::MobilityResponse::UniquePtr msg);
             /**
-            * @brief function callback when there is an outgoing mobility path message. .
+            * @brief function callback when there is an outgoing mobility path message.
             * @param msg container with Mobility path ros message. Passed to an encoding function in Mobility_Path class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_mobility_path_message_callback(carma_v2x_msgs::msg::MobilityPath::UniquePtr msg);
             /**
-            * @brief function callback when there is an outgoing mobility request message. .
+            * @brief function callback when there is an outgoing mobility request message.
             * @param msg container with Mobility request ros message. Passed to an encoding function in Mobility_Request class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
