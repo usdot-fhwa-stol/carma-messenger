@@ -129,13 +129,11 @@ CarmaJS.WidgetFramework = (function () {
                  error: function()
                  {
                      //file not exists
-                     //TODO: In chrome, even with statusCode or error handling, the HTTP 404 (Failed to Load) error still shows separately
                      console.log('loadEmergencyResponsetWidgets: Widget file does NOT exist: ' + jsFilePath );
                      return false;
                  },
                  success: function()
                  {
-                    //console.log('cssFilePath: ' + cssFilePath);
                     //1) Load css
                     var link = document.createElement('link');
                     link.setAttribute('rel', 'stylesheet');
@@ -144,7 +142,6 @@ CarmaJS.WidgetFramework = (function () {
                     document.getElementsByTagName('head')[0].appendChild(link);
 
                     //2) Load JS
-                    //console.log('jsFilePath1: ' + jsFilePath);
                     scriptLoader([jsFilePath],function()
                     {
                         // now you can use the code from loaded script files.
