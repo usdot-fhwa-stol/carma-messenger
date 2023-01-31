@@ -276,7 +276,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             //Destination Button
             let destBtn = document.createElement('button');
             destBtn.className = "btn btn-danger dest-btn btn-lg";
-            destBtn.innerHTML = "Arrive at destination";
+            destBtn.innerHTML = "Arrived at Emergency Location";
             destBtn.setAttribute("title", "You will be redirected to event management page.");
             destBtn.onclick = () => {
                 goToEventManagement();
