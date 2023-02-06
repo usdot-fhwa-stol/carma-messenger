@@ -111,10 +111,31 @@ var service_get_emergency_route = () => {
 
     var request = new ROSLIB.ServiceRequest({
     });
-    
+
     get_emergency_route.callService(request, function (result) {
         $("#routeNameValue").text(result.route_name);
     });
+}
+
+//Service call arrive at emergency destination
+var service_arrive_at_emergency_destination = () => {
+    let success = false;
+    var arrive_at_emergency_destination = new ROSLIB.Service({
+        ros: ros,
+        name: '/arrived_at_emergency_destination',
+        serviceType: 'std_srvs/Trigger.srv'
+    });
+
+    var request = new ROSLIB.ServiceRequest({
+    });
+
+    arrive_at_emergency_destination.callService(request, function (result) {
+        success = result.success;
+    });
+    if (!success) {
+        alert("Service call failed to remove emergency route from BSM.");
+    }
+    return success;
 }
 
 //Reset alert and sounds every 5 secs
@@ -285,7 +306,11 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             destBtn.innerHTML = "Arrived at Emergency Location";
             destBtn.setAttribute("title", "You will be redirected to event management page.");
             destBtn.onclick = () => {
-                goToEventManagement();
+                let success = service_arrive_at_emergency_destination();
+                if(success)
+                {
+                    goToEventManagement();
+                }                
             };
             destinationCol.appendChild(destBtn);
             destinationRow.appendChild(destinationCol);
