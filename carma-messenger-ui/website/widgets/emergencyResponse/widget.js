@@ -39,7 +39,7 @@ var subscribe_bsm = () => {
     listenerBSM.subscribe(function (message) {
         if (message.core_data != undefined && message.core_data.latitude != undefined && message.core_data.longitude != undefined) {
             $("#positionValue").text(message.core_data.latitude + "," + message.core_data.longitude);
-        }else{
+        } else {
             $("#positionValue").text("NA");
         }
 
@@ -48,7 +48,7 @@ var subscribe_bsm = () => {
                 let speedMPH = Math.round(message.core_data.speed * MSTOMPH);
                 $("#velocityValue").text(speedMPH + " MPH");
             }
-        }else{
+        } else {
             $("#speedMPH").text("NA");
         }
 
@@ -62,7 +62,7 @@ var subscribe_bsm = () => {
             } else {
                 $("#sirenValue").text("NA");
             }
-        }else{
+        } else {
             $("#sirenValue").text("NA");
         }
 
@@ -76,7 +76,7 @@ var subscribe_bsm = () => {
             } else {
                 $("#lightValue").text("NA");
             }
-        }else{
+        } else {
             $("#lightValue").text("NA");
         }
     });
@@ -98,6 +98,22 @@ var subscribe_alert = () => {
             }
 
         }
+    });
+}
+
+//Service call to get route name
+var service_get_emergency_route = () => {
+    new ROSLIB.Service({
+        ros: ros,
+        name: '/get_emergency_route',
+        serviceType: 'cav_srvs/GetEmergencyRoute'
+    });
+
+    var request = new ROSLIB.ServiceRequest({
+    });
+
+    service_get_emergency_route.callService(request, function (result) {
+        $("#routeNameValue").text(result.route_name);
     });
 }
 
@@ -258,6 +274,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let destTr1 = document.createElement('tr');
             let destTrRouteName = document.createElement('th');
             destTrRouteName.textContent = "NA";
+            destTrRouteName.id = "routeNameValue";
             destTr1.appendChild(destTrRouteName);
             destBody.appendChild(destTr1);
             destTbl.appendChild(destBody);
@@ -291,7 +308,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         subscribe_bsm: function () {
             subscribe_bsm();
         },
-        service_get_emergency_route : function () { },
+        service_get_emergency_route: function () {
+            service_get_emergency_route();
+        },
         subscribe_alert: function () {
             subscribe_alert();
         },
