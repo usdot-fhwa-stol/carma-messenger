@@ -6,8 +6,8 @@ var listenerAlert;
 var listenerBSM;
 
 const UNAVAILABLE_SPEED = 8191;
-const SPEED50TH = 0.02;
-//enumeration values for siren_in_use:
+const MSTOMPH = 2.23694;
+//enumeration values for siren_in_use. The enum comes from J2735 ASN1 standard fpr CARMA.
 const siren_in_use = {
     UNAVAILABLE: 0,
     NOT_IN_USE: 1,
@@ -16,7 +16,7 @@ const siren_in_use = {
 }
 
 
-// enumeration values for lightbar_in_use:
+// enumeration values for lightbar_in_use. The enum comes from J2735 ASN1 standard fpr CARMA.
 const lightbar_in_use = {
     UNAVAILABLE: 0,
     NOT_IN_USE: 1,
@@ -39,19 +39,26 @@ var subscribe_bsm = () => {
     listenerBSM.subscribe(function (message) {
         if (message.core_data != undefined && message.core_data.latitude != undefined && message.core_data.longitude != undefined) {
             $("#positionValue").text(message.core_data.latitude + "," + message.core_data.longitude);
+        }else{
+            $("#positionValue").text("NA");
         }
 
         if (message.core_data != undefined && message.core_data.id != undefined) {
             if (message.core_data.id.length != 0) {
+                console.log(message.core_data.id);
                 $("#bsmIdValue").text(message.core_data.id);
             }
+        }else{
+            $("#bsmIdValue").text("NA");
         }
 
         if (message.core_data != undefined && message.core_data.speed != undefined) {
             if (message.core_data.speed != UNAVAILABLE_SPEED) {
-                let speedMPH = message.core_data.speed / SPEED50TH;
+                let speedMPH = Math.round(message.core_data.speed * MSTOMPH);
                 $("#velocityValue").text(speedMPH + " MPH");
             }
+        }else{
+            $("#speedMPH").text("NA");
         }
 
         if (message.part_ii != undefined && message.part_ii.length > 0 && message.part_ii[0].special_vehicle_extensions != undefined
@@ -64,6 +71,8 @@ var subscribe_bsm = () => {
             } else {
                 $("#sirenValue").text("NA");
             }
+        }else{
+            $("#sirenValue").text("NA");
         }
 
         if (message.part_ii != undefined && message.part_ii.length > 0 && message.part_ii[0].special_vehicle_extensions != undefined
@@ -76,6 +85,8 @@ var subscribe_bsm = () => {
             } else {
                 $("#lightValue").text("NA");
             }
+        }else{
+            $("#lightValue").text("NA");
         }
     });
 }
@@ -302,7 +313,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         subscribe_bsm: function () {
             subscribe_bsm();
         },
-        service_get_awailable_routes: function () { },
+        service_get_emergency_route : function () { },
         subscribe_alert: function () {
             subscribe_alert();
         },
@@ -318,7 +329,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse();
         container.emergencyResponse("subscribe_bsm", null);
         container.emergencyResponse("subscribe_alert", null);
-        container.emergencyResponse("service_get_awailable_routes", null);
+        container.emergencyResponse("service_get_emergency_route", null);
     };
 
     //*** Public API  ***
