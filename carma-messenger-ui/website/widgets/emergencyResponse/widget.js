@@ -43,15 +43,6 @@ var subscribe_bsm = () => {
             $("#positionValue").text("NA");
         }
 
-        if (message.core_data != undefined && message.core_data.id != undefined) {
-            if (message.core_data.id.length != 0) {
-                console.log(message.core_data.id);
-                $("#bsmIdValue").text(message.core_data.id);
-            }
-        }else{
-            $("#bsmIdValue").text("NA");
-        }
-
         if (message.core_data != undefined && message.core_data.speed != undefined) {
             if (message.core_data.speed != UNAVAILABLE_SPEED) {
                 let speedMPH = Math.round(message.core_data.speed * MSTOMPH);
@@ -190,19 +181,6 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
              */
             let vehicleStatusRow = document.createElement('div');
             vehicleStatusRow.className = "row vehicle-status-row";
-
-            //bsm_id 
-            let bsm_idCol = document.createElement('div');
-            bsm_idCol.className = "col"
-            var bsm_idLabel = document.createElement('Label');
-            bsm_idLabel.innerHTML = "BSM ID";
-            bsm_idLabel.className = "bsm-id-lbl";
-            var bsm_idValue = document.createElement('Label');
-            bsm_idValue.innerHTML = "NA";
-            bsm_idValue.id = "bsmIdValue";
-            bsm_idCol.appendChild(bsm_idLabel);
-            bsm_idCol.appendChild(bsm_idValue);
-            vehicleStatusRow.appendChild(bsm_idCol);
 
             //position
             let positionCol = document.createElement('div');
