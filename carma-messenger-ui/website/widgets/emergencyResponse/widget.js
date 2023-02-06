@@ -103,7 +103,7 @@ var subscribe_alert = () => {
 
 //Service call to get route name
 var service_get_emergency_route = () => {
-    new ROSLIB.Service({
+    var get_emergency_route = new ROSLIB.Service({
         ros: ros,
         name: '/get_emergency_route',
         serviceType: 'cav_srvs/GetEmergencyRoute'
@@ -111,8 +111,8 @@ var service_get_emergency_route = () => {
 
     var request = new ROSLIB.ServiceRequest({
     });
-
-    service_get_emergency_route.callService(request, function (result) {
+    
+    get_emergency_route.callService(request, function (result) {
         $("#routeNameValue").text(result.route_name);
     });
 }
