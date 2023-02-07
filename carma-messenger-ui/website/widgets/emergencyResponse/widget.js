@@ -7,7 +7,7 @@ var listenerBSM;
 
 const UNAVAILABLE_SPEED = 8191;
 const MSTOMPH = 2.23694;
-//enumeration values for siren_in_use. The enum comes from J2735 ASN1 standard fpr CARMA.
+//enumeration values for siren_in_use. The enum comes from J2735 ASN1 standard for CARMA.
 const siren_in_use = {
     UNAVAILABLE: 0,
     NOT_IN_USE: 1,
@@ -16,7 +16,7 @@ const siren_in_use = {
 }
 
 
-// enumeration values for lightbar_in_use. The enum comes from J2735 ASN1 standard fpr CARMA.
+// enumeration values for lightbar_in_use. The enum comes from J2735 ASN1 standard for CARMA.
 const lightbar_in_use = {
     UNAVAILABLE: 0,
     NOT_IN_USE: 1,
@@ -113,7 +113,10 @@ var service_get_emergency_route = () => {
     });
 
     get_emergency_route.callService(request, function (result) {
-        $("#routeNameValue").text(result.route_name);
+        if(result.is_successful)
+        {
+            $("#routeNameValue").text(result.route_name);
+        }        
     });
 }
 
