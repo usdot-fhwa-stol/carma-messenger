@@ -28,6 +28,8 @@ namespace emergency_response_vehicle_plugin
     /**
     * @brief UDPListener is a helper class that manages listening on a UDP socket
     * and passing received packets to subscribers.
+    * NOTE: Class is loosely based off of UDPListener class implemented in the usdot-fhwa-stol GitHub organization's
+    *       carma-cohda-dsrc-driver repository: https://github.com/usdot-fhwa-stol/carma-cohda-dsrc-driver
     */
     class UDPListener{
     
