@@ -1,4 +1,4 @@
-# Copyright (C) 2022 LEIDOS.
+# Copyright (C) 2022-2023 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ament_index_python import get_package_share_directory
+from launch.actions import Shutdown
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import EnvironmentVariable
 from launch_ros.substitutions import FindPackageShare
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
+from carma_ros2_utils.launch.get_current_namespace import GetCurrentNamespace
 import launch.actions
 import launch.events
 
@@ -35,18 +40,56 @@ def generate_launch_description():
     Launch file for launching the use case specific nodes being used in carma-messenger
     """
 
-    env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "WARN" }')
+    env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "DEBUG" }')
 
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
 
-    truck_inspection = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([FindPackageShare('truck_inspection_plugin'), '/launch/truck_inspection_plugin_launch.py']),
-                launch_arguments = { 
-                    'log_level' : GetLogLevel('truck_inspection_plugin', env_log_levels),
-                    }.items()
+    truck_inspection_plugin_param_file = os.path.join(
+        get_package_share_directory('truck_inspection_plugin'), 'config/parameters.yaml')
+
+    emergency_response_vehicle_plugin_param_file = os.path.join(
+        get_package_share_directory('emergency_response_vehicle_plugin'), 'config/parameters.yaml')
+
+    carma_v2x_plugins_container = ComposableNodeContainer(
+        package='carma_ros2_utils',
+        name='carma_v2x_plugins_container',
+        executable='carma_component_container_mt',
+        namespace=GetCurrentNamespace(),
+        composable_node_descriptions=[
+            ComposableNode(
+                package='truck_inspection_plugin',
+                plugin='truck_inspection_plugin::Node',
+                name='truck_inspection_plugin_node',
+                extra_arguments=[
+                    {'use_intra_process_comms': True},
+                    {'--log-level' : GetLogLevel('truck_inspection_plugin', env_log_levels) }
+                ],
+                parameters = [
+                    truck_inspection_plugin_param_file
+                ]
+            ),
+            ComposableNode(
+                package='emergency_response_vehicle_plugin',
+                plugin='emergency_response_vehicle_plugin::EmergencyResponseVehiclePlugin',
+                name='emergency_response_vehicle_plugin_node',
+                extra_arguments=[
+                    {'use_intra_process_comms': True},
+                    {'--log-level' : GetLogLevel('emergency_response_vehicle_plugin', env_log_levels) }
+                ],
+                remappings=[
+                    ("vehicle_pose", "position/gps_common_fix" ),
+                    ("velocity",     "position/velocity" ),
+                    ("outgoing_bsm", "bsm_outbound")
+                ],
+                parameters = [
+                    emergency_response_vehicle_plugin_param_file
+                ]
             )
+        ],
+        on_exit = Shutdown()
+    )
     
     ros2_cmd = launch.substitutions.FindExecutable(name='ros2')
 
@@ -54,10 +97,15 @@ def generate_launch_description():
         cmd=[ros2_cmd, "lifecycle", "set", "/truck_inspection_plugin_node", "configure"],
     )
 
+    process_configure_emergency_response_vehicle_plugin = launch.actions.ExecuteProcess(
+        cmd=[ros2_cmd, "lifecycle", "set", "/emergency_response_vehicle_plugin_node", "configure"],
+    )
+
     configuration_trigger = launch.actions.TimerAction(
         period=configuration_delay,
         actions=[
             process_configure_truck_inspection_plugin,
+            process_configure_emergency_response_vehicle_plugin
         ]
     )
 
@@ -71,10 +119,21 @@ def generate_launch_description():
         )
     )
 
+    configured_event_handler_emergency_response_vehicle_plugin = launch.actions.RegisterEventHandler(launch.event_handlers.OnExecutionComplete(
+            target_action=process_configure_emergency_response_vehicle_plugin,
+            on_completion=[ 
+                launch.actions.ExecuteProcess(
+                    cmd=[ros2_cmd, "lifecycle", "set", "/emergency_response_vehicle_plugin_node", "activate"],
+                )
+            ]
+        )
+    )
+
 
     return LaunchDescription([
         declare_configuration_delay_arg,
-        truck_inspection,
+        carma_v2x_plugins_container,
         configuration_trigger,
-        configured_event_handler_truck_inspection_plugin
+        configured_event_handler_truck_inspection_plugin,
+        configured_event_handler_emergency_response_vehicle_plugin
     ])
