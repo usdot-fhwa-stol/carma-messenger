@@ -1,0 +1,45 @@
+.emergency-response-container {
+    margin: 0px 20px;
+    height: 100%;
+    position: relative;
+}
+
+.title-row {
+    font-weight: bolder;
+}
+
+.titleLbl{
+    margin-left: 20px;
+}
+
+.title-img{
+    width: 50px;
+    height: 50px;
+}
+
+.vehicle-status-row,.destination-row{
+    margin-top: 35px;
+}
+
+.bsm-id-lbl,.position-lbl,.velocity-lbl, .siren-lbl,.light-lbl, .dest-lbl{
+    font-weight: bold;
+    color: rgb(80, 78, 78);
+    display: block;
+}
+.table th{
+    color: rgb(80, 78, 78);
+    font-size: 90%;
+}
+
+
+.dest-btn{
+    margin-top: 150px;
+    display: block;
+}
+
+.alert-row{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    right: 20px;
+}
