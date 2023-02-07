@@ -119,12 +119,51 @@ CarmaJS.WidgetFramework = (function () {
             $('#divWidgetAreaEventManagement').empty();
             console.log("closeEventManagementWidgets is called");
         };
+
+        var loadEmergencyResponseWidgets = function(){
+            var cssFilePath = 'widgets/emergencyResponse/widget.css';
+            var jsFilePath = 'widgets/emergencyResponse/widget.js';
+            $.ajax({
+                 url: jsFilePath,
+                 type:'HEAD',
+                 error: function()
+                 {
+                     //file not exists
+                     console.log('loadEmergencyResponsetWidgets: Widget file does NOT exist: ' + jsFilePath );
+                     return false;
+                 },
+                 success: function()
+                 {
+                    //1) Load css
+                    var link = document.createElement('link');
+                    link.setAttribute('rel', 'stylesheet');
+                    link.setAttribute('type', 'text/css');
+                    link.setAttribute('href', cssFilePath);
+                    document.getElementsByTagName('head')[0].appendChild(link);
+
+                    //2) Load JS
+                    scriptLoader([jsFilePath],function()
+                    {
+                        // now you can use the code from loaded script files.
+                        eval('CarmaJS.WidgetFramework.emergencyResponse' + '.loadCustomWidget($("#divWidgetAreaEmergencyResponse"));');
+                    });
+                    return true;
+                 }
+            });
+        };
+
+        var closeEmergencyResponseWidgets = function () {
+            $('#divWidgetAreaEmergencyResponse').empty();
+            console.log("closeEmergencyResponseWidgets is called");
+        };
     
         //Public API
         return {
             loadWidgets: loadWidgets,
             loadEventManagementWidgets: loadEventManagementWidgets,
+            loadEmergencyResponseWidgets: loadEmergencyResponseWidgets,
             closeWidgets: closeWidgets,
-            closeEventManagementWidgets: closeEventManagementWidgets
+            closeEventManagementWidgets: closeEventManagementWidgets,
+            closeEmergencyResponseWidgets: closeEmergencyResponseWidgets
         };
 })();
