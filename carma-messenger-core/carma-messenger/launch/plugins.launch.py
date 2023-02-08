@@ -40,7 +40,7 @@ def generate_launch_description():
     Launch file for launching the use case specific nodes being used in carma-messenger
     """
 
-    env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "DEBUG" }')
+    env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "WARN" }')
 
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
