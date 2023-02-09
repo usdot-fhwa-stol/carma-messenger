@@ -30,6 +30,7 @@ extern "C"
 #include "j2735_v2x_msgs/msg/byte_array.hpp"
 #include "carma_v2x_msgs/msg/mobility_header.hpp"
 #include "carma_v2x_msgs/msg/mobility_operation.hpp"
+#include "carma_v2x_msgs/msg/emergency_vehicle_response.hpp"
 #include "carma_v2x_msgs/msg/mobility_response.hpp"
 #include "carma_v2x_msgs/msg/mobility_path.hpp"
 #include "carma_v2x_msgs/msg/mobility_request.hpp"
@@ -67,9 +68,12 @@ namespace cpp_message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> inbound_geofence_control_message_pub_;
 
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_pub_;  //incoming mobility operation message after decoded
-            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_pub_;     //incoming mobility response message after decoded
-
             carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityOperation> mobility_operation_message_sub_; //outgoing plain mobility operation message 
+
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_pub_;  //incoming emergency vehicle response message after decoded
+            carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> emergency_vehicle_response_message_sub_; //outgoing emergency vehicle response message 
+
+            carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_pub_;     //incoming mobility response message after decoded
             carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::MobilityResponse> mobility_response_message_sub_; //outgoing plain mobility response message
 
             carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityPath> mobility_path_message_pub_;     //incoming mobility path message after decoded
@@ -107,6 +111,12 @@ namespace cpp_message
             /**
             * @brief function callback when there is an outgoing mobility response message. .
             * @param msg container with Mobility response ros message. Passed to an encoding function in Mobility_Response class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
+            void outbound_emergency_vehicle_response_message_callback(carma_v2x_msgs::msg::EmergencyVehicleResponse::UniquePtr msg);  
+            /**
+            * @brief function callback when there is an outgoing emergency vehicle response message. .
+            * @param msg container with emergency vehicle response ros message. Passed to an encoding function in Emergency_Vehicle_Response class.
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_mobility_response_message_callback(carma_v2x_msgs::msg::MobilityResponse::UniquePtr msg);
@@ -166,12 +176,13 @@ namespace cpp_message
             // sub-helper functions for encoding TrafficControlMessage
             Id64b_t* encode_id64b(const j2735_v2x_msgs::msg::Id64b& msg);
             Id128b_t*    encode_id128b(const j2735_v2x_msgs::msg::Id128b& msg);
-            TrafficControlVehClass_t*    encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg);
-            TrafficControlDetail_t*  encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg);
-            DSRC_DayOfWeek_t*    encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg);
-            DailySchedule_t* encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg);
-            RepeatParams_t*  encode_repeat_params(const j2735_v2x_msgs::msg::RepeatParams& msg);
-            PathNode_t*  encode_path_node(const j2735_v2x_msgs::msg::PathNode& msg);
+            void encode_geofence_control_veh_class(const j2735_v2x_msgs::msg::TrafficControlVehClass& msg, TrafficControlVehClass_t* output);
+            void encode_geofence_control_detail(const j2735_v2x_msgs::msg::TrafficControlDetail& msg, TrafficControlDetail_t* output, 
+                        uint8_t* signal_content, TrafficControlDetail::TrafficControlDetail_u::TrafficControlDetail__latperm* latperm_p, long** item_p);
+            void encode_day_of_week(const j2735_v2x_msgs::msg::DayOfWeek& msg, DSRC_DayOfWeek_t* output, uint8_t* dow_val);
+            void encode_daily_schedule(const j2735_v2x_msgs::msg::DailySchedule& msg, DailySchedule_t* output);
+            void encode_repeat_params (const j2735_v2x_msgs::msg::RepeatParams& msg, RepeatParams_t* output);
+            void encode_path_node (const j2735_v2x_msgs::msg::PathNode& msg, PathNode_t* output, long* z_temp, long* width_temp);
 
     };
 }

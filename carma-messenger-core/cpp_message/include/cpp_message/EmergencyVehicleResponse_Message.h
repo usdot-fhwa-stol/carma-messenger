@@ -14,27 +14,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 #include "cpp_message.h"
+#include <bitset>
 
 namespace cpp_message
 {
-    /**
-     * @brief Create an object and store a shared pointer controlling its memory allocation to a larger-scoped vector
-     *
-     * @param shared_pointers Vector of shared pointers
-     * @return pointer to a new object of type T
-     */
-    template <typename T>
-    T *create_store_shared(std::vector<std::shared_ptr<void>> &shared_pointers);
-
-    class Map_Message
+    class Emergency_Vehicle_Response
     {
+    private:
+        // constants
+        static const int REASON_MIN_LENGTH = 2;
+        static const int REASON_MAX_LENGTH = 128;
+        static const int Emergency_Vehicle_Response_TEST_ID = 246;
+        std::string REASON_STRING_DEFAULT = "reason unavailable";
+
     public:
         /**
          * \brief constructor
          */
-        explicit Map_Message(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging)
+        explicit Emergency_Vehicle_Response(rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging)
         {
 
             node_logging_ = node_logging;
@@ -43,20 +41,17 @@ namespace cpp_message
         rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging_;
 
         /**
-         * @brief Construct a new map message object
-         *
+         * @brief Emergency Vehicle Response message decoding function.
          * @param binary_array Container with binary input.
          * @return decoded ros message, returns ROS warning and an empty optional if decoding fails.
          */
-        boost::optional<j2735_v2x_msgs::msg::MapData> decode_map_message(std::vector<uint8_t> &binary_array);
+        boost::optional<carma_v2x_msgs::msg::EmergencyVehicleResponse> decode_emergency_vehicle_response_message(std::vector<uint8_t> &binary_array);
 
         /**
-         * @brief Construct Generic lane j2735 ROS MAP.msg
-         *
-         * @param g_lane Pointer that has decoded GenericLane object to convert into ROS
-         * @param shared_pointers Vector of shared pointers
-         * @return Generic Lane j2735 ROS Msg
+         * @brief helper functions for Emergency Vehicle Response message encoding.
+         * @param plainMessage contains emergency vehicle response ros message.
+         * @return encoded byte array, returns ROS warning and an empty optional if encoding fails.
          */
-        j2735_v2x_msgs::msg::GenericLane decode_generic_lane(GenericLane_t *g_lane);
+        boost::optional<std::vector<uint8_t>> encode_emergency_vehicle_response_message(carma_v2x_msgs::msg::EmergencyVehicleResponse plainMessage);
     };
 }

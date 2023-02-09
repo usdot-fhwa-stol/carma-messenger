@@ -66,6 +66,55 @@ TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg)
     }
 }
 
+TEST(MobilityOperationMessageTest, testEncodeDecodeMobilityOperationMsg)
+{
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::Mobility_Operation worker(node->get_node_logging_interface());
+    carma_v2x_msgs::msg::MobilityHeader header;
+    carma_v2x_msgs::msg::MobilityOperation message;     
+    header.sender_id="USDOT-45100";
+    header.recipient_id="USDOT-45095";
+    header.sender_bsm_id="10ABCDEF";
+    header.plan_id="11111111-2222-3333-AAAA-111111111111";
+    header.timestamp = 9223372036854775807;
+    message.m_header=header;
+    message.strategy="Carma/Platooning";
+    message.strategy_params="vin_number:1FUJGHDV0CLBP8834,license_plate:DOT-10003,carrier_name:Silver Truck FHWA TFHRC,carrier_id:USDOT 0000001,weight:,ads_software_version:System Version Unknown,date_of_last_state_inspection:YYYY-MM-DD,date_of_last_ads_calibration:YYYY-MM-DD,pre_trip_ads_health_check:Green,ads_status:Red,iss_score:49,permit_required:0,timestamp:1585836731814";
+    auto res = worker.encode_mobility_operation_message(message);
+
+    if(res) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "encoding failed!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res_decoded = worker.decode_mobility_operation_message(res.get());
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    carma_v2x_msgs::msg::MobilityOperation result = res_decoded.get();
+    EXPECT_EQ(message, result);
+
+    auto res2 = worker.encode_mobility_operation_message(result);
+    if(res2) EXPECT_TRUE(true);
+    else 
+    {
+        std::cout << "Encoding failed while unit testing BSM encoder!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res2_decoded = worker.decode_mobility_operation_message(res2.get());
+    if(res2_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    EXPECT_EQ(message, res2_decoded.get());
+}
+
 TEST(MobilityOperationMessageTest, testEncodeMobilityOperationMsg_base_case)
 {
     auto node = std::make_shared<rclcpp::Node>("test_node");

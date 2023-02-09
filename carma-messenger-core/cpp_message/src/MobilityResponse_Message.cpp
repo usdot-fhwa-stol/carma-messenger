@@ -111,6 +111,7 @@ namespace cpp_message
             long tmp=message->value.choice.TestMessage01.body.urgency;
             if(tmp>URGENCY_MAX || tmp<URGENCY_MIN){
                 RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Urgency message out of range");
+                ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
                 return boost::optional<carma_v2x_msgs::msg::MobilityResponse>{};
             }
             output.urgency=tmp;
@@ -131,10 +132,12 @@ namespace cpp_message
             MobilityRepeat_t repeat_choice = *message->value.choice.TestMessage01.body.repeat;
             output.repeat.repeat = repeat_choice;
             
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<carma_v2x_msgs::msg::MobilityResponse>(output);
         }
         //else return an empty object
         RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Decoding mobility response message failed");
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<carma_v2x_msgs::msg::MobilityResponse>{};
     }
 
@@ -144,14 +147,8 @@ namespace cpp_message
         uint8_t buffer[1472];
         size_t buffer_size=sizeof(buffer);
         asn_enc_rval_t ec;
-        std::shared_ptr<MessageFrame_t>message_shared(new MessageFrame_t);
-        //if mem allocation fails
-        if(!message_shared)
-        {
-            RCLCPP_WARN_STREAM( node_logging_->get_logger(), "Cannot allocate mem for MobilityResponse message encoding");
-            return boost::optional<std::vector<uint8_t>>{};            
-        }
-        MessageFrame_t* message=message_shared.get();
+        auto message_shared = std::make_shared<MessageFrame_t>();
+        MessageFrame_t* message = message_shared.get();
         //set message type to TestMessage01
         message->messageId=MOBILITY_RESPONSE_TEST_ID; 
         message->value.present=MessageFrame__value_PR_TestMessage01;

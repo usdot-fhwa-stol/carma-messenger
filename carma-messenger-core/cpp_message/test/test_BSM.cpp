@@ -89,12 +89,64 @@ TEST(BSMTest, testEncodeBSM)
         size_t len=to_read.size();
         for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
         std::cout<<"\n";
-        
         EXPECT_TRUE(true);
     }
     else
     {
         std::cout << "Encoding failed while unit testing BSM encoder!\n";
+        EXPECT_TRUE(false);
+    }
+}
+
+TEST(BSMTest, testEncodeDecodeBSM)
+{
+    auto node = std::make_shared<rclcpp::Node>("test_node");
+    cpp_message::BSM_Message worker(node->get_node_logging_interface());    
+    j2735_v2x_msgs::msg::BSM message;
+    message.core_data.msg_count = 1;
+    message.core_data.id = {1,2,3,4};
+    message.core_data.sec_mark = 2;
+    message.core_data.longitude = 3;
+    message.core_data.accuracy.orientation = 4;
+    message.core_data.brakes.wheel_brakes.brake_applied_status = j2735_v2x_msgs::msg::BrakeAppliedStatus::RIGHT_REAR;
+    message.core_data.brakes.traction.traction_control_status = 1;
+    message.core_data.brakes.abs.anti_lock_brake_status = 1;
+    message.core_data.brakes.scs.stability_control_status = 1;
+    message.core_data.brakes.brake_boost.brake_boost_applied = 1;
+    message.core_data.brakes.aux_brakes.auxiliary_brake_status = 1;
+    message.core_data.accel_set.yaw_rate = 18;
+    message.core_data.size.vehicle_width = 19;
+    message.core_data.size.vehicle_length = 20;
+
+    auto res = worker.encode_bsm_message(message);
+    if(res) EXPECT_TRUE(true);
+    else 
+    {
+        std::cout << "Encoding failed while unit testing BSM encoder!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res_decoded = worker.decode_bsm_message(res.get());
+    if(res_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
+        EXPECT_TRUE(false);
+    }
+    j2735_v2x_msgs::msg::BSM result = res_decoded.get();
+    EXPECT_EQ(message, result);
+
+    auto res2 = worker.encode_bsm_message(result);
+    if(res2) EXPECT_TRUE(true);
+    else 
+    {
+        std::cout << "Encoding failed while unit testing BSM encoder!\n";
+        EXPECT_TRUE(false);
+    }
+    auto res2_decoded = worker.decode_bsm_message(res2.get());
+    if(res2_decoded) EXPECT_TRUE(true);
+    else
+    {
+        std::cout << "decoding of encoded file failed! \n";
         EXPECT_TRUE(false);
     }
 }

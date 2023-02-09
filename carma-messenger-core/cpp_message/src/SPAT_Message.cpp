@@ -358,10 +358,12 @@ namespace cpp_message
 
             //4. Regional - not implemented yet
 
+            ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             return boost::optional<j2735_v2x_msgs::msg::SPAT>(output);
         }
 
         // RCLCPP_WARN_STREAM( rclcpp::get_logger(), "SPAT Message decoding failed");
+        ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
         return boost::optional<j2735_v2x_msgs::msg::SPAT>{};
     }
 
