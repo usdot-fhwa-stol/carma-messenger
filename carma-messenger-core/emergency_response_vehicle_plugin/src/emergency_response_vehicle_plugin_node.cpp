@@ -251,6 +251,10 @@ namespace emergency_response_vehicle_plugin
 
       RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Number of route destination points loaded: " << route_destination_points_.size());
       RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Final destination of route: " << route_final_destination_name_);
+
+      if(route_destination_points_.empty()){
+        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "No route destination points were loaded by plugin!");
+      }
     }
   }
 
