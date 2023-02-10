@@ -18,7 +18,7 @@
 }
 
 .vehicle-status-row,.destination-row{
-    margin-top: 35px;
+    margin-top: 20px;
 }
 
 .bsm-id-lbl,.position-lbl,.velocity-lbl, .siren-lbl,.light-lbl, .dest-lbl{
@@ -33,13 +33,19 @@
 
 
 .dest-btn{
-    margin-top: 150px;
     display: block;
 }
 
+.map-col {
+    height: calc(100vh - 480px)
+}
 .alert-row{
     position: absolute;
     width: 100%;
     bottom: 20px;
     right: 20px;
+}
+
+#emergencyAlert{
+    z-index: 999;
 }

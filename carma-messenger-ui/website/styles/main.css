@@ -499,10 +499,10 @@ div.message_box {
  * Always set the map height explicitly to define the size of the div
  * element that contains the map.
  */
-#map {
-    height: 550px;
-}
 
+#map {
+    height: 600px;
+}
 /* Bottom left text */
  .bottom-left {
     position: absolute;
