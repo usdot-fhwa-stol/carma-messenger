@@ -12,20 +12,18 @@
 #include <asn_application.h>
 
 /* Including external dependencies */
+#include "MobilityHeader.h"
+#include "EmergencyVehicleAck.h"
 #include <constr_SEQUENCE.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Forward declarations */
-struct Header;
-struct Reg_BasicSafetyMessage;
-
 /* TestMessage07 */
 typedef struct TestMessage07 {
-	struct Header	*header;	/* OPTIONAL */
-	struct Reg_BasicSafetyMessage	*regional;	/* OPTIONAL */
+	MobilityHeader_t	 header;
+	EmergencyVehicleAck_t	 body;
 	/*
 	 * This type is extensible,
 	 * possible extensions are below.
@@ -43,10 +41,6 @@ extern asn_TYPE_member_t asn_MBR_TestMessage07_1[2];
 #ifdef __cplusplus
 }
 #endif
-
-/* Referred external types */
-#include "Header.h"
-#include "RegionalExtension.h"
 
 #endif	/* _TestMessage07_H_ */
 #include <asn_internal.h>
