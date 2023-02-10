@@ -29,7 +29,8 @@ namespace emergency_response_vehicle_plugin
     config_.enable_emergency_response_vehicle_plugin = declare_parameter<bool>("enable_emergency_response_vehicle_plugin", config_.enable_emergency_response_vehicle_plugin);
     config_.bsm_generation_frequency = declare_parameter<double>("bsm_generation_frequency", config_.bsm_generation_frequency);
     config_.min_distance_to_next_destination_point = declare_parameter<double>("min_distance_to_next_destination_point", config_.min_distance_to_next_destination_point);
-    config_.emergency_route_file_path = declare_parameter<std::string>("emergency_route_file_path", config_.emergency_route_file_path);
+    config_.emergency_route_file_name = declare_parameter<std::string>("emergency_route_file_name", config_.emergency_route_file_name);
+    config_.route_file_folder = declare_parameter<std::string>("route_file_folder", config_.route_file_folder);
     config_.listening_port = declare_parameter<int>("listening_port", config_.listening_port);
     config_.bsm_message_id = declare_parameter<int>("bsm_message_id", config_.bsm_message_id);
   }
@@ -44,7 +45,8 @@ namespace emergency_response_vehicle_plugin
     }, parameters);
 
     auto error_3 = update_params<std::string>({
-        {"emergency_route_file_path", config_.emergency_route_file_path}
+        {"emergency_route_file_name", config_.emergency_route_file_name},
+        {"route_file_folder", config_.route_file_folder}
     }, parameters);
     rcl_interfaces::msg::SetParametersResult result;
 
@@ -69,7 +71,8 @@ namespace emergency_response_vehicle_plugin
     get_parameter<bool>("enable_emergency_response_vehicle_plugin", config_.enable_emergency_response_vehicle_plugin);
     get_parameter<double>("bsm_generation_frequency", config_.bsm_generation_frequency);
     get_parameter<double>("min_distance_to_next_destination_point", config_.min_distance_to_next_destination_point);
-    get_parameter<std::string>("emergency_route_file_path", config_.emergency_route_file_path);
+    get_parameter<std::string>("emergency_route_file_name", config_.emergency_route_file_name);
+    get_parameter<std::string>("route_file_folder", config_.route_file_folder);
     get_parameter<int>("listening_port", config_.listening_port);
     get_parameter<int>("bsm_message_id", config_.bsm_message_id);
 
@@ -119,7 +122,8 @@ namespace emergency_response_vehicle_plugin
                             std::bind(&EmergencyResponseVehiclePlugin::publishBSM, this));
 
       // Load route destination points from file path provided by the configuration parameters
-      loadRouteDestinationPointsFromFile(config_.emergency_route_file_path);
+      std::string emergency_route_file_path = config_.route_file_folder + config_.emergency_route_file_name;
+      loadRouteDestinationPointsFromFile(emergency_route_file_path);
 
       // Connect udp_listener_ to process incoming UDP packets that provide the status of this ERV's emergency lights and sirens
       connect(config_.listening_port);

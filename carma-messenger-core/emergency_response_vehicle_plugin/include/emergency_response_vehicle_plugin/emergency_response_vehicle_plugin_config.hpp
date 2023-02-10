@@ -27,23 +27,24 @@ namespace emergency_response_vehicle_plugin
    */
   struct Config
   {
-    bool enable_emergency_response_vehicle_plugin = false;          //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
-                                                                    //  the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
-                                                                    //  in the 'listening_port' parameter.
+    bool enable_emergency_response_vehicle_plugin = false;           //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
+                                                                     //  the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
+                                                                     //  in the 'listening_port' parameter.
 
-    double bsm_generation_frequency = 10.0;                         // (Hz) The frequency at which BSMs will be generated and published by this plugin. 
+    double bsm_generation_frequency = 10.0;                          // (Hz) The frequency at which BSMs will be generated and published by this plugin. 
 
-    double min_distance_to_next_destination_point = 30.0;           // (Meters) The distance that the ERV must be from its next route destination point before the point is removed from
-                                                                    // the list of future route destination points.
+    double min_distance_to_next_destination_point = 30.0;            // (Meters) The distance that the ERV must be from its next route destination point before the point is removed from
+                                                                     // the list of future route destination points.
 
-    std::string emergency_route_file_path = "DEFAULT_PATH";         // The path to the file on the host PC for the .csv file that contains the pre-defined points existing along active emergency vehicle's route.
-                                                                    // The folder containing this .csv file is expected to be /opt/carma/routes (Example: "/opt/carma/routes/example_route.csv").
+    std::string emergency_route_file_name = "DEFAULT-FILE-NAME.csv"; // The name of the .csv file on the host PC that contains the pre-defined points existing along the ERV's route.
 
-    int listening_port = 1610;                                      // The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
-                                                                    // of the ERV’s emergency sirens and lights.
+    std::string route_file_folder = "DEFAULT-FOLDER-PATH";           // The path to the directoy on the host PC that contains the .csv file with the ERV's route destination points. 
 
-    int bsm_message_id = 8;                                         // The BSM message ID for the Emergency Response Vehicle. The value will be converted to a 4 element array of uint8_t
-                                                                    // where each byte of the parameter becomes one element of the array.
+    int listening_port = 1610;                                       // The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
+                                                                     // of the ERV’s emergency sirens and lights.
+
+    int bsm_message_id = 8;                                          // The BSM message ID for the Emergency Response Vehicle. The value will be converted to a 4 element array of uint8_t
+                                                                     // where each byte of the parameter becomes one element of the array.
 
     // Stream operator for this config
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
@@ -52,7 +53,8 @@ namespace emergency_response_vehicle_plugin
            << "enable_emergency_response_vehicle_plugin: " << c.enable_emergency_response_vehicle_plugin << std::endl
            << "bsm_generation_frequency: " << c.bsm_generation_frequency << std::endl
            << "min_distance_to_next_destination_point: " << c.min_distance_to_next_destination_point << std::endl
-           << "emergency_route_file_path: " << c.emergency_route_file_path << std::endl
+           << "emergency_route_file_name: " << c.emergency_route_file_name << std::endl
+           << "route_file_folder: " << c.route_file_folder << std::endl
            << "listening_port: " << c.listening_port << std::endl
            << "bsm_message_id: " << c.bsm_message_id << std::endl
            << "}" << std::endl;

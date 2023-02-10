@@ -13,10 +13,9 @@ bsm_generation_frequency : 10.0
 # Units: Meters
 min_distance_to_next_destination_point : 30.0
 
-# String: The path to the file on the host PC for the .csv file that contains the pre-defined points existing along active emergency vehicle's route.
-#         The folder containing this .csv file is expected to be /opt/carma/routes (Example: "/opt/carma/routes/example_route.csv").
+# String: The name of the .csv file on the host PC that contains the pre-defined points existing along the ERV's route.
 # Units: N/A
-emergency_route_file_path : "DEFAULT_PATH"
+emergency_route_file_name : "DEFAULT-FILE-NAME.csv"
 
 # Int: The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
 #      of the ERV’s emergency sirens and lights.
