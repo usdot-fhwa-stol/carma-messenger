@@ -123,7 +123,7 @@ namespace emergency_response_vehicle_plugin{
         worker_node->current_latitude_ = 38.95612;
         worker_node->current_longitude_ = -77.15101;
         worker_node->current_velocity_ = 10.0;
-        worker_node->emergency_lights_active_ = true;
+        worker_node->emergency_lights_active_ = false;
         worker_node->emergency_sirens_active_ = true;
 
         // Add 3 points to node's future route destinations vector
@@ -162,7 +162,7 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_EQ(bsm_msg.part_ii[0].part_ii_id, carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT);
         ASSERT_TRUE(bsm_msg.part_ii[0].special_vehicle_extensions.presence_vector && carma_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS);
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::IN_USE);
-        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::IN_USE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::UNAVAILABLE);
 
         // Verify BSM's Regional Extension Content
         ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
@@ -176,12 +176,30 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_EQ(bsm_msg.regional[0].route_destination_points[2].latitude, 38.95696);
         ASSERT_EQ(bsm_msg.regional[0].route_destination_points[2].longitude, -77.14527);
 
-        // Generate BSM
+        // Generate BSM in order to verify that msg_count is properly adjusted
         bsm_msg = worker_node->generateBSM();
 
         // Verify that BSM's msg_count is reset to 0 since it would have surpassed max value of 127
         ASSERT_EQ(bsm_msg.core_data.msg_count, 0);
         ASSERT_EQ(worker_node->bsm_id_string_, "09000000");
+
+        // Update statuses of lights and sirens and regenerate BSM
+        worker_node->emergency_lights_active_ = true;
+        worker_node->emergency_sirens_active_ = false;
+
+        bsm_msg = worker_node->generateBSM();
+
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::UNAVAILABLE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::IN_USE);
+
+        // Update statuses of lights and sirens (again) and regenerate BSM
+        worker_node->emergency_lights_active_ = true;
+        worker_node->emergency_sirens_active_ = true;
+        
+        bsm_msg = worker_node->generateBSM();
+
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::IN_USE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::IN_USE);
 
         worker_node->handle_on_shutdown();
     }
