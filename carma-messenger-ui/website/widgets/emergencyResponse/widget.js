@@ -60,11 +60,14 @@ var subscribe_bsm = () => {
             data.features.push(feature);
 
             //Vehicle route
-            message.regional[0].route_destination_points.forEach(element => {
-                let route_feature = createFeature();
-                route_feature.geometry.coordinates.push(element.longitude, element.latitude);
-                data.features.push(route_feature);
-            });
+            if (message.regional != undefined && message.regional.length > 0 && message.regional[0].route_destination_points != undefined
+                && message.regional[0].route_destination_points.length > 0){                
+                message.regional[0].route_destination_points.forEach(element => {
+                    let route_feature = createFeature();
+                    route_feature.geometry.coordinates.push(element.longitude, element.latitude);
+                    data.features.push(route_feature);
+                });
+            }
             map.getSource(ERV_ROUTE_SOURCE).setData(data);
         } else {
             $("#positionValue").text("NA");
