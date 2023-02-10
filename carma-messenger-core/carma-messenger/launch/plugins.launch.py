@@ -42,6 +42,8 @@ def generate_launch_description():
 
     env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "WARN" }')
 
+    route_file_folder = LaunchConfiguration('route_file_folder')
+
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
@@ -84,6 +86,7 @@ def generate_launch_description():
                     ("outgoing_bsm", "bsm_outbound")
                 ],
                 parameters = [
+                    {'route_file_folder': route_file_folder},
                     emergency_response_vehicle_plugin_param_file
                 ]
             )

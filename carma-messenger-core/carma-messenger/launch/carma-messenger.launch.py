@@ -36,6 +36,14 @@ def generate_launch_description():
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
 
+    # Declare the route file folder launch argument
+    route_file_folder = LaunchConfiguration('route_file_folder')
+    declare_route_file_folder = DeclareLaunchArgument(
+        name = 'route_file_folder',
+        default_value='/opt/carma/routes/',
+        description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins'
+    )
+
     v2x_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
@@ -52,7 +60,8 @@ def generate_launch_description():
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
                 launch_arguments = { 
-                    'configuration_delay' : [configuration_delay]
+                    'configuration_delay' : [configuration_delay],
+                    'route_file_folder' : route_file_folder
                 }.items()
             ),
         ]
@@ -60,6 +69,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         declare_configuration_delay_arg,
+        declare_route_file_folder,
         v2x_group,
         plugins_group
     ])
