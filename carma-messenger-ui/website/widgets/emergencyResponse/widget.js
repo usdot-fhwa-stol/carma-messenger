@@ -18,6 +18,7 @@ var data = {
         }
     ]
 }
+var destination_pin = null;
 
 
 const UNAVAILABLE_SPEED = 8191;
@@ -61,7 +62,7 @@ var subscribe_bsm = () => {
 
             //Vehicle route
             if (message.regional != undefined && message.regional.length > 0 && message.regional[0].route_destination_points != undefined
-                && message.regional[0].route_destination_points.length > 0){                
+                && message.regional[0].route_destination_points.length > 0) {
                 message.regional[0].route_destination_points.forEach(element => {
                     let route_feature = createFeature();
                     route_feature.geometry.coordinates.push(element.longitude, element.latitude);
@@ -69,6 +70,12 @@ var subscribe_bsm = () => {
                 });
             }
             map.getSource(ERV_ROUTE_SOURCE).setData(data);
+            if (data.features.length > 1) {
+                if (destination_pin == null) {
+                    destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
+                }
+                destination_pin.setLngLat(data.features[data.features.length - 1].geometry.coordinates);
+            }
         } else {
             $("#positionValue").text("NA");
         }
@@ -121,6 +128,14 @@ var createFeature = () => {
     };
     return feature;
 }
+
+var createMarker = ([longitude, latitude]) => {
+    let marker = new mapboxgl.Marker({
+        color: "#FF0000"
+    }).setLngLat([latitude, longitude]).addTo(map);
+    return marker;
+}
+
 //Display alert and play sound
 var subscribe_alert = () => {
     listenerAlert = new ROSLIB.Topic({
@@ -262,10 +277,15 @@ var loadMap = () => {
             'source': 'erv-route-trace',
             'paint': {
                 'circle-radius': 6,
-                'circle-color': '#4169E1'
+                'circle-color': '#3bb2d0'
             },
             'filter': ['==', '$type', 'Point']
         });
+
+        //Add destination pin
+        if (data.features.length > 1) {
+            destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
+        }
     });
 }
 
