@@ -276,8 +276,8 @@ var loadMap = () => {
             'type': 'circle',
             'source': 'erv-route-trace',
             'paint': {
-                'circle-radius': 6,
-                'circle-color': '#3bb2d0'
+                'circle-radius': 10,
+                'circle-color': '#FFAC1C'
             },
             'filter': ['==', '$type', 'Point']
         });
