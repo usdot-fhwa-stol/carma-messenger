@@ -4,6 +4,24 @@
 CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
 var listenerAlert;
 var listenerBSM;
+//Initialize map object
+var map = null;
+const ERV_ROUTE_SOURCE = "erv-route-trace";
+//Initialize dataset
+var data = {
+    'type': 'FeatureCollection',
+    'features': [
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': []
+            }
+        }
+    ]
+}
+var destination_pin = null;
+
 
 const UNAVAILABLE_SPEED = 8191;
 const MSTOMPH = 2.23694;
@@ -35,10 +53,31 @@ var subscribe_bsm = () => {
         name: '/bsm_outbound',
         messageType: 'cav_msgs/BSM'
     });
-
     listenerBSM.subscribe(function (message) {
         if (message.core_data != undefined && message.core_data.latitude != undefined && message.core_data.longitude != undefined) {
+            //Vehicle current location
             $("#positionValue").text(message.core_data.latitude + "," + message.core_data.longitude);
+            data.features = [];
+            let feature = createFeature();
+            feature.geometry.coordinates.push(message.core_data.longitude, message.core_data.latitude);
+            data.features.push(feature);
+
+            //Vehicle route
+            if (message.regional != undefined && message.regional.length > 0 && message.regional[0].route_destination_points != undefined
+                && message.regional[0].route_destination_points.length > 0) {
+                message.regional[0].route_destination_points.forEach(element => {
+                    let route_feature = createFeature();
+                    route_feature.geometry.coordinates.push(element.longitude, element.latitude);
+                    data.features.push(route_feature);
+                });
+            }
+            map.getSource(ERV_ROUTE_SOURCE).setData(data);
+            if (data.features.length > 1) {
+                if (destination_pin == null) {
+                    destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
+                }
+                destination_pin.setLngLat(data.features[data.features.length - 1].geometry.coordinates);
+            }
         } else {
             $("#positionValue").text("NA");
         }
@@ -82,6 +121,26 @@ var subscribe_bsm = () => {
     });
 }
 
+//create feature point with empty coordinates
+var createFeature = () => {
+    let feature = {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': []
+        }
+    };
+    return feature;
+}
+
+//create Marker with initialized geolocation and add marker to the map
+var createMarker = ([longitude, latitude]) => {
+    let marker = new mapboxgl.Marker({
+        color: "#FF0000"
+    }).setLngLat([latitude, longitude]).addTo(map);
+    return marker;
+}
+
 //Display alert and play sound
 var subscribe_alert = () => {
     listenerAlert = new ROSLIB.Topic({
@@ -98,25 +157,6 @@ var subscribe_alert = () => {
             }
 
         }
-    });
-}
-
-//Service call to get route name
-var service_get_emergency_route = () => {
-    var get_emergency_route = new ROSLIB.Service({
-        ros: ros,
-        name: '/get_emergency_route',
-        serviceType: 'cav_srvs/GetEmergencyRoute'
-    });
-
-    var request = new ROSLIB.ServiceRequest({
-    });
-
-    get_emergency_route.callService(request, function (result) {
-        if(result.is_successful)
-        {
-            $("#routeNameValue").text(result.route_name);
-        }        
     });
 }
 
@@ -192,6 +232,49 @@ var goToEventManagement = () => {
     //show event management widget
     CarmaJS.WidgetFramework.closeEventManagementWidgets();
     CarmaJS.WidgetFramework.loadEventManagementWidgets();
+}
+/***
+ * Load OpenStreetMap with MapboxGL JS
+ */
+var loadMap = () => {
+    mapboxgl.accessToken = "pk.eyJ1IjoiZGR1MjAyMCIsImEiOiJjbDJyeHJob2YwYnhwM2xtaG9zaDdnYTR4In0.Rh2bSS44c99BoDj2W7jjfw";
+    //Default view is at TFHRC
+    let default_center = [-77.150495, 38.955675];
+    map = new mapboxgl.Map({
+        container: 'erv-map',
+        style: 'mapbox://styles/mapbox/satellite-v9',
+        center: default_center,
+        zoom: 17
+    });
+    map.addControl(new mapboxgl.FullscreenControl());
+
+    setInterval(() => {
+        //Change View Point
+        map.jumpTo({ 'center': data.features[0].geometry.coordinates.length == 0 ? default_center : data.features[0].geometry.coordinates, 'zoom': 17 });
+    }, 2000);
+
+    map.on('load', () => {
+        map.addSource(ERV_ROUTE_SOURCE, {
+            'type': 'geojson',
+            'data': data
+        });
+
+        map.addLayer({
+            'id': ERV_ROUTE_SOURCE,
+            'type': 'circle',
+            'source': 'erv-route-trace',
+            'paint': {
+                'circle-radius': 10,
+                'circle-color': '#FFAC1C'
+            },
+            'filter': ['==', '$type', 'Point']
+        });
+
+        //Add destination pin
+        if (data.features.length > 1) {
+            destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
+        }
+    });
 }
 
 //Load wiget on startup
@@ -280,29 +363,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let destinationRow = document.createElement('div');
             destinationRow.className = "row destination-row";
             let destinationCol = document.createElement('div');
-            destinationCol.className = "col col-4";
-            var destLbl = document.createElement('Label');
-            destLbl.innerHTML = "Emergency Destination";
-            destLbl.className = "dest-lbl";
-            destinationCol.appendChild(destLbl);
-            let destTbl = document.createElement('table');
-            destTbl.className = "table";
-            let destHeader = document.createElement('thead');
-            let destTr = document.createElement('tr');
-            let destThRouteName = document.createElement('th');
-            destThRouteName.textContent = "Route Name";
-            destTr.appendChild(destThRouteName);
-            destHeader.appendChild(destTr);
-            destTbl.appendChild(destHeader);
-            let destBody = document.createElement('tbody');
-            let destTr1 = document.createElement('tr');
-            let destTrRouteName = document.createElement('th');
-            destTrRouteName.textContent = "NA";
-            destTrRouteName.id = "routeNameValue";
-            destTr1.appendChild(destTrRouteName);
-            destBody.appendChild(destTr1);
-            destTbl.appendChild(destBody);
-            destinationCol.appendChild(destTbl);
+            destinationCol.className = "col";
             //Destination Button
             let destBtn = document.createElement('button');
             destBtn.className = "btn btn-danger dest-btn btn-lg";
@@ -310,10 +371,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             destBtn.setAttribute("title", "You will be redirected to event management page.");
             destBtn.onclick = () => {
                 let success = service_arrive_at_emergency_destination();
-                if(success)
-                {
+                if (success) {
                     goToEventManagement();
-                }                
+                }
             };
             destinationCol.appendChild(destBtn);
             destinationRow.appendChild(destinationCol);
@@ -327,20 +387,30 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             let alert = createAlertDiv("");
             alertCol.appendChild(alert);
             alertRow.appendChild(alertCol);
+
+            //MAP 
+            let mapRow = document.createElement('div');
+            mapRow.className = "row map-row flex-grow-1";
+            let mapCol = document.createElement('div');
+            mapCol.className = "col map-col";
+            mapCol.id = "erv-map";
+            mapRow.appendChild(mapCol);
+
             container.appendChild(titleRow);
             container.appendChild(vehicleStatusRow);
             container.appendChild(destinationRow);
             container.appendChild(alertRow);
+            container.appendChild(mapRow);
             $(this.element).append(container);
         },
         subscribe_bsm: function () {
             subscribe_bsm();
         },
-        service_get_emergency_route: function () {
-            service_get_emergency_route();
-        },
         subscribe_alert: function () {
             subscribe_alert();
+        },
+        loadMap: function () {
+            loadMap();
         },
         _destroy: function () {
             this.element.empty();
@@ -354,7 +424,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse();
         container.emergencyResponse("subscribe_bsm", null);
         container.emergencyResponse("subscribe_alert", null);
-        container.emergencyResponse("service_get_emergency_route", null);
+        container.emergencyResponse("loadMap", null);
     };
 
     //*** Public API  ***
