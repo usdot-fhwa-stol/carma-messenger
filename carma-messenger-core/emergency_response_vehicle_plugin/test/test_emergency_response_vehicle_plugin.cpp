@@ -212,14 +212,6 @@ namespace emergency_response_vehicle_plugin{
         worker_node->config_.enable_emergency_response_vehicle_plugin = true;
         worker_node->activate();  //Call activate state transition to get not read for runtime
 
-        // Verify that getEmergencyRouteCallback() response is not successful since a route has not been loaded by the plugin yet
-        auto req = std::make_shared<carma_planning_msgs::srv::GetEmergencyRoute::Request>();
-        auto resp = std::make_shared<carma_planning_msgs::srv::GetEmergencyRoute::Response>();
-        auto header_srv = std::make_shared<rmw_request_id_t>();
-        worker_node->getEmergencyRouteCallback(header_srv, req, resp);
-
-        ASSERT_EQ(resp->is_successful, false);
-
         // Provide file path to getRouteDestinationPointsFromFile() to extract route destination points
         worker_node->loadRouteDestinationPointsFromFile("../../install_ros2/emergency_response_vehicle_plugin/share/emergency_response_vehicle_plugin/resource/example_route.csv");
 
@@ -235,18 +227,7 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_NEAR(worker_node->route_destination_points_[2].longitude, -77.14527, 0.1);
         ASSERT_NEAR(worker_node->route_destination_points_[2].latitude, 38.95696, 0.1);
 
-        ASSERT_EQ(worker_node->route_final_destination_name_, "FINAL-DEST");
-
-        // Verify that getEmergencyRouteCallback() response is successful (and a route name is provided) now that a route has been loaded by the plugin
-        auto req2 = std::make_shared<carma_planning_msgs::srv::GetEmergencyRoute::Request>();
-        auto resp2 = std::make_shared<carma_planning_msgs::srv::GetEmergencyRoute::Response>();
-        auto header_srv2 = std::make_shared<rmw_request_id_t>();
-        worker_node->getEmergencyRouteCallback(header_srv2, req2, resp2);
-
-        ASSERT_EQ(resp2->is_successful, true);
-        ASSERT_EQ(resp2->route_name, "FINAL-DEST");
-
-        // Verify that arrivedAtEmergencyDestination() response is successful and that plugin's route member objects are cleared
+        // Verify that arrivedAtEmergencyDestination() response is successful and that plugin's route_destination_points_ member object is cleared
         auto req3 = std::make_shared<std_srvs::srv::Trigger::Request>();
         auto resp3 = std::make_shared<std_srvs::srv::Trigger::Response>();
         auto header_srv3 = std::make_shared<rmw_request_id_t>();
@@ -254,7 +235,6 @@ namespace emergency_response_vehicle_plugin{
 
         ASSERT_EQ(resp3->success, true);
         ASSERT_EQ(worker_node->route_destination_points_.size(), 0);
-        ASSERT_EQ(worker_node->route_final_destination_name_, "");
 
         worker_node->handle_on_shutdown();
     }

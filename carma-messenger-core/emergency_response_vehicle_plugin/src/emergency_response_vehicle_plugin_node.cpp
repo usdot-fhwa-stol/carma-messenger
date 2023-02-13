@@ -99,9 +99,6 @@ namespace emergency_response_vehicle_plugin
     emergency_vehicle_ui_warnings_pub_ = create_publisher<carma_msgs::msg::UIInstructions>("emergency_vehicle_ui_warning", 5);
 
     // Setup service servers
-    get_emergency_route_server_ = create_service<carma_planning_msgs::srv::GetEmergencyRoute>("get_emergency_route", 
-                                                              std::bind(&EmergencyResponseVehiclePlugin::getEmergencyRouteCallback, this, std_ph::_1, std_ph::_2, std_ph::_3));
-
     arrived_at_emergency_destination_server_ = create_service<std_srvs::srv::Trigger>("arrived_at_emergency_destination",
                                                               std::bind(&EmergencyResponseVehiclePlugin::arrivedAtEmergencyDestinationCallback, this, std_ph::_1, std_ph::_2, std_ph::_3));
 
@@ -228,7 +225,6 @@ namespace emergency_response_vehicle_plugin
 
       // Read each line in route file (if any) and generate a route destination point
       // NOTE: Each line of the .csv follows the format "LONGITUDE<float>,LATITUDE<float>,ELEVATION<float>,DESTINATION-NAME<string>"
-      std::string final_destination_name;
       while(std::getline(fs, line)){
         carma_v2x_msgs::msg::Position3D destination_point;
 
@@ -247,14 +243,9 @@ namespace emergency_response_vehicle_plugin
         destination_point.elevation_exists = true;
 
         route_destination_points_.push_back(destination_point);
-
-        // Set route_final_destination_name_ using the descriptive name associated with this destination point
-        line.erase(0, comma + 1);
-        route_final_destination_name_ = line;
       }
 
       RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Number of route destination points loaded: " << route_destination_points_.size());
-      RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Final destination of route: " << route_final_destination_name_);
 
       if(route_destination_points_.empty()){
         RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "No route destination points were loaded by plugin!");
@@ -353,21 +344,6 @@ namespace emergency_response_vehicle_plugin
     return bsm_msg;
   }
 
-  void EmergencyResponseVehiclePlugin::getEmergencyRouteCallback(
-    std::shared_ptr<rmw_request_id_t>, 
-    carma_planning_msgs::srv::GetEmergencyRoute::Request::SharedPtr req, 
-    carma_planning_msgs::srv::GetEmergencyRoute::Response::SharedPtr resp)
-  {
-    // Include the name of the route in the response if route destination points have been loaded into this plugin
-    if(!route_destination_points_.empty()){
-      resp->route_name = route_final_destination_name_;
-      resp->is_successful = true;
-    }
-    else{
-      resp->is_successful = false;
-    }
-  }
-
   void EmergencyResponseVehiclePlugin::arrivedAtEmergencyDestinationCallback(
     std::shared_ptr<rmw_request_id_t>, 
     std_srvs::srv::Trigger::Request::SharedPtr req, 
@@ -377,7 +353,6 @@ namespace emergency_response_vehicle_plugin
 
     // Clear plugin's route member objects
     route_destination_points_.clear();
-    route_final_destination_name_ = "";
 
     resp->success = true;
   }
