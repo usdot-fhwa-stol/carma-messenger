@@ -238,6 +238,7 @@ var goToEventManagement = () => {
  */
 var loadMap = () => {
     mapboxgl.accessToken = "pk.eyJ1IjoiZGR1MjAyMCIsImEiOiJjbDJyeHJob2YwYnhwM2xtaG9zaDdnYTR4In0.Rh2bSS44c99BoDj2W7jjfw";
+    //Default view is at TFHRC
     let default_center = [-77.150495, 38.955675];
     map = new mapboxgl.Map({
         container: 'erv-map',
