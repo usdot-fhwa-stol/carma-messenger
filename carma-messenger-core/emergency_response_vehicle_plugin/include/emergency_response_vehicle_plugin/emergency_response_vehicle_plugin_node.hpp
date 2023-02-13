@@ -32,11 +32,9 @@
 #include "carma_v2x_msgs/msg/emergency_vehicle_ack.hpp"
 #include "carma_v2x_msgs/msg/emergency_vehicle_response.hpp"
 #include "j2735_v2x_msgs/msg/special_vehicle_extensions.hpp"
-#include "carma_planning_msgs/srv/get_emergency_route.hpp"
 #include "carma_msgs/msg/ui_instructions.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
-#include "carma_planning_msgs/srv/get_emergency_route.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
 #include "emergency_response_vehicle_plugin/udp_listener.hpp"
@@ -62,7 +60,6 @@ namespace emergency_response_vehicle_plugin
     carma_ros2_utils::PubPtr<carma_msgs::msg::UIInstructions> emergency_vehicle_ui_warnings_pub_;
 
     // Service Servers
-    carma_ros2_utils::ServicePtr<carma_planning_msgs::srv::GetEmergencyRoute> get_emergency_route_server_;
     carma_ros2_utils::ServicePtr<std_srvs::srv::Trigger> arrived_at_emergency_destination_server_;
 
     // Node configuration
