@@ -4,8 +4,10 @@
 CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
 var listenerAlert;
 var listenerBSM;
+//Initialize map object
 var map = null;
 const ERV_ROUTE_SOURCE = "erv-route-trace";
+//Initialize dataset
 var data = {
     'type': 'FeatureCollection',
     'features': [
@@ -118,6 +120,8 @@ var subscribe_bsm = () => {
         }
     });
 }
+
+//create feature point with empty coordinates
 var createFeature = () => {
     let feature = {
         'type': 'Feature',
@@ -129,6 +133,7 @@ var createFeature = () => {
     return feature;
 }
 
+//create Marker with initialized geolocation and add marker to the map
 var createMarker = ([longitude, latitude]) => {
     let marker = new mapboxgl.Marker({
         color: "#FF0000"
@@ -151,24 +156,6 @@ var subscribe_alert = () => {
                 document.getElementById('audioAlert3').play();
             }
 
-        }
-    });
-}
-
-//Service call to get route name
-var service_get_emergency_route = () => {
-    var get_emergency_route = new ROSLIB.Service({
-        ros: ros,
-        name: '/get_emergency_route',
-        serviceType: 'cav_srvs/GetEmergencyRoute'
-    });
-
-    var request = new ROSLIB.ServiceRequest({
-    });
-
-    get_emergency_route.callService(request, function (result) {
-        if (result.is_successful) {
-            $("#routeNameValue").text(result.route_name);
         }
     });
 }
@@ -418,9 +405,6 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         subscribe_bsm: function () {
             subscribe_bsm();
         },
-        service_get_emergency_route: function () {
-            service_get_emergency_route();
-        },
         subscribe_alert: function () {
             subscribe_alert();
         },
@@ -439,7 +423,6 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse();
         container.emergencyResponse("subscribe_bsm", null);
         container.emergencyResponse("subscribe_alert", null);
-        container.emergencyResponse("service_get_emergency_route", null);
         container.emergencyResponse("loadMap", null);
     };
 
