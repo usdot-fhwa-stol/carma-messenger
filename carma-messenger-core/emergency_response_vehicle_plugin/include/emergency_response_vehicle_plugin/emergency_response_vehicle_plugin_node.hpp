@@ -32,11 +32,9 @@
 #include "carma_v2x_msgs/msg/emergency_vehicle_ack.hpp"
 #include "carma_v2x_msgs/msg/emergency_vehicle_response.hpp"
 #include "j2735_v2x_msgs/msg/special_vehicle_extensions.hpp"
-#include "carma_planning_msgs/srv/get_emergency_route.hpp"
 #include "carma_msgs/msg/ui_instructions.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
-#include "carma_planning_msgs/srv/get_emergency_route.hpp"
 #include "std_srvs/srv/trigger.hpp"
 
 #include "emergency_response_vehicle_plugin/udp_listener.hpp"
@@ -62,7 +60,6 @@ namespace emergency_response_vehicle_plugin
     carma_ros2_utils::PubPtr<carma_msgs::msg::UIInstructions> emergency_vehicle_ui_warnings_pub_;
 
     // Service Servers
-    carma_ros2_utils::ServicePtr<carma_planning_msgs::srv::GetEmergencyRoute> get_emergency_route_server_;
     carma_ros2_utils::ServicePtr<std_srvs::srv::Trigger> arrived_at_emergency_destination_server_;
 
     // Node configuration
@@ -73,9 +70,6 @@ namespace emergency_response_vehicle_plugin
 
     // Ordered future route destination points for the Emergency Response Vehicle; final point is the destination point
     std::vector<carma_v2x_msgs::msg::Position3D> route_destination_points_;
-
-    // Name of the final destination of the loaded route for this Emergency Response Vehicle. Name is communicated to the Emergency Response Web UI
-    std::string route_final_destination_name_;
 
     // The BSM ID of the Emergency Response Vehicle as a string
     std::string bsm_id_string_;
@@ -140,8 +134,7 @@ namespace emergency_response_vehicle_plugin
     /**
      * \brief Function to extract the route destination points from a .csv file stored on the Host PC at the file path
      * provided in the route_file_path argument. Route destination points are stored sequentially within the plugin's
-     * route_destination_points_ member object. Additionally, the name of the final destination is stored within the plugin's
-     * route_final_destination_name_ member object.
+     * route_destination_points_ member object.
      * \param route_file_path The file path on the Host PC that contains the .csv file for the Emergency Response Vehicle's route destination points.
      * \return A vector containing the sequential route destination points that describe the Emergency Response Vehicle's route at startup.
      */
@@ -169,23 +162,9 @@ namespace emergency_response_vehicle_plugin
     void publishBSM();
 
     /**
-     * \brief Service callback for a request of the name of the final destination of an Emergency Response Vehicle's 
-     * planned route. This service is called by the Emergency Response Web UI Widget at initial startup of the UI.
-     * \param req An empty carma_planning_msgs::srv::GetEmergencyRoute::Request.
-     * \param resp A carma_planning_msgs::srv::GetEmergencyRoute::Response with fields populated to indicate whether the route
-     * file provided in config_.emergency_route_file_path was properly processed by this node, and to provide the name of the
-     * Emergency Resonse Vehicle's route.
-     */
-    void getEmergencyRouteCallback(
-      std::shared_ptr<rmw_request_id_t>, 
-      carma_planning_msgs::srv::GetEmergencyRoute::Request::SharedPtr req, 
-      carma_planning_msgs::srv::GetEmergencyRoute::Response::SharedPtr resp);
-
-    /**
      * \brief Service callback for a service call that indicates the Emergency Response Vehicle has arrived at its destination.
      * Service is called by the Emergency Response Web UI Widget, and results in this plugin clearing its route_destination_points_
-     * so that future route destination points will no be included in the broadcasted BSMs. Additionally, route_final_destination_name_
-     * is cleared as well.
+     * so that future route destination points will not be included in regional extension of the BSMs generated within generateBSM().
      * \param req An empty std_srvs::srv::Trigger::Request.
      * \param resp A std_srvs::srv::Trigger::Response with the 'success' field set to true.
      * Emergency Resonse Vehicle's route.
