@@ -164,7 +164,7 @@ namespace emergency_response_vehicle_plugin
     /**
      * \brief Service callback for a service call that indicates the Emergency Response Vehicle has arrived at its destination.
      * Service is called by the Emergency Response Web UI Widget, and results in this plugin clearing its route_destination_points_
-     * so that future route destination points will no be included in the broadcasted BSMs.
+     * so that future route destination points will not be included in regional extension of the BSMs generated within generateBSM().
      * \param req An empty std_srvs::srv::Trigger::Request.
      * \param resp A std_srvs::srv::Trigger::Response with the 'success' field set to true.
      * Emergency Resonse Vehicle's route.
