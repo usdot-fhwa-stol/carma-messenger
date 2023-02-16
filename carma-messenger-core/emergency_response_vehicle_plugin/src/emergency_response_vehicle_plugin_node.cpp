@@ -324,7 +324,7 @@ namespace emergency_response_vehicle_plugin
         part_ii_special.special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use = j2735_v2x_msgs::msg::LightbarInUse::IN_USE;
       }
 
-      // Update BSM to indicate that ERV is actively responding to an emergency if sirens and lights are active at least one future route destination point exists
+      // Update BSM to indicate that ERV is actively responding to an emergency if sirens and lights are active and at least one future route destination point exists
       if(emergency_sirens_active_ && emergency_lights_active_ && !route_destination_points_.empty()){
         part_ii_special.special_vehicle_extensions.vehicle_alerts.presence_vector |= j2735_v2x_msgs::msg::EmergencyDetails::HAS_RESPONSE_TYPE;
         part_ii_special.special_vehicle_extensions.vehicle_alerts.response_type.response_type = j2735_v2x_msgs::msg::ResponseType::EMERGENCY;
