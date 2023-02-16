@@ -163,6 +163,7 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_TRUE(bsm_msg.part_ii[0].special_vehicle_extensions.presence_vector && carma_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS);
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::IN_USE);
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::UNAVAILABLE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.response_type.response_type, j2735_v2x_msgs::msg::ResponseType::NOT_IN_USE_OR_NOT_EQUIPPED);
 
         // Verify BSM's Regional Extension Content
         ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
@@ -191,6 +192,7 @@ namespace emergency_response_vehicle_plugin{
 
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::UNAVAILABLE);
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::IN_USE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.response_type.response_type, j2735_v2x_msgs::msg::ResponseType::NOT_IN_USE_OR_NOT_EQUIPPED);
 
         // Update statuses of lights and sirens (again) and regenerate BSM
         worker_node->emergency_lights_active_ = true;
@@ -200,6 +202,8 @@ namespace emergency_response_vehicle_plugin{
 
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use, j2735_v2x_msgs::msg::SirenInUse::IN_USE);
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use, j2735_v2x_msgs::msg::LightbarInUse::IN_USE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.presence_vector, j2735_v2x_msgs::msg::EmergencyDetails::HAS_RESPONSE_TYPE);
+        ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.response_type.response_type, j2735_v2x_msgs::msg::ResponseType::EMERGENCY);
 
         worker_node->handle_on_shutdown();
     }
