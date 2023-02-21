@@ -26,6 +26,7 @@ namespace units
 {
 constexpr double DECI_MPS_PER_MPS = 10.0;
 constexpr double DECI_S_PER_S = 10.0;
+constexpr double CENTI_S_PER_S = 100.0;
 constexpr double MS_PER_S = 1000.0;
 constexpr double CM_PER_M = 100.0;
 constexpr double TENTH_MICRO_DEG_PER_DEG = 10000000.0;
@@ -42,6 +43,14 @@ constexpr double DEG_360_OVER_65535_PER_DEG = 182.041666097;
 constexpr double UNCHANGED = 1.0;
 constexpr double SEC_PER_MIN = 60.0;
 constexpr double DECA_DEG_PER_DEG = 10.0;
+constexpr double KG_PER_HALF_METRIC_TON = 500.0;
+constexpr double TWO_KG = 2.0;
+constexpr double TENTH_GRAM_PER_GRAM = 10;
+constexpr double TWO_TENTHS_MICRO = 0.02;
+constexpr double FORTY_DEGREES_C = 40.0;
+constexpr double HPA_PER_TWO_PA = 0.002;
+constexpr double HALF_PERCENT_PER_HUNDRED_PERCENT = 200.0;
+
 
 // Integer Varients
 constexpr uint64_t NS_PER_MS_INT = 1000000;
