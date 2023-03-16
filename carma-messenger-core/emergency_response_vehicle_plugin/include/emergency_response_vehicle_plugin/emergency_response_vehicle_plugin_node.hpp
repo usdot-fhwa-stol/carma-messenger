@@ -83,8 +83,8 @@ namespace emergency_response_vehicle_plugin
     double current_velocity_;
 
     // Flags to indicate whether the Emergency Response Vehicle's lights and sirens are active
-    bool emergency_lights_active_ = false;
-    bool emergency_sirens_active_ = false;
+    bool emergency_lights_active_ = true;
+    bool emergency_sirens_active_ = true;
 
     // The name used for ROS logging purposes
     std::string logger_name_ = "emergency_response_vehicle_plugin_node";

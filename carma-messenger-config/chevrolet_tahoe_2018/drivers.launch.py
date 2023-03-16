@@ -18,6 +18,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import EnvironmentVariable
 from launch.substitutions import PythonExpression
 from launch.conditions import IfCondition
@@ -42,8 +43,8 @@ def generate_launch_description():
         actions=[
             PushRosNamespace(EnvironmentVariable('CARMA_INTR_NS', default_value='hardware_interface')),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ get_package_share_directory('dsrc_driver'), '/launch/dsrc_driver.py']),
-                launch_arguments = { 
+                PythonLaunchDescriptionSource([ FindPackageShare('dsrc_driver'), '/launch/dsrc_driver.py']),
+                launch_arguments = {
                     'log_level' : GetLogLevel('dsrc_driver', env_log_levels),
                     }.items()
             ),

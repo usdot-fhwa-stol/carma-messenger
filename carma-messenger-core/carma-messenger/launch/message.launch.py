@@ -52,8 +52,8 @@ def generate_launch_description():
                     {'--log-level' : GetLogLevel('cpp_message', env_log_levels) }
                 ],
                 remappings=[
-                    ("inbound_binary_msg", "comms/inbound_binary_msg" ),
-                    ("outbound_binary_msg", "comms/outbound_binary_msg" ),
+                    ("inbound_binary_msg", "hardware_interface/comms/inbound_binary_msg" ),
+                    ("outbound_binary_msg", "hardware_interface/comms/outbound_binary_msg" ),
                 ],
             )
     
