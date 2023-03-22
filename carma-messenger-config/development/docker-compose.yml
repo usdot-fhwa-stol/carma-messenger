@@ -50,6 +50,7 @@ services:
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
+      - /opt/carma/vehicle:/opt/carma/vehicle
     command: wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
 
   messenger_ros2:
