@@ -182,22 +182,22 @@ namespace emergency_response_vehicle_plugin
 
     if(!data_vector.empty()){
       switch(data_vector[0]){
-        case 1:
+        case SirensAndLightsStatus::SIRENS_AND_LIGHTS_INACTIVE:
           // 1: Emergency sirens and emergency lights are both inactive
           emergency_sirens_active_ = false;
           emergency_lights_active_ = false;
           break;
-        case 2:
+        case SirensAndLightsStatus::ONLY_SIRENS_ACTIVE:
           // 2: Emergency sirens are active, emergency lights are inactive
           emergency_sirens_active_ = true;
           emergency_lights_active_ = false;
           break;
-        case 3:
+        case SirensAndLightsStatus::ONLY_LIGHTS_ACTIVE:
           // 3: Emergency sirens are inactive, emergency lights are active
           emergency_sirens_active_ = false;
           emergency_lights_active_ = true;
           break;
-        case 4:
+        case SirensAndLightsStatus::SIRENS_AND_LIGHTS_ACTIVE:
           // 4: Emergency sirens and emergency lights are both active
           emergency_sirens_active_ = true;
           emergency_lights_active_ = true;
