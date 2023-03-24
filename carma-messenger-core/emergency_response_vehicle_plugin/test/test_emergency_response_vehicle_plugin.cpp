@@ -149,15 +149,15 @@ namespace emergency_response_vehicle_plugin{
         // Verify contents of BSM's core_data
         ASSERT_EQ(worker_node->bsm_id_string_, "09000000");
         ASSERT_EQ(bsm_msg.core_data.msg_count, 127);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::LATITUDE_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::LATITUDE_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.latitude, 38.95612, 0.1);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.longitude, -77.15101, 0.1);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.speed, 10.0, 0.1);
 
         // Verify BSM's Part II Content
-        ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_PART_II);
+        ASSERT_TRUE(bsm_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_PART_II);
         ASSERT_EQ(bsm_msg.part_ii.size(), 1);
         ASSERT_EQ(bsm_msg.part_ii[0].part_ii_id, carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT);
         ASSERT_TRUE(bsm_msg.part_ii[0].special_vehicle_extensions.presence_vector && carma_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS);
@@ -166,7 +166,7 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.response_type.response_type, j2735_v2x_msgs::msg::ResponseType::NOT_IN_USE_OR_NOT_EQUIPPED);
 
         // Verify BSM's Regional Extension Content
-        ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
+        ASSERT_TRUE(bsm_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
         ASSERT_EQ(bsm_msg.regional.size(), 1);
         ASSERT_EQ(bsm_msg.regional[0].regional_extension_id, carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS);
         ASSERT_EQ(bsm_msg.regional[0].route_destination_points.size(), 3);

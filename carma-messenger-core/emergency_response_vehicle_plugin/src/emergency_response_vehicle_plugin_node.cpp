@@ -335,6 +335,8 @@ namespace emergency_response_vehicle_plugin
 
     // Set route destination points
     if(!route_destination_points_.empty()){
+      bsm_msg.presence_vector |= carma_v2x_msgs::msg::BSM::HAS_REGIONAL;
+
       // Create BSM regional extension that ERV's route destination points will be added to
       carma_v2x_msgs::msg::BSMRegionalExtension regional_ext;
       regional_ext.regional_extension_id = carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS;
