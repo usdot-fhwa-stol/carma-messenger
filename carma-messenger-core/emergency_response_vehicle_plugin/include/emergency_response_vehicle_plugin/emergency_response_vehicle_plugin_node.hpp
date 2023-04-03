@@ -47,10 +47,10 @@ namespace emergency_response_vehicle_plugin
 
   enum SirensAndLightsStatus : uint8_t
   {
-    SIRENS_AND_LIGHTS_INACTIVE = 1,
-    ONLY_SIRENS_ACTIVE = 2,
-    ONLY_LIGHTS_ACTIVE = 3,
-    SIRENS_AND_LIGHTS_ACTIVE = 4
+    SIRENS_AND_LIGHTS_INACTIVE = 49,
+    ONLY_SIRENS_ACTIVE = 50,
+    ONLY_LIGHTS_ACTIVE = 51,
+    SIRENS_AND_LIGHTS_ACTIVE = 52
   };
 
   class EmergencyResponseVehiclePlugin : public carma_ros2_utils::CarmaLifecycleNode
