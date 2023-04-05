@@ -45,6 +45,16 @@ namespace emergency_response_vehicle_plugin
   // Constant for approximating the earth's radius; used to estimate the distance between latitude/longitude coordinates
   constexpr double EARTH_RADIUS_METERS = 6371000.0;
 
+  //! @brief Enum describing the value of the first byte in a UDP packet from a connected Raspberry Pi device
+  //         configured to send the status of the emergency response vehicle's sirens and lights.
+  enum SirensAndLightsStatus : uint8_t
+  {
+    SIRENS_AND_LIGHTS_INACTIVE = 49,  // Value of char '1'
+    ONLY_SIRENS_ACTIVE = 50,          // Value of char '2'
+    ONLY_LIGHTS_ACTIVE = 51,          // Value of char '3'
+    SIRENS_AND_LIGHTS_ACTIVE = 52     // Value of char '4'
+  };
+
   class EmergencyResponseVehiclePlugin : public carma_ros2_utils::CarmaLifecycleNode
   {
 

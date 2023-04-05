@@ -180,31 +180,29 @@ namespace emergency_response_vehicle_plugin
   {
     auto data_vector = *data;
 
-    if(!data_vector.empty()){
-      switch(data_vector[0]){
-        case 1:
-          // 1: Emergency sirens and emergency lights are both inactive
-          emergency_sirens_active_ = false;
-          emergency_lights_active_ = false;
-          break;
-        case 2:
-          // 2: Emergency sirens are active, emergency lights are inactive
-          emergency_sirens_active_ = true;
-          emergency_lights_active_ = false;
-          break;
-        case 3:
-          // 3: Emergency sirens are inactive, emergency lights are active
-          emergency_sirens_active_ = false;
-          emergency_lights_active_ = true;
-          break;
-        case 4:
-          // 4: Emergency sirens and emergency lights are both active
-          emergency_sirens_active_ = true;
-          emergency_lights_active_ = true;
-          break;
-        default:
-          RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Unsupported initial UDP byte of " << data_vector[0] << " received; packet will not be processed");
-          break;
+    if(!data_vector.empty())
+    {
+      // Extract the first byte of the received UDP binary since this describes the status of the emergency response vehicle's sirens and lights
+      uint8_t value = data_vector[0];
+
+      if(value == SirensAndLightsStatus::SIRENS_AND_LIGHTS_INACTIVE){
+        emergency_sirens_active_ = false;
+        emergency_lights_active_ = false;
+      }
+      else if(value == SirensAndLightsStatus::ONLY_SIRENS_ACTIVE){
+        emergency_sirens_active_ = true;
+        emergency_lights_active_ = false;
+      }
+      else if(value == SirensAndLightsStatus::ONLY_LIGHTS_ACTIVE){
+        emergency_sirens_active_ = false;
+        emergency_lights_active_ = true;
+      }
+      else if(value == SirensAndLightsStatus::SIRENS_AND_LIGHTS_ACTIVE){
+        emergency_sirens_active_ = true;
+        emergency_lights_active_ = true;
+      }
+      else{
+        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Unsupported initial UDP byte of " << value << " received; packet will not be processed");
       }
     }
     else{
