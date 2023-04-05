@@ -255,33 +255,33 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '1' to indicate sirens and lights are inactive
+        // Send mock UDP binary vector with first byte set to '49' to indicate sirens and lights are inactive
         std::vector<uint8_t> binary_data;
-        binary_data.push_back(1);
+        binary_data.push_back(49);
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr);
 
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '2' to indicate sirens active and lights inactive
-        binary_data[0] = 2;
+        // Send mock UDP binary vector with first byte set to '50' to indicate sirens active and lights inactive
+        binary_data[0] = 50;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr2 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr2);
 
         ASSERT_TRUE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '3' to indicate sirens inactive and lights active
-        binary_data[0] = 3;
+        // Send mock UDP binary vector with first byte set to '51' to indicate sirens inactive and lights active
+        binary_data[0] = 51;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr3 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr3);
 
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_TRUE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '4' to indicate sirens active and lights active
-        binary_data[0] = 4;
+        // Send mock UDP binary vector with first byte set to '52' to indicate sirens active and lights active
+        binary_data[0] = 52;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr4 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr4);
 

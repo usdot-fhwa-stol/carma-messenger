@@ -182,59 +182,28 @@ namespace emergency_response_vehicle_plugin
 
     if(!data_vector.empty())
     {
+      // Extract the first byte of the received UDP binary since this describes the status of the emergency response vehicle's sirens and lights
       uint8_t value = data_vector[0];
+
       if(value == SirensAndLightsStatus::SIRENS_AND_LIGHTS_INACTIVE){
-        // 1: Emergency sirens and emergency lights are both inactive
-        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Received UDP byte " << value << ", both are inactive!");
         emergency_sirens_active_ = false;
         emergency_lights_active_ = false;
       }
       else if(value == SirensAndLightsStatus::ONLY_SIRENS_ACTIVE){
-        // 2: Emergency sirens are active, emergency lights are inactive
-        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Received UDP byte " << value << ", sirens are active!");
         emergency_sirens_active_ = true;
         emergency_lights_active_ = false;
       }
       else if(value == SirensAndLightsStatus::ONLY_LIGHTS_ACTIVE){
-        // 3: Emergency sirens are inactive, emergency lights are active
-        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Received UDP byte " << value << ", lights are active!");
         emergency_sirens_active_ = false;
         emergency_lights_active_ = true;
       }
       else if(value == SirensAndLightsStatus::SIRENS_AND_LIGHTS_ACTIVE){
-        // 4: Emergency sirens and emergency lights are both active
-        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Received UDP byte " << value << ", both are active!");
         emergency_sirens_active_ = true;
         emergency_lights_active_ = true;
       }
       else{
         RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Unsupported initial UDP byte of " << value << " received; packet will not be processed");
       }
-      // switch(data_vector[0]){
-      //   case SirensAndLightsStatus::SIRENS_AND_LIGHTS_INACTIVE:
-      //     // 1: Emergency sirens and emergency lights are both inactive
-      //     emergency_sirens_active_ = false;
-      //     emergency_lights_active_ = false;
-      //     break;
-      //   case SirensAndLightsStatus::ONLY_SIRENS_ACTIVE:
-      //     // 2: Emergency sirens are active, emergency lights are inactive
-      //     emergency_sirens_active_ = true;
-      //     emergency_lights_active_ = false;
-      //     break;
-      //   case SirensAndLightsStatus::ONLY_LIGHTS_ACTIVE:
-      //     // 3: Emergency sirens are inactive, emergency lights are active
-      //     emergency_sirens_active_ = false;
-      //     emergency_lights_active_ = true;
-      //     break;
-      //   case SirensAndLightsStatus::SIRENS_AND_LIGHTS_ACTIVE:
-      //     // 4: Emergency sirens and emergency lights are both active
-      //     emergency_sirens_active_ = true;
-      //     emergency_lights_active_ = true;
-      //     break;
-      //   default:
-      //     RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Unsupported initial UDP byte of " << data_vector[0] << " received; packet will not be processed");
-      //     break;
-      // }
     }
     else{
       RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Empty UDP payload received; packet will not be processed");
