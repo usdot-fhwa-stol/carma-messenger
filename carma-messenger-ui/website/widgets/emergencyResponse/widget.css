@@ -49,3 +49,7 @@
 #emergencyAlert{
     z-index: 999;
 }
+
+#emergencyAlertMsg{
+    font-size: larger;
+}
