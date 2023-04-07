@@ -189,7 +189,7 @@ setInterval(() => {
     }
     $("#emergencyAlert").removeClass("show");
     document.getElementById('audioAlert3').pause();
-}, 5000);
+}, 10000);
 
 //Create alert element
 var createAlertDiv = (message) => {
