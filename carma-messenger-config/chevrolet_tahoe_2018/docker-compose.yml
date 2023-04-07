@@ -68,6 +68,7 @@ services:
       - /opt/carma/.ros:/home/carma/.ros
       - /opt/carma/routes:/opt/carma/routes
       - /opt/carma/vehicle:/opt/carma/vehicle
+      - ~/carma_ws/src/carma-messenger/carma-messenger-core/emergency_response_vehicle_plugin/config:/opt/carma/install_ros2/emergency_response_vehicle_plugin/share/emergency_response_vehicle_plugin/config
     command: bash -c 'source /opt/carma/install_ros2/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
 
   cohda_dsrc_driver:
