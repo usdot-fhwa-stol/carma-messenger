@@ -18,6 +18,7 @@ version: '2'
 services:
   roscore:
     image: usdotfhwastolcandidate/carma-base:k900
+    network_mode: host
     container_name: roscore
     volumes_from:
       - container:carma-config:ro
