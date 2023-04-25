@@ -63,6 +63,8 @@ services:
     container_name: messenger_ros2
     volumes_from:
       - container:carma-config:ro
+    environment:
+      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
@@ -76,9 +78,12 @@ services:
     network_mode: host
     volumes_from:
       - container:carma-config:ro
+    environment:
+      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
+      - /opt/carma/vehicle:/opt/carma/vehicle
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
 
   torc-pinpoint-driver:
@@ -89,7 +94,9 @@ services:
       - container:carma-config:ro
     environment:
       - ROS_IP=192.168.0.51
+      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
+      - /opt/carma/vehicle:/opt/carma/vehicle
     command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=pinpoint_driver'
