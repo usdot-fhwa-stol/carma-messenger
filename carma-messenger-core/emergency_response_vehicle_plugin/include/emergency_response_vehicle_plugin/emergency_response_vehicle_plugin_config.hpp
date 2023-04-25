@@ -40,7 +40,7 @@ namespace emergency_response_vehicle_plugin
 
     std::string route_file_folder = "DEFAULT-FOLDER-PATH";           // The path to the directoy on the host PC that contains the .csv file with the ERV's route destination points. 
 
-    int listening_port = 1610;                                       // The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
+    int listening_port = 5005;                                       // The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
                                                                      // of the ERV’s emergency sirens and lights.
 
     int bsm_message_id = 8;                                          // The BSM message ID for the Emergency Response Vehicle. The value will be converted to a 4 element array of uint8_t

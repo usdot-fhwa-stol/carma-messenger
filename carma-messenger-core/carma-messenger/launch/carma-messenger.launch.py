@@ -1,4 +1,4 @@
-# Copyright (C) 2022 LEIDOS.
+# Copyright (C) 2022-2023 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import ThisLaunchFileDir
 from launch.substitutions import EnvironmentVariable
 from launch.actions import GroupAction
+from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
@@ -42,6 +43,15 @@ def generate_launch_description():
         name = 'route_file_folder',
         default_value='/opt/carma/routes/',
         description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins'
+    )
+
+    transform_group = GroupAction(
+        actions=[
+            PushRosNamespace(EnvironmentVariable('CARMA_TF_NS', default_value='/')),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/transforms.launch.py']),
+            ),
+        ]
     )
 
     v2x_group = GroupAction(
@@ -70,6 +80,7 @@ def generate_launch_description():
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
+        transform_group,
         v2x_group,
         plugins_group
     ])

@@ -149,15 +149,15 @@ namespace emergency_response_vehicle_plugin{
         // Verify contents of BSM's core_data
         ASSERT_EQ(worker_node->bsm_id_string_, "09000000");
         ASSERT_EQ(bsm_msg.core_data.msg_count, 127);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::LATITUDE_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::LATITUDE_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.latitude, 38.95612, 0.1);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.longitude, -77.15101, 0.1);
-        ASSERT_TRUE(bsm_msg.core_data.presence_vector && carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE);
+        ASSERT_TRUE(bsm_msg.core_data.presence_vector & carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE);
         ASSERT_NEAR(bsm_msg.core_data.speed, 10.0, 0.1);
 
         // Verify BSM's Part II Content
-        ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_PART_II);
+        ASSERT_TRUE(bsm_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_PART_II);
         ASSERT_EQ(bsm_msg.part_ii.size(), 1);
         ASSERT_EQ(bsm_msg.part_ii[0].part_ii_id, carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT);
         ASSERT_TRUE(bsm_msg.part_ii[0].special_vehicle_extensions.presence_vector && carma_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS);
@@ -166,7 +166,7 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_EQ(bsm_msg.part_ii[0].special_vehicle_extensions.vehicle_alerts.response_type.response_type, j2735_v2x_msgs::msg::ResponseType::NOT_IN_USE_OR_NOT_EQUIPPED);
 
         // Verify BSM's Regional Extension Content
-        ASSERT_TRUE(bsm_msg.presence_vector && carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
+        ASSERT_TRUE(bsm_msg.presence_vector & carma_v2x_msgs::msg::BSM::HAS_REGIONAL);
         ASSERT_EQ(bsm_msg.regional.size(), 1);
         ASSERT_EQ(bsm_msg.regional[0].regional_extension_id, carma_v2x_msgs::msg::BSMRegionalExtension::ROUTE_DESTINATIONS);
         ASSERT_EQ(bsm_msg.regional[0].route_destination_points.size(), 3);
@@ -255,33 +255,33 @@ namespace emergency_response_vehicle_plugin{
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '1' to indicate sirens and lights are inactive
+        // Send mock UDP binary vector with first byte set to '49' to indicate sirens and lights are inactive
         std::vector<uint8_t> binary_data;
-        binary_data.push_back(1);
+        binary_data.push_back(49);
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr);
 
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '2' to indicate sirens active and lights inactive
-        binary_data[0] = 2;
+        // Send mock UDP binary vector with first byte set to '50' to indicate sirens active and lights inactive
+        binary_data[0] = 50;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr2 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr2);
 
         ASSERT_TRUE(worker_node->emergency_sirens_active_);
         ASSERT_FALSE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '3' to indicate sirens inactive and lights active
-        binary_data[0] = 3;
+        // Send mock UDP binary vector with first byte set to '51' to indicate sirens inactive and lights active
+        binary_data[0] = 51;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr3 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr3);
 
         ASSERT_FALSE(worker_node->emergency_sirens_active_);
         ASSERT_TRUE(worker_node->emergency_lights_active_);
 
-        // Send mock UDP binary vector with first byte set to '4' to indicate sirens active and lights active
-        binary_data[0] = 4;
+        // Send mock UDP binary vector with first byte set to '52' to indicate sirens active and lights active
+        binary_data[0] = 52;
         std::shared_ptr<std::vector<uint8_t>> binary_data_ptr4 = std::make_shared<std::vector<uint8_t>>(binary_data);
         worker_node->processIncomingUdpBinary(binary_data_ptr4);
 
