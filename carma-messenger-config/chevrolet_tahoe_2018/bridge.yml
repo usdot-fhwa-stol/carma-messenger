@@ -11,4 +11,12 @@ topics:
     topic: /emergency_vehicle_ui_warning
     type: carma_msgs/msg/UIInstructions
     queue_size: 1
+  -
+    topic: /incoming_emergency_vehicle_response
+    type: carma_v2x_msgs/msg/EmergencyVehicleResponse
+    queue_size: 1
+  -
+    topic: /outgoing_emergency_vehicle_ack
+    type: carma_v2x_msgs/msg/EmergencyVehicleAck
+    queue_size: 1
 services_1_to_2: []
