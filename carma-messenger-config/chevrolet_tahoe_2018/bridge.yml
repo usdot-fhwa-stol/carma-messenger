@@ -4,6 +4,14 @@
 #       this file allows for certain topics to be pre-configured with specified QoS settings. 
 topics:
   -
+    topic: /incoming_emergency_vehicle_response
+    type: carma_v2x_msgs/msg/EmergencyVehicleResponse
+    queue_size: 1
+  -
+    topic: /outgoing_emergency_vehicle_ack
+    type: carma_v2x_msgs/msg/EmergencyVehicleAck
+    queue_size: 1
+  -
     topic: /bsm_outbound
     type: carma_v2x_msgs/msg/BSM
     queue_size: 1
