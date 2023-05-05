@@ -82,7 +82,7 @@ div.card,div.card-body{
 #divMenuArea{
     width: 100%;
 }
-#divWidgetArea, #divWidgetAreaEventManagement{
+#divWidgetArea, #divWidgetAreaEventManagement, #divWidgetAreaEmergencyResponse{
     width: 100%;
 }
 .event-management-title-div{

@@ -1,5 +1,5 @@
 
-# Copyright (C) 2022 LEIDOS.
+# Copyright (C) 2022-2023 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -43,6 +43,7 @@ ament_export_include_directories(include)
 ament_auto_add_library(${node_lib} SHARED
         src/cpp_message.cpp
         src/MobilityOperation_Message.cpp
+        src/EmergencyVehicleAck_Message.cpp
         src/EmergencyVehicleResponse_Message.cpp
         src/MobilityResponse_Message.cpp
         src/MobilityPath_Message.cpp
@@ -86,6 +87,7 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_cpp_message_node 
                         test/test_MobilityOperations.cpp
+                        test/test_EmergencyVehicleAck.cpp
                         test/test_EmergencyVehicleResponse.cpp
                         test/test_MobilityResponse.cpp
                         test/test_MobilityPath.cpp

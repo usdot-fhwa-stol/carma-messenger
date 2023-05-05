@@ -16,17 +16,31 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
     """
     Launch CARMA Messenger System.
     """
 
+    #Declare the route file folder launch argument
+    route_file_folder = LaunchConfiguration('route_file_folder')
+    declare_route_file_folder = DeclareLaunchArgument(
+        name = 'route_file_folder',
+        default_value='/opt/carma/routes/',
+        description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins; currently only used by emergency_response_vehicle_plugin'
+    )
+
     # Launch the core carma launch file
     core_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ get_package_share_directory('carma-messenger'), '/launch/carma-messenger.launch.py']),
+        launch_arguments = {
+            'route_file_folder' : route_file_folder
+        }.items()
     )
 
     return LaunchDescription([
+        declare_route_file_folder,
         core_launch
     ])
