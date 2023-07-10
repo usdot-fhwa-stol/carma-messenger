@@ -46,6 +46,7 @@
 #include "TestMessage13.h"
 #include "TestMessage14.h"
 #include "TestMessage15.h"
+#include "SensorDataSharingMessage.h"
 #include <OPEN_TYPE.h>
 #include <constr_CHOICE.h>
 #include <constr_SEQUENCE.h>
@@ -87,7 +88,8 @@ typedef enum MessageFrame__value_PR {
 	MessageFrame__value_PR_TestMessage12,
 	MessageFrame__value_PR_TestMessage13,
 	MessageFrame__value_PR_TestMessage14,
-	MessageFrame__value_PR_TestMessage15
+	MessageFrame__value_PR_TestMessage15,
+	MessageFrame__value_PR_SensorDataSharingMessage
 } MessageFrame__value_PR;
 
 /* MessageFrame */
@@ -127,6 +129,7 @@ typedef struct MessageFrame {
 			TestMessage13_t	 TestMessage13;
 			TestMessage14_t	 TestMessage14;
 			TestMessage15_t	 TestMessage15;
+			SensorDataSharingMessage_t	 SensorDataSharingMessage;
 		} choice;
 		
 		/* Context for parsing across buffer boundaries */

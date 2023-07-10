@@ -68,6 +68,7 @@ per_type_encoder_f DSRCmsgID_encode_uper;
 #define DSRCmsgID_signalStatusMessage	((DSRCmsgID_t)30)
 #define DSRCmsgID_travelerInformation	((DSRCmsgID_t)31)
 #define DSRCmsgID_personalSafetyMessage	((DSRCmsgID_t)32)
+#define DSRCmsgID_sensorDataSharingMessage	((DSRCmsgID_t)41)
 #define DSRCmsgID_testMessage00	((DSRCmsgID_t)240)
 #define DSRCmsgID_testMessage01	((DSRCmsgID_t)241)
 #define DSRCmsgID_testMessage02	((DSRCmsgID_t)242)

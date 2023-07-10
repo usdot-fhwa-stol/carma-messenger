@@ -43,6 +43,8 @@ typedef struct SensorDataSharingMessage {
 
 /* Implementation */
 extern asn_TYPE_descriptor_t asn_DEF_SensorDataSharingMessage;
+extern asn_SEQUENCE_specifics_t asn_SPC_SensorDataSharingMessage_specs_1;
+extern asn_TYPE_member_t asn_MBR_SensorDataSharingMessage_1[8];
 
 #ifdef __cplusplus
 }
