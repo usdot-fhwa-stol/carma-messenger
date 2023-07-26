@@ -84,6 +84,30 @@ namespace j2735_convertor
     // MAP Publisher TODO think about queue sizes
     converted_map_pub_ = create_publisher<carma_v2x_msgs::msg::MapData>("incoming_map", 50);
 
+    // Added, check namespace and standards ///////////////////////////////////////////////////////
+
+    // J3224 SDSM Subscriber
+    auto j3224_sdsm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions j3224_sdsm_options;
+    j3224_sdsm_options.callback_group = j3224_sdsm_cb_group;
+    j3224_sdsm_sub_ = create_subscription<j3224_v2x_msgs::msg::SensorDataSharingMessage>("incoming_j3224_sdsm", 100, std::bind(&Node::j3224SdsmHandler, this, std_ph::_1), j3224_sdsm_options);
+
+    // SDSM carma Publisher
+    converted_sdsm_pub_ = create_publisher<carma_v2x_msgs::msg::SensorDataSharingMessage>("incoming_sdsm", 100);
+
+    // Outgoing J3224 SDSM Subscriber
+    auto outbound_sdsm_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    rclcpp::SubscriptionOptions outbound_sdsm_options;
+    outbound_sdsm_options.callback_group = outbound_sdsm_cb_group;
+    outbound_sdsm_sub_ = create_subscription<carma_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_sdsm", 1, std::bind(&Node::SdsmHandler,
+                                          this, std_ph::_1), outbound_sdsm_options);  // Queue size of 1 as we should never publish outdated PSMs
+    
+    // SDSM j3224 Publisher
+    outbound_j3224_sdsm_pub_ = create_publisher<j3224_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_j3224_sdsm", 1);
+
+    // End of SDSM pub/sub ///////////////////////////////////////////////////////
+
+
     // Incoming geofence pub/sub
     converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", 50);
     converted_geofence_request_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlRequest>("incoming_geofence_request", 50);
@@ -183,6 +207,23 @@ namespace j2735_convertor
     j2735_convertor::geofence_request::convert(*message, converted_msg);  // Convert message
     converted_geofence_request_pub_->publish(converted_msg);       // Publish converted message
   }
+
+  // Updated for SDSM ///////////////////////////////////////
+    void Node::SdsmHandler(const carma_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr  message)
+  {
+    j3224_v2x_msgs::msg::SensorDataSharingMessage j3224_msg;
+    SDSMConvertor::convert(*message, j3224_msg);  // Convert message
+    outbound_j3224_sdsm_pub_->publish(j3224_msg);  // Publish converted message
+  }
+
+  void Node::j3224SdsmHandler(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr message)
+  {
+    carma_v2x_msgs::msg::SensorDataSharingMessage converted_msg;
+    SDSMConvertor::convert(*message, converted_msg);  // Convert message
+    converted_sdsm_pub_->publish(converted_msg);       // Publish converted message
+  }
+
+  //////////////////////////////////////////////////////
 
 } // j2735_convertor
 

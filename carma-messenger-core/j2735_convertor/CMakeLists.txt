@@ -39,6 +39,7 @@ ament_auto_add_library(j2735_conversions
   src/psm_convertor.cpp
   src/spat_convertor.cpp
   src/map_convertor.cpp
+  src/sdsm_convertor.cpp
   src/control_message_convertor.cpp
   src/control_request_convertor.cpp
 )
@@ -75,6 +76,7 @@ if(BUILD_TESTING)
     test/control_message_test.cpp
     test/control_request_test.cpp
     test/test_bsm_convertor.cpp
+    test/test_sdsm_convertor.cpp
   )
 
   ament_target_dependencies(test_j2735_convertor ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
