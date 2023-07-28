@@ -31,6 +31,7 @@
 #include <j2735_convertor/spat_convertor.hpp>
 #include <j2735_convertor/units.hpp>
 #include <j2735_convertor/value_convertor.hpp>
+#include <j2735_convertor/sdsm_convertor.hpp>
 
 namespace j2735_convertor
 {
@@ -59,8 +60,10 @@ namespace j2735_convertor
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::PSM> j2735_psm_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::SPAT> j2735_spat_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::MapData> j2735_map_sub_;
+    carma_ros2_utils::SubPtr<j3224_v2x_msgs::msg::SensorDataSharingMessage> j3224_sdsm_sub_; // added
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::BSM> outbound_bsm_sub_;
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::PSM> outbound_psm_sub_;
+    carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::SensorDataSharingMessage> outbound_sdsm_sub_; // added
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> j2735_geofence_control_sub_;
     carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::TrafficControlRequest> j2735_geofence_request_sub_;
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::TrafficControlMessage> outbound_geofence_control_sub_;
@@ -71,8 +74,10 @@ namespace j2735_convertor
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::PSM> converted_psm_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::SPAT> converted_spat_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MapData> converted_map_pub_;
+    carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::SensorDataSharingMessage> converted_sdsm_pub_; // added
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::BSM> outbound_j2735_bsm_pub_;
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::PSM> outbound_j2735_psm_pub_;
+    carma_ros2_utils::PubPtr<j3224_v2x_msgs::msg::SensorDataSharingMessage> outbound_j3224_sdsm_pub_; // added
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlMessage> outbound_j2735_geofence_control_pub_;
     carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::TrafficControlRequest> outbound_j2735_geofence_request_pub_;
     carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::TrafficControlMessage> converted_geofence_control_pub_;
@@ -154,6 +159,12 @@ namespace j2735_convertor
      * @param message The message to convert
      */
     void j2735ControlRequestHandler(j2735_v2x_msgs::msg::TrafficControlRequest::UniquePtr message);
+
+    // check namespace
+    void SdsmHandler(const carma_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr  message);
+
+    void j3224SdsmHandler(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr message);
+
 
     ////
     // Overrides

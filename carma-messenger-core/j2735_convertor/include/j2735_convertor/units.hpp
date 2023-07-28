@@ -1,6 +1,6 @@
 #pragma once
 /*
- * Copyright (C) 2018-2021 LEIDOS.
+ * Copyright (C) 2018-2023 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,6 +20,9 @@ namespace j2735_convertor
 /**
  * Defined the units namespace which contains many unit conversion factors
  * These are primarily meant to be used in conversions between j2735_msgs and cav_msgs
+ * 
+ * New units should follow the LSB unit guidelines given by the appropriate SAE standard
+ * For instance, "LSB units of 0.01 degrees per second" would equate to "HUNDREDTH_DEG_PER_S"
  */
 
 namespace units
@@ -50,6 +53,12 @@ constexpr double TWO_TENTHS_MICRO = 0.02;
 constexpr double FORTY_DEGREES_C = 40.0;
 constexpr double HPA_PER_TWO_PA = 0.002;
 constexpr double HALF_PERCENT_PER_HUNDRED_PERCENT = 200.0;
+constexpr double HUNDREDTH_DEG_PER_S = 0.01;
+constexpr double FIVE_CM_PER_M = 20.0;
+
+// j3224-specific
+constexpr double TEN_CM_PER_M = 10.0;
+
 
 
 // Integer Varients

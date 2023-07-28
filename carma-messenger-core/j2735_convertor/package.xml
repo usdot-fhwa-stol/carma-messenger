@@ -28,6 +28,7 @@
   <depend>carma_msgs</depend>
   <depend>carma_v2x_msgs</depend>
   <depend>j2735_v2x_msgs</depend>
+  <depend>j3224_v2x_msgs</depend>
   <depend>rclcpp</depend>
   <depend>carma_ros2_utils</depend>
   <depend>rclcpp_components</depend>
