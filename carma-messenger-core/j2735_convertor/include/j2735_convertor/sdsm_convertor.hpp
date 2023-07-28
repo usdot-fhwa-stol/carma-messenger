@@ -70,7 +70,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const j2735_v2x_msgs::msg::YawRate& in_msg, carma_v2x_msgs::msg::YawRate& out_msg);
 
@@ -80,7 +80,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const carma_v2x_msgs::msg::YawRate& in_msg, j2735_v2x_msgs::msg::YawRate& out_msg);
 
@@ -90,7 +90,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of latitude, longitude (TENTH_MICRO_DEGREE), elevation (DECI_M_PER_M) and presence flags are handled
     */
     static void convert(const j2735_v2x_msgs::msg::Position3D& in_msg, carma_v2x_msgs::msg::Position3D& out_msg);
 
@@ -100,7 +100,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of latitude, longitude (TENTH_MICRO_DEGREE), elevation (DECI_M_PER_M) and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::Position3D& in_msg, j2735_v2x_msgs::msg::Position3D& out_msg);
 
@@ -110,7 +110,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of semi_major/semi_minor axes (TWENTIETH_M_PER_M), orientation (DEG_360_OVER_65535_PER_DEG), and presence flags are handled
     */
     static void convert(const j2735_v2x_msgs::msg::PositionalAccuracy& in_msg, carma_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
@@ -120,7 +120,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of semi_major/semi_minor axes (TWENTIETH_M_PER_M), orientation (DEG_360_OVER_65535_PER_DEG), and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::PositionalAccuracy& in_msg, j2735_v2x_msgs::msg::PositionalAccuracy& out_msg);
 
@@ -130,7 +130,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of FIFTIETH_M_PER_M
     */
     static void convert(const j2735_v2x_msgs::msg::Speed& in_msg, carma_v2x_msgs::msg::Speed& out_msg);
 
@@ -140,7 +140,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of FIFTIETH_M_PER_M
     */
     static void convert(const carma_v2x_msgs::msg::Speed& in_msg, j2735_v2x_msgs::msg::Speed& out_msg);
 
@@ -150,7 +150,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const j2735_v2x_msgs::msg::Heading& in_msg, carma_v2x_msgs::msg::Heading& out_msg);
 
@@ -160,7 +160,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const carma_v2x_msgs::msg::Heading& in_msg, j2735_v2x_msgs::msg::Heading& out_msg);
 
@@ -170,7 +170,8 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of logitudinal (CM_PER_M), lateral (CM_PER_M), and vert (FIFTIETH_G_PER_M_PER_SEC_SQUARED) acceleration
+    * plus yaw rate (CENTI_DEG_PER_DEG) and presence flags are handled
     */
     static void convert(const j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg, carma_v2x_msgs::msg::AccelerationSet4Way& out_msg);
 
@@ -180,7 +181,8 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of logitudinal (CM_PER_M), lateral (CM_PER_M), and vert (FIFTIETH_G_PER_M_PER_SEC_SQUARED) acceleration
+    * plus yaw rate (CENTI_DEG_PER_DEG) and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::AccelerationSet4Way& out_msg, j2735_v2x_msgs::msg::AccelerationSet4Way& in_msg);
 
@@ -190,7 +192,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of vehicle_width and vehicle_length (CM_PER_M) with presence flags handled
     */
     static void convert(const j2735_v2x_msgs::msg::VehicleSize& in_msg, carma_v2x_msgs::msg::VehicleSize& out_msg);
 
@@ -200,7 +202,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of vehicle_width and vehicle_length (CM_PER_M) with presence flags handled
     */
     static void convert(const carma_v2x_msgs::msg::VehicleSize& in_msg, j2735_v2x_msgs::msg::VehicleSize& out_msg);
 
@@ -210,7 +212,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using FIVE_CM_PER_M and presence flag is handled
     */
     static void convert(const j2735_v2x_msgs::msg::VehicleHeight& in_msg, carma_v2x_msgs::msg::VehicleHeight& out_msg);
 
@@ -220,7 +222,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using FIVE_CM_PER_M and presence flag is handled
     */
     static void convert(const carma_v2x_msgs::msg::VehicleHeight& in_msg, j2735_v2x_msgs::msg::VehicleHeight& out_msg);
 
@@ -230,7 +232,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using DECI_M_PER_M
     */
     static void convert(const j2735_v2x_msgs::msg::AttachmentRadius& in_msg, carma_v2x_msgs::msg::AttachmentRadius& out_msg);
 
@@ -240,7 +242,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using DECI_M_PER_M
     */
     static void convert(const carma_v2x_msgs::msg::AttachmentRadius& in_msg, j2735_v2x_msgs::msg::AttachmentRadius& out_msg);
 
@@ -258,7 +260,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Common data conversion setup and presence flag for optional data is handled
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedObjectData& in_msg, carma_v2x_msgs::msg::DetectedObjectData& out_msg);
 
@@ -268,7 +270,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Common data conversion setup and presence flag for optional data is handled
     */
     static void convert(const carma_v2x_msgs::msg::DetectedObjectData& in_msg, j3224_v2x_msgs::msg::DetectedObjectData& out_msg);
 
@@ -278,7 +280,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of measurement_time, pos, speed, heading, and presence flags are handled for optional conversions
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedObjectCommonData& in_msg, carma_v2x_msgs::msg::DetectedObjectCommonData& out_msg);
 
@@ -288,7 +290,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of measurement_time, pos, speed, heading, and presence flags are handled for optional conversions
     */
     static void convert(const carma_v2x_msgs::msg::DetectedObjectCommonData& in_msg, j3224_v2x_msgs::msg::DetectedObjectCommonData& out_msg);
 
@@ -298,7 +300,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Type choice is handled for either det_veh, det_vru, or det_obst
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedObjectOptionalData& in_msg, carma_v2x_msgs::msg::DetectedObjectOptionalData& out_msg);
 
@@ -308,7 +310,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Type choice is handled for either det_veh, det_vru, or det_obst
     */
     static void convert(const carma_v2x_msgs::msg::DetectedObjectOptionalData& in_msg, j3224_v2x_msgs::msg::DetectedObjectOptionalData& out_msg);
 
@@ -318,7 +320,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of MS_PER_S
     */
     static void convert(const j3224_v2x_msgs::msg::MeasurementTimeOffset& in_msg, carma_v2x_msgs::msg::MeasurementTimeOffset& out_msg);
 
@@ -328,7 +330,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of MS_PER_S
     */
     static void convert(const carma_v2x_msgs::msg::MeasurementTimeOffset& in_msg, j3224_v2x_msgs::msg::MeasurementTimeOffset& out_msg);
 
@@ -338,7 +340,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of offset_x, offset_y and presence flag for optional offset_z are handled
     */
     static void convert(const j3224_v2x_msgs::msg::PositionOffsetXYZ& in_msg, carma_v2x_msgs::msg::PositionOffsetXYZ& out_msg);
 
@@ -348,7 +350,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of offset_x, offset_y and presence flag for optional offset_z are handled
     */
     static void convert(const carma_v2x_msgs::msg::PositionOffsetXYZ& in_msg, j3224_v2x_msgs::msg::PositionOffsetXYZ& out_msg);
 
@@ -358,7 +360,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of DECI_M_PER_M
     */
     static void convert(const j3224_v2x_msgs::msg::ObjectDistance& in_msg, carma_v2x_msgs::msg::ObjectDistance& out_msg);
 
@@ -368,7 +370,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of DECI_M_PER_M
     */
     static void convert(const carma_v2x_msgs::msg::ObjectDistance& in_msg, j3224_v2x_msgs::msg::ObjectDistance& out_msg);
 
@@ -378,7 +380,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of veh_attitude, veh_ang_vel, size, height and presence flags are handled
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedVehicleData& in_msg, carma_v2x_msgs::msg::DetectedVehicleData& out_msg);
 
@@ -388,7 +390,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of veh_attitude, veh_ang_vel, size, height and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::DetectedVehicleData& in_msg, j3224_v2x_msgs::msg::DetectedVehicleData& out_msg);
 
@@ -398,7 +400,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of pitch, roll, yaw and presence flags are handled
     */
     static void convert(const j3224_v2x_msgs::msg::Attitude& in_msg, carma_v2x_msgs::msg::Attitude& out_msg);
 
@@ -408,7 +410,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversions of pitch, roll, yaw and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::Attitude& in_msg, j3224_v2x_msgs::msg::Attitude& out_msg);
 
@@ -418,7 +420,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const j3224_v2x_msgs::msg::PitchDetected& in_msg, carma_v2x_msgs::msg::PitchDetected& out_msg);
 
@@ -428,7 +430,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const carma_v2x_msgs::msg::PitchDetected& in_msg, j3224_v2x_msgs::msg::PitchDetected& out_msg);
 
@@ -438,7 +440,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const j3224_v2x_msgs::msg::RollDetected& in_msg, carma_v2x_msgs::msg::RollDetected& out_msg);
 
@@ -448,7 +450,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const carma_v2x_msgs::msg::RollDetected& in_msg, j3224_v2x_msgs::msg::RollDetected& out_msg);
 
@@ -458,7 +460,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const j3224_v2x_msgs::msg::YawDetected& in_msg, carma_v2x_msgs::msg::YawDetected& out_msg);
 
@@ -468,7 +470,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of EIGHTIETH_DEG_PER_DEG
     */
     static void convert(const carma_v2x_msgs::msg::YawDetected& in_msg, j3224_v2x_msgs::msg::YawDetected& out_msg);
 
@@ -478,7 +480,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of pitch_rate and roll_rate with presence flags handled
     */
     static void convert(const j3224_v2x_msgs::msg::AngularVelocity& in_msg, carma_v2x_msgs::msg::AngularVelocity& out_msg);
 
@@ -488,7 +490,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of pitch_rate and roll_rate with presence flags handled
     */
     static void convert(const carma_v2x_msgs::msg::AngularVelocity& in_msg, j3224_v2x_msgs::msg::AngularVelocity& out_msg);
 
@@ -498,7 +500,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const j3224_v2x_msgs::msg::PitchRate& in_msg, carma_v2x_msgs::msg::PitchRate& out_msg);
 
@@ -508,7 +510,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const carma_v2x_msgs::msg::PitchRate& in_msg, j3224_v2x_msgs::msg::PitchRate& out_msg);
 
@@ -518,7 +520,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const j3224_v2x_msgs::msg::RollRate& in_msg, carma_v2x_msgs::msg::RollRate& out_msg);
 
@@ -528,7 +530,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of HUNDREDTH_DEG_PER_S
     */
     static void convert(const carma_v2x_msgs::msg::RollRate& in_msg, j3224_v2x_msgs::msg::RollRate& out_msg);
 
@@ -538,7 +540,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion for radius and presence flags are handled
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedVRUData& in_msg, carma_v2x_msgs::msg::DetectedVRUData& out_msg);
 
@@ -548,7 +550,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion for radius and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::DetectedVRUData& in_msg, j3224_v2x_msgs::msg::DetectedVRUData& out_msg);
 
@@ -558,7 +560,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of size and presence flags are handled
     */
     static void convert(const j3224_v2x_msgs::msg::DetectedObstacleData& in_msg, carma_v2x_msgs::msg::DetectedObstacleData& out_msg);
 
@@ -568,7 +570,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of size and presence flags are handled
     */
     static void convert(const carma_v2x_msgs::msg::DetectedObstacleData& in_msg, j3224_v2x_msgs::msg::DetectedObstacleData& out_msg);
 
@@ -578,7 +580,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of width and length with presence flags handled
     */
     static void convert(const j3224_v2x_msgs::msg::ObstacleSize& in_msg, carma_v2x_msgs::msg::ObstacleSize& out_msg);
 
@@ -588,7 +590,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion of width and length with presence flags handled
     */
     static void convert(const carma_v2x_msgs::msg::ObstacleSize& in_msg, j3224_v2x_msgs::msg::ObstacleSize& out_msg);
 
@@ -598,7 +600,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of TEN_CM_PER_M
     */
     static void convert(const j3224_v2x_msgs::msg::SizeValue& in_msg, carma_v2x_msgs::msg::SizeValue& out_msg);
     
@@ -608,7 +610,7 @@ private:
     * @param in_msg The message to be converted
     * @param out_msg The message to store the output
     *
-    * Unit conversions and presence flags are handled
+    * Unit conversion using units of TEN_CM_PER_M
     */
     static void convert(const carma_v2x_msgs::msg::SizeValue& in_msg, j3224_v2x_msgs::msg::SizeValue& out_msg);
 
