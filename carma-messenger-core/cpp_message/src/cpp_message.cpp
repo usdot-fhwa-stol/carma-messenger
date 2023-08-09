@@ -29,6 +29,7 @@
 #include "cpp_message/SPAT_Message.h"
 #include "cpp_message/Map_Message.h"
 #include "cpp_message/PSM_Message.h"
+#include "cpp_message/SDSM_Message.h"
 
 
 namespace cpp_message
@@ -67,6 +68,9 @@ namespace cpp_message
         map_message_pub_ = create_publisher<j2735_v2x_msgs::msg::MapData>("incoming_j2735_map", 5);
         psm_message_pub_ = create_publisher<j2735_v2x_msgs::msg::PSM>("incoming_j2735_psm", 5);
         psm_message_sub_ = create_subscription<j2735_v2x_msgs::msg::PSM>("outgoing_j2735_psm", 5, std::bind(&Node::outbound_psm_message_callback, this, std_ph::_1));
+        sdsm_message_pub_ = create_publisher<j3224_v2x_msgs::msg::SensorDataSharingMessage>("incoming_j3224_sdsm", 5);
+        sdsm_message_sub_ = create_subscription<j3224_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_j3224_sdsm", 5, std::bind(&Node::outbound_sdsm_message_callback, this, std_ph::_1));
+
 
         // Return success if everthing initialized successfully
         return CallbackReturn::SUCCESS;
@@ -250,6 +254,7 @@ namespace cpp_message
                 RCLCPP_WARN_STREAM(get_logger(), "Cannot decode PSM Message");
             }
         }
+        // else if SDSM to decode
     }
 
     void Node::outbound_control_request_callback(j2735_v2x_msgs::msg::TrafficControlRequest::UniquePtr msg)
@@ -454,6 +459,29 @@ namespace cpp_message
         else
         {
             RCLCPP_WARN_STREAM( get_logger(), "Cannot encode PSM message.");
+        }
+
+    }
+
+    void Node::outbound_sdsm_message_callback(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr msg)
+    {//encode and publish as outbound binary message
+        SDSM_Message encode(this->get_node_logging_interface());
+        auto res = encode.encode_sdsm_message(*msg.get());
+        if(res)
+        {
+            RCLCPP_DEBUG_STREAM(get_logger(), "Res encoded val: ");
+            //copy to byte array msg
+            carma_driver_msgs::msg::ByteArray output;
+            output.header.frame_id="0";
+            output.header.stamp=this->now();
+            output.message_type="SDSM"; // may change to SensorDataSharingMessage
+            output.content=res.get();
+            //publish result
+            outbound_binary_message_pub_->publish(output);
+        }
+        else
+        {
+            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode SDSM message.");
         }
 
     }
