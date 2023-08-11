@@ -43,13 +43,13 @@ void SDSMConvertor::convert(const j3224_v2x_msgs::msg::SensorDataSharingMessage&
     carma_v2x_msgs::msg::DetectedObjectList detected_object_list;
 
     // Go through the array of j3224 detected objects and convert their DetectedObjectData
-    for(auto i : in_msg.objects.detected_object_data){
-        carma_v2x_msgs::msg::DetectedObjectData j;
+    for(auto in_object : in_msg.objects.detected_object_data){
+        carma_v2x_msgs::msg::DetectedObjectData out_object;
         
-        convert(i, j);
+        convert(in_object, out_object);
 
         // Add the converted object to the carma_v2x_msgs array
-        detected_object_list.detected_object_data.push_back(j);
+        detected_object_list.detected_object_data.push_back(out_object);
     }
     // Set the placeholder list as the carma_v2x_msgs output
     out_msg.objects = detected_object_list;
@@ -75,13 +75,13 @@ void SDSMConvertor::convert(const carma_v2x_msgs::msg::SensorDataSharingMessage&
     j3224_v2x_msgs::msg::DetectedObjectList detected_object_list;
 
     // Go through the array of carma detected objects and convert their DetectedObjectData
-    for(auto i : in_msg.objects.detected_object_data){
-        j3224_v2x_msgs::msg::DetectedObjectData j;
+    for(auto in_object : in_msg.objects.detected_object_data){
+        j3224_v2x_msgs::msg::DetectedObjectData out_object;
         
-        convert(i, j);
+        convert(in_object, out_object);
 
         // Add the converted object to the j3224_v2x_msgs array
-        detected_object_list.detected_object_data.push_back(j);
+        detected_object_list.detected_object_data.push_back(out_object);
     }
     // Set the placeholder list as the j3224_v2x_msgs output
     out_msg.objects = detected_object_list;
