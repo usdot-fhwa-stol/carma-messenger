@@ -69,7 +69,8 @@ namespace cpp_message
         object1.detected_object_common_data.pos.offset_y.object_distance = -720;
         object1.detected_object_common_data.pos.presence_vector |= j3224_v2x_msgs::msg::PositionOffsetXYZ::HAS_OFFSET_Z;
         object1.detected_object_common_data.pos.offset_z.object_distance = 20;
-        object1.detected_object_common_data.pos_confidence.pos.confidence |= j2735_v2x_msgs::msg::PositionConfidence::A50M;
+        object1.detected_object_common_data.pos_confidence.pos.confidence |= j2735_v2x_msgs::msg::PositionConfidence::A200M;
+        object1.detected_object_common_data.pos_confidence.elevation.confidence |= j2735_v2x_msgs::msg::ElevationConfidence::ELEV_200_00;
         object1.detected_object_common_data.speed.speed = 2500;
         object1.detected_object_common_data.speed_confidence.speed_confidence |= j2735_v2x_msgs::msg::SpeedConfidence::PREC5MS;
         object1.detected_object_common_data.heading.heading = 16000;

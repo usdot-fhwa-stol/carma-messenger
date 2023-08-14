@@ -27,13 +27,13 @@ namespace cpp_message
     {
         // Uncomment below (and one line at the end of the function) to print message to file
 
-        // FILE *fp;
-        // fp = fopen("encoded-sdsm-output.txt", "w");
-        // fprintf(fp, "encode_sdsm_message is called\n");
+        FILE *fp;
+        fp = fopen("encoded-sdsm-output.txt", "w");
+        fprintf(fp, "encode_sdsm_message is called\n");
 
         // ^Resulting file can be found in VSCode explorer > build_ros2/cpp_message/encoded-sdsm-output.txt
 
-        // Define shared_ptrs to access optional data without memory allocation
+        // Define shared_ptrs to access optional message data
         std::vector<std::shared_ptr<void>> shared_ptrs;
 
         // Setup for encoded message
@@ -53,9 +53,9 @@ namespace cpp_message
 
         //// SensorDataSharingMessage
         // MsgCount | msgCnt - msg_cnt
-        if(plainMessage.msg_cnt.msg_cnt > 127){
+        if(plainMessage.msg_cnt.msg_cnt > j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX){
             RCLCPP_WARN_STREAM(node_logging_->get_logger(), "Encoding msg count value is greater than max, setting to max");
-            message->value.choice.SensorDataSharingMessage.msgCnt = 127;        
+            message->value.choice.SensorDataSharingMessage.msgCnt = j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX;
         }
         else{
             message->value.choice.SensorDataSharingMessage.msgCnt = plainMessage.msg_cnt.msg_cnt;
@@ -250,7 +250,7 @@ namespace cpp_message
 
 
         // PositionalAccuracy | semiMajor - semi_minor
-        if(!plainMessage.ref_pos_xy_conf.semi_major || plainMessage.ref_pos_xy_conf.semi_major == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
+        if(plainMessage.ref_pos_xy_conf.semi_major == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
             message->value.choice.SensorDataSharingMessage.refPosXYConf.semiMajor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
         }
         else{
@@ -264,7 +264,7 @@ namespace cpp_message
         }
 
         // PositionalAccuracy | semiMinor - semi_minor
-        if(!plainMessage.ref_pos_xy_conf.semi_minor || plainMessage.ref_pos_xy_conf.semi_minor == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
+        if(plainMessage.ref_pos_xy_conf.semi_minor == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
             message->value.choice.SensorDataSharingMessage.refPosXYConf.semiMinor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
         }
         else{
@@ -278,8 +278,8 @@ namespace cpp_message
         }
 
         // PositionalAccuracy | orientation - orientation
-        if(!plainMessage.ref_pos_xy_conf.orientation || plainMessage.ref_pos_xy_conf.orientation == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE){
-            message->value.choice.SensorDataSharingMessage.refPosXYConf.orientation= j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE;
+        if(plainMessage.ref_pos_xy_conf.orientation == j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE){
+            message->value.choice.SensorDataSharingMessage.refPosXYConf.orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE;
         }
         else{
             uint16_t temp_orientation = plainMessage.ref_pos_xy_conf.orientation;
@@ -434,9 +434,17 @@ namespace cpp_message
                 encode_obj_com->posConfidence.pos = in_object.detected_object_common_data.pos_confidence.pos.confidence;
             }
 
+            // PositionConfidenceSet | posConfidence.elevation - pos_confidence.elevation.confidence
+            if(in_object.detected_object_common_data.pos_confidence.elevation.confidence == j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE){
+                encode_obj_com->posConfidence.elevation = j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE;
+            }
+            else{
+                encode_obj_com->posConfidence.elevation = in_object.detected_object_common_data.pos_confidence.elevation.confidence;
+            }
+
 
             // Speed | speed - speed
-            if(!in_object.detected_object_common_data.speed.speed || in_object.detected_object_common_data.speed.speed == j2735_v2x_msgs::msg::Speed::UNAVAILABLE){
+            if(in_object.detected_object_common_data.speed.speed == j2735_v2x_msgs::msg::Speed::UNAVAILABLE){
                 encode_obj_com->speed = j2735_v2x_msgs::msg::Speed::UNAVAILABLE;
             }
             else{
@@ -460,7 +468,7 @@ namespace cpp_message
 
 
             // Heading | heading - heading
-            if(!in_object.detected_object_common_data.heading.heading || in_object.detected_object_common_data.heading.heading == j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE){
+            if(in_object.detected_object_common_data.heading.heading == j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE){
                 encode_obj_com->heading = j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE;
             }
             else{
@@ -486,7 +494,7 @@ namespace cpp_message
             if(in_object.detected_object_common_data.presence_vector & j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_SPEED_Z){
                 auto temp_speed_z = create_store_shared<Speed_t>(shared_ptrs);
 
-                if(!in_object.detected_object_common_data.speed_z.speed || in_object.detected_object_common_data.speed_z.speed == j2735_v2x_msgs::msg::Speed::UNAVAILABLE){
+                if(in_object.detected_object_common_data.speed_z.speed == j2735_v2x_msgs::msg::Speed::UNAVAILABLE){
                     *temp_speed_z = j2735_v2x_msgs::msg::Speed::UNAVAILABLE;
                 }
                 else{
@@ -576,7 +584,7 @@ namespace cpp_message
                 }
 
                 // yaw - yaw_Rate
-                if(!in_object.detected_object_common_data.accel_4_way.yaw_rate || !in_object.detected_object_common_data.accel_4_way.yaw_rate == j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_UNAVAILABLE){
+                if(!in_object.detected_object_common_data.accel_4_way.yaw_rate || in_object.detected_object_common_data.accel_4_way.yaw_rate == j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_UNAVAILABLE){
                     temp_accel_4way->yaw = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_UNAVAILABLE;
                 }
                 else{
@@ -943,7 +951,7 @@ namespace cpp_message
 
 
                     // Attachment | attachment - attachment
-                    if(in_object.detected_object_optional_data.det_vru.presence_vector & j3224_v2x_msgs::msg::DetectedVRUData::HAS_PROPULSION){
+                    if(in_object.detected_object_optional_data.det_vru.presence_vector & j3224_v2x_msgs::msg::DetectedVRUData::HAS_ATTACHMENT){
                         auto temp_attachment = create_store_shared<Attachment_t>(shared_ptrs);
 
                         *temp_attachment = in_object.detected_object_optional_data.det_vru.attachment.type;
@@ -952,7 +960,7 @@ namespace cpp_message
 
 
                     // AttachmentRadius | radius - attachment_radius
-                    if(in_object.detected_object_optional_data.det_vru.presence_vector & j3224_v2x_msgs::msg::DetectedVRUData::HAS_PROPULSION){
+                    if(in_object.detected_object_optional_data.det_vru.presence_vector & j3224_v2x_msgs::msg::DetectedVRUData::HAS_RADIUS){
                         auto temp_radius = create_store_shared<AttachmentRadius_t>(shared_ptrs);
 
                         *temp_radius = in_object.detected_object_optional_data.det_vru.radius.attachment_radius;
@@ -1030,7 +1038,7 @@ namespace cpp_message
 
                 }
 
-                // Add the temporary optional object data to the final encode mobject
+                // Add the temporary optional object data to the final encode object
                 encode_object->detObjOptData = encode_obj_opt;
 
             }
@@ -1046,7 +1054,7 @@ namespace cpp_message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
         
         // Uncomment the line below to save the message to the encoded-sdsm-output.txt file
-        // asn_fprint(fp, &asn_DEF_MessageFrame, message);
+        asn_fprint(fp, &asn_DEF_MessageFrame, message);
     
         // log a warning if encoding fails
         if(ec.encoded == -1) {
