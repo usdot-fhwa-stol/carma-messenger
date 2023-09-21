@@ -62,6 +62,15 @@ namespace cpp_message
          */
         boost::optional<std::vector<uint8_t>> encode_sdsm_message(const j3224_v2x_msgs::msg::SensorDataSharingMessage& plainMessage);
 
+        /**
+         * @brief SDSM decoding function.
+         * @param binary_array Container with binary input.
+         * @return decoded ros message, returns ROS warning and an empty optional if decoding fails. 
+         */
+        boost::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>decode_sdsm_message(std::vector<uint8_t>&binary_array);
+
+
+
     };
 
 }
