@@ -192,7 +192,7 @@ namespace cpp_message
 
         if(res){
             // // Output of encoded SDSM for debugging
-            // std::vector<uint8_t> to_read=res.get();
+            // std::vector<uint8_t> to_read=res.value();
             // size_t len=to_read.size();
             // for(size_t i=0;i<len;i++)std::cout<<int(to_read[i])<<",";
             // std::cout<<"\n";
@@ -290,7 +290,7 @@ namespace cpp_message
         message.objects.detected_object_data.push_back(object1);
 
         // Initial SDSM encode and test
-        auto res = worker.encode_sdsm_message(message);
+        const auto res = worker.encode_sdsm_message(message);
         if(res){
             EXPECT_TRUE(true);
         }
@@ -300,7 +300,7 @@ namespace cpp_message
         }
 
         // Decode encoded SDSM
-        auto res_decoded = worker.decode_sdsm_message(res.get());
+        const auto res_decoded = worker.decode_sdsm_message(res.value());
         if(res_decoded) EXPECT_TRUE(true);
         else{
             std::cout << "Decoding of encoded SDSM failed!\n";
@@ -308,11 +308,11 @@ namespace cpp_message
         }
 
         // Compare decoded SDSM to expected result
-        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.get();
+        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
         EXPECT_EQ(message, result);
 
         // Repeat encode/decode process on prior result data
-        auto res2 = worker.encode_sdsm_message(result);
+        const auto res2 = worker.encode_sdsm_message(result);
         if(res2){
             EXPECT_TRUE(true);
         }
@@ -321,7 +321,7 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        auto res2_decoded = worker.decode_sdsm_message(res2.get());
+        const auto res2_decoded = worker.decode_sdsm_message(res2.value());
         if(res2_decoded){
             EXPECT_TRUE(true);
         }
@@ -463,7 +463,7 @@ namespace cpp_message
         message.objects.detected_object_data.push_back(object1);
 
 
-        auto res = worker.encode_sdsm_message(message);
+        const auto res = worker.encode_sdsm_message(message);
         if(res){
             EXPECT_TRUE(true);
         }
@@ -472,14 +472,14 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        auto res_decoded = worker.decode_sdsm_message(res.get());
+        const auto res_decoded = worker.decode_sdsm_message(res.value());
         if(res_decoded) EXPECT_TRUE(true);
         else{
             std::cout << "Decoding of encoded SDSM failed!\n";
             EXPECT_TRUE(false);
         }
 
-        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.get();
+        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
 
         EXPECT_EQ(message, result);
@@ -587,7 +587,7 @@ namespace cpp_message
 
         message.objects.detected_object_data.push_back(object1);
 
-        auto res = worker.encode_sdsm_message(message);
+        const auto res = worker.encode_sdsm_message(message);
         if(res){
             EXPECT_TRUE(true);
         }
@@ -596,7 +596,7 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        auto res_decoded = worker.decode_sdsm_message(res.get());
+        const auto res_decoded = worker.decode_sdsm_message(res.value());
         if(res_decoded) EXPECT_TRUE(true);
         else{
             std::cout << "Decoding of encoded SDSM failed!\n";
@@ -604,9 +604,9 @@ namespace cpp_message
         }
 
         
-        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.get();
+        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
-        auto res2 = worker.encode_sdsm_message(result);
+        const auto res2 = worker.encode_sdsm_message(result);
 
         EXPECT_EQ(message, result);
 
@@ -712,7 +712,7 @@ namespace cpp_message
         message.objects.detected_object_data.push_back(object1);
 
 
-        auto res = worker.encode_sdsm_message(message);
+        const auto res = worker.encode_sdsm_message(message);
         if(res){
             EXPECT_TRUE(true);
         }
@@ -721,7 +721,7 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        auto res_decoded = worker.decode_sdsm_message(res.get());
+        const auto res_decoded = worker.decode_sdsm_message(res.value());
         if(res_decoded) EXPECT_TRUE(true);
         else{
             std::cout << "Decoding of encoded SDSM failed!\n";
@@ -729,9 +729,9 @@ namespace cpp_message
         }
 
         
-        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.get();
+        j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
-        auto res2 = worker.encode_sdsm_message(result);
+        const auto res2 = worker.encode_sdsm_message(result);
 
         EXPECT_EQ(message, result);
 
