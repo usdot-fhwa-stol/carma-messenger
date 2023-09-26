@@ -1,6 +1,6 @@
-| CicleCI Build Status | Sonar Code Quality |
+| CI Build Status | Sonar Code Quality |
 |----------------------|---------------------|
-[![CircleCI](https://circleci.com/gh/usdot-fhwa-stol/carma-messenger.svg?style=svg)](https://circleci.com/gh/usdot-fhwa-stol/carma-messenger) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-fhwa-stol_carma-messenger&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot-fhwa-stol_carma-messenger) | 
+[![CI](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml/badge.svg)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-fhwa-stol_carma-messenger&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot-fhwa-stol_carma-messenger) |
 # DockerHub Release Builds
 | Carma Messenger UI  | Carma Messenger Config | Carma Messenger Core |
 |-----|-----|-----|

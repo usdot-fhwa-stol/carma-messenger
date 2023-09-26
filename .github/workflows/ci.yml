@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    defaults:
+      run:
+        shell: bash
+        working-directory: "/opt/carma/"
+    runs-on: ubuntu-latest
+    container:
+      image: usdotfhwastoldev/autoware.ai:develop
+      env:
+        INIT_ENV: "/home/carma/.base-image/init-env.sh"
+        TERM: xterm
+      options: "--user root"
+    steps:
+    - name: Checkout ${{ github.event.repository.name }}
+      uses: actions/checkout@v3.3.0
+      with:
+        path: src/${{ github.event.repository.name }}
+        fetch-depth: 0
+    - name: Move source code
+      run: mv $GITHUB_WORKSPACE/src /opt/carma/
+    - name: Checkout dependencies
+      run: |
+        source "$INIT_ENV"
+        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/
+    - name: Build
+      run: |
+        source "$INIT_ENV"
+        sed -i '/colcon build/ s/$/ --packages-up-to carma-messenger cpp_message emergency_response_vehicle_plugin j2735_convertor asn1c traffic_incident truck_inspection_plugin/' /home/carma/.ci-image/engineering_tools/code_coverage/make_with_coverage.bash
+        make_with_coverage.bash -m -e /opt/carma/ -o ./coverage_reports/gcov
+    - name: Run C++ Tests
+      run: |
+        source "$INIT_ENV"
+        sed -i '/colcon test/ s/$/ --packages-up-to carma-messenger cpp_message emergency_response_vehicle_plugin j2735_convertor asn1c traffic_incident truck_inspection_plugin/' /home/carma/.ci-image/engineering_tools/code_coverage/make_with_coverage.bash
+        make_with_coverage.bash -t -e /opt/carma/ -o ./coverage_reports/gcov
+    - name: Run SonarScanner
+      uses: usdot-fhwa-stol/actions/sonar-scanner@main
+      with:
+        sonar-token: ${{ secrets.SONAR_TOKEN }}
+        working-dir: "/opt/carma/src/${{ github.event.repository.name }}"
