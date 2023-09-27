@@ -1,0 +1,62 @@
+name: Docker
+
+on:
+  push:
+    branches-ignore:
+      - "develop"
+
+jobs:
+  chevrolet_tahoe_2018:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - run: ls -la && pwd     
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: carma-messenger-config/chevrolet_tahoe_2018/
+          push: true
+          tags: usdotfhwastoldev/${{ github.event.repository.name }}:${{ github.ref_name }}
+         
+  development:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: carma-messenger-config/development/
+          push: true
+          tags: usdotfhwastoldev/${{ github.event.repository.name }}:${{ github.ref_name }}
+  carma-messenger-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: carma-messenger-ui/    
+          push: true     
+          tags: usdotfhwastoldev/${{ github.event.repository.name }}:${{ github.ref_name }}    
+  carma-messenger-core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: carma-messenger-core/  
+          push: true
+          tags: usdotfhwastoldev/${{ github.event.repository.name }}:${{ github.ref_name }}          
