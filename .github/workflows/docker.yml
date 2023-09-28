@@ -20,27 +20,30 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push carma-messenger-ui Docker Image
-        run: |
-          docker build -t usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui -f Dockerfile .
-          docker push usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui
-        working-directory: ./carma-messenger-ui/
-
-      - name: Build and Push chevrolet_tahoe_2018 Docker Image
-        run: |
-          docker build -t usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018 -f Dockerfile .
-          docker push usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
-        working-directory: ./carma-messenger-config/chevrolet_tahoe_2018/
-
-      - name: Build and Push development Docker Image
-        run: |
-          docker build -t usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development -f Dockerfile .
-          docker push usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development
-        working-directory: ./carma-messenger-config/development/
+        uses: docker/build-push-action@v3
+        with:
+          context: ./carma-messenger-ui/
+          push: true
+          tags: usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui         
 
       - name: Build and Push carma-messenger-core Docker Image
-        run: |
-          docker build -t usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core -f Dockerfile .
-          docker push usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core
-        working-directory: ./carma-messenger-core/
-      
+        uses: docker/build-push-action@v3
+        with:
+          context: ./carma-messenger-core/
+          push: true
+          tags: usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
+
+      - name: Build and Push chevrolet_tahoe_2018 Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./carma-messenger-config/chevrolet_tahoe_2018/
+          push: true
+          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
+
+      - name: Build and Push development Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./carma-messenger-config/development/
+          push: true
+          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development            
 
