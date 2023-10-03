@@ -255,6 +255,19 @@ namespace cpp_message
             }
         }
         // else if SDSM to decode
+        else if(msg->message_type=="SensorDataSharingMessage"){
+            std::vector<uint8_t> array=msg->content;
+            SDSM_Message decode(this->get_node_logging_interface());
+            auto output=decode.decode_sdsm_message(array);
+            if(output)
+            {
+                sdsm_message_pub_->publish(output.value());
+            }
+            else
+            {
+                RCLCPP_WARN_STREAM( get_logger(), "Cannot decode SDSM message");
+            }
+        }
     }
 
     void Node::outbound_control_request_callback(j2735_v2x_msgs::msg::TrafficControlRequest::UniquePtr msg)
@@ -475,7 +488,7 @@ namespace cpp_message
             output.header.frame_id="0";
             output.header.stamp=this->now();
             output.message_type="SDSM"; // may change to SensorDataSharingMessage
-            output.content=res.get();
+            output.content=res.value();
             //publish result
             outbound_binary_message_pub_->publish(output);
         }
