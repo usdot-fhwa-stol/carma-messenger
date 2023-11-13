@@ -3,7 +3,7 @@ name: CI
 on:
   push:
    branches:
-     - "master"
+     - "update_sonar_scanner"
      - "develop"
   pull_request:
       types: [opened, synchronize, reopened]
