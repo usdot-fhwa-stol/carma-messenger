@@ -1657,6 +1657,7 @@ namespace cpp_message
                             opt_output.det_veh.lights.exterior_lights = lights;
 
                         }
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 1 for:" << obj_itr);
 
                         // Attitude
                         if(opt_data.choice.detVeh.vehAttitude){
@@ -1711,6 +1712,8 @@ namespace cpp_message
                             }
                         }
 
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 2 for:" << obj_itr);
+
                         // AttitudeConfidence
                         if(opt_data.choice.detVeh.vehAttitudeConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE_CONFIDENCE;
@@ -1734,6 +1737,9 @@ namespace cpp_message
                                 opt_output.det_veh.veh_attitude_confidence.yaw_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE;
                             }
                         }
+
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 3 for:" << obj_itr);
+
 
                         // AngularVelocity
                         if(opt_data.choice.detVeh.vehAngVel){
@@ -1776,6 +1782,8 @@ namespace cpp_message
                             }
                         }
 
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 4 for:" << obj_itr);
+
                         // AngularVelocityConfidence
                         if(opt_data.choice.detVeh.vehAngVelConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL_CONFIDENCE;
@@ -1789,6 +1797,8 @@ namespace cpp_message
                                 opt_output.det_veh.veh_ang_vel_confidence.roll_rate_confidence.roll_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence;
                             }
                         }
+
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 5 for:" << obj_itr);
 
                         // VehicleSize
                         if(opt_data.choice.detVeh.size){
@@ -1831,6 +1841,8 @@ namespace cpp_message
                             }
                         }
 
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 6 for:" << obj_itr);
+
                         // VehicleHeight *
                         if(*opt_data.choice.detVeh.height){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT;
@@ -1854,6 +1866,9 @@ namespace cpp_message
                             }
                         }
 
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 7 for:" << obj_itr);
+
+
                         // VehicleSizeConfidence
                         if(opt_data.choice.detVeh.vehicleSizeConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_SIZE_CONFIDENCE;
@@ -1876,11 +1891,16 @@ namespace cpp_message
                             }
                         }
 
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 8 for:" << obj_itr);
+
                         // BasicVehicleClass
                         if(*opt_data.choice.detVeh.vehicleClass){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_CLASS;
                             opt_output.det_veh.vehicle_class.basic_vehicle_class = *opt_data.choice.detVeh.vehicleClass;
                         }
+
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 9 for:" << obj_itr);
+
 
                         // ClassificationConfidence
                         if(*opt_data.choice.detVeh.classConf){
@@ -1897,6 +1917,8 @@ namespace cpp_message
                             }
                             opt_output.det_veh.class_conf.classification_confidence = veh_class_conf;
                         }
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 10 for:" << obj_itr);
+
                     }
 
                     // detVRU
