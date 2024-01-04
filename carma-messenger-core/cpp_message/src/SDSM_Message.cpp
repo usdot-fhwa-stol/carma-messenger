@@ -1788,11 +1788,11 @@ namespace cpp_message
                         if(opt_data.choice.detVeh.vehAngVelConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL_CONFIDENCE;
 
-                            if(*opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence){
+                            if(opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence){
                                 opt_output.det_veh.veh_ang_vel_confidence.presence_vector |= j3224_v2x_msgs::msg::AngularVelocityConfidence::HAS_PITCH_RATE_CONFIDENCE;
                                 opt_output.det_veh.veh_ang_vel_confidence.pitch_rate_confidence.pitch_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence;
                             }
-                            if(*opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence){
+                            if(opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence){
                                 opt_output.det_veh.veh_ang_vel_confidence.presence_vector |= j3224_v2x_msgs::msg::AngularVelocityConfidence::HAS_ROLL_RATE_CONFIDENCE;
                                 opt_output.det_veh.veh_ang_vel_confidence.roll_rate_confidence.roll_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence;
                             }
@@ -1885,7 +1885,7 @@ namespace cpp_message
                             else{
                                 opt_output.det_veh.vehicle_size_confidence.vehicle_length_confidence.size_value_confidence |= j3224_v2x_msgs::msg::SizeValueConfidence::UNAVAILABLE;
                             }
-                            if(*opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence){
+                            if(opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence){
                                 opt_output.det_veh.vehicle_size_confidence.presence_vector |= j3224_v2x_msgs::msg::VehicleSizeConfidence::HAS_VEHICLE_HEIGHT_CONFIDENCE;
                                 opt_output.det_veh.vehicle_size_confidence.vehicle_height_confidence.size_value_confidence |= *opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence;
                             }
@@ -1948,13 +1948,13 @@ namespace cpp_message
                         }
 
                         // Attachment
-                        if(*opt_data.choice.detVRU.attachment){
+                        if(opt_data.choice.detVRU.attachment){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_ATTACHMENT;
                             opt_output.det_vru.attachment.type = *opt_data.choice.detVRU.attachment;
                         }
 
                         // AttachmentRadius
-                        if(*opt_data.choice.detVRU.radius){
+                        if(opt_data.choice.detVRU.radius){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_RADIUS;
 
                             long att_radius = *opt_data.choice.detVRU.radius;
@@ -2000,7 +2000,7 @@ namespace cpp_message
                             opt_output.det_obst.obst_size.length.size_value = obst_length;
                         }
                         // ObstacleSize - height
-                        if(*opt_data.choice.detObst.obstSize.height){
+                        if(opt_data.choice.detObst.obstSize.height){
                             opt_output.det_obst.obst_size.presence_vector |= j3224_v2x_msgs::msg::ObstacleSize::HAS_HEIGHT;
                             long obst_height = *opt_data.choice.detObst.obstSize.height;
 
@@ -2028,7 +2028,7 @@ namespace cpp_message
                         else{
                             opt_output.det_obst.obst_size_confidence.length_confidence.size_value_confidence |= j3224_v2x_msgs::msg::SizeValueConfidence::UNAVAILABLE;
                         }
-                        if(*opt_data.choice.detObst.obstSizeConfidence.heightConfidence){
+                        if(opt_data.choice.detObst.obstSizeConfidence.heightConfidence){
                             opt_output.det_obst.obst_size_confidence.presence_vector |= j3224_v2x_msgs::msg::ObstacleSizeConfidence::HAS_HEIGHT_CONFIDENCE;
                             opt_output.det_obst.obst_size_confidence.height_confidence.size_value_confidence = *opt_data.choice.detObst.obstSizeConfidence.heightConfidence;
                         }
