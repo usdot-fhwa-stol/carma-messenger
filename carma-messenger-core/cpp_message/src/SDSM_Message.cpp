@@ -1844,7 +1844,7 @@ namespace cpp_message
                         RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 6 for:" << obj_itr);
 
                         // VehicleHeight *
-                        if(*opt_data.choice.detVeh.height){
+                        if(opt_data.choice.detVeh.height){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT;
                             // unnecessary nested ifs?
                             if(opt_data.choice.detVeh.height && *opt_data.choice.detVeh.height != j2735_v2x_msgs::msg::VehicleHeight::VEHICLE_HEIGHT_UNAVAILABLE){
@@ -1894,7 +1894,7 @@ namespace cpp_message
                         RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 8 for:" << obj_itr);
 
                         // BasicVehicleClass
-                        if(*opt_data.choice.detVeh.vehicleClass){
+                        if(opt_data.choice.detVeh.vehicleClass){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_CLASS;
                             opt_output.det_veh.vehicle_class.basic_vehicle_class = *opt_data.choice.detVeh.vehicleClass;
                         }
@@ -1903,7 +1903,7 @@ namespace cpp_message
 
 
                         // ClassificationConfidence
-                        if(*opt_data.choice.detVeh.classConf){
+                        if(opt_data.choice.detVeh.classConf){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_CLASS_CONF;
 
                             long veh_class_conf = *opt_data.choice.detVeh.classConf;
