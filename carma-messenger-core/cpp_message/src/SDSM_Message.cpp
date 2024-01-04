@@ -1197,7 +1197,7 @@ namespace cpp_message
             }
 
             // Position3D - lat
-            if (sdsm_core.refPos.lat && sdsm_core.refPos.lat != j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
+            if (sdsm_core.refPos.lat != j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
                 double lat = sdsm_core.refPos.lat;
                 if(lat > j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.lat above max, setting to max");
@@ -1214,7 +1214,7 @@ namespace cpp_message
                 output.ref_pos.latitude = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
             }
             // Position3D - Long
-            if (sdsm_core.refPos.Long && sdsm_core.refPos.Long != j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
+            if (sdsm_core.refPos.Long != j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
                 double longitude = sdsm_core.refPos.Long;
                 if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.Long above max, setting to max");
@@ -1249,7 +1249,7 @@ namespace cpp_message
                 output.ref_pos.elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
             }
             // PositionalAccuracy - semiMajor
-            if(sdsm_core.refPosXYConf.semiMajor && sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
+            if(sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
                 long semi_major = sdsm_core.refPosXYConf.semiMajor;
                 if(semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMajor above max, setting to max");
@@ -1266,7 +1266,7 @@ namespace cpp_message
                 output.ref_pos_xy_conf.semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
             }
             // PositionalAccuracy - semiMinor
-            if(sdsm_core.refPosXYConf.semiMinor && sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
+            if(sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
                 long semi_minor = sdsm_core.refPosXYConf.semiMinor;
                 if(semi_minor > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMinor above max, setting to max");
@@ -1283,7 +1283,7 @@ namespace cpp_message
                 output.ref_pos_xy_conf.semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
             }
             // PositionalAccuracy - orientation
-            if(sdsm_core.refPosXYConf.orientation && sdsm_core.refPosXYConf.orientation != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE){
+            if(sdsm_core.refPosXYConf.orientation != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE){
                 long orientation = sdsm_core.refPosXYConf.orientation;
                 if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM orientation above max, setting to max");
