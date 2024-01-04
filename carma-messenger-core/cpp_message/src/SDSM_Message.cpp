@@ -1095,7 +1095,7 @@ namespace cpp_message
         {
             // Incoming SDSM in ASN.1 C-struct format
             SensorDataSharingMessage_t sdsm_core = message->value.choice.SensorDataSharingMessage;
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 00");
+            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached: New message starting");
 
 
             // MessageCount
@@ -1310,7 +1310,7 @@ namespace cpp_message
             j3224_v2x_msgs::msg::DetectedObjectList detected_objects;
 
             for(auto obj_itr = 0; obj_itr < sdsm_core.objects.list.count; ++obj_itr){
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 01: " << obj_itr);
+                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached processing object idx: " << obj_itr);
 
 
                 if(obj_itr > j3224_v2x_msgs::msg::DetectedObjectList::DETECTED_OBJECT_DATA_MAX_SIZE){
@@ -1619,12 +1619,13 @@ namespace cpp_message
                     common_data.acc_cfd_yaw.yaw_rate_confidence |= *sdsm_core.objects.list.array[obj_itr]->detObjCommon.accCfdYaw;
                 }
                 // Assign common data to the current object
+                */
                 object_data.detected_object_common_data = common_data;
 
-                */
+
                 // Detected Object Optional Data
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 1a");
-                /* TODO
+                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached Applied Common data");
+
                 if(sdsm_core.objects.list.array[obj_itr]->detObjOptData){
                     object_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectData::HAS_DETECTED_OBJECT_OPTIONAL_DATA;
 
@@ -1633,8 +1634,12 @@ namespace cpp_message
 
                     j3224_v2x_msgs::msg::DetectedObjectOptionalData opt_output;
 
+                    RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached starting.. types for:" << obj_itr);
+
                     // detVeh
                     if(opt_data.present == DetectedObjectOptionalData_PR_detVeh){
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh for:" << obj_itr);
+
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VEH;
 
                         // Exteriorlights
@@ -1894,10 +1899,9 @@ namespace cpp_message
                         }
                     }
 
-
-
                     // detVRU
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detVRU){
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVRU for idx:" << obj_itr);
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VRU;
 
                         // PersonalDeviceUserType
@@ -1940,10 +1944,10 @@ namespace cpp_message
                         }
                     }
 
-
                     // detObst
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detObst){
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_OBST;
+                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detObst for idx:" << obj_itr);
 
                         // ObstacleSize - width
                         if(opt_data.choice.detObst.obstSize.width){
@@ -2011,21 +2015,21 @@ namespace cpp_message
                     object_data.detected_object_optional_data = opt_output;
 
                 }
-                */
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 1b");
+
+                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of Object_data");
 
                 // For each object iterated over, push back the data to DetectedObjectsList
                 detected_objects.detected_object_data.push_back(object_data);
 
             }
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 2a");
+            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of all data");
 
             // Set the objects field of the output message
             output.objects = detected_objects;
 
             ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             // Release memory and return decoded message output
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 2b");
+            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of this message");
 
             return std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>(output);
 
