@@ -1624,7 +1624,7 @@ namespace cpp_message
                 */
                 // Detected Object Optional Data
                 RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 1a");
-
+                /* TODO
                 if(sdsm_core.objects.list.array[obj_itr]->detObjOptData){
                     object_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectData::HAS_DETECTED_OBJECT_OPTIONAL_DATA;
 
@@ -2011,6 +2011,7 @@ namespace cpp_message
                     object_data.detected_object_optional_data = opt_output;
 
                 }
+                */
                 RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached 1b");
 
                 // For each object iterated over, push back the data to DetectedObjectsList
