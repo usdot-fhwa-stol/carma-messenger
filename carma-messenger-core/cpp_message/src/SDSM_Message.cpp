@@ -92,7 +92,7 @@ namespace cpp_message
             uint16_t year = plainMessage.sdsm_time_stamp.year.year;
             if(year > j2735_v2x_msgs::msg::DYear::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded year value greater than max, setting to max");
-                year = j2735_v2x_msgs::msg::DYear::MAX;   
+                year = j2735_v2x_msgs::msg::DYear::MAX;
             }
             *year_ptr = year;
 
@@ -106,7 +106,7 @@ namespace cpp_message
             uint16_t month = plainMessage.sdsm_time_stamp.month.month;
             if(month > j2735_v2x_msgs::msg::DMonth::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded month value greater than max, setting to max");
-                month = j2735_v2x_msgs::msg::DMonth::MAX;   
+                month = j2735_v2x_msgs::msg::DMonth::MAX;
             }
             *month_ptr = month;
 
@@ -120,7 +120,7 @@ namespace cpp_message
             uint16_t day = plainMessage.sdsm_time_stamp.day.day;
             if(day > j2735_v2x_msgs::msg::DDay::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded day value greater than max, setting to max");
-                day = j2735_v2x_msgs::msg::DDay::MAX;   
+                day = j2735_v2x_msgs::msg::DDay::MAX;
             }
             *day_ptr = day;
 
@@ -134,7 +134,7 @@ namespace cpp_message
             uint16_t hour = plainMessage.sdsm_time_stamp.hour.hour;
             if(hour > j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded hour value greater than max, setting to max");
-                hour = j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX;   
+                hour = j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX;
             }
             *hour_ptr = hour;
 
@@ -148,7 +148,7 @@ namespace cpp_message
             uint16_t minute = plainMessage.sdsm_time_stamp.minute.minute;
             if(minute > j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded minute value greater than max, setting to max");
-                minute = j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX;   
+                minute = j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX;
             }
             *minute_ptr = minute;
 
@@ -162,7 +162,7 @@ namespace cpp_message
             uint16_t second = plainMessage.sdsm_time_stamp.second.millisecond;
             if(second > j2735_v2x_msgs::msg::DSecond::RESERVED_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded second value greater than max, setting to max");
-                second = j2735_v2x_msgs::msg::DSecond::RESERVED_MAX;   
+                second = j2735_v2x_msgs::msg::DSecond::RESERVED_MAX;
             }
             *second_ptr = second;
 
@@ -176,11 +176,11 @@ namespace cpp_message
             long offset = plainMessage.sdsm_time_stamp.offset.offset_minute;
             if(offset > j2735_v2x_msgs::msg::DOffset::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded millisecond value greater than max, setting to max");
-                offset = j2735_v2x_msgs::msg::DOffset::MAX;   
+                offset = j2735_v2x_msgs::msg::DOffset::MAX;
             }
             else if(offset < j2735_v2x_msgs::msg::DOffset::MIN){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded millisecond value less than min, setting to min");
-                offset = j2735_v2x_msgs::msg::DOffset::MIN;   
+                offset = j2735_v2x_msgs::msg::DOffset::MIN;
             }
             *offset_ptr = offset;
 
@@ -206,9 +206,9 @@ namespace cpp_message
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoding latitude value greater than max, setting to max");
                 temp_lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
             }
-            message->value.choice.SensorDataSharingMessage.refPos.lat = temp_lat;  
+            message->value.choice.SensorDataSharingMessage.refPos.lat = temp_lat;
         }
-        
+
         // Position 3D | Long - ref_pos.longitude
         if(!plainMessage.ref_pos.longitude || plainMessage.ref_pos.longitude == j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
             message->value.choice.SensorDataSharingMessage.refPos.Long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
@@ -223,10 +223,10 @@ namespace cpp_message
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoding longitude value greater than max, setting to max");
                 temp_long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
             }
-            
+
             message->value.choice.SensorDataSharingMessage.refPos.Long = temp_long;
         }
-        
+
         // Position3D | *elevation - ref_pos.elevation
         auto elevation_ptr = create_store_shared<DSRC_Elevation_t>(shared_ptrs);
 
@@ -244,7 +244,7 @@ namespace cpp_message
                 temp_elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX;
             }
             *elevation_ptr = temp_elevation;
-            
+
         }
         message->value.choice.SensorDataSharingMessage.refPos.elevation = elevation_ptr;
 
@@ -295,7 +295,7 @@ namespace cpp_message
         // ElevationConfidence | *refPosElConf - ref_pos_el_conf
         if(plainMessage.presence_vector & j3224_v2x_msgs::msg::SensorDataSharingMessage::HAS_REF_POS_EL_CONF){
             auto elevation_conf = create_store_shared<ElevationConfidence_t>(shared_ptrs);
-            
+
             if(!plainMessage.ref_pos_el_conf.confidence || plainMessage.ref_pos_el_conf.confidence == j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE){
                 *elevation_conf = j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE;
             }
@@ -479,7 +479,7 @@ namespace cpp_message
                 }
                 encode_obj_com->heading = temp_heading;
             }
-            
+
 
             // HeadingConfidence | headingConf heading_conf.confidence
             if(!in_object.detected_object_common_data.heading_conf.confidence || in_object.detected_object_common_data.heading_conf.confidence == j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE){
@@ -643,7 +643,7 @@ namespace cpp_message
 
             encode_object->detObjCommon = *encode_obj_com;
 
-            
+
             //// DetectedObjectOptionalData
 
             // detObjOptData - detected_object_optional_data
@@ -840,7 +840,7 @@ namespace cpp_message
                             temp_veh_length = j2735_v2x_msgs::msg::VehicleLength::VEHICLE_LENGTH_MAX;
                         }
                         temp_veh_size->length = temp_veh_length;
-                    
+
                         encode_det_veh->size = temp_veh_size;
                     }
 
@@ -848,7 +848,7 @@ namespace cpp_message
                     // VehicleHeight | height - height.vehicle_height
                     if(in_object.detected_object_optional_data.det_veh.presence_vector & j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT){
                         auto temp_veh_height = create_store_shared<VehicleHeight_t>(shared_ptrs);
-                        
+
                         *temp_veh_height = in_object.detected_object_optional_data.det_veh.height.vehicle_height;
                         if(*temp_veh_height > j2735_v2x_msgs::msg::VehicleHeight::VEHICLE_HEIGHT_MAX){
 
@@ -927,21 +927,21 @@ namespace cpp_message
                         // human - human
                         if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_HUMAN){
                             temp_propulsion->present = PropelledInformation_PR_human;
-                            
+
                             temp_propulsion->choice.human = in_object.detected_object_optional_data.det_vru.propulsion.human.type;
 
                             }
                         // animal - animal
                         else if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_ANIMAL){
                             temp_propulsion->present = PropelledInformation_PR_animal;
-                            
+
                             temp_propulsion->choice.animal = in_object.detected_object_optional_data.det_vru.propulsion.animal.type;
 
                             }
                         // motor - motor
                         else if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_MOTOR){
                             temp_propulsion->present = PropelledInformation_PR_motor;
-                            
+
                             temp_propulsion->choice.motor = in_object.detected_object_optional_data.det_vru.propulsion.motor.type;
 
                             }
@@ -1052,10 +1052,10 @@ namespace cpp_message
 
         // Encode message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-        
+
         // Uncomment the line below to save the message to the encoded-sdsm-output.txt file
         // asn_fprint(fp, &asn_DEF_MessageFrame, message);
-    
+
         // log a warning if encoding fails
         if(ec.encoded == -1) {
             RCLCPP_WARN( node_logging_->get_logger(), "Encoding for SDSM Message failed");
@@ -1066,7 +1066,7 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
-                
+
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return std::optional<std::vector<uint8_t>>(b_array);
 
@@ -1076,18 +1076,18 @@ namespace cpp_message
 
     // SDSM decoding
     std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage> SDSM_Message::decode_sdsm_message(const std::vector<uint8_t>&binary_array){
-        
+
         j3224_v2x_msgs::msg::SensorDataSharingMessage output;
         // decode results - stored in binary_array
         asn_dec_rval_t rval;
         MessageFrame_t* message = nullptr;
-        
-        // copy from vector to array         
-        size_t len = binary_array.size();    
+
+        // copy from vector to array
+        size_t len = binary_array.size();
         std::vector<uint8_t> buf;
 
         std::copy(binary_array.cbegin(), binary_array.cend(), std::back_inserter(buf));
-        
+
         // use asn1c lib to decode
         rval = uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf.data(), len, 0, 0);
 
@@ -1095,7 +1095,9 @@ namespace cpp_message
         {
             // Incoming SDSM in ASN.1 C-struct format
             SensorDataSharingMessage_t sdsm_core = message->value.choice.SensorDataSharingMessage;
-            
+            RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 00");
+
+
             // MessageCount
             if(sdsm_core.msgCnt < j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX){
                 output.msg_cnt.msg_cnt = sdsm_core.msgCnt;
@@ -1295,7 +1297,7 @@ namespace cpp_message
             }
             else{
                 RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing orientation, set to unavailable");
-                output.ref_pos_xy_conf.orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE;  
+                output.ref_pos_xy_conf.orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE;
             }
 
             // ElevationConfidence
@@ -1308,6 +1310,7 @@ namespace cpp_message
             j3224_v2x_msgs::msg::DetectedObjectList detected_objects;
 
             for(auto obj_itr = 0; obj_itr < sdsm_core.objects.list.count; ++obj_itr){
+                RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 01: " << obj_itr);
 
 
                 if(obj_itr > j3224_v2x_msgs::msg::DetectedObjectList::DETECTED_OBJECT_DATA_MAX_SIZE){
@@ -1361,7 +1364,7 @@ namespace cpp_message
                 else{
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object missing objectID");
                 }
-                
+
                 // MeasurementTimeOffset
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime){
                     double measurement_time = sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime;
@@ -1378,7 +1381,7 @@ namespace cpp_message
                 else{
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing measurementTime");
                 }
-                
+
                 // TimeConfidence
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.timeConfidence){
                     common_data.time_confidence.confidence = sdsm_core.objects.list.array[obj_itr]->detObjCommon.timeConfidence;
@@ -1514,6 +1517,7 @@ namespace cpp_message
                     common_data.heading.heading |= j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE;
                 }
                 // HeadingConf
+                /* TODO
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf && sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf != j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE){
                     common_data.heading_conf.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf;
                 }
@@ -1617,9 +1621,9 @@ namespace cpp_message
                 // Assign common data to the current object
                 object_data.detected_object_common_data = common_data;
 
-
-
+                */
                 // Detected Object Optional Data
+                RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 1a");
 
                 if(sdsm_core.objects.list.array[obj_itr]->detObjOptData){
                     object_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectData::HAS_DETECTED_OBJECT_OPTIONAL_DATA;
@@ -1642,7 +1646,7 @@ namespace cpp_message
                             uint8_t lights=0;
                             for(int i = opt_data.choice.detVeh.lights->size -1 ;i >= 0 ;i--){
                                 lights |= (opt_data.choice.detVeh.lights->buf[i] << i);
-                                
+
                             }
 
                             opt_output.det_veh.lights.exterior_lights = lights;
@@ -1739,7 +1743,7 @@ namespace cpp_message
                                 }
                                 else if(ang_vel_pitch < j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE){
                                     RCLCPP_WARN(node_logging_->get_logger(), "OPTIONAL: Decoded SDSM object ang vel pitch below min, setting to min");
-                                    ang_vel_pitch = j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE;                                    
+                                    ang_vel_pitch = j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE;
                                 }
                                 opt_output.det_veh.veh_ang_vel.pitch_rate.pitch_rate = ang_vel_pitch;
                             }
@@ -1757,7 +1761,7 @@ namespace cpp_message
                                 }
                                 else if(ang_vel_roll < j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE){
                                     RCLCPP_WARN(node_logging_->get_logger(), "OPTIONAL: Decoded SDSM object ang vel roll below min, setting to min");
-                                    ang_vel_roll = j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE;                                    
+                                    ang_vel_roll = j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE;
                                 }
                                 opt_output.det_veh.veh_ang_vel.roll_rate.roll_rate = ang_vel_roll;
                             }
@@ -1940,7 +1944,7 @@ namespace cpp_message
                     // detObst
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detObst){
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_OBST;
-                        
+
                         // ObstacleSize - width
                         if(opt_data.choice.detObst.obstSize.width){
                             long obst_width = opt_data.choice.detObst.obstSize.width;
@@ -2007,15 +2011,21 @@ namespace cpp_message
                     object_data.detected_object_optional_data = opt_output;
 
                 }
+                RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 1b");
+
                 // For each object iterated over, push back the data to DetectedObjectsList
                 detected_objects.detected_object_data.push_back(object_data);
 
             }
+            RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 2a");
+
             // Set the objects field of the output message
             output.objects = detected_objects;
 
             ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             // Release memory and return decoded message output
+            RCLCPP_ERROR_STREAM(rclcpp:get_logger("cpp_message"), "Reached 2b");
+
             return std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>(output);
 
         }
@@ -2026,7 +2036,7 @@ namespace cpp_message
         // If decoding fails return an empty SDSM
         return std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>{};
 
-    
+
 
     }
 }
