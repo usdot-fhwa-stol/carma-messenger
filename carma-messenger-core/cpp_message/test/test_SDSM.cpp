@@ -16,7 +16,7 @@
 
 #include "cpp_message/SDSM_Message.h"
 #include<gtest/gtest.h>
-#include <boost/optional/optional_io.hpp> 
+#include <boost/optional/optional_io.hpp>
 
 namespace cpp_message
 {
@@ -96,7 +96,7 @@ namespace cpp_message
 
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_Z;
         object1.detected_object_common_data.acc_cfd_z.acceleration_confidence |= j2735_v2x_msgs::msg::AccelerationConfidence::ACCL_000_05;
-        
+
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_YAW;
         object1.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence |= j2735_v2x_msgs::msg::YawRateConfidence::DEG_SEC_005_00;
 
@@ -111,7 +111,7 @@ namespace cpp_message
         object1.detected_object_optional_data.det_veh.veh_attitude.pitch.pitch_detected = 2400;
         object1.detected_object_optional_data.det_veh.veh_attitude.roll.roll_detected = -12000;
         object1.detected_object_optional_data.det_veh.veh_attitude.yaw.yaw_detected = 400;
-        
+
         object1.detected_object_optional_data.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE_CONFIDENCE;
         object1.detected_object_optional_data.det_veh.veh_attitude_confidence.pitch_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::PREC_05_DEG;
         object1.detected_object_optional_data.det_veh.veh_attitude_confidence.roll_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::PREC_01_DEG;
@@ -283,7 +283,7 @@ namespace cpp_message
 
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_Z;
         object1.detected_object_common_data.acc_cfd_z.acceleration_confidence |= j2735_v2x_msgs::msg::AccelerationConfidence::ACCL_000_05;
-        
+
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_YAW;
         object1.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence |= j2735_v2x_msgs::msg::YawRateConfidence::DEG_SEC_005_00;
 
@@ -410,7 +410,7 @@ namespace cpp_message
 
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_Z;
         object1.detected_object_common_data.acc_cfd_z.acceleration_confidence |= j2735_v2x_msgs::msg::AccelerationConfidence::ACCL_000_05;
-        
+
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_YAW;
         object1.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence |= j2735_v2x_msgs::msg::YawRateConfidence::DEG_SEC_005_00;
 
@@ -425,7 +425,7 @@ namespace cpp_message
         object1.detected_object_optional_data.det_veh.veh_attitude.pitch.pitch_detected = 2400;
         object1.detected_object_optional_data.det_veh.veh_attitude.roll.roll_detected = -12000;
         object1.detected_object_optional_data.det_veh.veh_attitude.yaw.yaw_detected = 400;
-        
+
         object1.detected_object_optional_data.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE_CONFIDENCE;
         object1.detected_object_optional_data.det_veh.veh_attitude_confidence.pitch_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::PREC_05_DEG;
         object1.detected_object_optional_data.det_veh.veh_attitude_confidence.roll_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::PREC_01_DEG;
@@ -563,7 +563,7 @@ namespace cpp_message
 
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_Z;
         object1.detected_object_common_data.acc_cfd_z.acceleration_confidence |= j2735_v2x_msgs::msg::AccelerationConfidence::ACCL_000_05;
-        
+
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_YAW;
         object1.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence |= j2735_v2x_msgs::msg::YawRateConfidence::DEG_SEC_005_00;
 
@@ -603,11 +603,11 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        
+
         j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
         const auto res2 = worker.encode_sdsm_message(result);
-
+        //EXPECT_EQ(res2.value(), res.value());
         EXPECT_EQ(message, result);
 
     }
@@ -689,7 +689,7 @@ namespace cpp_message
 
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_Z;
         object1.detected_object_common_data.acc_cfd_z.acceleration_confidence |= j2735_v2x_msgs::msg::AccelerationConfidence::ACCL_000_05;
-        
+
         object1.detected_object_common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACC_CFD_YAW;
         object1.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence |= j2735_v2x_msgs::msg::YawRateConfidence::DEG_SEC_005_00;
 
@@ -728,7 +728,7 @@ namespace cpp_message
             EXPECT_TRUE(false);
         }
 
-        
+
         j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
         const auto res2 = worker.encode_sdsm_message(result);

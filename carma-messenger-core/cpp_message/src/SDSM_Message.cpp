@@ -1327,7 +1327,6 @@ namespace cpp_message
                 common_data.detected_id.object_id = obj_id;
 
                 // MeasurementTimeOffset
-                sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime
                 double measurement_time = sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime;
                 if(measurement_time > j3224_v2x_msgs::msg::MeasurementTimeOffset::MAX_MEASUREMENT_TIME_OFFSET){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM measurementTime above max, setting to max");
