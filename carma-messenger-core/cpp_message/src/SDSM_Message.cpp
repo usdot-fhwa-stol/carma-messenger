@@ -1303,21 +1303,16 @@ namespace cpp_message
                 }
 
                 // ClassificationConfidence
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd){
-                    long class_cfd = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd;
-                    if(class_cfd > j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd above max, setting to max");
-                        class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE;
-                    }
-                    else if(class_cfd < j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd below min, setting to min");
-                        class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE;
-                    }
-                    common_data.obj_type_cfd.classification_confidence = class_cfd;
+                long class_cfd = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd;
+                if(class_cfd > j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd above max, setting to max");
+                    class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Detected object objTypeCfd is 0, which is the MIN_CLASSIFICATION_CONFIDENCE!");
+                else if(class_cfd < j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd below min, setting to min");
+                    class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE;
                 }
+                common_data.obj_type_cfd.classification_confidence = class_cfd;
 
                 // ObjectID
                 long obj_id = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objectID;
