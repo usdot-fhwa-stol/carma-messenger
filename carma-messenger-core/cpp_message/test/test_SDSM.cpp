@@ -607,7 +607,7 @@ namespace cpp_message
         j3224_v2x_msgs::msg::SensorDataSharingMessage result = res_decoded.value();
 
         const auto res2 = worker.encode_sdsm_message(result);
-        //EXPECT_EQ(res2.value(), res.value());
+        EXPECT_EQ(res2.value(), res.value());
         EXPECT_EQ(message, result);
         EXPECT_EQ(message.msg_cnt.msg_cnt, result.msg_cnt.msg_cnt);
         EXPECT_EQ(message.source_id.id, result.source_id.id);
@@ -670,7 +670,7 @@ namespace cpp_message
             EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.propulsion.human.type, res_obj.detected_object_optional_data.det_vru.propulsion.human.type);
             EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.attachment.type, res_obj.detected_object_optional_data.det_vru.attachment.type);
             EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.radius.attachment_radius, res_obj.detected_object_optional_data.det_vru.radius.attachment_radius);
-
+        }
     }
 
     // Test for encoding/decoding optional data - obstacle data

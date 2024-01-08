@@ -1789,6 +1789,8 @@ namespace cpp_message
                     // detVRU
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detVRU){
 
+                        opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VRU;
+
                         // PersonalDeviceUserType
                         if(opt_data.choice.detVRU.basicType){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_BASIC_TYPE;
