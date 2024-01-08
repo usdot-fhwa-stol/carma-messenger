@@ -1095,8 +1095,6 @@ namespace cpp_message
         {
             // Incoming SDSM in ASN.1 C-struct format
             SensorDataSharingMessage_t sdsm_core = message->value.choice.SensorDataSharingMessage;
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached: New message starting");
-
 
             // MessageCount
             if(sdsm_core.msgCnt < j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX){
@@ -1310,8 +1308,6 @@ namespace cpp_message
             j3224_v2x_msgs::msg::DetectedObjectList detected_objects;
 
             for(auto obj_itr = 0; obj_itr < sdsm_core.objects.list.count; ++obj_itr){
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached processing object idx: " << obj_itr);
-
 
                 if(obj_itr > j3224_v2x_msgs::msg::DetectedObjectList::DETECTED_OBJECT_DATA_MAX_SIZE){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM DetectedObjectList size greater than max, rejecting points");
@@ -1550,8 +1546,6 @@ namespace cpp_message
 
 
                 // Detected Object Optional Data
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached Applied Common data");
-
                 if(sdsm_core.objects.list.array[obj_itr]->detObjOptData){
                     object_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectData::HAS_DETECTED_OBJECT_OPTIONAL_DATA;
 
@@ -1560,12 +1554,8 @@ namespace cpp_message
 
                     j3224_v2x_msgs::msg::DetectedObjectOptionalData opt_output;
 
-                    RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached starting.. types for:" << obj_itr);
-
                     // detVeh
                     if(opt_data.present == DetectedObjectOptionalData_PR_detVeh){
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh for:" << obj_itr);
-
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VEH;
 
                         // Exteriorlights
@@ -1583,8 +1573,6 @@ namespace cpp_message
                             opt_output.det_veh.lights.exterior_lights = lights;
 
                         }
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 1 for:" << obj_itr);
-
                         // Attitude
                         if(opt_data.choice.detVeh.vehAttitude){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE;
@@ -1638,8 +1626,6 @@ namespace cpp_message
                             }
                         }
 
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 2 for:" << obj_itr);
-
                         // AttitudeConfidence
                         if(opt_data.choice.detVeh.vehAttitudeConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE_CONFIDENCE;
@@ -1663,8 +1649,6 @@ namespace cpp_message
                                 opt_output.det_veh.veh_attitude_confidence.yaw_confidence.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE;
                             }
                         }
-
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 3 for:" << obj_itr);
 
 
                         // AngularVelocity
@@ -1708,8 +1692,6 @@ namespace cpp_message
                             }
                         }
 
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 4 for:" << obj_itr);
-
                         // AngularVelocityConfidence
                         if(opt_data.choice.detVeh.vehAngVelConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL_CONFIDENCE;
@@ -1723,8 +1705,6 @@ namespace cpp_message
                                 opt_output.det_veh.veh_ang_vel_confidence.roll_rate_confidence.roll_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence;
                             }
                         }
-
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 5 for:" << obj_itr);
 
                         // VehicleSize
                         if(opt_data.choice.detVeh.size){
@@ -1767,8 +1747,6 @@ namespace cpp_message
                             }
                         }
 
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 6 for:" << obj_itr);
-
                         // VehicleHeight *
                         if(opt_data.choice.detVeh.height){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT;
@@ -1791,8 +1769,6 @@ namespace cpp_message
                                 opt_output.det_veh.height.vehicle_height = j2735_v2x_msgs::msg::VehicleHeight::VEHICLE_HEIGHT_UNAVAILABLE;
                             }
                         }
-
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 7 for:" << obj_itr);
 
 
                         // VehicleSizeConfidence
@@ -1817,15 +1793,11 @@ namespace cpp_message
                             }
                         }
 
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 8 for:" << obj_itr);
-
                         // BasicVehicleClass
                         if(opt_data.choice.detVeh.vehicleClass){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_CLASS;
                             opt_output.det_veh.vehicle_class.basic_vehicle_class = *opt_data.choice.detVeh.vehicleClass;
                         }
-
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 9 for:" << obj_itr);
 
 
                         // ClassificationConfidence
@@ -1843,14 +1815,10 @@ namespace cpp_message
                             }
                             opt_output.det_veh.class_conf.classification_confidence = veh_class_conf;
                         }
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVeh 10 for:" << obj_itr);
-
                     }
 
                     // detVRU
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detVRU){
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detVRU for idx:" << obj_itr);
-                        opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VRU;
 
                         // PersonalDeviceUserType
                         if(opt_data.choice.detVRU.basicType){
@@ -1895,8 +1863,6 @@ namespace cpp_message
                     // detObst
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detObst){
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_OBST;
-                        RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached detObst for idx:" << obj_itr);
-
                         // ObstacleSize - width
                         if(opt_data.choice.detObst.obstSize.width){
                             long obst_width = opt_data.choice.detObst.obstSize.width;
@@ -1964,21 +1930,15 @@ namespace cpp_message
 
                 }
 
-                RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of Object_data");
-
                 // For each object iterated over, push back the data to DetectedObjectsList
                 detected_objects.detected_object_data.push_back(object_data);
 
             }
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of all data");
-
             // Set the objects field of the output message
             output.objects = detected_objects;
 
             ASN_STRUCT_FREE(asn_DEF_MessageFrame, message);
             // Release memory and return decoded message output
-            RCLCPP_ERROR_STREAM(rclcpp::get_logger("cpp_message"), "Reached End of this message");
-
             return std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>(output);
 
         }
