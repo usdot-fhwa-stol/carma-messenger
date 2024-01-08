@@ -10,6 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Modify Branch Name
+        run: echo "MODIFIED_REF_NAME=$(echo '${{ github.ref_name }}' | sed 's/\//\-/g')" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
@@ -25,26 +27,26 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui         
+          tags: usdotfhwastoldev/carma-messenger-ui:$MODIFIED_REF_NAME         
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
+          tags: usdotfhwastoldev/carma-messenger-core:$MODIFIED_REF_NAME       
 
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
+          tags: usdotfhwastoldev/carma-messenger-config:$MODIFIED_REF_NAME-chevrolet_tahoe_2018  
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development            
+          tags: usdotfhwastoldev/carma-messenger-config:$MODIFIED_REF_NAME-development            
 
