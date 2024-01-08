@@ -13,8 +13,7 @@ jobs:
       - name: Modify Branch Name
         run: echo "MODIFIED_REF_NAME=$(echo '${{ github.ref_name }}' | sed 's/\//\-/g')" >> $GITHUB_ENV
       - name: Use Modified Branch Name
-        run: |
-          echo "Branch name: $MODIFIED_REF_NAME"
+        run: echo "Branch name: $(MODIFIED_REF_NAME)"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
