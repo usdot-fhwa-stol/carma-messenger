@@ -22,7 +22,7 @@ jobs:
       - name: Modify Branch Name
         run: echo "MODIFIED_REF_NAME=$(echo '${{ github.ref_name }}' | sed 's/\//\-/g')" >> $GITHUB_ENV
       - name: Use Modified Branch Name
-        run: echo "Branch name $MODIFIED_REF_NAME"
+        run: echo $MODIFIED_REF_NAME
       - name: Build and Push carma-messenger-ui Docker Image
         uses: docker/build-push-action@v3
         with:
