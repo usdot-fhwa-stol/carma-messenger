@@ -609,6 +609,67 @@ namespace cpp_message
         const auto res2 = worker.encode_sdsm_message(result);
         //EXPECT_EQ(res2.value(), res.value());
         EXPECT_EQ(message, result);
+        EXPECT_EQ(message.msg_cnt.msg_cnt, result.msg_cnt.msg_cnt);
+        EXPECT_EQ(message.source_id.id, result.source_id.id);
+        EXPECT_EQ(message.equipment_type.equipment_type, result.equipment_type.equipment_type);
+
+        EXPECT_EQ(message.sdsm_time_stamp.presence_vector, result.sdsm_time_stamp.presence_vector);
+        EXPECT_EQ(message.sdsm_time_stamp.year.year, result.sdsm_time_stamp.year.year);
+        EXPECT_EQ(message.sdsm_time_stamp.month.month, result.sdsm_time_stamp.month.month);
+        EXPECT_EQ(message.sdsm_time_stamp.day.day, result.sdsm_time_stamp.day.day);
+        EXPECT_EQ(message.sdsm_time_stamp.hour.hour, result.sdsm_time_stamp.hour.hour);
+        EXPECT_EQ(message.sdsm_time_stamp.minute.minute, result.sdsm_time_stamp.minute.minute);
+        EXPECT_EQ(message.sdsm_time_stamp.second.millisecond, result.sdsm_time_stamp.second.millisecond);
+        EXPECT_EQ(message.sdsm_time_stamp.offset.offset_minute, result.sdsm_time_stamp.offset.offset_minute);
+
+        EXPECT_EQ(message.ref_pos.latitude, result.ref_pos.latitude);
+        EXPECT_EQ(message.ref_pos.longitude, result.ref_pos.longitude);
+        EXPECT_EQ(message.ref_pos.elevation_exists, result.ref_pos.elevation_exists);
+        EXPECT_EQ(message.ref_pos.elevation, result.ref_pos.elevation);
+        EXPECT_EQ(message.ref_pos_xy_conf.semi_major, result.ref_pos_xy_conf.semi_major);
+        EXPECT_EQ(message.ref_pos_xy_conf.semi_minor, result.ref_pos_xy_conf.semi_minor);
+        EXPECT_EQ(message.ref_pos_xy_conf.orientation, result.ref_pos_xy_conf.orientation);
+
+        EXPECT_EQ(message.ref_pos_el_conf.confidence, result.ref_pos_el_conf.confidence);
+
+        // Compare detected object data if present
+        if (!message.objects.detected_object_data.empty() && !result.objects.detected_object_data.empty()) {
+            auto& msg_obj = message.objects.detected_object_data[0];
+            auto& res_obj = result.objects.detected_object_data[0];
+
+            // Compare fields of detected_object_common_data
+            EXPECT_EQ(msg_obj.detected_object_common_data.obj_type.object_type, res_obj.detected_object_common_data.obj_type.object_type);
+            EXPECT_EQ(msg_obj.detected_object_common_data.obj_type_cfd.classification_confidence, res_obj.detected_object_common_data.obj_type_cfd.classification_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.detected_id.object_id, res_obj.detected_object_common_data.detected_id.object_id);
+            EXPECT_EQ(msg_obj.detected_object_common_data.measurement_time.measurement_time_offset, res_obj.detected_object_common_data.measurement_time.measurement_time_offset);
+            EXPECT_EQ(msg_obj.detected_object_common_data.time_confidence.confidence, res_obj.detected_object_common_data.time_confidence.confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.pos.offset_x.object_distance, res_obj.detected_object_common_data.pos.offset_x.object_distance);
+            EXPECT_EQ(msg_obj.detected_object_common_data.pos.offset_y.object_distance, res_obj.detected_object_common_data.pos.offset_y.object_distance);
+            EXPECT_EQ(msg_obj.detected_object_common_data.pos.offset_z.object_distance, res_obj.detected_object_common_data.pos.offset_z.object_distance);
+            EXPECT_EQ(msg_obj.detected_object_common_data.pos_confidence.pos.confidence, res_obj.detected_object_common_data.pos_confidence.pos.confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.pos_confidence.elevation.confidence, res_obj.detected_object_common_data.pos_confidence.elevation.confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.speed.speed, res_obj.detected_object_common_data.speed.speed);
+            EXPECT_EQ(msg_obj.detected_object_common_data.speed_confidence.speed_confidence, res_obj.detected_object_common_data.speed_confidence.speed_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.heading.heading, res_obj.detected_object_common_data.heading.heading);
+            EXPECT_EQ(msg_obj.detected_object_common_data.heading_conf.confidence, res_obj.detected_object_common_data.heading_conf.confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.speed_z.speed, res_obj.detected_object_common_data.speed_z.speed);
+            EXPECT_EQ(msg_obj.detected_object_common_data.speed_confidence_z.speed_confidence, res_obj.detected_object_common_data.speed_confidence_z.speed_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.accel_4_way.longitudinal, res_obj.detected_object_common_data.accel_4_way.longitudinal);
+            EXPECT_EQ(msg_obj.detected_object_common_data.accel_4_way.lateral, res_obj.detected_object_common_data.accel_4_way.lateral);
+            EXPECT_EQ(msg_obj.detected_object_common_data.accel_4_way.vert, res_obj.detected_object_common_data.accel_4_way.vert);
+            EXPECT_EQ(msg_obj.detected_object_common_data.accel_4_way.yaw_rate, res_obj.detected_object_common_data.accel_4_way.yaw_rate);
+            EXPECT_EQ(msg_obj.detected_object_common_data.acc_cfd_x.acceleration_confidence, res_obj.detected_object_common_data.acc_cfd_x.acceleration_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.acc_cfd_y.acceleration_confidence, res_obj.detected_object_common_data.acc_cfd_y.acceleration_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.acc_cfd_z.acceleration_confidence, res_obj.detected_object_common_data.acc_cfd_z.acceleration_confidence);
+            EXPECT_EQ(msg_obj.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence, res_obj.detected_object_common_data.acc_cfd_yaw.yaw_rate_confidence);
+
+            // Compare fields of detected_object_optional_data
+            EXPECT_EQ(msg_obj.detected_object_optional_data.choice, res_obj.detected_object_optional_data.choice);
+            EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.basic_type.type, res_obj.detected_object_optional_data.det_vru.basic_type.type);
+            EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.propulsion.choice, res_obj.detected_object_optional_data.det_vru.propulsion.choice);
+            EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.propulsion.human.type, res_obj.detected_object_optional_data.det_vru.propulsion.human.type);
+            EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.attachment.type, res_obj.detected_object_optional_data.det_vru.attachment.type);
+            EXPECT_EQ(msg_obj.detected_object_optional_data.det_vru.radius.attachment_radius, res_obj.detected_object_optional_data.det_vru.radius.attachment_radius);
 
     }
 
