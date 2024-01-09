@@ -19,34 +19,36 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # branch names with special characters cannot be used to create docker image tag,
+      # so removing all special characters and replacing them with - for valid docker image tag.
       - name: Modify Branch Name
-        run: echo "MODIFIED_REF_NAME=$(echo '${{ github.ref_name }}' | sed 's/[^a-zA-Z0-9]/-/g')" >> $GITHUB_ENV
+        run: echo "MODIFIED_BRANCH_NAME=$(echo '${{ github.ref_name }}' | sed 's/[^a-zA-Z0-9]/-/g')" >> $GITHUB_ENV
       - name: Print Modified Branch Name
-        run: echo "Modified the branch name to $MODIFIED_REF_NAME"
+        run: echo "Modified the branch name to $MODIFIED_BRANCH_NAME"
       - name: Build and Push carma-messenger-ui Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-ui:${{ env.MODIFIED_REF_NAME }}
+          tags: usdotfhwastoldev/carma-messenger-ui:${{ env.MODIFIED_BRANCH_NAME }}
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-core:${{ env.MODIFIED_REF_NAME }}
-          
+          tags: usdotfhwastoldev/carma-messenger-core:${{ env.MODIFIED_BRANCH_NAME }}
+
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_REF_NAME }}-chevrolet_tahoe_2018  
+          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-chevrolet_tahoe_2018
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_REF_NAME }}-development            
+          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-development
