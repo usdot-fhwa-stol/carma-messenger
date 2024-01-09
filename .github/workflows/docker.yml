@@ -19,32 +19,34 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      - name: Modify Branch Name
+        run: echo "MODIFIED_REF_NAME=$(echo '${{ github.ref_name }}' | sed 's/[^a-zA-Z0-9]/-/g')" >> $GITHUB_ENV
+      - name: Print Modified Branch Name
+        run: echo "Modified the branch name to $MODIFIED_REF_NAME"
       - name: Build and Push carma-messenger-ui Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui         
+          tags: usdotfhwastoldev/carma-messenger-ui:${{ env.MODIFIED_REF_NAME }}
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
-
+          tags: usdotfhwastoldev/carma-messenger-core:${{ env.MODIFIED_REF_NAME }}
+          
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
+          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_REF_NAME }}-chevrolet_tahoe_2018  
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development            
-
+          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_REF_NAME }}-development            
