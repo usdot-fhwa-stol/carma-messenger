@@ -92,7 +92,7 @@ namespace cpp_message
             uint16_t year = plainMessage.sdsm_time_stamp.year.year;
             if(year > j2735_v2x_msgs::msg::DYear::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded year value greater than max, setting to max");
-                year = j2735_v2x_msgs::msg::DYear::MAX;   
+                year = j2735_v2x_msgs::msg::DYear::MAX;
             }
             *year_ptr = year;
 
@@ -106,7 +106,7 @@ namespace cpp_message
             uint16_t month = plainMessage.sdsm_time_stamp.month.month;
             if(month > j2735_v2x_msgs::msg::DMonth::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded month value greater than max, setting to max");
-                month = j2735_v2x_msgs::msg::DMonth::MAX;   
+                month = j2735_v2x_msgs::msg::DMonth::MAX;
             }
             *month_ptr = month;
 
@@ -120,7 +120,7 @@ namespace cpp_message
             uint16_t day = plainMessage.sdsm_time_stamp.day.day;
             if(day > j2735_v2x_msgs::msg::DDay::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded day value greater than max, setting to max");
-                day = j2735_v2x_msgs::msg::DDay::MAX;   
+                day = j2735_v2x_msgs::msg::DDay::MAX;
             }
             *day_ptr = day;
 
@@ -134,7 +134,7 @@ namespace cpp_message
             uint16_t hour = plainMessage.sdsm_time_stamp.hour.hour;
             if(hour > j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded hour value greater than max, setting to max");
-                hour = j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX;   
+                hour = j2735_v2x_msgs::msg::DHour::HOUR_OF_DAY_MAX;
             }
             *hour_ptr = hour;
 
@@ -148,7 +148,7 @@ namespace cpp_message
             uint16_t minute = plainMessage.sdsm_time_stamp.minute.minute;
             if(minute > j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded minute value greater than max, setting to max");
-                minute = j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX;   
+                minute = j2735_v2x_msgs::msg::DMinute::MINUTE_IN_HOUR_MAX;
             }
             *minute_ptr = minute;
 
@@ -162,7 +162,7 @@ namespace cpp_message
             uint16_t second = plainMessage.sdsm_time_stamp.second.millisecond;
             if(second > j2735_v2x_msgs::msg::DSecond::RESERVED_MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded second value greater than max, setting to max");
-                second = j2735_v2x_msgs::msg::DSecond::RESERVED_MAX;   
+                second = j2735_v2x_msgs::msg::DSecond::RESERVED_MAX;
             }
             *second_ptr = second;
 
@@ -176,11 +176,11 @@ namespace cpp_message
             long offset = plainMessage.sdsm_time_stamp.offset.offset_minute;
             if(offset > j2735_v2x_msgs::msg::DOffset::MAX){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded millisecond value greater than max, setting to max");
-                offset = j2735_v2x_msgs::msg::DOffset::MAX;   
+                offset = j2735_v2x_msgs::msg::DOffset::MAX;
             }
             else if(offset < j2735_v2x_msgs::msg::DOffset::MIN){
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoded millisecond value less than min, setting to min");
-                offset = j2735_v2x_msgs::msg::DOffset::MIN;   
+                offset = j2735_v2x_msgs::msg::DOffset::MIN;
             }
             *offset_ptr = offset;
 
@@ -206,9 +206,9 @@ namespace cpp_message
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoding latitude value greater than max, setting to max");
                 temp_lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
             }
-            message->value.choice.SensorDataSharingMessage.refPos.lat = temp_lat;  
+            message->value.choice.SensorDataSharingMessage.refPos.lat = temp_lat;
         }
-        
+
         // Position 3D | Long - ref_pos.longitude
         if(!plainMessage.ref_pos.longitude || plainMessage.ref_pos.longitude == j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
             message->value.choice.SensorDataSharingMessage.refPos.Long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
@@ -223,10 +223,10 @@ namespace cpp_message
                 RCLCPP_WARN(node_logging_->get_logger(),"Encoding longitude value greater than max, setting to max");
                 temp_long = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
             }
-            
+
             message->value.choice.SensorDataSharingMessage.refPos.Long = temp_long;
         }
-        
+
         // Position3D | *elevation - ref_pos.elevation
         auto elevation_ptr = create_store_shared<DSRC_Elevation_t>(shared_ptrs);
 
@@ -244,7 +244,7 @@ namespace cpp_message
                 temp_elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_MAX;
             }
             *elevation_ptr = temp_elevation;
-            
+
         }
         message->value.choice.SensorDataSharingMessage.refPos.elevation = elevation_ptr;
 
@@ -295,7 +295,7 @@ namespace cpp_message
         // ElevationConfidence | *refPosElConf - ref_pos_el_conf
         if(plainMessage.presence_vector & j3224_v2x_msgs::msg::SensorDataSharingMessage::HAS_REF_POS_EL_CONF){
             auto elevation_conf = create_store_shared<ElevationConfidence_t>(shared_ptrs);
-            
+
             if(!plainMessage.ref_pos_el_conf.confidence || plainMessage.ref_pos_el_conf.confidence == j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE){
                 *elevation_conf = j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE;
             }
@@ -479,7 +479,7 @@ namespace cpp_message
                 }
                 encode_obj_com->heading = temp_heading;
             }
-            
+
 
             // HeadingConfidence | headingConf heading_conf.confidence
             if(!in_object.detected_object_common_data.heading_conf.confidence || in_object.detected_object_common_data.heading_conf.confidence == j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE){
@@ -643,7 +643,7 @@ namespace cpp_message
 
             encode_object->detObjCommon = *encode_obj_com;
 
-            
+
             //// DetectedObjectOptionalData
 
             // detObjOptData - detected_object_optional_data
@@ -840,7 +840,7 @@ namespace cpp_message
                             temp_veh_length = j2735_v2x_msgs::msg::VehicleLength::VEHICLE_LENGTH_MAX;
                         }
                         temp_veh_size->length = temp_veh_length;
-                    
+
                         encode_det_veh->size = temp_veh_size;
                     }
 
@@ -848,7 +848,7 @@ namespace cpp_message
                     // VehicleHeight | height - height.vehicle_height
                     if(in_object.detected_object_optional_data.det_veh.presence_vector & j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT){
                         auto temp_veh_height = create_store_shared<VehicleHeight_t>(shared_ptrs);
-                        
+
                         *temp_veh_height = in_object.detected_object_optional_data.det_veh.height.vehicle_height;
                         if(*temp_veh_height > j2735_v2x_msgs::msg::VehicleHeight::VEHICLE_HEIGHT_MAX){
 
@@ -927,21 +927,21 @@ namespace cpp_message
                         // human - human
                         if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_HUMAN){
                             temp_propulsion->present = PropelledInformation_PR_human;
-                            
+
                             temp_propulsion->choice.human = in_object.detected_object_optional_data.det_vru.propulsion.human.type;
 
                             }
                         // animal - animal
                         else if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_ANIMAL){
                             temp_propulsion->present = PropelledInformation_PR_animal;
-                            
+
                             temp_propulsion->choice.animal = in_object.detected_object_optional_data.det_vru.propulsion.animal.type;
 
                             }
                         // motor - motor
                         else if(in_object.detected_object_optional_data.det_vru.propulsion.choice == j2735_v2x_msgs::msg::PropelledInformation::CHOICE_MOTOR){
                             temp_propulsion->present = PropelledInformation_PR_motor;
-                            
+
                             temp_propulsion->choice.motor = in_object.detected_object_optional_data.det_vru.propulsion.motor.type;
 
                             }
@@ -1052,10 +1052,10 @@ namespace cpp_message
 
         // Encode message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
-        
+
         // Uncomment the line below to save the message to the encoded-sdsm-output.txt file
         // asn_fprint(fp, &asn_DEF_MessageFrame, message);
-    
+
         // log a warning if encoding fails
         if(ec.encoded == -1) {
             RCLCPP_WARN( node_logging_->get_logger(), "Encoding for SDSM Message failed");
@@ -1066,7 +1066,7 @@ namespace cpp_message
         size_t array_length=(ec.encoded + 7) / 8;
         std::vector<uint8_t> b_array(array_length);
         for(size_t i=0;i<array_length;i++)b_array[i]=buffer[i];
-                
+
         //for(size_t i = 0; i < array_length; i++) std::cout<< int(b_array[i])<< ", ";
         return std::optional<std::vector<uint8_t>>(b_array);
 
@@ -1076,18 +1076,18 @@ namespace cpp_message
 
     // SDSM decoding
     std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage> SDSM_Message::decode_sdsm_message(const std::vector<uint8_t>&binary_array){
-        
+
         j3224_v2x_msgs::msg::SensorDataSharingMessage output;
         // decode results - stored in binary_array
         asn_dec_rval_t rval;
         MessageFrame_t* message = nullptr;
-        
-        // copy from vector to array         
-        size_t len = binary_array.size();    
+
+        // copy from vector to array
+        size_t len = binary_array.size();
         std::vector<uint8_t> buf;
 
         std::copy(binary_array.cbegin(), binary_array.cend(), std::back_inserter(buf));
-        
+
         // use asn1c lib to decode
         rval = uper_decode(0, &asn_DEF_MessageFrame,(void **) &message, buf.data(), len, 0, 0);
 
@@ -1095,7 +1095,7 @@ namespace cpp_message
         {
             // Incoming SDSM in ASN.1 C-struct format
             SensorDataSharingMessage_t sdsm_core = message->value.choice.SensorDataSharingMessage;
-            
+
             // MessageCount
             if(sdsm_core.msgCnt < j2735_v2x_msgs::msg::MsgCount::MSG_COUNT_MAX){
                 output.msg_cnt.msg_cnt = sdsm_core.msgCnt;
@@ -1124,7 +1124,7 @@ namespace cpp_message
             }
             else{
                 output.equipment_type.equipment_type = j3224_v2x_msgs::msg::EquipmentType::UNKNOWN;
-                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM EquipmentType does not exist, set to unknown");
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM EquipmentType is unknown");
             }
 
             // SDSMTimeStamp
@@ -1195,39 +1195,29 @@ namespace cpp_message
             }
 
             // Position3D - lat
-            if (sdsm_core.refPos.lat && sdsm_core.refPos.lat != j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE){
-                double lat = sdsm_core.refPos.lat;
-                if(lat > j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.lat above max, setting to max");
-                    lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
-                }
-                else if(lat < j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.lat below min, setting to min");
-                    lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN;
-                }
-                output.ref_pos.latitude = lat;
+            double lat = sdsm_core.refPos.lat;
+            if(lat > j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.lat above max, setting to max");
+                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MAX;
             }
-            else{
-                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing refPos.lat, set to unavailable");
-                output.ref_pos.latitude = j2735_v2x_msgs::msg::Position3D::LATITUDE_UNAVAILABLE;
+            else if(lat < j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.lat below min, setting to min");
+                lat = j2735_v2x_msgs::msg::Position3D::LATITUDE_MIN;
             }
+            output.ref_pos.latitude = lat;
+
             // Position3D - Long
-            if (sdsm_core.refPos.Long && sdsm_core.refPos.Long != j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE){
-                double longitude = sdsm_core.refPos.Long;
-                if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.Long above max, setting to max");
-                    longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
-                }
-                else if(longitude < j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.Long below min, setting to min");
-                    longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN;
-                }
-                output.ref_pos.longitude = longitude;
+            double longitude = sdsm_core.refPos.Long;
+            if(longitude > j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.Long above max, setting to max");
+                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MAX;
             }
-            else{
-                 RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing refPos.Long, set to unavailable");
-                output.ref_pos.longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_UNAVAILABLE;
+            else if(longitude < j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM refPos.Long below min, setting to min");
+                longitude = j2735_v2x_msgs::msg::Position3D::LONGITUDE_MIN;
             }
+            output.ref_pos.longitude = longitude;
+
             // Position3D - *elevation
             if(sdsm_core.refPos.elevation && *sdsm_core.refPos.elevation != j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE){
                 double elev = *sdsm_core.refPos.elevation;
@@ -1246,57 +1236,42 @@ namespace cpp_message
                 RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing refPos.elevation, set to unavailable");
                 output.ref_pos.elevation = j2735_v2x_msgs::msg::Position3D::ELEVATION_UNAVAILABLE;
             }
+
             // PositionalAccuracy - semiMajor
-            if(sdsm_core.refPosXYConf.semiMajor && sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
-                long semi_major = sdsm_core.refPosXYConf.semiMajor;
-                if(semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMajor above max, setting to max");
-                    semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX;
-                }
-                else if(semi_major < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMajor below min, setting to min");
-                    semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
-                }
-                output.ref_pos_xy_conf.semi_major = semi_major;
+            long semi_major = sdsm_core.refPosXYConf.semiMajor;
+            if(semi_major > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMajor above max, setting to max");
+                semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX;
             }
-            else{
-                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing semiMajor, set to unavailable");
-                output.ref_pos_xy_conf.semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+            else if(semi_major < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMajor below min, setting to min");
+                semi_major = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
             }
+            output.ref_pos_xy_conf.semi_major = semi_major;
+
             // PositionalAccuracy - semiMinor
-            if(sdsm_core.refPosXYConf.semiMinor && sdsm_core.refPosXYConf.semiMajor != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE){
-                long semi_minor = sdsm_core.refPosXYConf.semiMinor;
-                if(semi_minor > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMinor above max, setting to max");
-                    semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX;
-                }
-                else if(semi_minor < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMinor below min, setting to min");
-                    semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
-                }
-                output.ref_pos_xy_conf.semi_minor = semi_minor;
+            long semi_minor = sdsm_core.refPosXYConf.semiMinor;
+            if(semi_minor > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMinor above max, setting to max");
+                semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MAX;
             }
-            else{
-                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing semiMinor, set to unavailable");
-                output.ref_pos_xy_conf.semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_UNAVAILABLE;
+            else if(semi_minor < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM semiMinor below min, setting to min");
+                semi_minor = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_MIN;
             }
+            output.ref_pos_xy_conf.semi_minor = semi_minor;
+
             // PositionalAccuracy - orientation
-            if(sdsm_core.refPosXYConf.orientation && sdsm_core.refPosXYConf.orientation != j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE){
-                long orientation = sdsm_core.refPosXYConf.orientation;
-                if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM orientation above max, setting to max");
-                    orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX;
-                }
-                else if(orientation < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN){
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM orientation below min, setting to min");
-                    orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN;
-                }
-                output.ref_pos_xy_conf.orientation = orientation;
+            long orientation = sdsm_core.refPosXYConf.orientation;
+            if(orientation > j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM orientation above max, setting to max");
+                orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MAX;
             }
-            else{
-                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing orientation, set to unavailable");
-                output.ref_pos_xy_conf.orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_UNAVAILABLE;  
+            else if(orientation < j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN){
+                RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM orientation below min, setting to min");
+                orientation = j2735_v2x_msgs::msg::PositionalAccuracy::ACCURACY_ORIENTATION_MIN;
             }
+            output.ref_pos_xy_conf.orientation = orientation;
 
             // ElevationConfidence
             if(sdsm_core.refPosElConf){
@@ -1308,7 +1283,6 @@ namespace cpp_message
             j3224_v2x_msgs::msg::DetectedObjectList detected_objects;
 
             for(auto obj_itr = 0; obj_itr < sdsm_core.objects.list.count; ++obj_itr){
-
 
                 if(obj_itr > j3224_v2x_msgs::msg::DetectedObjectList::DETECTED_OBJECT_DATA_MAX_SIZE){
                     RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM DetectedObjectList size greater than max, rejecting points");
@@ -1329,96 +1303,69 @@ namespace cpp_message
                 }
 
                 // ClassificationConfidence
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd){
-                    long class_cfd = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd;
-                    if(class_cfd > j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd above max, setting to max");
-                        class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE;
-                    }
-                    else if(class_cfd < j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd below min, setting to min");
-                        class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE;
-                    }
-                    common_data.obj_type_cfd.classification_confidence = class_cfd;
+                long class_cfd = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objTypeCfd;
+                if(class_cfd > j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd above max, setting to max");
+                    class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MAX_CLASSIFICATION_CONFIDENCE;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Detected object missing objTypeCfd");
+                else if(class_cfd < j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objTypeCfd below min, setting to min");
+                    class_cfd = j3224_v2x_msgs::msg::ClassificationConfidence::MIN_CLASSIFICATION_CONFIDENCE;
                 }
+                common_data.obj_type_cfd.classification_confidence = class_cfd;
 
                 // ObjectID
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.objectID){
-                    long obj_id = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objectID;
-                    if(obj_id > j3224_v2x_msgs::msg::ObjectID::MAX_OBJECT_ID){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objectID above max, setting to max");
-                        obj_id = j3224_v2x_msgs::msg::ObjectID::MAX_OBJECT_ID;
-                    }
-                    if(obj_id < j3224_v2x_msgs::msg::ObjectID::MIN_OBJECT_ID){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objectID below min, setting to min");
-                        obj_id = j3224_v2x_msgs::msg::ObjectID::MIN_OBJECT_ID;
-                    }
-                    common_data.detected_id.object_id = obj_id;
+                long obj_id = sdsm_core.objects.list.array[obj_itr]->detObjCommon.objectID;
+                if(obj_id > j3224_v2x_msgs::msg::ObjectID::MAX_OBJECT_ID){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objectID above max, setting to max");
+                    obj_id = j3224_v2x_msgs::msg::ObjectID::MAX_OBJECT_ID;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object missing objectID");
+                if(obj_id < j3224_v2x_msgs::msg::ObjectID::MIN_OBJECT_ID){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM objectID below min, setting to min");
+                    obj_id = j3224_v2x_msgs::msg::ObjectID::MIN_OBJECT_ID;
                 }
-                
+                common_data.detected_id.object_id = obj_id;
+
                 // MeasurementTimeOffset
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime){
-                    double measurement_time = sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime;
-                    if(measurement_time > j3224_v2x_msgs::msg::MeasurementTimeOffset::MAX_MEASUREMENT_TIME_OFFSET){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM measurementTime above max, setting to max");
-                        measurement_time = j3224_v2x_msgs::msg::MeasurementTimeOffset::MAX_MEASUREMENT_TIME_OFFSET;
-                    }
-                    if(measurement_time < j3224_v2x_msgs::msg::MeasurementTimeOffset::MIN_MEASUREMENT_TIME_OFFSET){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM measurementTime below min, setting to min");
-                        measurement_time = j3224_v2x_msgs::msg::MeasurementTimeOffset::MIN_MEASUREMENT_TIME_OFFSET;
-                    }
-                    common_data.measurement_time.measurement_time_offset = measurement_time;
+                double measurement_time = sdsm_core.objects.list.array[obj_itr]->detObjCommon.measurementTime;
+                if(measurement_time > j3224_v2x_msgs::msg::MeasurementTimeOffset::MAX_MEASUREMENT_TIME_OFFSET){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM measurementTime above max, setting to max");
+                    measurement_time = j3224_v2x_msgs::msg::MeasurementTimeOffset::MAX_MEASUREMENT_TIME_OFFSET;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM missing measurementTime");
+                if(measurement_time < j3224_v2x_msgs::msg::MeasurementTimeOffset::MIN_MEASUREMENT_TIME_OFFSET){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM measurementTime below min, setting to min");
+                    measurement_time = j3224_v2x_msgs::msg::MeasurementTimeOffset::MIN_MEASUREMENT_TIME_OFFSET;
                 }
-                
+                common_data.measurement_time.measurement_time_offset = measurement_time;
+
                 // TimeConfidence
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.timeConfidence){
-                    common_data.time_confidence.confidence = sdsm_core.objects.list.array[obj_itr]->detObjCommon.timeConfidence;
-                }
-                else{
-                    common_data.time_confidence.confidence |= j2735_v2x_msgs::msg::TimeConfidence::UNAVAILABLE;
-                }
+                common_data.time_confidence.confidence = sdsm_core.objects.list.array[obj_itr]->detObjCommon.timeConfidence;
 
                 // PositionOffsetXYZ - offsetX
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetX){
-                    long offset_x = sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetX;
-                    if(offset_x > j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetX above max, setting to max");
-                        offset_x = j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE;
-                    }
-                    if(offset_x < j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetX below min, setting to min");
-                        offset_x = j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE;
-                    }
-                    common_data.pos.offset_x.object_distance = offset_x;
+                long offset_x = sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetX;
+                if(offset_x > j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetX above max, setting to max");
+                    offset_x = j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Detected object missing offsetX");
+                if(offset_x < j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetX below min, setting to min");
+                    offset_x = j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE;
                 }
+                common_data.pos.offset_x.object_distance = offset_x;
+
                 // PositionOffsetXYZ - offsetY
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetY){
-                    long offset_y = sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetY;
-                    if(offset_y > j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetY above max, setting to max");
-                        offset_y = j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE;
-                    }
-                    if(offset_y < j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetY below min, setting to min");
-                        offset_y = j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE;
-                    }
-                    common_data.pos.offset_y.object_distance = offset_y;
+
+                long offset_y = sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetY;
+                if(offset_y > j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetY above max, setting to max");
+                    offset_y = j3224_v2x_msgs::msg::ObjectDistance::MAX_OBJECT_DISTANCE;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Detected object missing offsetY");
+                if(offset_y < j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object offsetY below min, setting to min");
+                    offset_y = j3224_v2x_msgs::msg::ObjectDistance::MIN_OBJECT_DISTANCE;
                 }
+                common_data.pos.offset_y.object_distance = offset_y;
+
                 // PositionOffsetXYZ - *offsetZ
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.pos.offsetZ){
                     common_data.pos.presence_vector |= j3224_v2x_msgs::msg::PositionOffsetXYZ::HAS_OFFSET_Z;
@@ -1435,46 +1382,25 @@ namespace cpp_message
                 }
 
                 // PositionConfidenceSet
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.pos && sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.pos != j2735_v2x_msgs::msg::PositionConfidence::UNAVAILABLE){
-                    common_data.pos_confidence.pos.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.pos;
-                }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks posConfidence, setting to unavailable");
-                    common_data.pos_confidence.pos.confidence |= j2735_v2x_msgs::msg::PositionConfidence::UNAVAILABLE;
-                }
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.elevation && sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.elevation != j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE){
-                    common_data.pos_confidence.elevation.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.elevation;
-                }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks elevation confidence, setting to unavailable");
-                    common_data.pos_confidence.elevation.confidence |= j2735_v2x_msgs::msg::ElevationConfidence::UNAVAILABLE;
-                }
+                // j2735_v2x_msgs/PositionConfidence
+                common_data.pos_confidence.pos.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.pos;
+                // j2735_v2x_msgs/ElevationConfidence
+                common_data.pos_confidence.elevation.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.posConfidence.elevation;
 
                 // Speed
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed && sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed != j2735_v2x_msgs::msg::Speed::UNAVAILABLE){
-                    long speed = sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed;
-                    if(speed > j2735_v2x_msgs::msg::Speed::MAX){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object speed above max, setting to max");
-                        speed = j2735_v2x_msgs::msg::Speed::MAX;
-                    }
-                    else if(speed < j2735_v2x_msgs::msg::Speed::MIN){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object speed below min, setting to min");
-                        speed = j2735_v2x_msgs::msg::Speed::MIN;
-                    }
-                    common_data.speed.speed = sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed;
+                long speed = sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed;
+                if(speed > j2735_v2x_msgs::msg::Speed::MAX){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object speed above max, setting to max");
+                    speed = j2735_v2x_msgs::msg::Speed::MAX;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks speed, setting to unavailable");
-                    common_data.speed.speed = j2735_v2x_msgs::msg::Speed::UNAVAILABLE;
+                else if(speed < j2735_v2x_msgs::msg::Speed::MIN){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object speed below min, setting to min");
+                    speed = j2735_v2x_msgs::msg::Speed::MIN;
                 }
+                common_data.speed.speed = sdsm_core.objects.list.array[obj_itr]->detObjCommon.speed;
+
                 // SpeedConfidence
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.speedConfidence && sdsm_core.objects.list.array[obj_itr]->detObjCommon.speedConfidence != j2735_v2x_msgs::msg::SpeedConfidence::UNAVAILABLE){
-                    common_data.speed_confidence.speed_confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.speedConfidence;
-                }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks speed confidence, setting to unavailable");
-                    common_data.speed_confidence.speed_confidence |= j2735_v2x_msgs::msg::SpeedConfidence::UNAVAILABLE;
-                }
+                common_data.speed_confidence.speed_confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.speedConfidence;
 
                 // *SpeedZ
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.speedZ){
@@ -1497,102 +1423,71 @@ namespace cpp_message
                 }
 
                 // Heading
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading && sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading != j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE){
-                    long heading = sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading;
-                    if(heading > j2735_v2x_msgs::msg::Heading::HEADING_MAX){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object heading above max, setting to max");
-                        heading = j2735_v2x_msgs::msg::Heading::HEADING_MAX;
-                    }
-                    else if(heading < j2735_v2x_msgs::msg::Heading::HEADING_MIN){
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object heading below min, setting to min");
-                        heading = j2735_v2x_msgs::msg::Heading::HEADING_MIN;
-                    }
-                    common_data.heading.heading = sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading;
+                long heading = sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading;
+                if(heading > j2735_v2x_msgs::msg::Heading::HEADING_MAX){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object heading above max, setting to max");
+                    heading = j2735_v2x_msgs::msg::Heading::HEADING_MAX;
                 }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks heading, setting to unavailable");
-                    common_data.heading.heading |= j2735_v2x_msgs::msg::Heading::HEADING_UNAVAILABLE;
+                else if(heading < j2735_v2x_msgs::msg::Heading::HEADING_MIN){
+                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object heading below min, setting to min");
+                    heading = j2735_v2x_msgs::msg::Heading::HEADING_MIN;
                 }
+                common_data.heading.heading = sdsm_core.objects.list.array[obj_itr]->detObjCommon.heading;
+
                 // HeadingConf
-                if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf && sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf != j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE){
-                    common_data.heading_conf.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf;
-                }
-                else{
-                    RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacks heading confidence, setting to unavailable");
-                    common_data.heading_conf.confidence |= j2735_v2x_msgs::msg::HeadingConfidence::UNAVAILABLE;
-                }
+                common_data.heading_conf.confidence |= sdsm_core.objects.list.array[obj_itr]->detObjCommon.headingConf;
 
                 // *Accel4Way
                 if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way){
                     common_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectCommonData::HAS_ACCEL_4_WAY;
+
                     // accel4way - long
-                    if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->Long){
-                        double accel_long = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->Long;
-                        if(accel_long > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude above max, setting to max");
-                            accel_long = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
-                        }
-                        else if(accel_long < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude below min, setting to min");
-                            accel_long = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
-                        }
-                        common_data.accel_4_way.longitudinal = accel_long;
+                    double accel_long = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->Long;
+                    if(accel_long > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude above max, setting to max");
+                        accel_long = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
                     }
-                    else{
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacking accel4way longitude, setting to unavailable");
-                        common_data.accel_4_way.longitudinal = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_UNAVAILABLE;
+                    else if(accel_long < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude below min, setting to min");
+                        accel_long = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
                     }
+                    common_data.accel_4_way.longitudinal = accel_long;
+
                     // accel4way - lat
-                    if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->lat){
-                        double accel_lat = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->lat;
-                        if(accel_lat > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way latitude above max, setting to max");
-                            accel_lat = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
-                        }
-                        else if(accel_lat < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude below min, setting to min");
-                            accel_lat = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
-                        }
-                        common_data.accel_4_way.lateral = accel_lat;
+                    double accel_lat = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->lat;
+                    if(accel_lat > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way latitude above max, setting to max");
+                        accel_lat = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MAX;
                     }
-                    else{
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacking accel4way latitude, setting to unavailable");
-                        common_data.accel_4_way.lateral = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_UNAVAILABLE;
+                    else if(accel_lat < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way longitude below min, setting to min");
+                        accel_lat = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_MIN;
                     }
+                    common_data.accel_4_way.lateral = accel_lat;
+
                     // accel4way - vert
-                    if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->vert){
-                        double accel_vert = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->vert;
-                        if(accel_vert > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way vert above max, setting to max");
-                            accel_vert = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX;
-                        }
-                        else if(accel_vert < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MIN){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way vert below min, setting to min");
-                            accel_vert = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MIN;
-                        }
-                        common_data.accel_4_way.vert = accel_vert;
+                    double accel_vert = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->vert;
+                    if(accel_vert > j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way vert above max, setting to max");
+                        accel_vert = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MAX;
                     }
-                    else{
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacking accel4way vert, setting to unavailable");
-                        common_data.accel_4_way.vert = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_UNAVAILABLE;
+                    else if(accel_vert < j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MIN){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way vert below min, setting to min");
+                        accel_vert = j2735_v2x_msgs::msg::AccelerationSet4Way::ACCELERATION_VERTICAL_MIN;
                     }
+                    common_data.accel_4_way.vert = accel_vert;
+
                     // accel4way - yaw
-                    if(sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->yaw){
-                        double accel_yaw = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->yaw;
-                        if(accel_yaw > j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way yaw above max, setting to max");
-                            accel_yaw = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX;
-                        }
-                        else if(accel_yaw < j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN){
-                            RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way yaw below min, setting to min");
-                            accel_yaw = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN;
-                        }
-                        common_data.accel_4_way.yaw_rate = accel_yaw;
+                    double accel_yaw = sdsm_core.objects.list.array[obj_itr]->detObjCommon.accel4way->yaw;
+                    if(accel_yaw > j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way yaw above max, setting to max");
+                        accel_yaw = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MAX;
                     }
-                    else{
-                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object lacking accel4way yaw, setting to unavailable");
-                        common_data.accel_4_way.yaw_rate = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_UNAVAILABLE;
+                    else if(accel_yaw < j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN){
+                        RCLCPP_WARN(node_logging_->get_logger(), "Decoded SDSM object accel4way yaw below min, setting to min");
+                        accel_yaw = j2735_v2x_msgs::msg::AccelerationSet4Way::YAWRATE_MIN;
                     }
+                    common_data.accel_4_way.yaw_rate = accel_yaw;
                 }
 
                 // *AccelerationConfidence
@@ -1615,12 +1510,11 @@ namespace cpp_message
                     common_data.acc_cfd_yaw.yaw_rate_confidence |= *sdsm_core.objects.list.array[obj_itr]->detObjCommon.accCfdYaw;
                 }
                 // Assign common data to the current object
+
                 object_data.detected_object_common_data = common_data;
 
 
-
                 // Detected Object Optional Data
-
                 if(sdsm_core.objects.list.array[obj_itr]->detObjOptData){
                     object_data.presence_vector |= j3224_v2x_msgs::msg::DetectedObjectData::HAS_DETECTED_OBJECT_OPTIONAL_DATA;
 
@@ -1642,13 +1536,12 @@ namespace cpp_message
                             uint8_t lights=0;
                             for(int i = opt_data.choice.detVeh.lights->size -1 ;i >= 0 ;i--){
                                 lights |= (opt_data.choice.detVeh.lights->buf[i] << i);
-                                
+
                             }
 
                             opt_output.det_veh.lights.exterior_lights = lights;
 
                         }
-
                         // Attitude
                         if(opt_data.choice.detVeh.vehAttitude){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEH_ATTITUDE;
@@ -1726,6 +1619,7 @@ namespace cpp_message
                             }
                         }
 
+
                         // AngularVelocity
                         if(opt_data.choice.detVeh.vehAngVel){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL;
@@ -1739,7 +1633,7 @@ namespace cpp_message
                                 }
                                 else if(ang_vel_pitch < j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE){
                                     RCLCPP_WARN(node_logging_->get_logger(), "OPTIONAL: Decoded SDSM object ang vel pitch below min, setting to min");
-                                    ang_vel_pitch = j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE;                                    
+                                    ang_vel_pitch = j3224_v2x_msgs::msg::PitchRate::MIN_PITCH_RATE;
                                 }
                                 opt_output.det_veh.veh_ang_vel.pitch_rate.pitch_rate = ang_vel_pitch;
                             }
@@ -1757,7 +1651,7 @@ namespace cpp_message
                                 }
                                 else if(ang_vel_roll < j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE){
                                     RCLCPP_WARN(node_logging_->get_logger(), "OPTIONAL: Decoded SDSM object ang vel roll below min, setting to min");
-                                    ang_vel_roll = j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE;                                    
+                                    ang_vel_roll = j3224_v2x_msgs::msg::RollRate::MIN_ROLL_RATE;
                                 }
                                 opt_output.det_veh.veh_ang_vel.roll_rate.roll_rate = ang_vel_roll;
                             }
@@ -1771,11 +1665,11 @@ namespace cpp_message
                         if(opt_data.choice.detVeh.vehAngVelConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL_CONFIDENCE;
 
-                            if(*opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence){
+                            if(opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence){
                                 opt_output.det_veh.veh_ang_vel_confidence.presence_vector |= j3224_v2x_msgs::msg::AngularVelocityConfidence::HAS_PITCH_RATE_CONFIDENCE;
                                 opt_output.det_veh.veh_ang_vel_confidence.pitch_rate_confidence.pitch_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->pitchRateConfidence;
                             }
-                            if(*opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence){
+                            if(opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence){
                                 opt_output.det_veh.veh_ang_vel_confidence.presence_vector |= j3224_v2x_msgs::msg::AngularVelocityConfidence::HAS_ROLL_RATE_CONFIDENCE;
                                 opt_output.det_veh.veh_ang_vel_confidence.roll_rate_confidence.roll_rate_confidence = *opt_data.choice.detVeh.vehAngVelConfidence->rollRateConfidence;
                             }
@@ -1823,7 +1717,7 @@ namespace cpp_message
                         }
 
                         // VehicleHeight *
-                        if(*opt_data.choice.detVeh.height){
+                        if(opt_data.choice.detVeh.height){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_HEIGHT;
                             // unnecessary nested ifs?
                             if(opt_data.choice.detVeh.height && *opt_data.choice.detVeh.height != j2735_v2x_msgs::msg::VehicleHeight::VEHICLE_HEIGHT_UNAVAILABLE){
@@ -1845,6 +1739,7 @@ namespace cpp_message
                             }
                         }
 
+
                         // VehicleSizeConfidence
                         if(opt_data.choice.detVeh.vehicleSizeConfidence){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_SIZE_CONFIDENCE;
@@ -1861,20 +1756,21 @@ namespace cpp_message
                             else{
                                 opt_output.det_veh.vehicle_size_confidence.vehicle_length_confidence.size_value_confidence |= j3224_v2x_msgs::msg::SizeValueConfidence::UNAVAILABLE;
                             }
-                            if(*opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence){
+                            if(opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence){
                                 opt_output.det_veh.vehicle_size_confidence.presence_vector |= j3224_v2x_msgs::msg::VehicleSizeConfidence::HAS_VEHICLE_HEIGHT_CONFIDENCE;
                                 opt_output.det_veh.vehicle_size_confidence.vehicle_height_confidence.size_value_confidence |= *opt_data.choice.detVeh.vehicleSizeConfidence->vehicleHeightConfidence;
                             }
                         }
 
                         // BasicVehicleClass
-                        if(*opt_data.choice.detVeh.vehicleClass){
+                        if(opt_data.choice.detVeh.vehicleClass){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_VEHICLE_CLASS;
                             opt_output.det_veh.vehicle_class.basic_vehicle_class = *opt_data.choice.detVeh.vehicleClass;
                         }
 
+
                         // ClassificationConfidence
-                        if(*opt_data.choice.detVeh.classConf){
+                        if(opt_data.choice.detVeh.classConf){
                             opt_output.det_veh.presence_vector |= j3224_v2x_msgs::msg::DetectedVehicleData::HAS_CLASS_CONF;
 
                             long veh_class_conf = *opt_data.choice.detVeh.classConf;
@@ -1890,14 +1786,13 @@ namespace cpp_message
                         }
                     }
 
-
-
                     // detVRU
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detVRU){
+
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VRU;
 
                         // PersonalDeviceUserType
-                        if(*opt_data.choice.detVRU.basicType){
+                        if(opt_data.choice.detVRU.basicType){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_BASIC_TYPE;
                             opt_output.det_vru.basic_type.type = *opt_data.choice.detVRU.basicType;
                         }
@@ -1918,13 +1813,13 @@ namespace cpp_message
                         }
 
                         // Attachment
-                        if(*opt_data.choice.detVRU.attachment){
+                        if(opt_data.choice.detVRU.attachment){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_ATTACHMENT;
                             opt_output.det_vru.attachment.type = *opt_data.choice.detVRU.attachment;
                         }
 
                         // AttachmentRadius
-                        if(*opt_data.choice.detVRU.radius){
+                        if(opt_data.choice.detVRU.radius){
                             opt_output.det_vru.presence_vector |= j3224_v2x_msgs::msg::DetectedVRUData::HAS_RADIUS;
 
                             long att_radius = *opt_data.choice.detVRU.radius;
@@ -1936,11 +1831,9 @@ namespace cpp_message
                         }
                     }
 
-
                     // detObst
                     else if(opt_data.present == DetectedObjectOptionalData_PR_detObst){
                         opt_output.choice = j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_OBST;
-                        
                         // ObstacleSize - width
                         if(opt_data.choice.detObst.obstSize.width){
                             long obst_width = opt_data.choice.detObst.obstSize.width;
@@ -1970,7 +1863,7 @@ namespace cpp_message
                             opt_output.det_obst.obst_size.length.size_value = obst_length;
                         }
                         // ObstacleSize - height
-                        if(*opt_data.choice.detObst.obstSize.height){
+                        if(opt_data.choice.detObst.obstSize.height){
                             opt_output.det_obst.obst_size.presence_vector |= j3224_v2x_msgs::msg::ObstacleSize::HAS_HEIGHT;
                             long obst_height = *opt_data.choice.detObst.obstSize.height;
 
@@ -1998,7 +1891,7 @@ namespace cpp_message
                         else{
                             opt_output.det_obst.obst_size_confidence.length_confidence.size_value_confidence |= j3224_v2x_msgs::msg::SizeValueConfidence::UNAVAILABLE;
                         }
-                        if(*opt_data.choice.detObst.obstSizeConfidence.heightConfidence){
+                        if(opt_data.choice.detObst.obstSizeConfidence.heightConfidence){
                             opt_output.det_obst.obst_size_confidence.presence_vector |= j3224_v2x_msgs::msg::ObstacleSizeConfidence::HAS_HEIGHT_CONFIDENCE;
                             opt_output.det_obst.obst_size_confidence.height_confidence.size_value_confidence = *opt_data.choice.detObst.obstSizeConfidence.heightConfidence;
                         }
@@ -2007,6 +1900,7 @@ namespace cpp_message
                     object_data.detected_object_optional_data = opt_output;
 
                 }
+
                 // For each object iterated over, push back the data to DetectedObjectsList
                 detected_objects.detected_object_data.push_back(object_data);
 
@@ -2026,7 +1920,7 @@ namespace cpp_message
         // If decoding fails return an empty SDSM
         return std::optional<j3224_v2x_msgs::msg::SensorDataSharingMessage>{};
 
-    
+
 
     }
 }
