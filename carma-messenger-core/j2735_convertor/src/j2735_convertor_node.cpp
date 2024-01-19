@@ -101,7 +101,7 @@ namespace j2735_convertor
     outbound_sdsm_options.callback_group = outbound_sdsm_cb_group;
     outbound_sdsm_sub_ = create_subscription<carma_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_sdsm", 1, std::bind(&Node::SdsmHandler,
                                           this, std_ph::_1), outbound_sdsm_options);  // Queue size of 1 as we should never publish outdated PSMs
-    
+
     // SDSM j3224 Publisher
     outbound_j3224_sdsm_pub_ = create_publisher<j3224_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_j3224_sdsm", 1);
 
@@ -109,7 +109,7 @@ namespace j2735_convertor
 
 
     // Incoming geofence pub/sub
-      // NOTE: Currently, intra-process comms must be disabled for the following two publishers that are transient_local: https://github.com/ros2/rclcpp/issues/1753
+      // NOTE: Currently, intra-process comms must be disabled for the following publisher that are transient_local: https://github.com/ros2/rclcpp/issues/1753
     rclcpp::PublisherOptions intra_proc_disabled;
     intra_proc_disabled.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable; // Disable intra-process comms for this PublisherOptions object
 
