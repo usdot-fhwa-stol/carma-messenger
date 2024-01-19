@@ -101,7 +101,7 @@ namespace j2735_convertor
     outbound_sdsm_options.callback_group = outbound_sdsm_cb_group;
     outbound_sdsm_sub_ = create_subscription<carma_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_sdsm", 1, std::bind(&Node::SdsmHandler,
                                           this, std_ph::_1), outbound_sdsm_options);  // Queue size of 1 as we should never publish outdated PSMs
-    
+
     // SDSM j3224 Publisher
     outbound_j3224_sdsm_pub_ = create_publisher<j3224_v2x_msgs::msg::SensorDataSharingMessage>("outgoing_j3224_sdsm", 1);
 
@@ -109,14 +109,24 @@ namespace j2735_convertor
 
 
     // Incoming geofence pub/sub
-    converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", 50);
+      // NOTE: Currently, intra-process comms must be disabled for the following publisher that are transient_local: https://github.com/ros2/rclcpp/issues/1753
+    rclcpp::PublisherOptions intra_proc_disabled;
+    intra_proc_disabled.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable; // Disable intra-process comms for this PublisherOptions object
+
+    // Create a publisher that will send all previously published messages to late-joining subscribers ONLY If the subscriber is transient_local too
+    auto pub_qos_transient_local = rclcpp::QoS(rclcpp::KeepAll()); // A publisher with this QoS will store all messages that it has sent on the topic
+    pub_qos_transient_local.transient_local();  // A publisher with this QoS will re-send all (when KeepAll is used) messages to all late-joining subscribers
+                                          // NOTE: The subscriber's QoS must be set to transient_local() as well for earlier messages to be resent to the later-joiner.
+
+    converted_geofence_control_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlMessage>("incoming_geofence_control", pub_qos_transient_local, intra_proc_disabled);
+
     converted_geofence_request_pub_ = create_publisher<carma_v2x_msgs::msg::TrafficControlRequest>("incoming_geofence_request", 50);
 
     auto j2735_geofence_control_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     rclcpp::SubscriptionOptions j2735_geofence_control_options;
     j2735_geofence_control_options.callback_group = j2735_geofence_control_cb_group;
     j2735_geofence_control_sub_ = create_subscription<j2735_v2x_msgs::msg::TrafficControlMessage>("incoming_j2735_geofence_control", 50, std::bind(&Node::j2735ControlMessageHandler, this, std_ph::_1), j2735_geofence_control_options);
-    
+
 
     auto j2735_geofence_request_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     rclcpp::SubscriptionOptions j2735_geofence_request_options;
@@ -128,8 +138,8 @@ namespace j2735_convertor
     rclcpp::SubscriptionOptions outbound_geofence_control_options;
     outbound_geofence_control_options.callback_group = outbound_geofence_control_cb_group;
     outbound_geofence_control_sub_ = create_subscription<carma_v2x_msgs::msg::TrafficControlMessage>("outgoing_geofence_control", 50, std::bind(&Node::ControlMessageHandler, this, std_ph::_1), outbound_geofence_control_options);
-    
-    
+
+
     auto outbound_geofence_request_cb_group = create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
     rclcpp::SubscriptionOptions outbound_geofence_request_options;
     outbound_geofence_request_options.callback_group = outbound_geofence_request_cb_group;
