@@ -5,6 +5,7 @@ on:
    branches:
      - "master"
      - "develop"
+     - "test/sonar_version"
   pull_request:
       types: [opened, synchronize, reopened]
 jobs:
