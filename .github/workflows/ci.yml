@@ -15,7 +15,7 @@ jobs:
         working-directory: "/opt/carma/"
     runs-on: ubuntu-latest
     container:
-      image: usdotfhwastoldev/carma-base:develop
+      image: usdotfhwastoldev/carma-base:upgrade_sonar_scanner
       env:
         INIT_ENV: "/home/carma/.base-image/init-env.sh"
         ROS_2_ENV: "/opt/ros/foxy/setup.bash"
