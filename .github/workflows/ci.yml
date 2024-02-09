@@ -1,12 +1,9 @@
-name: CI
-
+name: "CI: Run tests"
 on:
-  push:
-   branches:
-     - "master"
-     - "develop"
   pull_request:
-      types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [develop, master, release/lavida]
 jobs:
   build:
     defaults:

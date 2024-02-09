@@ -1,10 +1,11 @@
-name: DockerHub
-
+name: Docker Hub build
 on:
   push:
     branches:
       - "develop"
       - "master"
+      - "release/*"
+      - "release/lavida"
 jobs:
   docker:
     runs-on: ubuntu-latest
