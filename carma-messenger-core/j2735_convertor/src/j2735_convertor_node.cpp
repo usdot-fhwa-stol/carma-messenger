@@ -222,16 +222,16 @@ namespace j2735_convertor
     void Node::SdsmHandler(const carma_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr  message)
   {
     j3224_v2x_msgs::msg::SensorDataSharingMessage j3224_msg;
-    // RCLCPP_INFO(get_logger(), "Converting outgoing SDSM message");
-    // try {
+    RCLCPP_INFO(get_logger(), "Converting outgoing SDSM message");
+    try {
       SDSMConvertor::convert(*message, j3224_msg);  // Convert message
       RCLCPP_INFO(get_logger(), "Done converting outgoing SDSM message");
       outbound_j3224_sdsm_pub_->publish(j3224_msg);  // Publish converted message
-    // } catch(std::exception const & e) {
-    //   RCLCPP_ERROR_STREAM(get_logger(), "Error while converting outgoing SDSM message: " << e.what());
-    // } catch(...) {
-    //   RCLCPP_ERROR_STREAM(get_logger(), "Unknown error while converting outgoing SDSM message");
-    // }
+    } catch(std::exception const & e) {
+      RCLCPP_ERROR_STREAM(get_logger(), "Error while converting outgoing SDSM message: " << e.what());
+    } catch(...) {
+      RCLCPP_ERROR_STREAM(get_logger(), "Unknown error while converting outgoing SDSM message");
+    }
   }
 
   void Node::j3224SdsmHandler(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr message)
