@@ -70,7 +70,7 @@ namespace cpp_message
             RCLCPP_ERROR_STREAM(node_logging_->get_logger(),
                                 "Cannot encode SDSM message: 'source_id' field size is "
                                     << id_size << " bytes (must be 4)");
-            return;
+            return std::nullopt;
         }
 
         // TemporaryID | sourceID - source_id
