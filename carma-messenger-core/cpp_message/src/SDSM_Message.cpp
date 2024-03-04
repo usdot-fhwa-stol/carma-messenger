@@ -63,7 +63,7 @@ namespace cpp_message
 
         RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (1)");
 
-        RCLCPP_ERROR_STREAM(node_logging_->get_logger(), "ADAM id size: " << std::size(id));
+        RCLCPP_ERROR_STREAM(node_logging_->get_logger(), "ADAM id size: " << std::size(plainMessage.source_id.id));
 
         // TemporaryID | sourceID - source_id
         uint8_t temp_id_content[4] ={0};
