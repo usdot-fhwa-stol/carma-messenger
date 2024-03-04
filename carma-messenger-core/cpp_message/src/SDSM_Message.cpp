@@ -73,6 +73,7 @@ namespace cpp_message
         temp_id.size = 4;
         message->value.choice.SensorDataSharingMessage.sourceID = temp_id;
 
+        RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (1.5)");
 
         // EquipmentType | equipmentType - equipment_type
         if(!plainMessage.equipment_type.equipment_type || plainMessage.equipment_type.equipment_type == j3224_v2x_msgs::msg::EquipmentType::UNKNOWN){
