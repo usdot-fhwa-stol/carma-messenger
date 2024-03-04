@@ -65,6 +65,14 @@ namespace cpp_message
 
         RCLCPP_ERROR_STREAM(node_logging_->get_logger(), "ADAM id size: " << std::size(plainMessage.source_id.id));
 
+        if (const auto id_size{std::size(plainMessage.source_id.id)}; id_size != 4U)
+        {
+            RCLCPP_ERROR(node_logging_->get_logger(),
+                         "Cannot encode SDSM message: 'source_id' field size is "
+                             << id_size << " bytes (must be 4)");
+            return;
+        }
+
         // TemporaryID | sourceID - source_id
         uint8_t temp_id_content[4] ={0};
         for(int i = 0; i < 4; i++){
