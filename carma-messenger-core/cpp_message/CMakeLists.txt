@@ -31,10 +31,12 @@ ament_auto_find_build_dependencies()
 set(node_exec cpp_message_node_exec)
 set(node_lib cpp_message_node)
 
+set(CMAKE_BUILD_TYPE "Debug")
+
 # Includes
 include_directories(
 	include
-	include/generated       
+	include/generated
 )
 
 ament_export_include_directories(include)
@@ -67,8 +69,8 @@ set_target_properties(testlib PROPERTIES
 
 target_link_libraries(${node_lib} testlib)
 
-ament_auto_add_executable(${node_exec} 
-        src/main.cpp 
+ament_auto_add_executable(${node_exec}
+        src/main.cpp
 )
 
 # Register component
@@ -81,12 +83,12 @@ target_link_libraries(${node_exec}
 )
 
 # Testing
-if(BUILD_TESTING)  
+if(BUILD_TESTING)
 
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
 
-  ament_add_gtest(test_cpp_message_node 
+  ament_add_gtest(test_cpp_message_node
                         test/test_MobilityOperations.cpp
                         test/test_EmergencyVehicleAck.cpp
                         test/test_EmergencyVehicleResponse.cpp
