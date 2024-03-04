@@ -61,6 +61,7 @@ namespace cpp_message
             message->value.choice.SensorDataSharingMessage.msgCnt = plainMessage.msg_cnt.msg_cnt;
         }
 
+        RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (1)");
 
         // TemporaryID | sourceID - source_id
         uint8_t temp_id_content[4] ={0};
@@ -425,6 +426,7 @@ namespace cpp_message
                 encode_obj_com->pos.offsetZ = offset_z_ptr;
             }
 
+            RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (2)");
 
             // PositionConfidenceSet | posConfidence.pos - pos_confidence.pos.confidence
             if(!in_object.detected_object_common_data.pos_confidence.pos.confidence || in_object.detected_object_common_data.pos_confidence.pos.confidence == j2735_v2x_msgs::msg::PositionConfidence::UNAVAILABLE){
@@ -747,6 +749,7 @@ namespace cpp_message
 
                     }
 
+                    RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (3)");
 
                     // AngularVelocity | vehAngVel - veh_ang_vel
                     if(in_object.detected_object_optional_data.det_veh.presence_vector & j3224_v2x_msgs::msg::DetectedVehicleData::HAS_ANG_VEL){
@@ -905,6 +908,7 @@ namespace cpp_message
 
                 }
 
+                RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (4)");
 
                 // DetectedVRUData | detVRU - det_vru
                 if(in_object.detected_object_optional_data.choice == j3224_v2x_msgs::msg::DetectedObjectOptionalData::DET_VRU){
@@ -1048,7 +1052,7 @@ namespace cpp_message
         }
         message->value.choice.SensorDataSharingMessage.objects = *detected_object_list;
 
-
+        RCLCPP_ERROR(node_logging_->get_logger(), "ADAM (4)");
 
         // Encode message
         ec = uper_encode_to_buffer(&asn_DEF_MessageFrame, 0 , message , buffer , buffer_size);
