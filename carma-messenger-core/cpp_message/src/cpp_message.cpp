@@ -479,6 +479,7 @@ namespace cpp_message
     void Node::outbound_sdsm_message_callback(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr msg)
     {//encode and publish as outbound binary message
     try {
+        RCLCPP_ERROR(get_logger(), "ADAM: Encoding SDSM message");
         SDSM_Message encode(this->get_node_logging_interface());
         auto res = encode.encode_sdsm_message(*msg.get());
         if(res)
