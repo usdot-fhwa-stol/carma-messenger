@@ -477,33 +477,37 @@ namespace cpp_message
     }
 
     void Node::outbound_sdsm_message_callback(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr msg)
-    {//encode and publish as outbound binary message
-    try {
-        RCLCPP_ERROR(get_logger(), "ADAM: Encoding SDSM message");
-        SDSM_Message encode(this->get_node_logging_interface());
-        auto res = encode.encode_sdsm_message(*msg.get());
-        if(res)
+    { // encode and publish as outbound binary message
+        try
         {
-            RCLCPP_DEBUG_STREAM(get_logger(), "Res encoded val: ");
-            //copy to byte array msg
-            carma_driver_msgs::msg::ByteArray output;
-            output.header.frame_id="0";
-            output.header.stamp=this->now();
-            output.message_type="SDSM"; // may change to SensorDataSharingMessage
-            output.content=res.value();
-            //publish result
-            outbound_binary_message_pub_->publish(output);
+            RCLCPP_ERROR(get_logger(), "ADAM: Encoding SDSM message");
+            SDSM_Message encode(this->get_node_logging_interface());
+            auto res = encode.encode_sdsm_message(*msg.get());
+            if (res)
+            {
+                RCLCPP_DEBUG_STREAM(get_logger(), "Res encoded val: ");
+                // copy to byte array msg
+                carma_driver_msgs::msg::ByteArray output;
+                output.header.frame_id = "0";
+                output.header.stamp = this->now();
+                output.message_type = "SDSM"; // may change to SensorDataSharingMessage
+                output.content = res.value();
+                // publish result
+                outbound_binary_message_pub_->publish(output);
+            }
+            else
+            {
+                RCLCPP_WARN_STREAM(get_logger(), "Cannot encode SDSM message.");
+            }
         }
-        else
+        catch (std::exception const &e)
         {
-            RCLCPP_WARN_STREAM( get_logger(), "Cannot encode SDSM message.");
+            RCLCPP_ERROR_STREAM(get_logger(), "Failed to encode SDSM message: " << e.what());
         }
-    catch (std::exception const & e) {
-        RCLCPP_ERROR_STREAM(get_logger(), "Failed to encode SDSM message: " << e.what());
-    } catch (...) {
-        RCLCPP_ERROR(get_logger(), "Failed to encode SDSM message: unknown error");
-    }
-
+        catch (...)
+        {
+            RCLCPP_ERROR(get_logger(), "Failed to encode SDSM message: unknown error");
+        }
     }
 
     boost::optional<j2735_v2x_msgs::msg::TrafficControlMessage> Node::decode_geofence_control(std::vector<uint8_t>& binary_array)
