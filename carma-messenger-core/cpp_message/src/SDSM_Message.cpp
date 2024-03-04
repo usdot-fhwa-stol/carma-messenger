@@ -67,9 +67,9 @@ namespace cpp_message
 
         if (const auto id_size{std::size(plainMessage.source_id.id)}; id_size != 4U)
         {
-            RCLCPP_ERROR(node_logging_->get_logger(),
-                         "Cannot encode SDSM message: 'source_id' field size is "
-                             << id_size << " bytes (must be 4)");
+            RCLCPP_ERROR_STREAM(node_logging_->get_logger(),
+                                "Cannot encode SDSM message: 'source_id' field size is "
+                                    << id_size << " bytes (must be 4)");
             return;
         }
 
