@@ -207,6 +207,8 @@ namespace emergency_response_vehicle_plugin{
 
         worker_node->handle_on_shutdown();
     }
+    // This unit tests has been temporarily disabled to support Continuous Improvement (CI) processes.
+    // Related GitHub Issue: <https://github.com/usdot-fhwa-stol/carma-platform/issues/2335>
     /**
     TEST(EmergencyResponseVehiclePluginTest, testLoadRouteDestinationPointsFromFile){
         rclcpp::NodeOptions options;
