@@ -16,6 +16,7 @@
 
 
 #include <gtest/gtest.h>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 
 #include "emergency_response_vehicle_plugin/emergency_response_vehicle_plugin_node.hpp"
 
@@ -207,9 +208,7 @@ namespace emergency_response_vehicle_plugin{
 
         worker_node->handle_on_shutdown();
     }
-    // This unit tests has been temporarily disabled to support Continuous Improvement (CI) processes.
-    // Related GitHub Issue: <https://github.com/usdot-fhwa-stol/carma-platform/issues/2335>
-    /**
+
     TEST(EmergencyResponseVehiclePluginTest, testLoadRouteDestinationPointsFromFile){
         rclcpp::NodeOptions options;
         auto worker_node = std::make_shared<emergency_response_vehicle_plugin::EmergencyResponseVehiclePlugin>(options);
@@ -219,7 +218,10 @@ namespace emergency_response_vehicle_plugin{
         worker_node->activate();  //Call activate state transition to get not read for runtime
 
         // Provide file path to getRouteDestinationPointsFromFile() to extract route destination points
-        worker_node->loadRouteDestinationPointsFromFile("../../install_ros2/emergency_response_vehicle_plugin/share/emergency_response_vehicle_plugin/resource/example_route.csv");
+        std::string path = ament_index_cpp::get_package_share_directory("emergency_response_vehicle_plugin");
+        std::string file = "/resource/example_route.csv";
+        file = path.append(file);
+        worker_node->loadRouteDestinationPointsFromFile(file);
 
         // Verify size and contents of route_destination_points
         ASSERT_EQ(worker_node->route_destination_points_.size(), 3);
@@ -244,7 +246,7 @@ namespace emergency_response_vehicle_plugin{
 
         worker_node->handle_on_shutdown();
     }
-    */
+
     TEST(EmergencyResponseVehiclePluginTest, testProcessIncomingUdpBinary){
         rclcpp::NodeOptions options;
         auto worker_node = std::make_shared<emergency_response_vehicle_plugin::EmergencyResponseVehiclePlugin>(options);
