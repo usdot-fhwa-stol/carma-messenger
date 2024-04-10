@@ -45,6 +45,8 @@ extern "C"
 #include "j2735_v2x_msgs/msg/traffic_control_message.hpp"
 #include "j2735_v2x_msgs/msg/psm.hpp"
 
+#include "j3224_v2x_msgs/msg/sensor_data_sharing_message.hpp"
+
 
 namespace cpp_message
 {
@@ -92,8 +94,12 @@ namespace cpp_message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::SPAT> spat_message_pub_;  //incoming spat message
             carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::MapData> map_message_pub_;  //incoming map message
 
-            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::PSM> psm_message_pub_;
-            carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::PSM> psm_message_sub_;
+            carma_ros2_utils::PubPtr<j2735_v2x_msgs::msg::PSM> psm_message_pub_;  // incoming psm
+            carma_ros2_utils::SubPtr<j2735_v2x_msgs::msg::PSM> psm_message_sub_;  // outgoing plain psm
+
+            carma_ros2_utils::PubPtr<j3224_v2x_msgs::msg::SensorDataSharingMessage> sdsm_message_pub_;  // incoming sdsm
+            carma_ros2_utils::SubPtr<j3224_v2x_msgs::msg::SensorDataSharingMessage> sdsm_message_sub_;  // outgoing plain sdsm
+
 
             /**
             * @brief Initialize pub/sub and params.
@@ -168,6 +174,12 @@ namespace cpp_message
             * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
             */
             void outbound_psm_message_callback(j2735_v2x_msgs::msg::PSM::UniquePtr msg);
+            /**
+            * @brief function callback when there is an outgoing SDSM message.
+            * @param msg container with SDSM ros message. Passed to an encoding function in SDSM_Message class.
+            * The encoded message is published as outbound binary message. Failure to encode results in a ROS Warning.
+            */
+            void outbound_sdsm_message_callback(j3224_v2x_msgs::msg::SensorDataSharingMessage::UniquePtr msg);
 
         public:
 

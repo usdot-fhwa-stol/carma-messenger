@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2023 LEIDOS.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+-->
+<!-- 2018 Chevrolet Tahoe Robot Description File
+     This file defines the static transformations to be used by sensor driver wrappers as part of CARMA Messenger operating on a passanger car.
+-->
+<robot name="vehicle_platform">
+
+	<!-- Frames -->
+	<link name="base_link" />
+	<link name="pinpoint" />
+
+	<!-- Sensor Transforms -->
+
+	<!-- Torc Pinpoint Localization Device -->
+	<joint name="pinpoint" type="fixed" >
+		<parent link="base_link" />
+		<child link="pinpoint" />
+		<origin xyz="0 0 0" rpy="3.145159 0 0" />
+	</joint>
+
+</robot>
