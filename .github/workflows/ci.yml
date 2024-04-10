@@ -3,7 +3,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [develop, master, release/lavida]
+    branches: 
+      - develop
+      - master
+      - "release/*"
 jobs:
   build:
     defaults:
