@@ -5,6 +5,8 @@ on:
       - "develop"
       - "master"
       - "release/*"
+    tags:
+      - "carma-system-*"
 jobs:
   docker:
     runs-on: ubuntu-latest
