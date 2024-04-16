@@ -6,8 +6,16 @@ on:
     branches: 
       - develop
       - master
-      - "release/*"
+      - "release_candidate/*"
 jobs:
+  determine_docker_org_and_tag:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-organization: ${{ steps.step1.outputs.docker_organization }}
+      docker_image_tag: ${{ steps.step1.outputs.docker_image_tag }}
+    steps:
+      - id: step1
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@feature-add-docker-org-and-tag-action
   build:
     defaults:
       run:
@@ -15,7 +23,7 @@ jobs:
         working-directory: "/opt/carma/"
     runs-on: ubuntu-latest
     container:
-      image: usdotfhwastol/carma-base:carma-system-4.5.0
+      image: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-base:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
       env:
         INIT_ENV: "/home/carma/.base-image/init-env.sh"
         ROS_2_ENV: "/opt/ros/foxy/setup.bash"
@@ -31,7 +39,7 @@ jobs:
       run: mv $GITHUB_WORKSPACE/src /opt/carma/
     - name: Checkout dependencies
       run: |
-        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/
+        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ github.ref_name	}}
     - name: Build Ros1
       run: |
         source "$INIT_ENV"
