@@ -40,7 +40,7 @@ jobs:
       run: mv $GITHUB_WORKSPACE/src /opt/carma/
     - name: Checkout dependencies
       run: |
-        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ github.ref_name	}}
+        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
     - name: Build Ros1
       run: |
         source "$INIT_ENV"
