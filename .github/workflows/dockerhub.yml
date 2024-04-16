@@ -8,7 +8,16 @@ on:
     tags:
       - "carma-system-*"
 jobs:
+  determine_docker_org_and_tag:
+    runs-on: ubuntu-latest
+    outputs:
+      docker_organization: ${{ steps.step1.outputs.docker_organization }}
+      docker_image_tag: ${{ steps.step1.outputs.docker_image_tag }}
+    steps:
+      - id: step1
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@feature-add-docker-org-and-tag-action
   docker:
+    needs: determine_docker_org_and_tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,7 +44,9 @@ jobs:
           push: true
           tags: usdotfhwastol/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
           build-args: |
-            BRANCH=${{ github.ref_name }}       
+            BRANCH=${{ github.ref_name }}
+            TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
+            ORGANIZATION=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}       
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
