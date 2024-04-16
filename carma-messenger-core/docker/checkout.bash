@@ -26,6 +26,7 @@ while [[ $# -gt 0 ]]; do
             -b|--branch)
                   BRANCH=$2
                   shift
+                  shift
             ;;
             -r|--root)
                   dir=$2
