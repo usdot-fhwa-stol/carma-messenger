@@ -41,4 +41,4 @@ if [[ -n "$BRANCH" ]];then
 else
       git clone https://github.com/usdot-fhwa-stol/carma-msgs.git ${dir}src/CARMAMsgs --branch develop
       git clone https://github.com/usdot-fhwa-stol/carma-utils.git ${dir}src/CARMAUtils --branch develop
-
+fi
