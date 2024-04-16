@@ -17,6 +17,7 @@ jobs:
       - id: step1
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@feature-add-docker-org-and-tag-action
   build:
+    needs: determine_docker_org_and_tag
     defaults:
       run:
         shell: bash
