@@ -14,10 +14,11 @@
 
 FROM usdotfhwastol/carma-base:carma-system-4.5.0 as base_image
 FROM base_image as setup
+ARG BRANCH="develop" 
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
-RUN ~/src/docker/checkout.bash
+RUN ~/src/docker/checkout.bash -b ${BRANCH}
 
 RUN ~/src/docker/install.sh
 

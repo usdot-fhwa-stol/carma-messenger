@@ -19,12 +19,12 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-ui/
-
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
-
+          build-args: |
+            BRANCH=${{  github.base_ref }}     
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
