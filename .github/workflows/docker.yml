@@ -1,11 +1,7 @@
-name: Docker
-
+name: Docker build
 on:
-  push:
-    branches-ignore:
-      - "develop"
-      - "master"
-      - "release/*"
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,25 +26,25 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-ui:${{ env.MODIFIED_BRANCH_NAME }}
+          tags: usdotfhwastol/carma-messenger-ui:${{ env.MODIFIED_BRANCH_NAME }}
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-core:${{ env.MODIFIED_BRANCH_NAME }}
+          tags: usdotfhwastol/carma-messenger-core:${{ env.MODIFIED_BRANCH_NAME }}
 
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-chevrolet_tahoe_2018
+          tags: usdotfhwastol/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-chevrolet_tahoe_2018
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-development
+          tags: usdotfhwastol/carma-messenger-config:${{ env.MODIFIED_BRANCH_NAME }}-development

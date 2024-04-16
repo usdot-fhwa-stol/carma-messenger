@@ -1,12 +1,12 @@
-name: CI
-
+name: "CI: Run tests"
 on:
-  push:
-   branches:
-     - "master"
-     - "develop"
   pull_request:
-      types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: 
+      - develop
+      - master
+      - "release/*"
 jobs:
   build:
     defaults:
@@ -15,7 +15,7 @@ jobs:
         working-directory: "/opt/carma/"
     runs-on: ubuntu-latest
     container:
-      image: usdotfhwastoldev/carma-base:develop
+      image: usdotfhwastol/carma-base:carma-system-4.5.0
       env:
         INIT_ENV: "/home/carma/.base-image/init-env.sh"
         ROS_2_ENV: "/opt/ros/foxy/setup.bash"

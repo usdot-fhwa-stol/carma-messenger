@@ -1,10 +1,12 @@
-name: DockerHub
-
+name: Docker Hub build
 on:
   push:
     branches:
       - "develop"
       - "master"
+      - "release/*"
+    tags:
+      - "carma-system-*"
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -24,28 +26,28 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui         
+          tags: usdotfhwastol/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui         
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
+          tags: usdotfhwastol/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
 
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
+          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastoldev/carma-messenger-config:${{ github.ref_name }}-development            
+          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-development            
 
       
 
