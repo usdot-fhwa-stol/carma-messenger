@@ -38,9 +38,17 @@ jobs:
         fetch-depth: 0
     - name: Move source code
       run: mv $GITHUB_WORKSPACE/src /opt/carma/
+    - name: Determine base branch
+      id: determine-base-branch
+      run: |
+        if [[ ${{ github.event.name }} == 'pull_request']];then
+          echo git_branch="$GITHUB_BASE_REF" >> $GITHUB_OUTPUT
+        else
+          echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+        fi
     - name: Checkout dependencies
       run: |
-        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+        ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ steps.determine-base-branch.outputs.git_branch }}
     - name: Build Ros1
       run: |
         source "$INIT_ENV"

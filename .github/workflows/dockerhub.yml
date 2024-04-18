@@ -35,18 +35,18 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastol/carma-messenger-ui:${{ github.ref_name }}-carma-messenger-ui  
+          tags: usdotfhwastol/carma-messenger-ui:${{ github.ref_name }}
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastol/carma-messenger-core:${{ github.ref_name }}-carma-messenger-core       
+          tags: usdotfhwastol/carma-messenger-core:${{ github.ref_name }}      
           build-args: |
-            BRANCH=${{ github.ref_name }}
-            TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
-            ORGANIZATION=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}       
+            GIT_BRANCH=${{ github.ref_name }}
+            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
+            DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}       
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
