@@ -22,6 +22,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get Docker Image Metadata
+        shell: bash
+        id: docker-image-metadata
+        run: |
+          echo system_version=$("./carma-messenger-core/docker/get-system-version.sh") >> $GITHUB_OUTPUT
+          echo build_date=$("date -u +”%Y-%m-%dT%H:%M:%SZ") >> $GITHUB_OUTPUT
+          echo vcs_ref=$("git rev-parse --short HEAD")
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to DockerHub
@@ -36,6 +43,11 @@ jobs:
           context: ./carma-messenger-ui/
           push: true
           tags: usdotfhwastol/carma-messenger-ui:${{ github.ref_name }}
+          build-args: |
+            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outcome.version }} 
+          
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v3
@@ -46,20 +58,32 @@ jobs:
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
             DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
-            DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}       
+            DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}       
+       
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018  
+          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018
+          build-args: |
+            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}      
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v3
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-development            
+          tags: usdotfhwastol/carma-messenger-config:${{ github.ref_name }}-development
+          build-args: |
+            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}                
 
       
 
