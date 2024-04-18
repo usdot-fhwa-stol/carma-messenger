@@ -15,7 +15,7 @@ jobs:
       docker_image_tag: ${{ steps.step1.outputs.docker_image_tag }}
     steps:
       - id: step1
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@feature-add-docker-org-and-tag-action
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
   build:
     needs: determine_docker_org_and_tag
     defaults:
