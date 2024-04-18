@@ -41,7 +41,7 @@ jobs:
     - name: Determine base branch
       id: determine-base-branch
       run: |
-        if [[ "$GITHUB_EVENT_NAME" == "pull_request"]];then
+        if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
           echo git_branch="$GITHUB_BASE_REF" >> $GITHUB_OUTPUT
         else
           echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
