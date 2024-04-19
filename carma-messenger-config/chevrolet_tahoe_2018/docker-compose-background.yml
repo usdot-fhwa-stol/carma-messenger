@@ -17,7 +17,7 @@ version: '2'
 
 services:
   carma-messenger-ui:
-    image: usdotfhwastol/carma-messenger-ui:carma-system-4.5.0
+    image: ${DOCKER_ORG}/carma-messenger-ui:${DOCKER_TAG}
     network_mode: host
     container_name: carma-messenger-ui
     environment:

@@ -27,11 +27,11 @@ sudo chgrp -R $GRP_ID /opt/carma-messenger/
 sudo chmod 775 -R /opt/carma-messenger/
 sudo chmod 775 /opt/carma-messenger/Desktop /opt/carma-messenger/Pictures
 
-
+#TODO why are we pulling files that exist in the repository?
 curl -o /opt/carma-messenger/Desktop/CARMA_Messenger.desktop -L https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Desktop/CARMA_Messenger.desktop 
 chmod 775 /opt/carma-messenger/Desktop/CARMA_Messenger.desktop
 
-
+#TODO why are we pulling files that exist in the repository?
 curl -o /opt/carma-messenger/Pictures/CARMA_icon_color.png  https://raw.githubusercontent.com/usdot-fhwa-stol/carma-messenger/develop/install_scripts/Pictures/CARMA_icon_color.png 
 chmod 775 /opt/carma-messenger/Pictures/CARMA_icon_color.png
 
