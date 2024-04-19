@@ -6,7 +6,7 @@ on:
     branches: 
       - develop
       - master
-      - "release_candidate/*"
+      - "release/*"
 jobs:
   determine_docker_org_and_tag:
     runs-on: ubuntu-latest
