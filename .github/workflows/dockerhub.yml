@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get Docker Image Metadata
         shell: bash
         id: docker-image-metadata
@@ -30,15 +30,15 @@ jobs:
           echo build_date=$("date -u +”%Y-%m-%dT%H:%M:%SZ") >> $GITHUB_OUTPUT
           echo vcs_ref=$("git rev-parse --short HEAD")
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push carma-messenger-ui Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-ui/
           push: true
@@ -50,7 +50,7 @@ jobs:
           
 
       - name: Build and Push carma-messenger-core Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-core/
           push: true
@@ -64,7 +64,7 @@ jobs:
             VERSION=${{ steps.docker-image-metadata.outcome.version }}       
        
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
@@ -75,7 +75,7 @@ jobs:
             VERSION=${{ steps.docker-image-metadata.outcome.version }}      
 
       - name: Build and Push development Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-config/development/
           push: true
