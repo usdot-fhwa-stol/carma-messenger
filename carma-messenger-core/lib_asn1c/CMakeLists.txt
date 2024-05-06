@@ -33,10 +33,12 @@ if(${ROS_VERSION} EQUAL 1) # ROS 1
 
 	catkin_package()
 
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
 		install(FILES third_party_lib/libasn1c_x64.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
-	elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "i386")
 		install(FILES third_party_lib/libasn1c_x86.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
+	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+		install(FILES third_party_lib/libasn1c_arm64.so DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} RENAME libasn1c.so)
 	endif()
 
 else() # ROS2
@@ -44,10 +46,12 @@ else() # ROS2
 	find_package(ament_cmake_auto REQUIRED)
 	ament_auto_find_build_dependencies()
 
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
 		install(FILES third_party_lib/libasn1c_x64.so DESTINATION lib RENAME libasn1c.so)
-	elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "i386")
 		install(FILES third_party_lib/libasn1c_x86.so DESTINATION lib RENAME libasn1c.so)
+	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+		install(FILES third_party_lib/libasn1c_arm64.so DESTINATION lib RENAME libasn1c.so)
 	endif()
 
 	ament_auto_package()
