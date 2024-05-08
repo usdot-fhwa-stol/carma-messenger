@@ -19,7 +19,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <functional>
 #include <std_msgs/msg/string.hpp>
-#include <std_srvs/srv/empty.hpp>
 
 #include <carma_ros2_utils/carma_lifecycle_node.hpp>
 

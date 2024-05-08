@@ -38,3 +38,7 @@ Note: In order to use m32 flag, you should have the package libc6-dev-i386 ready
 Copy the new generated shared libraries in your Workspace.
 
 Paste and replace the old libraries in this folder.
+
+## To build on ARM, follow the same instructions but for the final build only run: 
+
+gcc -DPDU=MessageFrame -shared -o libasn1c_arm64.so -I./include/ ./src/*.c -fPIC
