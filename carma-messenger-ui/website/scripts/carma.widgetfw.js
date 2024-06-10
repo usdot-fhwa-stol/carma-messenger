@@ -1,8 +1,5 @@
 CarmaJS.registerNamespace("CarmaJS.WidgetFramework");
-/****
- * Partial Implementation of the Widget Framework was done to only accommodate the first plugin for Truck Inspection. 
- * Further work will be done when new plugin come into play for CARMAMessenger
- */
+
 CarmaJS.WidgetFramework = (function () {
           var scriptLoader = function (scripts, callback) {
 
@@ -34,12 +31,9 @@ CarmaJS.WidgetFramework = (function () {
         };
 
         /*
-            loads the widgets onto the Driver View.Part of implementation truck inspection plugin
+            loads the widgets onto the Driver View.Part
         */
         var loadWidgets = function(){
-                var cssFilePath = 'widgets/truckInspection/widget.css';
-                //var cssFilePath = 'thirdparty/bootstrap/bootstrap.css';
-                var jsFilePath = 'widgets/truckInspection/widget.js';
                 $.ajax({
                      url: jsFilePath,
                      type:'HEAD',
