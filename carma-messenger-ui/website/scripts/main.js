@@ -10,7 +10,6 @@ $(document).ready(function () {
 
      $('#card-event-management').click(function(){
        $('#divCarmaMessengerView').css('display','');
-       $('#divWidgetArea').css('display','none');
        $('#divWidgetAreaEventManagement').css('display','');
        $('#divWidgetAreaEmergencyResponse').css('display','none');
        $('#Messenger_back_arrow').css('display','inline-block');
@@ -23,7 +22,6 @@ $(document).ready(function () {
 
     $('#card-emergency-response').click(function(){
         $('#divCarmaMessengerView').css('display','');
-        $('#divWidgetArea').css('display','none');
         $('#divWidgetAreaEventManagement').css('display','none');
         $('#divWidgetAreaEmergencyResponse').css('display','');        
         $('#Messenger_back_arrow').css('display','inline-block');

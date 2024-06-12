@@ -223,7 +223,6 @@ var goToEventManagement = () => {
 
     document.getElementById('audioAlert3').pause();
     $('#divCarmaMessengerView').css('display', '');
-    $('#divWidgetArea').css('display', 'none');
     $('#divWidgetAreaEventManagement').css('display', '');
     $('#divWidgetAreaEmergencyResponse').css('display', 'none');
     $('#Messenger_back_arrow').css('display', 'inline-block');

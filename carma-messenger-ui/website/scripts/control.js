@@ -511,8 +511,6 @@ function closeModal(action) {
             document.getElementById('divCapabilitiesMessage').innerHTML = 'Please select a route.';
             clearTable('tblSecondA');
 
-            CarmaJS.WidgetFramework.closeWidgets();
-
             // Get the element with id="defaultOpen" and click on it
             // This needs to be outside a funtion to work.
             document.getElementById('defaultOpen').click();

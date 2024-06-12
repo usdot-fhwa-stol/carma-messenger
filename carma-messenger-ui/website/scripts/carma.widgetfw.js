@@ -30,49 +30,6 @@ CarmaJS.WidgetFramework = (function () {
             }
         };
 
-        /*
-            loads the widgets onto the Driver View.Part
-        */
-        var loadWidgets = function(){
-                $.ajax({
-                     url: jsFilePath,
-                     type:'HEAD',
-                     error: function()
-                     {
-                         //file not exists
-                         //TODO: In chrome, even with statusCode or error handling, the HTTP 404 (Failed to Load) error still shows separately
-                         console.log('loadWidgets: Widget file does NOT exist: ' + jsFilePath );
-                         return false;
-                     },
-                     success: function()
-                     {
-                        //console.log('cssFilePath: ' + cssFilePath);
-                        //1) Load css
-                        var link = document.createElement('link');
-                        link.setAttribute('rel', 'stylesheet');
-                        link.setAttribute('type', 'text/css');
-                        link.setAttribute('href', cssFilePath);
-                        document.getElementsByTagName('head')[0].appendChild(link);
-
-                        //2) Load JS
-                        //console.log('jsFilePath1: ' + jsFilePath);
-                        scriptLoader([jsFilePath],function()
-                        {
-                             // now you can use the code from loaded script files.
-                            // eval(widgetNamespace + '.loadCustomWidget($("#divWidgetArea"));');saftyLogList
-                            eval('CarmaJS.WidgetFramework.truckInspection' + '.loadCustomWidget($("#divWidgetArea"));');
-                        });
-
-                        return true;
-                     }
-                });
-        };
-
-        var closeWidgets = function () {
-            $('#divWidgetArea').empty();
-            console.log("closeWidgets is called");
-        };
-
         var loadEventManagementWidgets = function(){
                 var cssFilePath = 'widgets/eventManagement/widget.css';
                 var jsFilePath = 'widgets/eventManagement/widget.js';
@@ -153,10 +110,8 @@ CarmaJS.WidgetFramework = (function () {
     
         //Public API
         return {
-            loadWidgets: loadWidgets,
             loadEventManagementWidgets: loadEventManagementWidgets,
             loadEmergencyResponseWidgets: loadEmergencyResponseWidgets,
-            closeWidgets: closeWidgets,
             closeEventManagementWidgets: closeEventManagementWidgets,
             closeEmergencyResponseWidgets: closeEmergencyResponseWidgets
         };
