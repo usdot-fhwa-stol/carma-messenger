@@ -70,9 +70,6 @@ function connectToROS() {
             document.getElementById('closed').style.display = 'none';
             document.getElementById('connected').style.display = 'inline';
             console.log("ROS is connected");
-            //load widget
-          //  CarmaJS.WidgetFramework.closeWidgets();
-            //CarmaJS.WidgetFramework.loadWidgets();
         });
 
         ros.on('close', function () {

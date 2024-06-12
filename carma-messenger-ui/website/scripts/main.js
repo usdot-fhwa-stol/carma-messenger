@@ -7,21 +7,9 @@ $(function () {
 })
   
 $(document).ready(function () {
-    $('#card-truck-inspection').click(function(){
-       $('#divCarmaMessengerView').css('display','');
-       $('#divWidgetArea').css('display','');
-       $('#divWidgetAreaEventManagement').css('display','none');
-       $('#Messenger_back_arrow').css('display','inline-block');
-       $('#divCarmaMessengerMenu').css('display','none');
-
-       //show truck inspection widget
-       CarmaJS.WidgetFramework.closeWidgets();
-       CarmaJS.WidgetFramework.loadWidgets();
-    });
 
      $('#card-event-management').click(function(){
        $('#divCarmaMessengerView').css('display','');
-       $('#divWidgetArea').css('display','none');
        $('#divWidgetAreaEventManagement').css('display','');
        $('#divWidgetAreaEmergencyResponse').css('display','none');
        $('#Messenger_back_arrow').css('display','inline-block');
@@ -34,7 +22,6 @@ $(document).ready(function () {
 
     $('#card-emergency-response').click(function(){
         $('#divCarmaMessengerView').css('display','');
-        $('#divWidgetArea').css('display','none');
         $('#divWidgetAreaEventManagement').css('display','none');
         $('#divWidgetAreaEmergencyResponse').css('display','');        
         $('#Messenger_back_arrow').css('display','inline-block');
