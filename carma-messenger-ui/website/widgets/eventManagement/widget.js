@@ -104,7 +104,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var sendStartBCRequest = new ROSLIB.Service({
             ros: ros,
             name: '/start_broadcasting_traffic_event',
-            serviceType: 'cav_srvs/srv/SetTrafficEvent.h'
+            serviceType: 'carma_msgs/srv/SetTrafficEvent.h'
         });
 
         //event UI form
