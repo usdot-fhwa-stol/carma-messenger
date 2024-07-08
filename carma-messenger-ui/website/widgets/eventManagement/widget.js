@@ -104,7 +104,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var sendStartBCRequest = new ROSLIB.Service({
             ros: ros,
             name: '/start_broadcasting_traffic_event',
-            serviceType: 'cav_srvs/SetTrafficEvent.h'
+            serviceType: 'cav_srvs/srv/SetTrafficEvent.h'
         });
 
         //event UI form
@@ -187,7 +187,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
          var listenerMobilityOperation = new ROSLIB.Topic({
             ros: ros,
             name: '/outgoing_mobility_operation',
-            messageType: 'cav_msgs/MobilityOperation'
+            messageType: 'carma_v2x_msgs/msg/MobilityOperation'
         });
 
         listenerMobilityOperation.subscribe(function (message) {
@@ -237,7 +237,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var sendStopBCRequest = new ROSLIB.Service({
             ros: ros,
             name: '/stop_broadcasting_traffic_event',
-            serviceType: 'std_srvs/Trigger'
+            serviceType: 'std_srvs/srv/Trigger'
         });
         var request = new ROSLIB.ServiceRequest({});
         try{
