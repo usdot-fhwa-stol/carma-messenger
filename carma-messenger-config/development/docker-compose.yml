@@ -76,7 +76,7 @@ services:
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
 
   torc-pinpoint-driver:
-    image: local/carma-torc-pinpoint-driver:SNAPSHOT
+    image: ${DOCKER_ORG}/carma-torc-pinpoint-driver:${DOCKER_TAG}
     container_name: carma-torc-pinpoint-driver
     network_mode: host
     volumes_from:
