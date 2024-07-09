@@ -13,8 +13,6 @@
 #  the License.
 
 # Docker Compose Spec Version
-version: '2'
-
 services:
   roscore:
     image: ${DOCKER_ORG}/carma-base:${DOCKER_TAG}
