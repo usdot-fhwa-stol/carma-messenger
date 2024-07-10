@@ -2774,7 +2774,7 @@
     this.statusListener = new Topic({
       ros : this.ros,
       name : this.serverName + '/status',
-      messageType : 'actionlib_msgs/GoalStatusArray'
+      messageType : 'actionlib_msgs/msg/GoalStatusArray'
     });
   
     this.resultListener = new Topic({
@@ -2792,7 +2792,7 @@
     this.cancelTopic = new Topic({
       ros : this.ros,
       name : this.serverName + '/cancel',
-      messageType : 'actionlib_msgs/GoalID'
+      messageType : 'actionlib_msgs/msg/GoalID'
     });
   
     // advertise the goal and cancel topics
@@ -2917,7 +2917,7 @@
     var statusListener = new Topic({
       ros : this.ros,
       name : this.serverName + '/status',
-      messageType : 'actionlib_msgs/GoalStatusArray'
+      messageType : 'actionlib_msgs/msg/GoalStatusArray'
     });
   
     var resultListener = new Topic({
@@ -3085,7 +3085,7 @@
       var statusPublisher = new Topic({
           ros : this.ros,
           name : this.serverName + '/status',
-          messageType : 'actionlib_msgs/GoalStatusArray'
+          messageType : 'actionlib_msgs/msg/GoalStatusArray'
       });
       statusPublisher.advertise();
   
@@ -3106,7 +3106,7 @@
       var cancelListener = new Topic({
           ros : this.ros,
           name : this.serverName + '/cancel',
-          messageType : 'actionlib_msgs/GoalID'
+          messageType : 'actionlib_msgs/msg/GoalID'
       });
   
       // Track the goals and their status in order to publish status...
@@ -4435,7 +4435,7 @@
    * @param {Object} options
    * @param {Ros} options.ros - The ROSLIB.Ros connection handle.
    * @param {string} options.name - The topic name, like '/cmd_vel'.
-   * @param {string} options.messageType - The message type, like 'std_msgs/String'.
+   * @param {string} options.messageType - The message type, like 'std_msgs/msg/String'.
    * @param {string} [options.compression=none] - The type of compression to use, like 'png', 'cbor', or 'cbor-raw'.
    * @param {number} [options.throttle_rate=0] - The rate (in ms in between messages) at which to throttle the topics.
    * @param {number} [options.queue_size=100] - The queue created at bridge side for re-publishing webtopics.

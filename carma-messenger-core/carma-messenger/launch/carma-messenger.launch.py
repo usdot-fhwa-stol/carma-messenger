@@ -77,10 +77,19 @@ def generate_launch_description():
         ]
     )
 
+    ui_group = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ui.launch.py']),
+            ),
+        ]
+    )
+
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
         transform_group,
         v2x_group,
-        plugins_group
+        plugins_group,
+        ui_group
     ])

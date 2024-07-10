@@ -36,9 +36,6 @@
         args="pub -l /system_alert cav_msgs/SystemAlert '{ type: 5, description: Simulated Drivers Ready }'"
   />
 
-  <!-- UI -->
-  <include file="$(find carma-messenger)/launch/ui.launch"/>
-
    <!-- Traffic Incident Node -->
   <include file="$(find traffic_incident)/launch/traffic_incident.launch"/>
 

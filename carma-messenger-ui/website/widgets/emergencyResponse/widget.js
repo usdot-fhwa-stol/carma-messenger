@@ -51,7 +51,7 @@ var subscribe_bsm = () => {
     listenerBSM = new ROSLIB.Topic({
         ros: ros,
         name: '/bsm_outbound',
-        messageType: 'cav_msgs/BSM'
+        messageType: 'carma_v2x_msgs/msg/BSM'
     });
     listenerBSM.subscribe(function (message) {
         if (message.core_data != undefined && message.core_data.latitude != undefined && message.core_data.longitude != undefined) {
@@ -146,7 +146,7 @@ var subscribe_alert = () => {
     listenerAlert = new ROSLIB.Topic({
         ros: ros,
         name: '/emergency_vehicle_ui_warning',
-        messageType: 'cav_msgs/UIInstructions'
+        messageType: 'carma_msgs/msg/UIInstructions'
     });
     listenerAlert.subscribe(function (message) {
         if (message != undefined && message.msg != undefined) {
@@ -166,7 +166,7 @@ var service_arrive_at_emergency_destination = () => {
     var arrive_at_emergency_destination = new ROSLIB.Service({
         ros: ros,
         name: '/arrived_at_emergency_destination',
-        serviceType: 'std_srvs/Trigger.srv'
+        serviceType: 'std_srvs/srv/Trigger.srv'
     });
 
     var request = new ROSLIB.ServiceRequest({
