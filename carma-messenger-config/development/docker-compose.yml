@@ -13,8 +13,6 @@
 #  the License.
 
 # Docker Compose Spec Version
-version: '2'
-
 services:
   roscore:
     image: ${DOCKER_ORG}/carma-base:${DOCKER_TAG}
@@ -86,4 +84,4 @@ services:
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros
-    command: bash -c 'wait-for-it.sh localhost:11311 -- roslaunch /opt/carma/vehicle/config/drivers.launch drivers:=pinpoint_driver'
+    command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=pinpoint_driver'
