@@ -57,8 +57,8 @@ jobs:
           tags: usdotfhwastol/carma-messenger-core:${{ github.ref_name }}      
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
-            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
-            DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
             VERSION=${{ steps.docker-image-metadata.outcome.version }}       
