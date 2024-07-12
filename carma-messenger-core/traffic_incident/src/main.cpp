@@ -17,7 +17,7 @@
 #include "traffic_incident_node.hpp"
 #include <rclcpp/rclcpp.hpp>
 
-int main(int argc, char **argv) 
+int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
   auto node{std::make_shared<traffic::TrafficIncidentNode>(rclcpp::NodeOptions{})};

@@ -17,29 +17,30 @@
 #ifndef TRAFFIC_INCIDENT_WORKER_H
 #define TRAFFIC_INCIDENT_WORKER_H
 
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 #include <rclcpp/rclcpp.hpp>
+
 #include <carma_v2x_msgs/msg/mobility_operation.hpp>
 #include <gps_msgs/msg/gps_fix.hpp>
-#include <functional>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iomanip>
 
-namespace traffic{
-
+namespace traffic
+{
 class TrafficIncidentWorker
 {
-
- public:
-
-  using PublishTrafficCallback = std::function<void(const carma_v2x_msgs::msg::MobilityOperation&)>;
+public:
+  using PublishTrafficCallback =
+    std::function<void(const carma_v2x_msgs::msg::MobilityOperation &)>;
 
   /*!
    * \brief Constructor
    */
   TrafficIncidentWorker(PublishTrafficCallback traffic_pub);
-    
+
   /*! \fn pinpointDriverCallback(const gps_msgs::msg::GPSFix &pinpoint_msg)
     \brief pinpointDriverCallback populates lat lon heading from pinpoint driver.
     \param  gps_msgs::msg::GPSFix.
@@ -51,11 +52,10 @@ class TrafficIncidentWorker
     \brief anytypeToString converts anytype to string value
     \param  value which gets converted.
   */
-  template<class T>
-  std::string anytypeToString(T value)
+  template <class T> std::string anytypeToString(T value)
   {
     std::stringstream ss;
-    ss<<value;
+    ss << value;
     return ss.str();
   }
 
@@ -68,45 +68,44 @@ class TrafficIncidentWorker
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
   void setMinGap(double min_gap);
-  void setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg );
-  void setAdvisorySpeed(double advisory_speed );
+  void setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg);
+  void setAdvisorySpeed(double advisory_speed);
 
 
- // Getter for the prediction parameters
-  std::string  getSenderId();
+  // Getter for the prediction parameters
+  std::string getSenderId();
   std::string getEventReason();
   std::string getEventType();
-  double  getDownTrack();
+  double getDownTrack();
   double getUpTrack();
   double getMinGap();
-  gps_msgs::msg::GPSFix  getPinPoint();
+  gps_msgs::msg::GPSFix getPinPoint();
   double getAdvisorySpeed();
 
   // Generate mobility message
-  carma_v2x_msgs::msg::MobilityOperation mobilityMessageGenerator(const gps_msgs::msg::GPSFix& msg);
- 
-  //public constant variables
+  carma_v2x_msgs::msg::MobilityOperation mobilityMessageGenerator(
+    const gps_msgs::msg::GPSFix & msg);
+
+  // public constant variables
   const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
 
- private:
-
+private:
   // local copy of external object publihsers
 
   PublishTrafficCallback traffic_pub_;
- 
- // Prediction parameters
-  std::string sender_id_ = "USDOT-49096";
-  std::string closed_lane_= "[1]";
-  std::string event_reason_="";
-  std::string event_type_="OPEN";
-  double down_track_= 0;
-  double up_track_= 0;
-  double min_gap_= 0;
-  double advisory_speed_ = 0;
-  gps_msgs::msg::GPSFix pinpoint_msg_ ;
 
+  // Prediction parameters
+  std::string sender_id_ = "USDOT-49096";
+  std::string closed_lane_ = "[1]";
+  std::string event_reason_ = "";
+  std::string event_type_ = "OPEN";
+  double down_track_ = 0;
+  double up_track_ = 0;
+  double min_gap_ = 0;
+  double advisory_speed_ = 0;
+  gps_msgs::msg::GPSFix pinpoint_msg_;
 };
 
-}//traffic
+}  // namespace traffic
 
 #endif /* EXTERNAL_OBJECT_WORKER_H */
