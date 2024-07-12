@@ -34,6 +34,7 @@ include_directories(
 
 ament_export_include_directories(include)
 
+# Build
 ament_auto_add_library(${node_lib} SHARED
   src/traffic_incident_node.cpp
   src/traffic_incident_worker.cpp
@@ -51,6 +52,20 @@ rclcpp_components_register_nodes(${node_lib} "traffic::TrafficIncidentNode")
 target_link_libraries(${node_exec}
   ${node_lib}
 )
+
+# Testing
+if(BUILD_TESTING)
+
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies() # This populates the ${${PROJECT_NAME}_FOUND_TEST_DEPENDS} variable
+
+  ament_add_gtest(test_traffic_incident test/test_traffic.cpp)
+
+  ament_target_dependencies(test_traffic_incident ${${PROJECT_NAME}_FOUND_TEST_DEPENDS})
+
+  target_link_libraries(test_traffic_incident ${node_lib})
+
+endif()
 
 ament_auto_package(
   INSTALL_TO_SHARE config launch

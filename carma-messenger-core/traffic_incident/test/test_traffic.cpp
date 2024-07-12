@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) 2024 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,153 +14,157 @@
  * the License.
  */
 
-#include "traffic_incident_worker.h"
-#include "traffic_incident_node.h"
 #include <gtest/gtest.h>
+
+#include "traffic_incident_node.hpp"
+#include "traffic_incident_worker.hpp"
 
 namespace traffic
 {
-
 TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyParams)
 {
+  TrafficIncidentWorker traffic_worker([](auto msg) {});
 
-    TrafficIncidentWorker traffic_worker([](auto msg){});
-  
-    gps_common::GPSFix msg;
-   
-    msg.latitude=57.1;
-    msg.longitude=155.79;
-    msg.header.stamp.sec=25;
+  gps_msgs::msg::GPSFix msg;
 
-    //traffic_worker.setPinPoint(msg);
+  msg.latitude = 57.1;
+  msg.longitude = 155.79;
+  msg.header.stamp.sec = 25;
 
-    std::string sender_id="USDOT-49096";
-    std::string closed_lane="[1]";
-    double down_track=50.1;
-    double up_track=50.1;
-    double min_gap=4.1;
-    double advisory_speed=10;
-    std::string event_reason="MOVE OVER LAW";
-    std::string event_type="CLOSED";
-    
-    traffic_worker.setSenderId(sender_id);
-    traffic_worker.setDownTrack(down_track);
-    traffic_worker.setUpTrack(up_track);
-    traffic_worker.setMinGap(min_gap);
-    traffic_worker.setAdvisorySpeed(advisory_speed);
-    traffic_worker.setEventReason(event_reason);
-    traffic_worker.setEventType(event_type);
+  // traffic_worker.setPinPoint(msg);
 
-    cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
- 
-    EXPECT_EQ(traffic_msg.strategy_params,"lat:57.1,lon:155.79,downtrack:50.1,uptrack:50.1,min_gap:4.1,advisory_speed:10,event_reason:MOVE OVER LAW,event_type:CLOSED");
-  
-  }
+  std::string sender_id = "USDOT-49096";
+  std::string closed_lane = "[1]";
+  double down_track = 50.1;
+  double up_track = 50.1;
+  double min_gap = 4.1;
+  double advisory_speed = 10;
+  std::string event_reason = "MOVE OVER LAW";
+  std::string event_type = "CLOSED";
 
-  TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastTimeStamp)
+  traffic_worker.setSenderId(sender_id);
+  traffic_worker.setDownTrack(down_track);
+  traffic_worker.setUpTrack(up_track);
+  traffic_worker.setMinGap(min_gap);
+  traffic_worker.setAdvisorySpeed(advisory_speed);
+  traffic_worker.setEventReason(event_reason);
+  traffic_worker.setEventType(event_type);
+
+  carma_v2x_msgs::msg::MobilityOperation traffic_msg = traffic_worker.mobilityMessageGenerator(msg);
+
+  EXPECT_EQ(
+    traffic_msg.strategy_params,
+    "lat:57.1,lon:155.79,downtrack:50.1,uptrack:50.1,min_gap:4.1,advisory_speed:10,event_reason:"
+    "MOVE OVER LAW,event_type:CLOSED");
+}
+
+TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastTimeStamp)
 {
+  TrafficIncidentWorker traffic_worker([](auto msg) {});
 
-    TrafficIncidentWorker traffic_worker([](auto msg){});
-  
-    gps_common::GPSFix msg;
-   
-    msg.latitude=57.1;
-    msg.longitude=155.79;
-    msg.header.stamp.sec=25;
+  gps_msgs::msg::GPSFix msg;
 
-    std::string sender_id="USDOT-49096";
-    std::string closed_lane="[1]";
-    double down_track=50.1;
-    double up_track=50.1;
-    double min_gap=4.1;
-    double advisory_speed=10;
-    std::string event_reason="MOVE OVER LAW";
-    std::string event_type="CLOSED";
-        
-    traffic_worker.setSenderId(sender_id);
-    traffic_worker.setMinGap(min_gap);
-    traffic_worker.setDownTrack(down_track);
-    traffic_worker.setUpTrack(up_track);
-    traffic_worker.setAdvisorySpeed(advisory_speed);
-    traffic_worker.setEventReason(event_reason);
-    traffic_worker.setEventType(event_type);
+  msg.latitude = 57.1;
+  msg.longitude = 155.79;
+  msg.header.stamp.sec = 25;
 
-    cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
- 
-    EXPECT_EQ(traffic_msg.m_header.timestamp,25000);
- 
-  }
+  std::string sender_id = "USDOT-49096";
+  std::string closed_lane = "[1]";
+  double down_track = 50.1;
+  double up_track = 50.1;
+  double min_gap = 4.1;
+  double advisory_speed = 10;
+  std::string event_reason = "MOVE OVER LAW";
+  std::string event_type = "CLOSED";
 
-  TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategy)
+  traffic_worker.setSenderId(sender_id);
+  traffic_worker.setMinGap(min_gap);
+  traffic_worker.setDownTrack(down_track);
+  traffic_worker.setUpTrack(up_track);
+  traffic_worker.setAdvisorySpeed(advisory_speed);
+  traffic_worker.setEventReason(event_reason);
+  traffic_worker.setEventType(event_type);
+
+  carma_v2x_msgs::msg::MobilityOperation traffic_msg = traffic_worker.mobilityMessageGenerator(msg);
+
+  EXPECT_EQ(traffic_msg.m_header.timestamp, 25000);
+}
+
+TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategy)
 {
+  TrafficIncidentWorker traffic_worker([](auto msg) {});
 
-    TrafficIncidentWorker traffic_worker([](auto msg){});
-  
-    gps_common::GPSFix msg;
-   
-    msg.latitude=57.1;
-    msg.longitude=155.79;
-    msg.header.stamp.sec=25;
+  gps_msgs::msg::GPSFix msg;
 
-    std::string sender_id="USDOT-49096";
-    std::string closed_lane="[1]";
-    double down_track=50.1;
-    double up_track=50.1;
-    double min_gap=4.1;
-    double advisory_speed=10;
-    std::string event_reason="MOVE OVER LAW";
-    std::string event_type="CLOSED";
+  msg.latitude = 57.1;
+  msg.longitude = 155.79;
+  msg.header.stamp.sec = 25;
 
-    traffic_worker.setSenderId(sender_id);
-    traffic_worker.setMinGap(min_gap);
-    traffic_worker.setDownTrack(down_track);
-    traffic_worker.setUpTrack(up_track);
-    traffic_worker.setAdvisorySpeed(advisory_speed);
-    traffic_worker.setEventReason(event_reason);
-    traffic_worker.setEventType(event_type);
+  std::string sender_id = "USDOT-49096";
+  std::string closed_lane = "[1]";
+  double down_track = 50.1;
+  double up_track = 50.1;
+  double min_gap = 4.1;
+  double advisory_speed = 10;
+  std::string event_reason = "MOVE OVER LAW";
+  std::string event_type = "CLOSED";
 
-    cav_msgs::MobilityOperation traffic_msg=traffic_worker.mobilityMessageGenerator(msg);
- 
-    EXPECT_EQ(traffic_msg.m_header.sender_id,"USDOT-49096");
-    EXPECT_EQ(traffic_msg.strategy,"carma3/Incident_Use_Case");
-  
-  }
-   
-    TEST(TrafficIncidentWorkerTest, testAnyTypeToStringFunction)
+  traffic_worker.setSenderId(sender_id);
+  traffic_worker.setMinGap(min_gap);
+  traffic_worker.setDownTrack(down_track);
+  traffic_worker.setUpTrack(up_track);
+  traffic_worker.setAdvisorySpeed(advisory_speed);
+  traffic_worker.setEventReason(event_reason);
+  traffic_worker.setEventType(event_type);
+
+  carma_v2x_msgs::msg::MobilityOperation traffic_msg = traffic_worker.mobilityMessageGenerator(msg);
+
+  EXPECT_EQ(traffic_msg.m_header.sender_id, "USDOT-49096");
+  EXPECT_EQ(traffic_msg.strategy, "carma3/Incident_Use_Case");
+}
+
+TEST(TrafficIncidentWorkerTest, testAnyTypeToStringFunction)
 {
-   TrafficIncidentWorker traffic_worker([](auto msg){});
- 
-   EXPECT_EQ(traffic_worker.anytypeToString(55.6712),"55.6712");
+  TrafficIncidentWorker traffic_worker([](auto msg) {});
+
+  EXPECT_EQ(traffic_worker.anytypeToString(55.6712), "55.6712");
 }
 
 
-    TEST(TrafficIncidentWorkerTest, testGettersSetters)
+TEST(TrafficIncidentWorkerTest, testGettersSetters)
 {
-   TrafficIncidentWorker traffic_worker([](auto msg){});
-    traffic_worker.setSenderId("USDOT-49096");
-    traffic_worker.setMinGap(1.2);
-    traffic_worker.setDownTrack(1.2);
-    traffic_worker.setUpTrack(1.2);
+  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  traffic_worker.setSenderId("USDOT-49096");
+  traffic_worker.setMinGap(1.2);
+  traffic_worker.setDownTrack(1.2);
+  traffic_worker.setUpTrack(1.2);
 
-    gps_common::GPSFix msg; 
-    msg.latitude=57.1;
-    msg.longitude=155.79;
-    msg.header.stamp.sec=25;
+  gps_msgs::msg::GPSFix msg;
+  msg.latitude = 57.1;
+  msg.longitude = 155.79;
+  msg.header.stamp.sec = 25;
 
 
-    traffic_worker.setPinPoint(msg);
-    traffic_worker.setAdvisorySpeed(1.2);
-    traffic_worker.setEventReason("MOVE OVER LAW");
-    traffic_worker.setEventType("CLOSED");
-    
-    EXPECT_EQ(traffic_worker.getSenderId(),"USDOT-49096");
-    EXPECT_EQ(traffic_worker.getMinGap(),1.2);
-    EXPECT_EQ(traffic_worker.getDownTrack(),1.2);
-    EXPECT_EQ(traffic_worker.getUpTrack(),1.2);
-    EXPECT_EQ(traffic_worker.getPinPoint().latitude,57.1);
-    EXPECT_EQ(traffic_worker.getAdvisorySpeed(),1.2);
-    EXPECT_EQ(traffic_worker.getEventReason(),"MOVE OVER LAW");
-    EXPECT_EQ(traffic_worker.getEventType(),"CLOSED");
+  traffic_worker.setPinPoint(msg);
+  traffic_worker.setAdvisorySpeed(1.2);
+  traffic_worker.setEventReason("MOVE OVER LAW");
+  traffic_worker.setEventType("CLOSED");
+
+  EXPECT_EQ(traffic_worker.getSenderId(), "USDOT-49096");
+  EXPECT_EQ(traffic_worker.getMinGap(), 1.2);
+  EXPECT_EQ(traffic_worker.getDownTrack(), 1.2);
+  EXPECT_EQ(traffic_worker.getUpTrack(), 1.2);
+  EXPECT_EQ(traffic_worker.getPinPoint().latitude, 57.1);
+  EXPECT_EQ(traffic_worker.getAdvisorySpeed(), 1.2);
+  EXPECT_EQ(traffic_worker.getEventReason(), "MOVE OVER LAW");
+  EXPECT_EQ(traffic_worker.getEventType(), "CLOSED");
 }
 
-}//traffic
+}  // namespace traffic
+
+// Run all the tests
+int main(int argc, char ** argv)
+{
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
