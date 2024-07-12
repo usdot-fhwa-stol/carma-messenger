@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2021 LEIDOS.
+ * Copyright (C) 2024 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,9 +17,9 @@
 #ifndef TRAFFIC_INCIDENT_WORKER_H
 #define TRAFFIC_INCIDENT_WORKER_H
 
-#include <ros/ros.h>
-#include <cav_msgs/MobilityOperation.h>
-#include <gps_common/GPSFix.h>
+#include <rclcpp/rclcpp.hpp>
+#include <carma_v2x_msgs/msg/mobility_operation.hpp>
+#include <gps_msgs/msg/gps_fix.hpp>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -33,19 +33,19 @@ class TrafficIncidentWorker
 
  public:
 
-  using PublishTrafficCallback = std::function<void(const cav_msgs::MobilityOperation&)>;
+  using PublishTrafficCallback = std::function<void(const carma_v2x_msgs::msg::MobilityOperation&)>;
 
   /*!
    * \brief Constructor
    */
   TrafficIncidentWorker(PublishTrafficCallback traffic_pub);
     
-  /*! \fn pinpointDriverCallback(const gps_common::GPSFix &pinpoint_msg)
+  /*! \fn pinpointDriverCallback(const gps_msgs::msg::GPSFix &pinpoint_msg)
     \brief pinpointDriverCallback populates lat lon heading from pinpoint driver.
-    \param  gps_common::GPSFix.
+    \param  gps_msgs::msg::GPSFix.
   */
 
-  void pinpointDriverCallback(const gps_common::GPSFix &pinpoint_msg);
+  void pinpointDriverCallback(gps_msgs::msg::GPSFix::UniquePtr pinpoint_msg);
 
   /*! \fn anytypeToString(T value)
     \brief anytypeToString converts anytype to string value
@@ -68,7 +68,7 @@ class TrafficIncidentWorker
   void setDownTrack(double down_track);
   void setUpTrack(double up_track);
   void setMinGap(double min_gap);
-  void setPinPoint(gps_common::GPSFix pinpoint_msg );
+  void setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg );
   void setAdvisorySpeed(double advisory_speed );
 
 
@@ -79,11 +79,11 @@ class TrafficIncidentWorker
   double  getDownTrack();
   double getUpTrack();
   double getMinGap();
-  gps_common::GPSFix  getPinPoint();
+  gps_msgs::msg::GPSFix  getPinPoint();
   double getAdvisorySpeed();
 
   // Generate mobility message
-  cav_msgs::MobilityOperation mobilityMessageGenerator(const gps_common::GPSFix& msg);
+  carma_v2x_msgs::msg::MobilityOperation mobilityMessageGenerator(const gps_msgs::msg::GPSFix& msg);
  
   //public constant variables
   const std::string USE_CASE_NAME_ = "carma3/Incident_Use_Case";
@@ -103,7 +103,7 @@ class TrafficIncidentWorker
   double up_track_= 0;
   double min_gap_= 0;
   double advisory_speed_ = 0;
-  gps_common::GPSFix pinpoint_msg_ ;
+  gps_msgs::msg::GPSFix pinpoint_msg_ ;
 
 };
 

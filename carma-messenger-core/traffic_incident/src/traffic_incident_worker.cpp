@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2021 LEIDOS.
+ * Copyright (C) 2024 LEIDOS.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,25 +14,25 @@
  * the License.
  */
 
-#include "traffic_incident_worker.h"
+#include "traffic_incident_worker.hpp"
 
 namespace traffic
 {
 
   TrafficIncidentWorker::TrafficIncidentWorker(PublishTrafficCallback traffic_pub) : traffic_pub_(traffic_pub){};
 
-  void TrafficIncidentWorker::pinpointDriverCallback(const gps_common::GPSFix& pinpoint_msg)
+  void TrafficIncidentWorker::pinpointDriverCallback(gps_msgs::msg::GPSFix::UniquePtr pinpoint_msg)
   {
 
-  cav_msgs::MobilityOperation traffic_mobility_msg=mobilityMessageGenerator(pinpoint_msg);
+  carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg=mobilityMessageGenerator(*pinpoint_msg);
   //comment out this for now since we are not broadcasting upon receiving GPS signal
   //traffic_pub_(traffic_mobility_msg);
-  setPinPoint(pinpoint_msg);
+  setPinPoint(*pinpoint_msg);
   }
 
-  cav_msgs::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(const gps_common::GPSFix& pinpoint_msg)
+  carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(const gps_msgs::msg::GPSFix &pinpoint_msg)
   {
-    cav_msgs::MobilityOperation traffic_mobility_msg;
+    carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg;
 
     traffic_mobility_msg.m_header.timestamp=pinpoint_msg.header.stamp.sec*1000;
     traffic_mobility_msg.m_header.sender_id=sender_id_;
@@ -84,7 +84,7 @@ namespace traffic
   }
 
 
-  void TrafficIncidentWorker::setPinPoint(gps_common::GPSFix pinpoint_msg )
+  void TrafficIncidentWorker::setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg )
   {
     this->pinpoint_msg_ = pinpoint_msg;
   }
@@ -123,7 +123,7 @@ namespace traffic
       return  this->min_gap_;
   }
 
-  gps_common::GPSFix  TrafficIncidentWorker::getPinPoint()
+  gps_msgs::msg::GPSFix  TrafficIncidentWorker::getPinPoint()
   {
     return this->pinpoint_msg_;
   }
