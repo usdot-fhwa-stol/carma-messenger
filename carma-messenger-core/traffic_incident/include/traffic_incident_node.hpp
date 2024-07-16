@@ -55,13 +55,10 @@ public:
     const std_srvs::srv::Trigger::Request::SharedPtr req,
     std_srvs::srv::Trigger::Response::SharedPtr resp);
 
-  /*!fn run()
-    \brief General starting point to run this node
-  */
-  void run();
-
 private:
   carma_ros2_utils::CallbackReturn handle_on_configure(const rclcpp_lifecycle::State &);
+
+  carma_ros2_utils::CallbackReturn handle_on_activate(const rclcpp_lifecycle::State &);
 
   void spin_callback(void);
 

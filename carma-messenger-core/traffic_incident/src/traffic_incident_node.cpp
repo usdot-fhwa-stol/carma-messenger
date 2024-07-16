@@ -76,6 +76,12 @@ carma_ros2_utils::CallbackReturn TrafficIncidentNode::handle_on_configure(
       std_ph::_2,
       std_ph::_3));
 
+  return CallbackReturn::SUCCESS;
+}
+
+carma_ros2_utils::CallbackReturn TrafficIncidentNode::handle_on_activate(
+  const rclcpp_lifecycle::State &)
+{
   // spin loop
   spin_timer_ = create_timer(
     get_clock(),
