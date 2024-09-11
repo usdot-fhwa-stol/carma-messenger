@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  Copyright (C) 2018-2021 LEIDOS.
+  Copyright (C) 2024 LEIDOS.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not
   use this file except in compliance with the License. You may obtain a copy of
@@ -35,11 +35,5 @@
   <node pkg="rostopic" type="rostopic" name="drivers_ready_rostopic_pub"
         args="pub -l /system_alert cav_msgs/SystemAlert '{ type: 5, description: Simulated Drivers Ready }'"
   />
-
-  <!-- UI -->
-  <include file="$(find carma-messenger)/launch/ui.launch"/>
-
-   <!-- Traffic Incident Node -->
-  <include file="$(find traffic_incident)/launch/traffic_incident.launch"/>
 
 </launch>

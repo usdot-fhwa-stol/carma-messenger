@@ -332,7 +332,7 @@ function sendModalResponse(operatorResponse, serviceName) {
     var serviceClient = new ROSLIB.Service({
     ros : ros,
     name : serviceName,
-    serviceType : 'std_srvs/SetBool'
+    serviceType : 'std_srvs/srv/SetBool'
     });
 
     // Then we create a Service Request. The object we pass in to ROSLIB.ServiceRequest matches the
@@ -510,8 +510,6 @@ function closeModal(action) {
             //clear sections
             document.getElementById('divCapabilitiesMessage').innerHTML = 'Please select a route.';
             clearTable('tblSecondA');
-
-            CarmaJS.WidgetFramework.closeWidgets();
 
             // Get the element with id="defaultOpen" and click on it
             // This needs to be outside a funtion to work.

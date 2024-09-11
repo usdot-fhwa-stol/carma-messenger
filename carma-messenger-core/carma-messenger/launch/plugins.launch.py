@@ -48,9 +48,6 @@ def generate_launch_description():
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
 
-    truck_inspection_plugin_param_file = os.path.join(
-        get_package_share_directory('truck_inspection_plugin'), 'config/parameters.yaml')
-
     emergency_response_vehicle_plugin_param_file = os.path.join(
         get_package_share_directory('emergency_response_vehicle_plugin'), 'config/parameters.yaml')
 
@@ -60,18 +57,6 @@ def generate_launch_description():
         executable='carma_component_container_mt',
         namespace=GetCurrentNamespace(),
         composable_node_descriptions=[
-            ComposableNode(
-                package='truck_inspection_plugin',
-                plugin='truck_inspection_plugin::Node',
-                name='truck_inspection_plugin_node',
-                extra_arguments=[
-                    {'use_intra_process_comms': True},
-                    {'--log-level' : GetLogLevel('truck_inspection_plugin', env_log_levels) }
-                ],
-                parameters = [
-                    truck_inspection_plugin_param_file
-                ]
-            ),
             ComposableNode(
                 package='emergency_response_vehicle_plugin',
                 plugin='emergency_response_vehicle_plugin::EmergencyResponseVehiclePlugin',
@@ -96,10 +81,6 @@ def generate_launch_description():
     
     ros2_cmd = launch.substitutions.FindExecutable(name='ros2')
 
-    process_configure_truck_inspection_plugin = launch.actions.ExecuteProcess(
-        cmd=[ros2_cmd, "lifecycle", "set", "/truck_inspection_plugin_node", "configure"],
-    )
-
     process_configure_emergency_response_vehicle_plugin = launch.actions.ExecuteProcess(
         cmd=[ros2_cmd, "lifecycle", "set", "/emergency_response_vehicle_plugin_node", "configure"],
     )
@@ -107,19 +88,8 @@ def generate_launch_description():
     configuration_trigger = launch.actions.TimerAction(
         period=configuration_delay,
         actions=[
-            process_configure_truck_inspection_plugin,
             process_configure_emergency_response_vehicle_plugin
         ]
-    )
-
-    configured_event_handler_truck_inspection_plugin = launch.actions.RegisterEventHandler(launch.event_handlers.OnExecutionComplete(
-            target_action=process_configure_truck_inspection_plugin,
-            on_completion=[ 
-                launch.actions.ExecuteProcess(
-                    cmd=[ros2_cmd, "lifecycle", "set", "/truck_inspection_plugin_node", "activate"],
-                )
-            ]
-        )
     )
 
     configured_event_handler_emergency_response_vehicle_plugin = launch.actions.RegisterEventHandler(launch.event_handlers.OnExecutionComplete(
@@ -137,6 +107,5 @@ def generate_launch_description():
         declare_configuration_delay_arg,
         carma_v2x_plugins_container,
         configuration_trigger,
-        configured_event_handler_truck_inspection_plugin,
         configured_event_handler_emergency_response_vehicle_plugin
     ])

@@ -29,66 +29,165 @@ import launch.actions
 import launch.events
 
 import launch_ros.actions
-import launch_ros.events 
+import launch_ros.events
 import launch_ros.events.lifecycle
 import lifecycle_msgs.msg
+
 
 def generate_launch_description():
     """
     Launch desired CARMA Messenger drivers
     """
 
-    env_log_levels = EnvironmentVariable('CARMA_ROS_LOGGING_CONFIG', default_value='{ "default_level" : "WARN" }')
+    env_log_levels = EnvironmentVariable(
+        "CARMA_ROS_LOGGING_CONFIG", default_value='{ "default_level" : "WARN" }'
+    )
 
-    configuration_delay = LaunchConfiguration('configuration_delay')
+    configuration_delay = LaunchConfiguration("configuration_delay")
     declare_configuration_delay_arg = DeclareLaunchArgument(
-        name ='configuration_delay', default_value='4.0')
+        name="configuration_delay", default_value="4.0"
+    )
 
-    drivers = LaunchConfiguration('drivers')
+    drivers = LaunchConfiguration("drivers")
     declare_drivers_arg = DeclareLaunchArgument(
-        name = 'drivers', default_value = 'dsrc_driver', description = "Desired drivers to launch specified by package name."
+        name="drivers",
+        default_value="dsrc_driver",
+        description="Desired drivers to launch specified by package name.",
     )
 
     dsrc_group = GroupAction(
-        condition=IfCondition(PythonExpression(["'dsrc_driver' in '", drivers, "'.split()"])),
+        condition=IfCondition(
+            PythonExpression(["'dsrc_driver' in '", drivers, "'.split()"])
+        ),
         actions=[
-            PushRosNamespace(EnvironmentVariable('CARMA_INTR_NS', default_value='hardware_interface')),
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ FindPackageShare('dsrc_driver'), '/launch/dsrc_driver.py']),
-                launch_arguments = { 
-                    'log_level' : GetLogLevel('dsrc_driver', env_log_levels),
-                    }.items()
+            PushRosNamespace(
+                EnvironmentVariable("CARMA_INTR_NS", default_value="hardware_interface")
             ),
-        ]
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    [FindPackageShare("dsrc_driver"), "/launch/dsrc_driver.py"]
+                ),
+                launch_arguments={
+                    "log_level": GetLogLevel("dsrc_driver", env_log_levels),
+                }.items(),
+            ),
+        ],
     )
 
-    ros2_cmd = launch.substitutions.FindExecutable(name='ros2')
+    pinpoint_group = GroupAction(
+        condition=IfCondition(
+            PythonExpression(["'pinpoint_driver' in '", drivers, "'.split()"])
+        ),
+        actions=[
+            PushRosNamespace(
+                EnvironmentVariable("CARMA_INTR_NS", default_value="hardware_interface")
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    [FindPackageShare("pinpoint"), "/launch/pinpoint.launch.py"]
+                ),
+                launch_arguments={
+                    "log_level": GetLogLevel("pinpoint", env_log_levels),
+                }.items(),
+            ),
+        ],
+    )
+
+    ros2_cmd = launch.substitutions.FindExecutable(name="ros2")
 
     process_configure_dsrc_driver_node = launch.actions.ExecuteProcess(
-        cmd=[ros2_cmd, "lifecycle", "set", [ EnvironmentVariable('CARMA_INTR_NS', default_value='hardware_interface'), "/dsrc_driver_node" ], "configure"],
+        condition=IfCondition(
+            PythonExpression(["'dsrc_driver' in '", drivers, "'.split()"])
+        ),
+        cmd=[
+            ros2_cmd,
+            "lifecycle",
+            "set",
+            [
+                EnvironmentVariable(
+                    "CARMA_INTR_NS", default_value="hardware_interface"
+                ),
+                "/dsrc_driver_node",
+            ],
+            "configure",
+        ],
+    )
+
+    configured_event_handler_dsrc_driver_node = launch.actions.RegisterEventHandler(
+        launch.event_handlers.OnExecutionComplete(
+            target_action=process_configure_dsrc_driver_node,
+            on_completion=[
+                launch.actions.ExecuteProcess(
+                    cmd=[
+                        ros2_cmd,
+                        "lifecycle",
+                        "set",
+                        [
+                            EnvironmentVariable(
+                                "CARMA_INTR_NS", default_value="hardware_interface"
+                            ),
+                            "/dsrc_driver_node",
+                        ],
+                        "activate",
+                    ],
+                )
+            ],
+        )
+    )
+
+    process_configure_pinpoint_node = launch.actions.ExecuteProcess(
+        condition=IfCondition(
+            PythonExpression(["'pinpoint_driver' in '", drivers, "'.split()"])
+        ),
+        cmd=[
+            ros2_cmd,
+            "lifecycle",
+            "set",
+            [
+                EnvironmentVariable(
+                    "CARMA_INTR_NS", default_value="hardware_interface"
+                ),
+                "/pinpoint",
+            ],
+            "configure",
+        ],
+    )
+
+    configured_event_handler_pinpoint_node = launch.actions.RegisterEventHandler(
+        launch.event_handlers.OnExecutionComplete(
+            target_action=process_configure_pinpoint_node,
+            on_completion=[
+                launch.actions.ExecuteProcess(
+                    cmd=[
+                        ros2_cmd,
+                        "lifecycle",
+                        "set",
+                        [
+                            EnvironmentVariable(
+                                "CARMA_INTR_NS", default_value="hardware_interface"
+                            ),
+                            "/pinpoint",
+                        ],
+                        "activate",
+                    ],
+                )
+            ],
+        )
     )
 
     configuration_trigger = launch.actions.TimerAction(
         period=configuration_delay,
-        actions=[
-            process_configure_dsrc_driver_node
+        actions=[process_configure_dsrc_driver_node, process_configure_pinpoint_node],
+    )
+
+    return LaunchDescription(
+        [
+            declare_configuration_delay_arg,
+            declare_drivers_arg,
+            dsrc_group,
+            pinpoint_group,
+            configuration_trigger,
+            configured_event_handler_dsrc_driver_node,
+            configured_event_handler_pinpoint_node,
         ]
     )
-
-    configured_event_handler_dsrc_driver_node = launch.actions.RegisterEventHandler(launch.event_handlers.OnExecutionComplete(
-            target_action=process_configure_dsrc_driver_node,
-            on_completion=[ 
-                launch.actions.ExecuteProcess(
-                    cmd=[ros2_cmd, "lifecycle", "set", [ EnvironmentVariable('CARMA_INTR_NS', default_value='hardware_interface'), "/dsrc_driver_node" ], "activate"],
-                )
-            ]
-        )
-    )
-
-    return LaunchDescription([
-        declare_configuration_delay_arg,
-        declare_drivers_arg,
-        dsrc_group,
-        configuration_trigger,
-        configured_event_handler_dsrc_driver_node
-    ])

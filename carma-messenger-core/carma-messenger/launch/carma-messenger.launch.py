@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 LEIDOS.
+# Copyright (C) 2024 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,10 +77,28 @@ def generate_launch_description():
         ]
     )
 
+    ui_group = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ui.launch.py']),
+            ),
+        ]
+    )
+
+    traffic_incident_group = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([get_package_share_directory('traffic_incident'), '/launch', '/traffic_incident.launch.py']),
+            ),
+        ]
+    )
+
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
         transform_group,
         v2x_group,
-        plugins_group
+        plugins_group,
+        ui_group,
+        traffic_incident_group
     ])
