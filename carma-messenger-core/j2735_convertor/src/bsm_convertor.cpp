@@ -834,7 +834,7 @@ void BSMConvertor::convert(const j2735_v2x_msgs::msg::BSM& in_msg, carma_v2x_msg
 }
 
 ////
-// Convert carma_v2x_msgs to j2735_msgs
+// Convert carma_v2x_msgs to j2735_v2x_msgs
 ////
 
 void BSMConvertor::convert(const std::vector<carma_v2x_msgs::msg::Position3D>& in_msg, std::vector<j2735_v2x_msgs::msg::Position3D>& out_msg)

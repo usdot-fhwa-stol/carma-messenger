@@ -61,7 +61,7 @@ public:
 
 private:
     ////
-    // Convert j2735_msgs
+    // Convert j2735_v2x_msgs
     ////
 
     /**
@@ -248,7 +248,7 @@ private:
 
 
     ////
-    // Convert j3224_msgs
+    // Convert j3224_v2x_msgs
     ////
 
     // static void convert(const j3224_v2x_msgs::msg::DetectedObjectList& in_msg, carma_v2x_msgs::msg::DetectedObjectList& out_msg);

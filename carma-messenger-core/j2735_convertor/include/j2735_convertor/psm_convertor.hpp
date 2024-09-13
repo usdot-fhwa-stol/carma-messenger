@@ -32,7 +32,7 @@ namespace j2735_convertor
  * @class PSMConvertor
  * @brief Is the class responsible for converting J2735 PSMs to CARMA usable PSMs
  *
- * Handles conversion between PSMs in the j2735_msgs and cav_msgs packages.
+ * Handles conversion between PSMs in the j2735_v2x_msgs and cav_msgs packages.
  * Unit conversions and presence flags are also handled
  */
 class PSMConvertor
@@ -60,7 +60,7 @@ class PSMConvertor
 
   private:
     ////
-    // Convert j2735_msgs to cav_msgs
+    // Convert j2735_v2x_msgs to cav_msgs
     ////
 
     /**
@@ -144,7 +144,7 @@ class PSMConvertor
      static void convert(const j2735_v2x_msgs::msg::Velocity& in_msg, carma_v2x_msgs::msg::Velocity& out_msg);
 
     ////
-    // Convert cav_msgs to j2735_msgs
+    // Convert cav_msgs to j2735_v2x_msgs
     ////
 
     /**

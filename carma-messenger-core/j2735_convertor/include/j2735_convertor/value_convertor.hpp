@@ -29,7 +29,7 @@ namespace j2735_convertor
 {
 /**
  * @class ValueConvertor
- * @brief Class responsible for converting between discrete values in j2735_msgs and cav_msgs
+ * @brief Class responsible for converting between discrete values in j2735_v2x_msgs and cav_msgs
  *
  * Provides templated functions which will perform unit conversions and casting.
  * Additionally, conversion between presence vectors and unavailability values is supported.
