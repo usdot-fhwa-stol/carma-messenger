@@ -30,7 +30,7 @@ namespace j2735_convertor
  * @class SPATConvertor
  * @brief Is the class responsible for converting J2735 SPATs to CARMA usable SPATs
  *
- * Handles conversion between Map messages in the j2735_msgs and cav_msgs packages.
+ * Handles conversion between Map messages in the j2735_v2x_msgs and cav_msgs packages.
  * Unit conversions are handled
  */
 class SPATConvertor

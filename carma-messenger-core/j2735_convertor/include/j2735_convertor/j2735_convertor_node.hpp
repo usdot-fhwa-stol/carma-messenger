@@ -37,10 +37,10 @@ namespace j2735_convertor
 
   /**
    * @class j2735_convertor::Node
-   * @brief Is the class responsible for conversion of j2735_msgs to cav_msgs
+   * @brief Is the class responsible for conversion of j2735_v2x_msgs to cav_msgs
    *
-   * The J2735Convertor is a ROS Node which subscribes to topics containing messages from the j2735_msgs package.
-   * The j2735_msgs are then converted to cav_msgs types including any necessary unit conversions.
+   * The J2735Convertor is a ROS Node which subscribes to topics containing messages from the j2735_v2x_msgs package.
+   * The j2735_v2x_msgs are then converted to cav_msgs types including any necessary unit conversions.
    *
    * Each j2735 topic has its own thread for processing. This will help prevent larger message types like Map from
    * blocking small high frequency message types like BSMs.

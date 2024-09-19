@@ -27,13 +27,13 @@ namespace j2735_convertor
 /**
  * @brief Namespace responsible for converting j2735 style Geofence control messages to CARMA usable control messages
  *
- * Handles conversion between ControlMessages in the j2735_msgs and cav_msgs packages.
+ * Handles conversion between ControlMessages in the j2735_v2x_msgs and cav_msgs packages.
  * Unit conversions and presence flags are also handled
  */
 namespace geofence_control
 {
 ////
-// Convert j2735_msgs to cav_msgs
+// Convert j2735_v2x_msgs to cav_msgs
 ////
 
 /**
@@ -127,7 +127,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlParams& in_msg, carma_v2x_
 void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2x_msgs::msg::TrafficControlSchedule& out_msg);
 
 ////
-// Convert cav_msgs to j2735_msgs
+// Convert cav_msgs to j2735_v2x_msgs
 ////
 
 

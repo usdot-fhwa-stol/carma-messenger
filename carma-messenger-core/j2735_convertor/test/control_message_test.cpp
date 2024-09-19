@@ -123,7 +123,7 @@ namespace j2735_convertor
     j2735_v2x_msgs::msg::TrafficControlParams in_msg;
 
     // # vclasses SEQUENCE (SIZE(1..255)) OF TrafficControlVehClass,
-    // j2735_msgs/TrafficControlVehClass[] vclasses
+    // j2735_v2x_msgs/TrafficControlVehClass[] vclasses
     j2735_v2x_msgs::msg::TrafficControlVehClass tcvc;
     for(int i = 0; i < NUM_NODES; i++)
     {
@@ -149,7 +149,7 @@ namespace j2735_convertor
   {
     j2735_v2x_msgs::msg::TrafficControlMessageV01 in_msg;
     // # reqid ::= Id64b
-    // j2735_msgs/Id64b reqid
+    // j2735_v2x_msgs/Id64b reqid
     in_msg.reqid.id = {0, 1, 2, 3, 4, 5, 6, 7};
 
     // # reqseq ::= INTEGER (0..255)
@@ -165,7 +165,7 @@ namespace j2735_convertor
     in_msg.msgnum = 0;
 
     // # id Id128b, -- unique traffic control id
-    // j2735_msgs/Id128b reqid
+    // j2735_v2x_msgs/Id128b reqid
     in_msg.id.id = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
     // # updated EpochMins
@@ -173,7 +173,7 @@ namespace j2735_convertor
     in_msg.updated = 1000000;
 
     // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
-    // j2735_msgs/TrafficControlPackage package
+    // j2735_v2x_msgs/TrafficControlPackage package
     // bool package_exists
     in_msg.package_exists = optional;
     in_msg.package.label_exists = optional;
@@ -313,7 +313,7 @@ namespace j2735_convertor
     carma_v2x_msgs::msg::TrafficControlParams in_msg;
 
     // # vclasses SEQUENCE (SIZE(1..255)) OF TrafficControlVehClass,
-    // j2735_msgs/TrafficControlVehClass[] vclasses
+    // j2735_v2x_msgs/TrafficControlVehClass[] vclasses
     j2735_v2x_msgs::msg::TrafficControlVehClass tcvc;
     for(int i = 0; i < NUM_NODES; i++)
     {
@@ -363,7 +363,7 @@ namespace j2735_convertor
     in_msg.updated = rclcpp::Time(180000, 0);
 
     // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
-    // j2735_msgs/TrafficControlPackage package
+    // j2735_v2x_msgs/TrafficControlPackage package
     // bool package_exists
     in_msg.package_exists = optional;
 

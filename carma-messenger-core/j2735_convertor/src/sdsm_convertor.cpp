@@ -89,7 +89,7 @@ void SDSMConvertor::convert(const carma_v2x_msgs::msg::SensorDataSharingMessage&
 
 
 ////
-// Convert j2735_msgs
+// Convert j2735_v2x_msgs
 ////
 
 
@@ -308,7 +308,7 @@ void SDSMConvertor::convert(const carma_v2x_msgs::msg::AttachmentRadius& in_msg,
 
 
 ////
-// Convert j3224_msgs
+// Convert j3224_v2x_msgs
 ////
 
 
