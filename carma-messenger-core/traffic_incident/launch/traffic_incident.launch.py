@@ -65,7 +65,7 @@ def generate_launch_description():
                     traffic_incident_param_file,
                 ],
                 remappings=[
-                    ("gps_common_fix", "/position/gps_common_fix"),
+                    ("gps_common_fix", "/hardware_interface/gps_common_fix"),
                 ]
             ),
         ],
