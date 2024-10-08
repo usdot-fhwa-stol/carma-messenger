@@ -2,7 +2,7 @@
 #          the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
 #          in the 'listening_port' parameter.
 # Units: N/A
-enable_emergency_response_vehicle_plugin : true
+enable_emergency_response_vehicle_plugin : false
 
 # Double: The frequency at which BSMs will be generated and published by this plugin. 
 # Units: Hz
@@ -15,7 +15,7 @@ min_distance_to_next_destination_point : 30.0
 
 # String: The name of the .csv file on the host PC that contains the pre-defined points existing along the ERV's route.
 # Units: N/A
-emergency_route_file_name : "ERV-Northbound-Middle-Lane.csv" #"ERV-Northbound-Middle-Lane.csv"
+emergency_route_file_name : "DEFAULT-FILE-NAME.csv"
 
 # Int: The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
 #      of the ERV’s emergency sirens and lights.
