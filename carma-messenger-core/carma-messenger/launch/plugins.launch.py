@@ -66,8 +66,8 @@ def generate_launch_description():
                     {'--log-level' : GetLogLevel('emergency_response_vehicle_plugin', env_log_levels) }
                 ],
                 remappings=[
-                    ("vehicle_pose", "position/gps_common_fix" ),
-                    ("velocity",     "position/velocity" ),
+                    ("vehicle_pose", "hardware_interface/gps_common_fix" ),
+                    ("velocity",     "hardware_interface/velocity" ),
                     ("outgoing_bsm", "bsm_outbound")
                 ],
                 parameters = [
