@@ -164,7 +164,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
          var listenerGPS = new ROSLIB.Topic({
             ros: ros,
             name: '/hardware_interface/gps_common_fix',
-            messageType: 'gps_common/GPSFix'
+            messageType: 'gps_msgs/msg/GPSFix'
         });
 
         listenerGPS.subscribe(function (message) {
@@ -534,13 +534,13 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
               fieldsetNote.append(newSpanNoteDescription);
 
               var newSpanNoteUpTrack = document.createElement('span');
-              newSpanNoteUpTrack.innerHTML = "Up Track: Distance from the center of the vehicle (Taheo) to the beginning of geofence.";
+              newSpanNoteUpTrack.innerHTML = "Up Track: Distance from the center of the vehicle (Tahoe) to the beginning of geofence.";
               newSpanNoteUpTrack.id="noteUpTrackSpan";
               newSpanNoteUpTrack.className="form-label  text-align-left block margin-bottom-20px";
               fieldsetNote.append(newSpanNoteUpTrack);
 
               var newSpanNoteDownTrack = document.createElement('span');
-              newSpanNoteDownTrack.innerHTML = "Down Track: Distance between center of the vehicle (Taheo) to the center of the geofence.";
+              newSpanNoteDownTrack.innerHTML = "Down Track: Distance between center of the vehicle (Tahoe) to the center of the geofence.";
               newSpanNoteDownTrack.id="noteDownTrackSpan";
               newSpanNoteDownTrack.className="form-label text-align-left block margin-bottom-20px";
               fieldsetNote.append(newSpanNoteDownTrack);
