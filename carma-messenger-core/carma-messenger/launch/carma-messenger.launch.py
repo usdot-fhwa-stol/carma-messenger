@@ -25,6 +25,7 @@ from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.actions import ExecuteProcess
 
 import os
 
@@ -93,6 +94,10 @@ def generate_launch_description():
         ]
     )
 
+    system_alert_publisher = ExecuteProcess(
+        cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
+    )
+
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
@@ -100,5 +105,6 @@ def generate_launch_description():
         v2x_group,
         plugins_group,
         ui_group,
-        traffic_incident_group
+        traffic_incident_group,
+        system_alert_publisher
     ])

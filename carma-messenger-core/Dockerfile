@@ -39,8 +39,8 @@ LABEL org.label-schema.vcs-url="https://github.com/usdot-fhwa-stol/carma-messeng
 LABEL org.label-schema.vcs-ref=${VCS_REF}
 LABEL org.label-schema.build-date=${BUILD_DATE}
 
-COPY --from=setup /opt/carma/install_ros2 /opt/carma/install_ros2
+COPY --from=setup /opt/carma/install /opt/carma/install
 
 RUN pip install future
 
-CMD  [ "wait-for-it.sh", "localhost:11311", "--", "roslaunch", "carma-messenger", "carma-messenger.launch"]
+CMD  [ "wait-for-it.sh", "localhost:11311", "--", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]
