@@ -16,4 +16,5 @@
 
 # Build ros2
 source /opt/ros/humble/setup.bash
+cd ~/
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
