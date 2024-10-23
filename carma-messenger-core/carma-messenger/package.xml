@@ -24,13 +24,12 @@
   <license>Apache 2.0</license>
 
   <!-- TODO once all of carma-messenger is converted to ROS2 add actual exec dependencies to package.xml -->
-  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
-  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_auto</buildtool_depend>
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
   <build_depend>carma_cmake_common</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>
