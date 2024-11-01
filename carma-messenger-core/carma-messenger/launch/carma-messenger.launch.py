@@ -42,23 +42,8 @@ def generate_launch_description():
     use_rosbag = LaunchConfiguration('use_rosbag')
     declare_use_rosbag = DeclareLaunchArgument(
         name = 'use_rosbag',
-        default_value = True,
+        default_value = 'true',
         description = "Record a ROS2 bag"
-    )
-    
-    vehicle_config_dir = LaunchConfiguration('vehicle_config_dir')
-    declare_vehicle_config_dir_arg = DeclareLaunchArgument(
-        name = 'vehicle_config_dir',
-        default_value = "/opt/carma/vehicle/config",
-        description = "Path to file containing vehicle config directories"
-    )
-
-    # Declare the vehicle_config_param_file launch argument
-    vehicle_config_param_file = LaunchConfiguration('vehicle_config_param_file')
-    declare_vehicle_config_param_file_arg = DeclareLaunchArgument(
-        name = 'vehicle_config_param_file',
-        default_value = [vehicle_config_dir, "/VehicleConfigParams.yaml"],
-        description = "Path to file contain vehicle configuration parameters"
     )
 
     # Declare the route file folder launch argument
@@ -109,6 +94,16 @@ def generate_launch_description():
         ]
     )
 
+    # Launch ROS2 rosbag logging
+    ros2_rosbag_group = GroupAction(
+        condition = IfCondition(use_rosbag),
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ros2_rosbag.launch.py']),
+            )
+        ]
+    )
+
     traffic_incident_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
@@ -117,19 +112,6 @@ def generate_launch_description():
         ]
     )
 
-    # Launch ROS2 rosbag logging
-    ros2_rosbag_launch = GroupAction(
-        condition = IfCondition(use_rosbag),
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([get_package_share_directory('carma'), '/launch', '/ros2_rosbag.launch.py']),
-                launch_arguments = {
-                    'vehicle_config_dir' : vehicle_config_dir,
-                    'vehicle_config_param_file' : vehicle_config_param_file
-                    }.items()
-            )
-        ]
-    )
 
     system_alert_publisher = ExecuteProcess(
         cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
@@ -138,14 +120,12 @@ def generate_launch_description():
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_use_rosbag,
-        declare_vehicle_config_dir_arg,
-        declare_vehicle_config_param_file_arg,
         declare_route_file_folder,
         transform_group,
         v2x_group,
         plugins_group,
         ui_group,
+        ros2_rosbag_group,
         traffic_incident_group,
-        ros2_rosbag_launch,
         system_alert_publisher
     ])

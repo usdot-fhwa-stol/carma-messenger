@@ -43,4 +43,4 @@ COPY --from=setup /opt/carma/install /opt/carma/install
 
 RUN pip install future
 
-CMD  [ "wait-for-it.sh", "localhost:11311", "--", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]
+CMD  [ "source", "/opt/carma/install/setup.bash", "&&", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]

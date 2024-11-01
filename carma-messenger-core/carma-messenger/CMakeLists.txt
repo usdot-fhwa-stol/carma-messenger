@@ -26,5 +26,5 @@ ament_auto_find_build_dependencies()
 
 
 ament_auto_package(
-        INSTALL_TO_SHARE launch log-config scripts ui
+        INSTALL_TO_SHARE config launch log-config scripts ui
 )
