@@ -23,6 +23,13 @@ def generate_launch_description():
     """
     Launch CARMA Messenger System.
     """
+    # Declare record rosbag launch argument
+    use_rosbag = LaunchConfiguration('use_rosbag')
+    declare_use_rosbag = DeclareLaunchArgument(
+        name = 'use_rosbag',
+        default_value = 'true',
+        description = "Record a ROS2 bag"
+    )
 
     # Declare the route file folder launch argument
     route_file_folder = LaunchConfiguration('route_file_folder')
@@ -36,11 +43,13 @@ def generate_launch_description():
     core_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ get_package_share_directory('carma-messenger'), '/launch/carma-messenger.launch.py']),
         launch_arguments = {
-            'route_file_folder' : route_file_folder
+            'route_file_folder' : route_file_folder,
+            'use_rosbag' : use_rosbag,
         }.items()
     )
 
     return LaunchDescription([
+        declare_use_rosbag,
         declare_route_file_folder,
         core_launch
     ])
