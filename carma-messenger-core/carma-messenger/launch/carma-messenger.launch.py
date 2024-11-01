@@ -25,6 +25,8 @@ from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.actions import ExecuteProcess
+from launch.conditions import IfCondition
 
 import os
 
@@ -36,6 +38,13 @@ def generate_launch_description():
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
+    
+    use_rosbag = LaunchConfiguration('use_rosbag')
+    declare_use_rosbag = DeclareLaunchArgument(
+        name = 'use_rosbag',
+        default_value = 'true',
+        description = "Record a ROS2 bag"
+    )
 
     # Declare the route file folder launch argument
     route_file_folder = LaunchConfiguration('route_file_folder')
@@ -85,6 +94,16 @@ def generate_launch_description():
         ]
     )
 
+    # Launch ROS2 rosbag logging
+    ros2_rosbag_group = GroupAction(
+        condition = IfCondition(use_rosbag),
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ros2_rosbag.launch.py']),
+            )
+        ]
+    )
+
     traffic_incident_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
@@ -93,12 +112,20 @@ def generate_launch_description():
         ]
     )
 
+
+    system_alert_publisher = ExecuteProcess(
+        cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
+    )
+
     return LaunchDescription([
         declare_configuration_delay_arg,
+        declare_use_rosbag,
         declare_route_file_folder,
         transform_group,
         v2x_group,
         plugins_group,
         ui_group,
-        traffic_incident_group
+        ros2_rosbag_group,
+        traffic_incident_group,
+        system_alert_publisher
     ])
