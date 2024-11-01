@@ -14,6 +14,17 @@
 
 # Docker Compose Spec Version
 services:
+  roscore:
+    image: ${DOCKER_ORG}/carma-base:${DOCKER_TAG}
+    network_mode: host
+    container_name: roscore
+    volumes_from:
+      - container:carma-config:ro
+    volumes:
+      - /opt/carma/.ros:/opt/carma/.ros
+    restart: always
+    command: roscore
+
   ros1_bridge:
     image: ${DOCKER_ORG}/carma-msgs:${DOCKER_TAG}
     network_mode: host
