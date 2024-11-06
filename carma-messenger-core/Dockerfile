@@ -45,4 +45,4 @@ RUN sudo chmod -R +x /opt/carma/install
 
 RUN pip install future
 
-CMD  [ "wait-for-it.sh", "localhost:11311", "--", "roslaunch", "carma-messenger", "carma-messenger.launch"]
+CMD  [ "wait-for-it", "localhost:11311", "--", "roslaunch", "carma-messenger", "carma-messenger.launch"]
