@@ -58,7 +58,7 @@ def generate_launch_description():
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/message.launch.py']),
-                launch_arguments = { 
+                launch_arguments = {
                     'configuration_delay' : [configuration_delay]
                 }.items()
             ),
@@ -69,7 +69,7 @@ def generate_launch_description():
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
-                launch_arguments = { 
+                launch_arguments = {
                     'configuration_delay' : [configuration_delay],
                     'route_file_folder' : route_file_folder
                 }.items()
@@ -93,6 +93,17 @@ def generate_launch_description():
         ]
     )
 
+
+    # Launch ROS2 rosbag logging
+    ros2_rosbag_launch = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ros2_rosbag.launch.py']),
+            )
+        ]
+    )
+
+
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
@@ -100,5 +111,6 @@ def generate_launch_description():
         v2x_group,
         plugins_group,
         ui_group,
-        traffic_incident_group
+        traffic_incident_group,
+        ros2_rosbag_launch
     ])
