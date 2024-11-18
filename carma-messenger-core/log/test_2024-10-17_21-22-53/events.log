@@ -1,5 +1,0 @@
-[0.000000] (-) TimerEvent: {}
-[0.000498] (cpp_message) JobQueued: {'identifier': 'cpp_message', 'dependencies': OrderedDict([('cpp_message', '/workspaces/carma-messenger/carma-messenger-core/install/cpp_message')])}
-[0.000554] (cpp_message) JobStarted: {'identifier': 'cpp_message'}
-[0.029263] (cpp_message) JobEnded: {'identifier': 'cpp_message', 'rc': 0}
-[0.030843] (-) EventReactorShutdown: {}

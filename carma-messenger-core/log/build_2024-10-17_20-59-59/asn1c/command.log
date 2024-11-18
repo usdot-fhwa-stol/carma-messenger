@@ -1,6 +1,0 @@
-Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
-Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
-Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
-Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
-Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --install /home/carma/build_ros2/asn1c
-Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --install /home/carma/build_ros2/asn1c

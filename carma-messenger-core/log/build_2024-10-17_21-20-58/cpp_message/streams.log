@@ -1,2 +1,0 @@
-[0.017s] Invoking command in '/home/carma/build_ros2/cpp_message': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /home/carma/build_ros2/cpp_message -- -j8 -l8
-[0.074s] Invoked command in '/home/carma/build_ros2/cpp_message' returned '0': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /home/carma/build_ros2/cpp_message -- -j8 -l8
