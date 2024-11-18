@@ -1,0 +1,21 @@
+[0.070s] Invoking command in '/home/carma/build_ros2/carma-messenger': CMAKE_PREFIX_PATH=/opt/ros/foxy:/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/carma-messenger -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/carma-messenger
+[0.164s] CMake Error at CMakeLists.txt:19 (find_package):
+[0.165s]   By not providing "Findcarma_cmake_common.cmake" in CMAKE_MODULE_PATH this
+[0.165s]   project has asked CMake to find a package configuration file provided by
+[0.165s]   "carma_cmake_common", but CMake did not find one.
+[0.166s] 
+[0.166s]   Could not find a package configuration file provided by
+[0.167s]   "carma_cmake_common" with any of the following names:
+[0.167s] 
+[0.167s]     carma_cmake_commonConfig.cmake
+[0.167s]     carma_cmake_common-config.cmake
+[0.167s] 
+[0.167s]   Add the installation prefix of "carma_cmake_common" to CMAKE_PREFIX_PATH or
+[0.168s]   set "carma_cmake_common_DIR" to a directory containing one of the above
+[0.168s]   files.  If "carma_cmake_common" provides a separate development package or
+[0.173s]   SDK, be sure it has been installed.
+[0.173s] 
+[0.173s] 
+[0.173s] -- Configuring incomplete, errors occurred!
+[0.173s] See also "/home/carma/build_ros2/carma-messenger/CMakeFiles/CMakeOutput.log".
+[0.182s] Invoked command in '/home/carma/build_ros2/carma-messenger' returned '1': CMAKE_PREFIX_PATH=/opt/ros/foxy:/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/carma-messenger -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/carma-messenger

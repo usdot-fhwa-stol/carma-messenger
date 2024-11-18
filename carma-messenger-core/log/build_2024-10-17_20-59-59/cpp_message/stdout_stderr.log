@@ -1,0 +1,4 @@
+-- Configuring done
+Skipping build of cpp_message as only ROS 2 is supported. Detected version is ROS 1
+-- Generating done
+-- Build files have been written to: /home/carma/build_ros2/cpp_message

@@ -1,0 +1,22 @@
+[0.014s] Invoking command in '/workspaces/carma-messenger/carma-messenger-core/build/cpp_message': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/cpp_message -DCMAKE_INSTALL_PREFIX=/workspaces/carma-messenger/carma-messenger-core/install/cpp_message
+[0.079s] -- The C compiler identification is GNU 9.4.0
+[0.138s] -- The CXX compiler identification is GNU 9.4.0
+[0.144s] -- Check for working C compiler: /usr/bin/cc
+[0.221s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.221s] -- Detecting C compiler ABI info
+[0.300s] -- Detecting C compiler ABI info - done
+[0.310s] -- Detecting C compile features
+[0.311s] -- Detecting C compile features - done
+[0.314s] -- Check for working CXX compiler: /usr/bin/c++
+[0.408s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.411s] -- Detecting CXX compiler ABI info
+[0.509s] -- Detecting CXX compiler ABI info - done
+[0.522s] -- Detecting CXX compile features
+[0.522s] -- Detecting CXX compile features - done
+[0.532s] -- Configuring done
+[0.533s] Skipping build of cpp_message as only ROS 2 is supported. Detected version is ROS 1
+[0.533s] -- Generating done
+[0.534s] -- Build files have been written to: /workspaces/carma-messenger/carma-messenger-core/build/cpp_message
+[0.540s] Invoked command in '/workspaces/carma-messenger/carma-messenger-core/build/cpp_message' returned '0': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/cpp_message -DCMAKE_INSTALL_PREFIX=/workspaces/carma-messenger/carma-messenger-core/install/cpp_message
+[0.542s] Invoking command in '/workspaces/carma-messenger/carma-messenger-core/build/cpp_message': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /workspaces/carma-messenger/carma-messenger-core/build/cpp_message -- -j8 -l8
+[0.589s] Invoked command in '/workspaces/carma-messenger/carma-messenger-core/build/cpp_message' returned '0': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /workspaces/carma-messenger/carma-messenger-core/build/cpp_message -- -j8 -l8

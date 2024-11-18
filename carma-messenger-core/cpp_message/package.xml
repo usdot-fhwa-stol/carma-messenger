@@ -30,7 +30,6 @@
   <depend>carma_ros2_utils</depend>
   <depend>rclcpp_components</depend>
 
-  <depend>asn1c</depend>
 
   <depend>j2735_v2x_msgs</depend>
   <depend>carma_v2x_msgs</depend>

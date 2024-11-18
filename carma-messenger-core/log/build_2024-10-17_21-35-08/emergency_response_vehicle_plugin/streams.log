@@ -1,0 +1,21 @@
+[0.072s] Invoking command in '/home/carma/build_ros2/emergency_response_vehicle_plugin': CMAKE_PREFIX_PATH=/opt/ros/foxy:/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/emergency_response_vehicle_plugin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/emergency_response_vehicle_plugin
+[0.148s] -- Configuring incomplete, errors occurred!
+[0.148s] See also "/home/carma/build_ros2/emergency_response_vehicle_plugin/CMakeFiles/CMakeOutput.log".
+[0.148s] CMake Error at CMakeLists.txt:20 (find_package):
+[0.148s]   By not providing "Findcarma_cmake_common.cmake" in CMAKE_MODULE_PATH this
+[0.148s]   project has asked CMake to find a package configuration file provided by
+[0.148s]   "carma_cmake_common", but CMake did not find one.
+[0.148s] 
+[0.148s]   Could not find a package configuration file provided by
+[0.148s]   "carma_cmake_common" with any of the following names:
+[0.148s] 
+[0.148s]     carma_cmake_commonConfig.cmake
+[0.148s]     carma_cmake_common-config.cmake
+[0.148s] 
+[0.148s]   Add the installation prefix of "carma_cmake_common" to CMAKE_PREFIX_PATH or
+[0.148s]   set "carma_cmake_common_DIR" to a directory containing one of the above
+[0.149s]   files.  If "carma_cmake_common" provides a separate development package or
+[0.149s]   SDK, be sure it has been installed.
+[0.149s] 
+[0.149s] 
+[0.166s] Invoked command in '/home/carma/build_ros2/emergency_response_vehicle_plugin' returned '1': CMAKE_PREFIX_PATH=/opt/ros/foxy:/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:${CMAKE_PREFIX_PATH} /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/emergency_response_vehicle_plugin -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/emergency_response_vehicle_plugin

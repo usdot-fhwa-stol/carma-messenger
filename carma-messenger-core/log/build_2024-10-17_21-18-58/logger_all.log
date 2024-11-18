@@ -1,0 +1,266 @@
+[0.197s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--cmake-args', '-DCMAKE_BUILD_TYPE=Release', '--build-base', '/home/carma/build_ros2', '--install-base', '/opt/carma/install_ros2', '--packages-up-to', 'cpp_message']
+[0.197s] DEBUG:colcon:Parsed command line arguments: Namespace(ament_cmake_args=None, base_paths=['.'], build_base='/home/carma/build_ros2', catkin_cmake_args=None, catkin_skip_building_tests=False, cmake_args=['-DCMAKE_BUILD_TYPE=Release'], cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, cmake_target=None, cmake_target_skip_unavailable=False, continue_on_error=False, event_handlers=None, executor='parallel', ignore_user_meta=False, install_base='/opt/carma/install_ros2', log_base=None, log_level=None, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x732d84067940>>, merge_install=False, metas=['./colcon.meta'], packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_end=None, packages_ignore=None, packages_ignore_regex=None, packages_select=None, packages_select_build_failed=False, packages_select_by_dep=None, packages_select_regex=None, packages_select_test_failures=False, packages_skip=None, packages_skip_build_finished=False, packages_skip_by_dep=None, packages_skip_regex=None, packages_skip_test_passed=False, packages_skip_up_to=None, packages_start=None, packages_up_to=['cpp_message'], packages_up_to_regex=None, parallel_workers=8, paths=None, symlink_install=False, test_result_base=None, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x732d84067940>, verb_name='build', verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x732d83fb2dc0>)
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.357s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.357s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/workspaces/carma-messenger/carma-messenger-core'
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.357s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extensions ['ignore', 'ignore_ament_install']
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extension 'ignore'
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extension 'ignore_ament_install'
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extensions ['colcon_pkg']
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extension 'colcon_pkg'
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extensions ['colcon_meta']
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extension 'colcon_meta'
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extensions ['ros']
+[0.368s] Level 1:colcon.colcon_core.package_identification:_identify(carma-messenger) by extension 'ros'
+[0.372s] DEBUG:colcon.colcon_core.package_identification:Package 'carma-messenger' with type 'ros.catkin' and name 'carma-messenger'
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extensions ['ignore', 'ignore_ament_install']
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extension 'ignore'
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extension 'ignore_ament_install'
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extensions ['colcon_pkg']
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extension 'colcon_pkg'
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extensions ['colcon_meta']
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extension 'colcon_meta'
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extensions ['ros']
+[0.372s] Level 1:colcon.colcon_core.package_identification:_identify(cpp_message) by extension 'ros'
+[0.373s] DEBUG:colcon.colcon_core.package_identification:Package 'cpp_message' with type 'ros.ament_cmake' and name 'cpp_message'
+[0.373s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['ignore', 'ignore_ament_install']
+[0.373s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'ignore'
+[0.373s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'ignore_ament_install'
+[0.373s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['colcon_pkg']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'colcon_pkg'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['colcon_meta']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'colcon_meta'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['ros']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'ros'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['cmake', 'python']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'cmake'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'python'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extensions ['python_setup_py']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(docker) by extension 'python_setup_py'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extensions ['ignore', 'ignore_ament_install']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extension 'ignore'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extension 'ignore_ament_install'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extensions ['colcon_pkg']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extension 'colcon_pkg'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extensions ['colcon_meta']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extension 'colcon_meta'
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extensions ['ros']
+[0.374s] Level 1:colcon.colcon_core.package_identification:_identify(emergency_response_vehicle_plugin) by extension 'ros'
+[0.375s] DEBUG:colcon.colcon_core.package_identification:Package 'emergency_response_vehicle_plugin' with type 'ros.ament_cmake' and name 'emergency_response_vehicle_plugin'
+[0.375s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['ignore', 'ignore_ament_install']
+[0.375s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'ignore'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'ignore_ament_install'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['colcon_pkg']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'colcon_pkg'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['colcon_meta']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'colcon_meta'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['ros']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'ros'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['cmake', 'python']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'cmake'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'python'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extensions ['python_setup_py']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(hooks) by extension 'python_setup_py'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extensions ['ignore', 'ignore_ament_install']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extension 'ignore'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extension 'ignore_ament_install'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extensions ['colcon_pkg']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extension 'colcon_pkg'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extensions ['colcon_meta']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extension 'colcon_meta'
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extensions ['ros']
+[0.376s] Level 1:colcon.colcon_core.package_identification:_identify(j2735_convertor) by extension 'ros'
+[0.378s] DEBUG:colcon.colcon_core.package_identification:Package 'j2735_convertor' with type 'ros.ament_cmake' and name 'j2735_convertor'
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extensions ['ignore', 'ignore_ament_install']
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extension 'ignore'
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extension 'ignore_ament_install'
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extensions ['colcon_pkg']
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extension 'colcon_pkg'
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extensions ['colcon_meta']
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extension 'colcon_meta'
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extensions ['ros']
+[0.378s] Level 1:colcon.colcon_core.package_identification:_identify(lib_asn1c) by extension 'ros'
+[0.379s] DEBUG:colcon.colcon_core.package_identification:Package 'lib_asn1c' with type 'ros.catkin' and name 'asn1c'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extensions ['ignore', 'ignore_ament_install']
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extension 'ignore'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extension 'ignore_ament_install'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extensions ['colcon_pkg']
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extension 'colcon_pkg'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extensions ['colcon_meta']
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extension 'colcon_meta'
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extensions ['ros']
+[0.380s] Level 1:colcon.colcon_core.package_identification:_identify(traffic_incident) by extension 'ros'
+[0.381s] DEBUG:colcon.colcon_core.package_identification:Package 'traffic_incident' with type 'ros.ament_cmake' and name 'traffic_incident'
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.396s] INFO:colcon.colcon_core.package_selection:Skipping package 'traffic_incident' in 'traffic_incident'
+[0.396s] INFO:colcon.colcon_core.package_selection:Skipping package 'j2735_convertor' in 'j2735_convertor'
+[0.396s] INFO:colcon.colcon_core.package_selection:Skipping package 'emergency_response_vehicle_plugin' in 'emergency_response_vehicle_plugin'
+[0.396s] INFO:colcon.colcon_core.package_selection:Skipping package 'carma-messenger' in 'carma-messenger'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=Release']'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_target' from command line to 'None'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_clean_cache' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_clean_first' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'cmake_force_configure' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'ament_cmake_args' from command line to 'None'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'catkin_cmake_args' from command line to 'None'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'asn1c' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.397s] DEBUG:colcon.colcon_core.verb:Building package 'asn1c' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/carma/build_ros2/asn1c', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=Release'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/opt/carma/install_ros2/asn1c', 'merge_install': False, 'path': '/workspaces/carma-messenger/carma-messenger-core/lib_asn1c', 'symlink_install': False, 'test_result_base': None}
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_args' from command line to '['-DCMAKE_BUILD_TYPE=Release']'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_target' from command line to 'None'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_clean_cache' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_clean_first' from command line to 'False'
+[0.397s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'cmake_force_configure' from command line to 'False'
+[0.398s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'ament_cmake_args' from command line to 'None'
+[0.398s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'catkin_cmake_args' from command line to 'None'
+[0.398s] Level 5:colcon.colcon_core.verb:set package 'cpp_message' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.398s] DEBUG:colcon.colcon_core.verb:Building package 'cpp_message' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/carma/build_ros2/cpp_message', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DCMAKE_BUILD_TYPE=Release'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/opt/carma/install_ros2/cpp_message', 'merge_install': False, 'path': '/workspaces/carma-messenger/carma-messenger-core/cpp_message', 'symlink_install': False, 'test_result_base': None}
+[0.398s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.399s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.399s] INFO:colcon.colcon_ros.task.catkin.build:Building ROS package in '/workspaces/carma-messenger/carma-messenger-core/lib_asn1c' with build type 'catkin'
+[0.399s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/workspaces/carma-messenger/carma-messenger-core/lib_asn1c'
+[0.402s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.402s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.402s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.425s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
+[0.471s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
+[0.508s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
+[0.595s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
+[0.644s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --install /home/carma/build_ros2/asn1c
+[0.657s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --install /home/carma/build_ros2/asn1c
+[0.688s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'ros_package_path')
+[0.688s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ros_package_path.ps1'
+[0.689s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ros_package_path.dsv'
+[0.690s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ros_package_path.sh'
+[0.691s] Level 1:colcon.colcon_ros.task.catkin:checking '/opt/carma/install_ros2/asn1c/lib/python3/dist-packages'
+[0.691s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'pkg_config_path')
+[0.691s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path.ps1'
+[0.692s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path.dsv'
+[0.692s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path.sh'
+[0.696s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'pkg_config_path_multiarch')
+[0.696s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path_multiarch.ps1'
+[0.697s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path_multiarch.dsv'
+[0.697s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config_path_multiarch.sh'
+[0.698s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(asn1c)
+[0.701s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c' for CMake module files
+[0.702s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c' for CMake config files
+[0.702s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'cmake_prefix_path')
+[0.702s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/cmake_prefix_path.ps1'
+[0.703s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/cmake_prefix_path.dsv'
+[0.703s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/cmake_prefix_path.sh'
+[0.704s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c/lib'
+[0.704s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'ld_library_path_lib')
+[0.714s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ld_library_path_lib.ps1'
+[0.715s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ld_library_path_lib.dsv'
+[0.715s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/ld_library_path_lib.sh'
+[0.716s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c/bin'
+[0.716s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c/lib/pkgconfig/asn1c.pc'
+[0.716s] Level 1:colcon.colcon_core.shell:create_environment_hook('asn1c', 'pkg_config')
+[0.716s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config.ps1'
+[0.717s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config.dsv'
+[0.718s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/asn1c/share/asn1c/hook/pkg_config.sh'
+[0.719s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c/lib/python3.8/site-packages'
+[0.719s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/asn1c/bin'
+[0.720s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/asn1c/share/asn1c/package.ps1'
+[0.721s] INFO:colcon.colcon_core.shell:Creating package descriptor '/opt/carma/install_ros2/asn1c/share/asn1c/package.dsv'
+[0.722s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/asn1c/share/asn1c/package.sh'
+[0.723s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/asn1c/share/asn1c/package.bash'
+[0.724s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/asn1c/share/asn1c/package.zsh'
+[0.725s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/opt/carma/install_ros2/asn1c/share/colcon-core/packages/asn1c)
+[0.725s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/workspaces/carma-messenger/carma-messenger-core/cpp_message' with build type 'ament_cmake'
+[0.726s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/workspaces/carma-messenger/carma-messenger-core/cpp_message'
+[0.726s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.726s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.749s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/carma/build_ros2/cpp_message': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:/opt/carma/install_ros2/asn1c:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/opt/carma/install_ros2/asn1c/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/opt/carma/install_ros2/asn1c/lib/x86_64-linux-gnu/pkgconfig:/opt/carma/install_ros2/asn1c/lib/pkgconfig:${PKG_CONFIG_PATH} ROS_PACKAGE_PATH=/opt/carma/install_ros2/asn1c/share:${ROS_PACKAGE_PATH} /usr/bin/cmake --build /home/carma/build_ros2/cpp_message -- -j8 -l8
+[0.810s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/carma/build_ros2/cpp_message' returned '0': CMAKE_PREFIX_PATH=/opt/carma/install/carma_message_utilities:/opt/carma/install/carma_launch_testing:/opt/carma/install_ros2/asn1c:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/opt/carma/install_ros2/asn1c/lib:${LD_LIBRARY_PATH} PKG_CONFIG_PATH=/opt/carma/install_ros2/asn1c/lib/x86_64-linux-gnu/pkgconfig:/opt/carma/install_ros2/asn1c/lib/pkgconfig:${PKG_CONFIG_PATH} ROS_PACKAGE_PATH=/opt/carma/install_ros2/asn1c/share:${ROS_PACKAGE_PATH} /usr/bin/cmake --build /home/carma/build_ros2/cpp_message -- -j8 -l8
+[0.830s] WARNING:colcon.colcon_cmake.task.cmake.build:Could not run installation step for package 'cpp_message' because it has no 'install' target
+[0.830s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(cpp_message)
+[0.830s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message' for CMake module files
+[0.831s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message' for CMake config files
+[0.831s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_message', 'cmake_prefix_path')
+[0.831s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.ps1'
+[0.832s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.dsv'
+[0.833s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.sh'
+[0.834s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib'
+[0.834s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_message', 'ld_library_path_lib')
+[0.834s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.ps1'
+[0.835s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.dsv'
+[0.835s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.sh'
+[0.837s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/bin'
+[0.837s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib/pkgconfig/cpp_message.pc'
+[0.838s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib/python3.8/site-packages'
+[0.838s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/bin'
+[0.839s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.ps1'
+[0.840s] INFO:colcon.colcon_core.shell:Creating package descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.dsv'
+[0.842s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.sh'
+[0.844s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.bash'
+[0.844s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.zsh'
+[0.845s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/opt/carma/install_ros2/cpp_message/share/colcon-core/packages/cpp_message)
+[0.868s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(cpp_message)
+[0.869s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message' for CMake module files
+[0.869s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message' for CMake config files
+[0.870s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_message', 'cmake_prefix_path')
+[0.870s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.ps1'
+[0.872s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.dsv'
+[0.873s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/cmake_prefix_path.sh'
+[0.874s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib'
+[0.875s] Level 1:colcon.colcon_core.shell:create_environment_hook('cpp_message', 'ld_library_path_lib')
+[0.875s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.ps1'
+[0.876s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.dsv'
+[0.876s] INFO:colcon.colcon_core.shell:Creating environment hook '/opt/carma/install_ros2/cpp_message/share/cpp_message/hook/ld_library_path_lib.sh'
+[0.877s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/bin'
+[0.877s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib/pkgconfig/cpp_message.pc'
+[0.877s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/lib/python3.8/site-packages'
+[0.878s] Level 1:colcon.colcon_core.environment:checking '/opt/carma/install_ros2/cpp_message/bin'
+[0.878s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.ps1'
+[0.879s] INFO:colcon.colcon_core.shell:Creating package descriptor '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.dsv'
+[0.880s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.sh'
+[0.880s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.bash'
+[0.881s] INFO:colcon.colcon_core.shell:Creating package script '/opt/carma/install_ros2/cpp_message/share/cpp_message/package.zsh'
+[0.881s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/opt/carma/install_ros2/cpp_message/share/colcon-core/packages/cpp_message)
+[0.882s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[0.883s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[0.883s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[0.883s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[0.890s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[0.890s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[0.890s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[0.890s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[0.893s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.Spawn.ExecFailed: /usr/bin/dbus-launch terminated abnormally without any error message
+[0.893s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[0.894s] INFO:colcon.colcon_core.shell:Creating prefix script '/opt/carma/install_ros2/local_setup.ps1'
+[0.897s] INFO:colcon.colcon_core.shell:Creating prefix util module '/opt/carma/install_ros2/_local_setup_util_ps1.py'
+[0.900s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/opt/carma/install_ros2/setup.ps1'
+[0.904s] INFO:colcon.colcon_core.shell:Creating prefix script '/opt/carma/install_ros2/local_setup.sh'
+[0.905s] INFO:colcon.colcon_core.shell:Creating prefix util module '/opt/carma/install_ros2/_local_setup_util_sh.py'
+[0.907s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/opt/carma/install_ros2/setup.sh'
+[0.910s] INFO:colcon.colcon_core.shell:Creating prefix script '/opt/carma/install_ros2/local_setup.bash'
+[0.911s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/opt/carma/install_ros2/setup.bash'
+[0.915s] INFO:colcon.colcon_core.shell:Creating prefix script '/opt/carma/install_ros2/local_setup.zsh'
+[0.916s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/opt/carma/install_ros2/setup.zsh'

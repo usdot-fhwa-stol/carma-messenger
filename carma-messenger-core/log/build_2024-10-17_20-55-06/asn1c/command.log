@@ -1,0 +1,8 @@
+Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/lib_asn1c -DCMAKE_BUILD_TYPE=Release -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/asn1c
+Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake /workspaces/carma-messenger/carma-messenger-core/lib_asn1c -DCMAKE_BUILD_TYPE=Release -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/opt/carma/install_ros2/asn1c
+Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
+Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c -- -j8 -l8
+Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
+Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --build /home/carma/build_ros2/asn1c --target tests -- -j8 -l8
+Invoking command in '/home/carma/build_ros2/asn1c': /usr/bin/cmake --install /home/carma/build_ros2/asn1c
+Invoked command in '/home/carma/build_ros2/asn1c' returned '0': /usr/bin/cmake --install /home/carma/build_ros2/asn1c
