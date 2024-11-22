@@ -107,7 +107,7 @@ def generate_launch_description():
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
-        ros2_rosbag_launch
+        ros2_rosbag_launch,
         transform_group,
         v2x_group,
         plugins_group,
