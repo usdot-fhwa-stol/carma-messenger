@@ -45,6 +45,15 @@ def generate_launch_description():
         description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins'
     )
 
+    # Launch ROS2 rosbag logging
+    ros2_rosbag_launch = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ros2_rosbag.launch.py']),
+            )
+        ]
+    )
+
     transform_group = GroupAction(
         actions=[
             PushRosNamespace(EnvironmentVariable('CARMA_TF_NS', default_value='/')),
@@ -94,23 +103,14 @@ def generate_launch_description():
     )
 
 
-    # Launch ROS2 rosbag logging
-    ros2_rosbag_launch = GroupAction(
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ros2_rosbag.launch.py']),
-            )
-        ]
-    )
-
 
     return LaunchDescription([
         declare_configuration_delay_arg,
         declare_route_file_folder,
+        ros2_rosbag_launch
         transform_group,
         v2x_group,
         plugins_group,
         ui_group,
-        traffic_incident_group,
-        ros2_rosbag_launch
+        traffic_incident_group
     ])
