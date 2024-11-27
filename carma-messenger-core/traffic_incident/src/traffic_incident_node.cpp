@@ -150,8 +150,7 @@ bool TrafficIncidentNode::stopTrafficBroadcastCallback(
 void TrafficIncidentNode::spin_callback(void)
 {
   if (
-    traffic_worker_.getDownTrack() > 0 && traffic_worker_.getUpTrack() > 0 &&
-    traffic_worker_.getMinGap() > 0 && traffic_worker_.getAdvisorySpeed() > 0) {
+    traffic_worker_.getDownTrack() > 0 || traffic_worker_.getUpTrack() > 0 || traffic_worker_.getAdvisorySpeed() > 0) {
     // construct local mobilityOperation msg
     carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg =
       traffic_worker_.mobilityMessageGenerator(traffic_worker_.getPinPoint());
