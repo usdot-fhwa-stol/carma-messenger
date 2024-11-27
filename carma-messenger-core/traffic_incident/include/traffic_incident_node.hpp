@@ -86,6 +86,7 @@ private:
   double down_track_;
   double up_track_;
   double min_gap_;
+  static constexpr double epsilon_ = 1e-6;
 };
 
 }  // namespace traffic
