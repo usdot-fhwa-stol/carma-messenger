@@ -11,8 +11,8 @@ jobs:
   determine_docker_org_and_tag:
     runs-on: ubuntu-latest
     outputs:
-      docker_organization: usdotfhwastolcandidate
-      docker_image_tag: prowler
+      docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
+      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
@@ -42,7 +42,7 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: usdotfhwastolcandidate/carma-messenger-ui:${{ github.ref_name }}
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-ui:${{ github.ref_name }}
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
@@ -54,7 +54,7 @@ jobs:
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: usdotfhwastolcandidate/carma-messenger-core:${{ github.ref_name }}      
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ github.ref_name }}      
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
             DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
@@ -79,7 +79,7 @@ jobs:
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: usdotfhwastolcandidate/carma-messenger-config:${{ github.ref_name }}-development
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ github.ref_name }}-development
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}

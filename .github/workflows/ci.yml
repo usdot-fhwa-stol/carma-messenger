@@ -11,8 +11,8 @@ jobs:
   determine_docker_org_and_tag:
     runs-on: ubuntu-latest
     outputs:
-      docker_organization: usdotfhwastolcandidate
-      docker_image_tag: prowler
+      docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
+      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
