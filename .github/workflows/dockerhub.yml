@@ -68,7 +68,7 @@ jobs:
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: usdotfhwastolcandiate/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
