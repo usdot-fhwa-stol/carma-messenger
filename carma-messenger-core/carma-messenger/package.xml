@@ -28,8 +28,6 @@
   <build_depend>carma_cmake_common</build_depend>
 
   <depend>carma_ros2_utils</depend>
-  <depend>cpp_message</depend>
-  <depend>j2735_convertor</depend>
   <depend>emergency_response_vehicle_plugin</depend>
   <depend>rosbridge_server</depend>
   <depend>traffic_incident</depend>

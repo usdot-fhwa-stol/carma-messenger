@@ -14,16 +14,9 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-# Get ubuntu distribution code name. All STOL APT debian packages are pushed to S3 bucket based on distribution codename.
-. /etc/lsb-release
-
-# add the STOL APT repository
-echo "deb [trusted=yes] http://s3.amazonaws.com/stol-apt-repository ${DISTRIB_CODENAME} main" | sudo tee /etc/apt/sources.list.d/stol-apt-repository.list
-
-sudo apt-get update
-
-# install carma-j2735 library for encoding/decoding of messages
-sudo apt-get install -y stol-j2735-1
+# This script is used to install the dependencies for the v2x-ros-conversion package
+echo "Installing v2x-ros-conversion dependencies"
+sudo ~/src/v2x-ros-conversion/docker/install_dependencies.sh
 
 # Build ros2
 source /opt/ros/humble/setup.bash
