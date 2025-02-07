@@ -1,4 +1,4 @@
-# Copyright (C) 2024 LEIDOS.
+# Copyright (C) 2024-2025 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ def generate_launch_description():
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
-    
+
     use_rosbag = LaunchConfiguration('use_rosbag')
     declare_use_rosbag = DeclareLaunchArgument(
         name = 'use_rosbag',
@@ -75,7 +75,7 @@ def generate_launch_description():
     v2x_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/message.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/v2x-ros-conversion.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay]
                 }.items()

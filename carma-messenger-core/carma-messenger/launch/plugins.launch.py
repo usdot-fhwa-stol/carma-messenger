@@ -27,7 +27,7 @@ import launch.actions
 import launch.events
 
 import launch_ros.actions
-import launch_ros.events 
+import launch_ros.events
 import launch_ros.events.lifecycle
 import lifecycle_msgs.msg
 from launch.actions import DeclareLaunchArgument
@@ -78,7 +78,7 @@ def generate_launch_description():
         ],
         on_exit = Shutdown()
     )
-    
+
     ros2_cmd = launch.substitutions.FindExecutable(name='ros2')
 
     process_configure_emergency_response_vehicle_plugin = launch.actions.ExecuteProcess(
@@ -94,7 +94,7 @@ def generate_launch_description():
 
     configured_event_handler_emergency_response_vehicle_plugin = launch.actions.RegisterEventHandler(launch.event_handlers.OnExecutionComplete(
             target_action=process_configure_emergency_response_vehicle_plugin,
-            on_completion=[ 
+            on_completion=[
                 launch.actions.ExecuteProcess(
                     cmd=[ros2_cmd, "lifecycle", "set", "/emergency_response_vehicle_plugin_node", "activate"],
                 )

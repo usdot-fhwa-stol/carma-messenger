@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: 
+    branches:
       - develop
       - develop-humble
       - master
@@ -50,6 +50,9 @@ jobs:
     - name: Checkout dependencies
       run: |
         ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ steps.determine-base-branch.outputs.git_branch }}
+    - name: Install cpp message external dependencies
+      # Install the cpp-message deps
+      run: sudo bash /opt/carma/src/v2x-ros-conversion/docker/install_dependencies.sh
     - name: Build Ros2
       run: |
         source "$INIT_ENV"
@@ -63,7 +66,7 @@ jobs:
         source "$INIT_ENV"
         source "$ROS_2_ENV"
         sed -i '/colcon test/ s/$/ --parallel-workers 4 --packages-above $PACKAGES/' /home/carma/.ci-image/engineering_tools/code_coverage/make_with_coverage.bash
-        make_with_coverage.bash -t -e /opt/carma/ -o ./coverage_reports/gcov    
+        make_with_coverage.bash -t -e /opt/carma/ -o ./coverage_reports/gcov
     - name: Run SonarScanner
       uses: usdot-fhwa-stol/actions/sonar-scanner@main
       with:
