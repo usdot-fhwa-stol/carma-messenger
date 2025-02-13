@@ -15,7 +15,7 @@ ARG DOCKER_ORG="usdotfhwastol"
 ARG DOCKER_TAG="carma-system-4.9.0"
 FROM usdotfhwastol/carma-base:carma-system-4.5.0 as base_image
 FROM base_image as setup
-ARG GIT_BRANCH="master" 
+ARG GIT_BRANCH="carma-system-4.5.0" 
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
