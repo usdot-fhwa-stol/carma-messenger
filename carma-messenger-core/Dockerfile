@@ -11,11 +11,11 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations under
 #  the License.
-ARG DOCKER_ORG="usdotfhwastolcandidate"
-ARG DOCKER_TAG="prowler"
+ARG DOCKER_ORG="usdotfhwastol"
+ARG DOCKER_TAG="carma-system-4.9.0"
 FROM usdotfhwastol/carma-base:carma-system-4.5.0 as base_image
 FROM base_image as setup
-ARG GIT_BRANCH="release/prowler" 
+ARG GIT_BRANCH="master" 
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
