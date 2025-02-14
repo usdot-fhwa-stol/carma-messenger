@@ -14,10 +14,6 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-# This script is used to install the dependencies for the v2x-ros-conversion package
-echo "Installing v2x-ros-conversion dependencies"
-sudo ~/src/v2x-ros-conversion/docker/install_dependencies.sh
-
 # Build ros2
 source /opt/ros/humble/setup.bash
 cd ~/
