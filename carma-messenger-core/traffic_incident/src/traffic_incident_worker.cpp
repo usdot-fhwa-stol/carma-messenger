@@ -35,7 +35,7 @@ carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGen
 {
   carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg;
 
-  traffic_mobility_msg.m_header.timestamp = pinpoint_msg.header.stamp.sec * 1000;
+  traffic_mobility_msg.m_header.timestamp = rclcpp::Time(pinpoint_msg.header.stamp).nanoseconds() / 1e6;
   traffic_mobility_msg.m_header.sender_id = sender_id_;
 
   traffic_mobility_msg.strategy = USE_CASE_NAME_;

@@ -30,7 +30,7 @@ namespace j2735_convertor
  * @class MAPConvertor
  * @brief Is the class responsible for converting J2735 Maps to CARMA usable Mapss
  *
- * Handles conversion between Map messages in the j2735_msgs and cav_msgs packages.
+ * Handles conversion between Map messages in the j2735_v2x_msgs and cav_msgs packages.
  * Unit conversions are handled
  * Note: The concept of map Zoom is not accounted for in these conversions
  */

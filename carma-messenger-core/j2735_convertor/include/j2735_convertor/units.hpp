@@ -19,7 +19,7 @@ namespace j2735_convertor
 {
 /**
  * Defined the units namespace which contains many unit conversion factors
- * These are primarily meant to be used in conversions between j2735_msgs and cav_msgs
+ * These are primarily meant to be used in conversions between j2735_v2x_msgs and cav_msgs
  * 
  * New units should follow the LSB unit guidelines given by the appropriate SAE standard
  * For instance, "LSB units of 0.01 degrees per second" would equate to "HUNDREDTH_DEG_PER_S"

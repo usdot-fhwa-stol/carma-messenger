@@ -23,7 +23,7 @@ namespace j2735_convertor
 namespace geofence_control
 {
 ////
-// Convert j2735_msgs to cav_msgs
+// Convert j2735_v2x_msgs to cav_msgs
 ////
 
 void convert(const j2735_v2x_msgs::msg::DailySchedule& in_msg, carma_v2x_msgs::msg::DailySchedule& out_msg)
@@ -189,7 +189,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlMessage& in_msg, carma_v2x
 void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_v2x_msgs::msg::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
-  // j2735_msgs/Id64b reqid
+  // j2735_v2x_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
@@ -205,7 +205,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_
   out_msg.msgnum = in_msg.msgnum;
 
   // # id Id128b, -- unique traffic control id
-  // j2735_msgs/Id128b id
+  // j2735_v2x_msgs/Id128b id
   out_msg.id = in_msg.id;
 
   // # updated EpochMins
@@ -213,7 +213,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_
   out_msg.updated = rclcpp::Time(in_msg.updated * units::SEC_PER_MIN, 0);
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
-  // j2735_msgs/TrafficControlPackage package
+  // j2735_v2x_msgs/TrafficControlPackage package
   // bool package_exists
   out_msg.package_exists = in_msg.package_exists;
   if(out_msg.package_exists)
@@ -242,7 +242,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlMessageV01& in_msg, carma_
 
 void convert(const j2735_v2x_msgs::msg::TrafficControlParams& in_msg, carma_v2x_msgs::msg::TrafficControlParams& out_msg)
 {
-  // j2735_msgs/TrafficControlVehClass[] vclasses
+  // j2735_v2x_msgs/TrafficControlVehClass[] vclasses
   out_msg.vclasses = in_msg.vclasses;
   
   // # schedule TrafficControlSchedule
@@ -307,7 +307,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlSchedule& in_msg, carma_v2
 }
 
 ////
-// Convert cav_msgs to j2735_msgs
+// Convert cav_msgs to j2735_v2x_msgs
 ////
 
 void convert(const carma_v2x_msgs::msg::DailySchedule& in_msg, j2735_v2x_msgs::msg::DailySchedule& out_msg)
@@ -466,7 +466,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessage& in_msg, j2735_v2x
 void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_v2x_msgs::msg::TrafficControlMessageV01& out_msg)
 {
   // # reqid ::= Id64b
-  // j2735_msgs/Id64b reqid
+  // j2735_v2x_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
@@ -482,7 +482,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_
   out_msg.msgnum = in_msg.msgnum;
 
   // # id Id128b, -- unique traffic control id
-  // j2735_msgs/Id128b id
+  // j2735_v2x_msgs/Id128b id
   out_msg.id = in_msg.id;
 
   // # updated EpochMins
@@ -491,7 +491,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_
   out_msg.updated = updated.seconds() / units::SEC_PER_MIN;
 
   // # package [0] TrafficControlPackage OPTIONAL, -- related traffic control ids
-  // j2735_msgs/TrafficControlPackage package
+  // j2735_v2x_msgs/TrafficControlPackage package
   // bool package_exists
   out_msg.package_exists = in_msg.package_exists;
   if(out_msg.package_exists)
@@ -520,7 +520,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlMessageV01& in_msg, j2735_
 
 void convert(const carma_v2x_msgs::msg::TrafficControlParams& in_msg, j2735_v2x_msgs::msg::TrafficControlParams& out_msg)
 {
-  // j2735_msgs/TrafficControlVehClass[] vclasses
+  // j2735_v2x_msgs/TrafficControlVehClass[] vclasses
   out_msg.vclasses = in_msg.vclasses;
   
   // # schedule TrafficControlSchedule

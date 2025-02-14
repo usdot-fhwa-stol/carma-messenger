@@ -308,7 +308,7 @@ void PSMConvertor::convert(const j2735_v2x_msgs::msg::PSM& in_msg, carma_v2x_msg
 }
 
 ////
-// Convert cav_msgs to j2735_msgs
+// Convert cav_msgs to j2735_v2x_msgs
 ////
 
 void PSMConvertor::convert(const carma_v2x_msgs::msg::PathPrediction& in_msg, j2735_v2x_msgs::msg::PathPrediction& out_msg)

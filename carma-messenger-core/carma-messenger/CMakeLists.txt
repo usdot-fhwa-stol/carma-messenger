@@ -52,8 +52,7 @@ else() # ROS 2
 
 
   ament_auto_package(
-          INSTALL_TO_SHARE launch log-config scripts ui
+          INSTALL_TO_SHARE config launch log-config scripts ui
   )
 
 endif()
-

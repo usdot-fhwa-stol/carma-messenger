@@ -23,7 +23,7 @@ namespace j2735_convertor
 namespace geofence_request
 {
 /////
-// Convert j2735_msgs to cav_msgs
+// Convert j2735_v2x_msgs to cav_msgs
 /////
 
 void convert(const j2735_v2x_msgs::msg::OffsetPoint& in_msg, carma_v2x_msgs::msg::OffsetPoint& out_msg,const int8_t scale)
@@ -47,7 +47,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlBounds& in_msg, carma_v2x_
 void convert(const j2735_v2x_msgs::msg::TrafficControlRequestV01& in_msg, carma_v2x_msgs::msg::TrafficControlRequestV01& out_msg)
 {
   // # reqid ::= Id64b
-  // j2735_msgs/Id64b reqid
+  // j2735_v2x_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
@@ -84,7 +84,7 @@ void convert(const j2735_v2x_msgs::msg::TrafficControlRequest& in_msg, carma_v2x
 }
 
 ////
-// Convert cav_msgs to j2735_msgs
+// Convert cav_msgs to j2735_v2x_msgs
 ////
 
 // The use case for the control request is to grab large sets of geofences at once. So error under a meter is unlikely to matter
@@ -157,7 +157,7 @@ void convert(const carma_v2x_msgs::msg::TrafficControlBounds& in_msg, j2735_v2x_
 void convert(const carma_v2x_msgs::msg::TrafficControlRequestV01& in_msg, j2735_v2x_msgs::msg::TrafficControlRequestV01& out_msg)
 {
   // # reqid ::= Id64b
-  // j2735_msgs/Id64b reqid
+  // j2735_v2x_msgs/Id64b reqid
   out_msg.reqid = in_msg.reqid;
 
   // # reqseq ::= INTEGER (0..255)
