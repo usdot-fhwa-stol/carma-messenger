@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
- 
+
 
 #pragma once
 
@@ -29,10 +29,10 @@ namespace emergency_response_vehicle_plugin
     * @brief UDPListener is a helper class that manages listening on a UDP socket
     * and passing received packets to subscribers.
     * NOTE: Class is loosely based off of UDPListener class implemented in the usdot-fhwa-stol GitHub organization's
-    *       carma-cohda-dsrc-driver repository: https://github.com/usdot-fhwa-stol/carma-cohda-dsrc-driver
+    *       v2x-ros-driver repository: https://github.com/usdot-fhwa-stol/v2x-ros-driver
     */
     class UDPListener{
-    
+
     private:
         boost::asio::io_service& io_; // Object used to enable IO services on a UDP Socket
 
