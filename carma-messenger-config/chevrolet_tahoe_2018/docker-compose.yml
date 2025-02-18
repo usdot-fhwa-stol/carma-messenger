@@ -15,7 +15,7 @@
 # Docker Compose Spec Version
 services:
   roscore:
-    image: usdotfhwastol/carma-base:carma-system-4.5.0
+    image: ${DOCKER_ORG}/carma-base:${DOCKER_TAG}
     network_mode: host
     container_name: roscore
     volumes_from:
@@ -28,7 +28,7 @@ services:
     command: roscore
 
   ros1_bridge:
-    image: usdotfhwastol/carma-msgs:carma-system-4.5.0
+    image: ${DOCKER_ORG}/carma-msgs:${DOCKER_TAG}
     network_mode: host
     container_name: ros1_bridge
     volumes_from:
@@ -71,7 +71,7 @@ services:
     command: bash -c 'source /opt/carma/install_ros2/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
 
   cohda_dsrc_driver:
-    image: usdotfhwastol/carma-cohda-dsrc-driver:carma-system-4.5.0
+    image: ${DOCKER_ORG}/carma-cohda-dsrc-driver:${DOCKER_TAG}
     container_name: carma-cohda-dsrc-driver
     network_mode: host
     volumes_from:
@@ -85,7 +85,7 @@ services:
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
 
   torc-pinpoint-driver:
-    image: usdotfhwastol/carma-torc-pinpoint-driver:carma-system-4.5.0
+    image: ${DOCKER_ORG}/carma-torc-pinpoint-driver:${DOCKER_TAG}
     container_name: carma-torc-pinpoint-driver
     network_mode: host
     volumes_from:
