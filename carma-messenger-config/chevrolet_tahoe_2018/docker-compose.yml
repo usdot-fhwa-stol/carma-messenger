@@ -15,7 +15,7 @@
 # Docker Compose Spec Version
 services:
   roscore:
-    image: ${DOCKER_ORG}/carma-base:${DOCKER_TAG}
+    image: usdotfhwastol/carma-base:carma-system-4.5.0
     network_mode: host
     container_name: roscore
     volumes_from:
@@ -28,7 +28,7 @@ services:
     command: roscore
 
   ros1_bridge:
-    image: ${DOCKER_ORG}/carma-msgs:${DOCKER_TAG}
+    image: usdotfhwastol/carma-msgs:carma-system-4.8.0
     network_mode: host
     container_name: ros1_bridge
     volumes_from:
@@ -42,59 +42,25 @@ services:
     # Use the dynamic_bridge instead of the parameter bridge as the number of topics is small enough to pose less of a latency issue
     command: bash -c 'wait-for-it localhost:11311 -- rosparam load /opt/carma/vehicle/config/bridge.yml && source ~/.base-image/workspace/install/setup.bash && ros2 run ros1_bridge dynamic_bridge --multi-threads'
 
-  messenger:
-    image: ${DOCKER_ORG}/carma-messenger-core:${DOCKER_TAG}
+  v2x_ros_conversion:
+    image: usdotfhwastol/v2x-ros-conversion:develop
     network_mode: host
-    container_name: carma-messenger-core
+    container_name: v2x_ros_conversion
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
-    volumes:
-      - /opt/carma/logs:/opt/carma/logs
-      - /opt/carma/.ros:/opt/carma/.ros
-    command: wait-for-it localhost:11311 -- roslaunch /opt/carma/vehicle/config/carma-messenger-docker.launch
-
-  messenger_ros2:
-    image: ${DOCKER_ORG}/carma-messenger-core:${DOCKER_TAG}
-    network_mode: host
-    container_name: messenger_ros2
-    volumes_from:
-      - container:carma-config:ro
-    environment:
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
-      - /opt/carma/routes:/opt/carma/routes
-      - /opt/carma/vehicle:/opt/carma/vehicle
-    command: bash -c 'source /opt/carma/install_ros2/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
+    command: bash -c 'source /opt/carma/install_ros2/setup.bash && ros2 launch v2x_ros_driver v2x_ros_driver.launch.py'
 
-  v2x_ros_driver:
-    image: ${DOCKER_ORG}/v2x-ros-driver:${DOCKER_TAG}
+  cohda_dsrc_driver:
+    image: usdotfhwastol/carma-cohda-dsrc-driver:carma-system-4.5.0
     container_name: v2x-ros-driver
     network_mode: host
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
       - /opt/carma/vehicle:/opt/carma/vehicle
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
-
-  torc_pinpoint_driver:
-    image: ${DOCKER_ORG}/carma-torc-pinpoint-driver:${DOCKER_TAG}
-    container_name: carma-torc-pinpoint-driver
-    network_mode: host
-    volumes_from:
-      - container:carma-config:ro
-    environment:
-      - ROS_IP=192.168.0.51
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
-    volumes:
-      - /opt/carma/logs:/opt/carma/logs
-      - /opt/carma/.ros:/opt/carma/.ros
-      - /opt/carma/vehicle:/opt/carma/vehicle
-    command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=pinpoint_driver'
