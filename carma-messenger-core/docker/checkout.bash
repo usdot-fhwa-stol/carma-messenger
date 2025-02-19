@@ -41,5 +41,7 @@ git clone --depth=1 https://github.com/usdot-fhwa-stol/v2x-ros-conversion.git ${
 git clone https://github.com/usdot-fhwa-stol/carma-msgs.git ${dir}/src/CARMAMsgs --branch $BRANCH
 git clone https://github.com/usdot-fhwa-stol/carma-utils.git ${dir}/src/CARMAUtils --branch $BRANCH
 
-# Install dependencies for v2x-ros-conversion - needs branch to pull correct debian version
-./${dir}/src/v2x-ros-conversion/docker/install_dependencies.sh -b $BRANCH
+
+# Install dependencies
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+${SCRIPT_DIR}/install_dependencies.sh -b $BRANCH
