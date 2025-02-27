@@ -43,4 +43,5 @@ git clone https://github.com/usdot-fhwa-stol/carma-utils.git ${dir}/src/CARMAUti
 
 
 # Install dependencies
-./install_dependencies.sh -b $BRANCH -r $dir
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+${SCRIPT_DIR}/install_dependencies.sh -b $BRANCH -r $dir
