@@ -35,4 +35,4 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Install dependencies for v2x-ros-conversion - needs branch to pull correct debian version
-./${dir}/src/v2x-ros-conversion/docker/install_dependencies.sh -b $BRANCH
+bash ${dir}/src/v2x-ros-conversion/docker/install_dependencies.sh -b $BRANCH
