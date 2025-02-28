@@ -50,9 +50,6 @@ jobs:
     - name: Checkout dependencies
       run: |
         ./src/${{ github.event.repository.name }}/carma-messenger-core/docker/checkout.bash -r /opt/carma/ -b ${{ steps.determine-base-branch.outputs.git_branch }}
-    - name: Install cpp message external dependencies
-      # Install the cpp-message deps
-      run: sudo bash /opt/carma/src/v2x-ros-conversion/docker/install_dependencies.sh
     - name: Build Ros2
       run: |
         source "$INIT_ENV"
