@@ -27,18 +27,18 @@ services:
       - /opt/carma/vehicle:/opt/carma/vehicle
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
 
-  cohda_dsrc_driver:
-    image: ${DOCKER_ORG}/carma-cohda-dsrc-driver:${DOCKER_TAG}
-    container_name: carma-cohda-dsrc-driver
+  v2x_ros_driver:
+    image: ${DOCKER_ORG}/v2x-ros-driver:${DOCKER_TAG}
+    container_name: v2x-ros-driver
     network_mode: host
     volumes_from:
       - container:carma-config:ro
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
-    command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=dsrc_driver'
+    command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/drivers.launch.py drivers:=v2x_ros_driver'
 
-  torc-pinpoint-driver:
+  torc_pinpoint_driver:
     image: ${DOCKER_ORG}/carma-torc-pinpoint-driver:${DOCKER_TAG}
     container_name: carma-torc-pinpoint-driver
     network_mode: host
