@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - develop-humble
       - master
       - "release/*"
     tags:
@@ -13,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
-      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}-humble
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
@@ -47,23 +46,23 @@ jobs:
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }} 
-          
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}
+
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ github.ref_name }}      
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ github.ref_name }}
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
-            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-humble
             DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}       
-       
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}
+
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -73,7 +72,7 @@ jobs:
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}      
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v5
@@ -84,4 +83,4 @@ jobs:
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}                
+            VERSION=${{ steps.docker-image-metadata.outcome.version }}

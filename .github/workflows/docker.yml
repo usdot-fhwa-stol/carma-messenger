@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
-      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}-humble
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
@@ -33,8 +33,8 @@ jobs:
         with:
           context: ./carma-messenger-core/
           build-args: |
-            GIT_BRANCH=${{  github.base_ref }}     
-            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            GIT_BRANCH=${{  github.base_ref }}
+            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-humble
             DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v5
