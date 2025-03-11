@@ -11,6 +11,8 @@ jobs:
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        with:
+          docker_tag_suffix: humble
   build:
     needs: determine_docker_org_and_tag
     runs-on: ubuntu-latest
@@ -33,7 +35,7 @@ jobs:
         with:
           context: ./carma-messenger-core/
           build-args: |
-            GIT_BRANCH=${{  github.base_ref }}     
+            GIT_BRANCH=${{  github.base_ref }}
             DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
             DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
