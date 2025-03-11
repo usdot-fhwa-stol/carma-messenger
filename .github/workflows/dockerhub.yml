@@ -12,10 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
-      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}-humble
+      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        with:
+          docker_tag_suffix: humble
   docker:
     needs: determine_docker_org_and_tag
     runs-on: ubuntu-latest
@@ -57,7 +59,7 @@ jobs:
           tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ github.ref_name }}
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
-            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-humble
+            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
             DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
