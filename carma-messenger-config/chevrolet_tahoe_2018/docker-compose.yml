@@ -1,4 +1,4 @@
-#  Copyright (C) 2018-2023 LEIDOS.
+#  Copyright (C) 2018-2025 LEIDOS.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #  use this file except in compliance with the License. You may obtain a copy of
@@ -25,7 +25,6 @@ services:
       - /opt/carma/.ros:/home/carma/.ros
       - /opt/carma/routes:/opt/carma/routes
       - /opt/carma/vehicle:/opt/carma/vehicle
-      - /home/carma/carma-messenger/carma-messenger-core/carma-messenger/launch/carma-messenger.launch.py:/opt/carma/install/carma-messenger/share/carma-messenger/launch/carma-messenger.launch.py
     command: bash -c 'source /opt/carma/install/setup.bash && ros2 launch /opt/carma/vehicle/config/carma-messenger-docker.launch.py'
 
   v2x_ros_driver:

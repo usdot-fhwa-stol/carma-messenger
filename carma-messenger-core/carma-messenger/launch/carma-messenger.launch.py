@@ -63,18 +63,6 @@ def generate_launch_description():
         ]
     )
 
-    # v2x_group = GroupAction(
-    #     actions=[
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch', '/v2x-ros-conversion.launch.py']),
-    #             launch_arguments = {
-    #                 'configuration_delay' : [configuration_delay],
-    #             }.items()
-    #         ),
-    #     ],
-    #      # The key is to ensure this runs in its own scoped context
-    #     scoped=True
-    # )
 
     v2x_process = ExecuteProcess(
         cmd=['ros2', 'launch', 'v2x-ros-conversion', 'v2x-ros-conversion.launch.py'],
@@ -128,13 +116,11 @@ def generate_launch_description():
         declare_configuration_delay_arg,
         declare_use_rosbag,
         declare_route_file_folder,
-        # ros2_rosbag_launch,
         transform_group,
-        # v2x_group
         v2x_process,
-        # plugins_group,
+        plugins_group,
         ui_group,
         ros2_rosbag_group,
         traffic_incident_group,
-        # system_alert_publisher
+        system_alert_publisher
     ])
