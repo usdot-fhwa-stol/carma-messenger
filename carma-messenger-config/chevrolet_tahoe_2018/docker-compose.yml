@@ -1,4 +1,4 @@
-#  Copyright (C) 2018-2023 LEIDOS.
+#  Copyright (C) 2018-2025 LEIDOS.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #  use this file except in compliance with the License. You may obtain a copy of
@@ -20,8 +20,6 @@ services:
     container_name: messenger_ros2
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
@@ -35,8 +33,6 @@ services:
     network_mode: host
     volumes_from:
       - container:carma-config:ro
-    environment:
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/home/carma/.ros
@@ -51,7 +47,6 @@ services:
       - container:carma-config:ro
     environment:
       - ROS_IP=192.168.0.51
-      - CYCLONEDDS_URI=/opt/carma/vehicle/calibration/telematics/cyclone_config.xml
     volumes:
       - /opt/carma/logs:/opt/carma/logs
       - /opt/carma/.ros:/opt/carma/.ros

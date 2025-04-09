@@ -37,7 +37,7 @@ def generate_launch_description():
 
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
-        name ='configuration_delay', default_value='4.0')
+        name ='configuration_delay', default_value='2.0')
 
     use_rosbag = LaunchConfiguration('use_rosbag')
     declare_use_rosbag = DeclareLaunchArgument(
@@ -54,20 +54,11 @@ def generate_launch_description():
         description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins'
     )
 
-    # Launch ROS2 rosbag logging
-    ros2_rosbag_launch = GroupAction(
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ros2_rosbag.launch.py']),
-            )
-        ]
-    )
-
     transform_group = GroupAction(
         actions=[
             PushRosNamespace(EnvironmentVariable('CARMA_TF_NS', default_value='/')),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/transforms.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/transforms.launch.py']),
             ),
         ]
     )
@@ -75,7 +66,7 @@ def generate_launch_description():
     v2x_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/v2x-ros-conversion.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch','/v2x-ros-conversion.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay]
                 }.items()
@@ -86,7 +77,7 @@ def generate_launch_description():
     plugins_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/plugins.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay],
                     'route_file_folder' : route_file_folder
@@ -98,7 +89,7 @@ def generate_launch_description():
     ui_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ui.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ui.launch.py']),
             ),
         ]
     )
@@ -130,7 +121,6 @@ def generate_launch_description():
         declare_configuration_delay_arg,
         declare_use_rosbag,
         declare_route_file_folder,
-        ros2_rosbag_launch,
         transform_group,
         v2x_group,
         plugins_group,
