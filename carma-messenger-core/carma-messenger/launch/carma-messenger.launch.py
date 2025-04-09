@@ -58,21 +58,26 @@ def generate_launch_description():
         actions=[
             PushRosNamespace(EnvironmentVariable('CARMA_TF_NS', default_value='/')),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/transforms.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/transforms.launch.py']),
             ),
         ]
     )
 
-
-    v2x_process = ExecuteProcess(
-        cmd=['ros2', 'launch', 'v2x-ros-conversion', 'v2x-ros-conversion.launch.py'],
-        output='screen'
+    v2x_group = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch','/v2x-ros-conversion.launch.py']),
+                launch_arguments = {
+                    'configuration_delay' : [configuration_delay]
+                }.items()
+            ),
+        ]
     )
 
     plugins_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/plugins.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay],
                     'route_file_folder' : route_file_folder
@@ -84,7 +89,7 @@ def generate_launch_description():
     ui_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ui.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ui.launch.py']),
             ),
         ]
     )
@@ -117,7 +122,7 @@ def generate_launch_description():
         declare_use_rosbag,
         declare_route_file_folder,
         transform_group,
-        v2x_process,
+        v2x_group,
         plugins_group,
         ui_group,
         ros2_rosbag_group,
