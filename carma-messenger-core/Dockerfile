@@ -11,7 +11,7 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations under
 #  the License.
-ARG DOCKER_ORG="usdotfhwastoldev"
+ARG DOCKER_ORG="usdotfhwastolcandidate"
 ARG DOCKER_TAG="develop-humble"
 FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
 FROM base_image as setup
