@@ -40,50 +40,55 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Remove suffix for Docker tag
+        id: rm_suffix
+        uses: usdot-fhwa-stol/actions/remove-suffix@feature_add_remove_suffix
+        with:
+          tag: ${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+
       - name: Build and Push carma-messenger-ui Docker Image
         uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-ui:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-ui:${{ steps.rm_suffix.outputs.processed_tag }}
           build-args: |
-            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
-            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}
-
+            BUILD_DATE=${{ steps.docker-image-metadata.outputs.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outputs.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outputs.version }}
 
       - name: Build and Push carma-messenger-core Docker Image
         uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ steps.rm_suffix.outputs.processed_tag }}
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
-            DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
+            DOCKER_TAG=${{ steps.rm_suffix.outputs.processed_tag }}
             DOCKER_ORG=${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}
-            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
-            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}
+            BUILD_DATE=${{ steps.docker-image-metadata.outputs.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outputs.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outputs.version }}
 
       - name: Build and Push chevrolet_tahoe_2018 Docker Image
         uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-chevrolet_tahoe_2018
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ steps.rm_suffix.outputs.processed_tag }}-chevrolet_tahoe_2018
           build-args: |
-            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
-            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}
+            BUILD_DATE=${{ steps.docker-image-metadata.outputs.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outputs.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outputs.version }}
 
       - name: Build and Push development Docker Image
         uses: docker/build-push-action@v5
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-development
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ steps.rm_suffix.outputs.processed_tag }}-development
           build-args: |
-            BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
-            VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
-            VERSION=${{ steps.docker-image-metadata.outcome.version }}
+            BUILD_DATE=${{ steps.docker-image-metadata.outputs.build_date }}
+            VCS_REF=${{ steps.docker-image-metadata.outputs.vcs_ref }}
+            VERSION=${{ steps.docker-image-metadata.outputs.version }}
