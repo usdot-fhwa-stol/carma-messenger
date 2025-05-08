@@ -5,6 +5,7 @@ on:
       - develop
       - master
       - "release/*"
+      - fix_docker_tags
     tags:
       - "carma-system-*"
 jobs:
