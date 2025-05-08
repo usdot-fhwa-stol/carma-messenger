@@ -42,7 +42,7 @@ jobs:
         with:
           context: ./carma-messenger-ui/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-ui:${{ github.ref_name }}
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-ui:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
@@ -54,7 +54,7 @@ jobs:
         with:
           context: ./carma-messenger-core/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ github.ref_name }}
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-core:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
           build-args: |
             GIT_BRANCH=${{ github.ref_name }}
             DOCKER_TAG=${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
@@ -68,7 +68,7 @@ jobs:
         with:
           context: ./carma-messenger-config/chevrolet_tahoe_2018/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ github.ref_name }}-chevrolet_tahoe_2018
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-chevrolet_tahoe_2018
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
@@ -79,7 +79,7 @@ jobs:
         with:
           context: ./carma-messenger-config/development/
           push: true
-          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ github.ref_name }}-development
+          tags: ${{ needs.determine_docker_org_and_tag.outputs.docker_organization }}/carma-messenger-config:${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}-development
           build-args: |
             BUILD_DATE=${{ steps.docker-image-metadata.outcome.build_date }}
             VCS_REF=${{ steps.docker-image-metadata.outcome.vcs_ref }}
