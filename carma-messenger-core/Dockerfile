@@ -13,7 +13,7 @@
 #  the License.
 ARG DOCKER_ORG="usdotfhwastoldev"
 ARG DOCKER_TAG="develop-humble"
-FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
+FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG}-humble as base_image
 FROM base_image as setup
 ARG GIT_BRANCH="develop"
 
