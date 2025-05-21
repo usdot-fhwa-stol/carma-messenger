@@ -17,8 +17,6 @@ jobs:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
         with:
-          docker_tag_suffix: humble
-          remove_suffix: true
   docker:
     needs: determine_docker_org_and_tag
     runs-on: ubuntu-latest
