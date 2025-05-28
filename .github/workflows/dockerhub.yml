@@ -40,7 +40,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Remove suffix for Docker tag
+      - name: Remove suffix about ROS version from the resulting Docker image's tag
         id: rm_suffix
         uses: usdot-fhwa-stol/actions/remove-suffix@feature_add_remove_suffix
         with:

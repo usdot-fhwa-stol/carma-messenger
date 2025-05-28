@@ -18,7 +18,6 @@ jobs:
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
         with:
           docker_tag_suffix: humble
-          replace_suffix: true
   build:
     needs: determine_docker_org_and_tag
     defaults:
