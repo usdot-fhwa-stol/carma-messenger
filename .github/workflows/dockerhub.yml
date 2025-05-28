@@ -5,7 +5,6 @@ on:
       - develop
       - master
       - "release/*"
-      - fix_docker_tags
     tags:
       - "carma-system-*"
 jobs:
@@ -42,7 +41,7 @@ jobs:
 
       - name: Remove suffix about ROS version from the resulting Docker image's tag
         id: rm_suffix
-        uses: usdot-fhwa-stol/actions/remove-suffix@feature_add_remove_suffix
+        uses: usdot-fhwa-stol/actions/remove-suffix@main
         with:
           tag: ${{ needs.determine_docker_org_and_tag.outputs.docker_image_tag }}
 
