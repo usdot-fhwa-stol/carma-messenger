@@ -35,7 +35,7 @@ body {
 
 #messenger-main-div {
     text-align: center;
-    background-color:#FFF; 
+    background-color:#FFF;
     height: 100vh;
 }
 
@@ -102,7 +102,7 @@ div.card,div.card-body{
     vertical-align: middle;
 }
 /* Rectangle 12 */
-.MessengerTitleRec{   
+.MessengerTitleRec{
     height: 190px;
     display: inline-block;
     margin: auto;
@@ -110,9 +110,9 @@ div.card,div.card-body{
 }
 
 .Messenger_back_Div{
-    height: 100%; 
+    height: 100%;
     float: left;
-    display: inline-block; 
+    display: inline-block;
     width:20%;
     position: relative;
     padding: 10px;
@@ -121,16 +121,16 @@ div.card,div.card-body{
 /* Messenger_back_arrow  */
 .Messenger_back_arrow{
     display: none;
-    cursor: pointer;     
-    float: left; 
-    height: 70%; 
+    cursor: pointer;
+    float: left;
+    height: 70%;
     margin-top: 15px;
 }
 
 .Messenger_stop_Div{
-    height: 100%; 
+    height: 100%;
     float: right;
-    display: flex; 
+    display: flex;
     max-width:20%;
     padding: 10px;
     position: relative;
@@ -150,14 +150,14 @@ div.card,div.card-body{
 
 /* logo  */
 .messenger-logo-div{
-    height: 100%;  
+    height: 100%;
     float: left;
-    width:60%;    
+    width:60%;
 }
 .logo{
-    height: 100%;  
+    height: 100%;
     display: inline-block;
-    max-width:60%;    
+    max-width:60%;
     margin-top: 10px;
 }
 
@@ -174,52 +174,52 @@ div.card,div.card-body{
     height: auto;
     width: auto;
 }
- 
+
 .NoMsgAvailable{
     margin-top: 6%;
     font-weight: bolder;
 }
-  /* 
+  /*
     ##Device = Tablets, Ipads (landscape)
     ##Screen = B/w 768px to 1024px
   */
-  
+
   @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
     .Messenger{
         font-size: 80px;
     }
   }
-  @media (min-width: 768px) and (max-width: 1024px) {      
+  @media (min-width: 768px) and (max-width: 1024px) {
 
     .Messenger{
         font-size: 70px;
     }
-  } 
-  /* 
+  }
+  /*
     ##Device = Low Resolution Tablets, Mobiles (Landscape)
     ##Screen = B/w 481px to 767px
   */
-  
+
   @media (min-width: 700px) and (max-width: 767px) {
     .Messenger{
         font-size: 30pt;
-    } 
+    }
   }
 
-  /* 
+  /*
     ##Device = Low Resolution Tablets, Mobiles (Landscape)
     ##Screen = B/w 481px to 767px
   */
-  
+
   @media (min-width: 26px) and (max-width: 699px)  {
-   
-    .MessengerTitleRec,.MessengerTitleFrame{   
+
+    .MessengerTitleRec,.MessengerTitleFrame{
         height: 60px;
     }
     .Messenger{
         font-size: 20pt;
     }
-    
+
 }
 
 
@@ -574,7 +574,7 @@ footer {
     font-weight: normal;
     display: block;
     text-align: left;
-    color: #000000;    
+    color: #000000;
     width: calc(35% - 10px);
     float: left;
     font-size: 80%;
@@ -614,23 +614,79 @@ footer {
 @media (min-width: 992px) and (max-width: 1200px) and (orientation: landscape) {
     body{
             font-size: 20pt;
-        }     
+        }
 }
 @media (min-width: 993px) and (max-width: 1200px) and (orientation: landscape) {
     body{
             font-size: 20pt;
-        }     
+        }
 }
 @media (min-width: 769px) and (max-width: 992px) {
     body{
             font-size: 18pt;
-        }         
+        }
 }
 @media (min-width: 600px) and (max-width: 768px) {
     body{
             font-size: 14pt;
-        }           
+        }
 }
 @media  (max-width: 599px) {
-           
+
+}
+
+/*** Custom styles for Google Maps integration ***/
+
+#load-map {
+    width: 100%;
+    height: 400px;
+    min-height: 400px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+
+.map-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #6c757d;
+}
+
+.event-management-form {
+    padding: 15px;
+}
+
+.info-section {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.hide {
+    display: none !important;
+}
+
+.show {
+    display: block !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+@media (max-width: 768px) {
+    .event-management-container {
+        flex-direction: column;
+    }
+
+    #load-map {
+        height: 300px;
+        min-height: 300px;
+    }
 }
