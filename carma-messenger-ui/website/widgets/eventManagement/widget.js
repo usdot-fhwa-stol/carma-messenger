@@ -112,7 +112,16 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                         <h5 class="card-title mb-0">Live Map View</h5>
                     </div>
                     <div class="card-body p-0">
-                        <div id="load-map" style="width: 100%; height: 400px; min-height: 400px;"></div>
+                    <div id="map-container" style="position: relative; height: 100%;">
+                        <div id="load-map" style="height: 100%;"></div>
+                        <div id="marker-overlay">
+                            <div class="marker-item" draggable="true" data-type="end-zone">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/orange-dot.png" />
+                            </div>
+                            <div class="marker-item" draggable="true" data-type="start-zone">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -134,7 +143,17 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             <div class="container-fluid" style="height: 100vh;">
                 <div class="row" style="height: 100%;">
                     <div class="col-md-7 p-0" style="height: 100%;">
-                        <div id="load-map" style="width: 100%; height: 100%; background-color: #f8f9fa;"></div>
+                        <div id="map-container" style="position: relative; height: 100%;">
+                            <div id="load-map" style="height: 100%;"></div>
+                            <div id="marker-overlay">
+                                <div class="marker-item" draggable="true" data-type="end-zone">
+                                    <img src="https://maps.google.com/mapfiles/ms/icons/orange-dot.png" />
+                                </div>
+                                <div class="marker-item" draggable="true" data-type="start-zone">
+                                    <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-5" style="background-color: #f8f9fa; padding: 20px; overflow-y: auto;">
                         <div id="eventManagementFormContainer">

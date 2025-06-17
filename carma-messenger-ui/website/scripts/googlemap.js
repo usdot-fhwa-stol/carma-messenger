@@ -101,7 +101,12 @@ function showNewMap() {
         return;
     }
 
-    // Ensure container has dimensions
+    // Ensure map container is properly styled for flex layout
+    const mapWrapper = document.getElementById('map-wrapper');
+    if (!mapWrapper) {
+        console.warn('Map wrapper not found. Make sure HTML uses a wrapper with #map-wrapper ID.');
+    }
+
     if (mapContainer.offsetWidth === 0 || mapContainer.offsetHeight === 0) {
         console.warn('Map container has no dimensions, setting default size');
         mapContainer.style.width = '100%';
@@ -109,7 +114,6 @@ function showNewMap() {
     }
 
     try {
-        // Initialize the map
         map = new google.maps.Map(mapContainer, {
             zoom: 17,
             center: { lat: 38.955097, lng: -77.147190 },
@@ -124,12 +128,10 @@ function showNewMap() {
             fullscreenControl: true
         });
 
-        // Wait for map to be fully loaded before proceeding
-        google.maps.event.addListenerOnce(map, 'idle', function() {
+        google.maps.event.addListenerOnce(map, 'idle', function () {
             console.log('Google Maps fully loaded and ready');
             mapInitialized = true;
 
-            // Load saved markers if they exist
             const savedMarkers = sessionStorage.getItem('mapMarkers');
             if (savedMarkers) {
                 try {
@@ -140,30 +142,99 @@ function showNewMap() {
                 }
             }
 
-            // Display the route on the map
             setRouteMap(map);
-
-            // Set the markers for the vehicle(s)
             setHostMarker();
 
-            // Make map globally accessible
             window.map = map;
             window.markers = markers;
             window.hostmarker = hostmarker;
             window.tcr_polygon = tcr_polygon;
             window.g_polygon_type = g_polygon_type;
 
-            // Trigger map resize to ensure proper rendering
             setTimeout(() => {
                 google.maps.event.trigger(map, 'resize');
             }, 100);
         });
+
+        setupDragAndDrop(map);
 
         console.log('Google Maps initialized successfully');
 
     } catch (error) {
         console.error('Error creating Google Map:', error);
         mapContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: red;">Error creating map: ' + error.message + '</div>';
+    }
+}
+
+function setupDragAndDrop(map) {
+    const mapDiv = document.getElementById('load-map');
+
+    mapDiv.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Necessary to allow drop
+    });
+
+    mapDiv.addEventListener('drop', (e) => {
+        e.preventDefault();
+
+        const markerType = e.dataTransfer.getData("text/plain");
+        const mapBounds = map.getDiv().getBoundingClientRect();
+
+        const point = {
+            x: e.clientX - mapBounds.left,
+            y: e.clientY - mapBounds.top
+        };
+
+        const latLng = getLatLngFromPoint(point, map);
+
+        new google.maps.Marker({
+            position: latLng,
+            map: map,
+            draggable: true,
+            title: `Dropped: ${markerType}`,
+            icon: getMarkerIcon(markerType)
+        });
+    });
+
+    document.querySelectorAll('.marker-item').forEach((el) => {
+        el.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData("text/plain", el.dataset.type);
+        });
+    });
+}
+
+function getLatLngFromPoint(point, map) {
+    const scale = Math.pow(2, map.getZoom());
+    const projection = map.getProjection();
+
+    if (!projection) {
+        console.error("Map projection not ready.");
+        return map.getCenter();
+    }
+
+    const bounds = map.getBounds();
+    const nw = new google.maps.LatLng(
+        bounds.getNorthEast().lat(),
+        bounds.getSouthWest().lng()
+    );
+
+    const worldCoordinateNW = projection.fromLatLngToPoint(nw);
+    const pixelOffset = new google.maps.Point(point.x / scale, point.y / scale);
+    const worldPoint = new google.maps.Point(
+        worldCoordinateNW.x + pixelOffset.x,
+        worldCoordinateNW.y + pixelOffset.y
+    );
+
+    return projection.fromPointToLatLng(worldPoint);
+}
+
+function getMarkerIcon(type) {
+    switch (type) {
+        case 'type1':
+            return 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+        case 'type2':
+            return 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
+        default:
+            return null;
     }
 }
 
