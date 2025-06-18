@@ -229,10 +229,12 @@ function getLatLngFromPoint(point, map) {
 
 function getMarkerIcon(type) {
     switch (type) {
-        case 'type1':
-            return 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
-        case 'type2':
-            return 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
+        case 'end-zone':
+            return 'http://www.google.com/mapfiles/ms/icons/orange-dot.png';
+        case 'start-zone':
+            return 'http://www.google.com/mapfiles/ms/icons/green-dot.png';
+        case 'vehicle-position':
+            return 'http://www.google.com/mapfiles/ms/icons/red-dot.png';
         default:
             return null;
     }

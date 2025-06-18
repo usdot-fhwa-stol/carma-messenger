@@ -116,10 +116,13 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                         <div id="load-map" style="height: 100%;"></div>
                         <div id="marker-overlay">
                             <div class="marker-item" draggable="true" data-type="end-zone">
-                                <img src="https://maps.google.com/mapfiles/ms/icons/orange-dot.png" />
+                                <img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" />
                             </div>
                             <div class="marker-item" draggable="true" data-type="start-zone">
-                                <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" />
+                                <img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" />
+                            </div>
+                            <div class="marker-item" draggable="true" data-type="vehicle-position">
+                                <img src="http://www.google.com/mapfiles/ms/icons/red-dot.png" />
                             </div>
                         </div>
                     </div>
@@ -147,10 +150,13 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                             <div id="load-map" style="height: 100%;"></div>
                             <div id="marker-overlay">
                                 <div class="marker-item" draggable="true" data-type="end-zone">
-                                    <img src="https://maps.google.com/mapfiles/ms/icons/orange-dot.png" />
+                                    <img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" />
                                 </div>
                                 <div class="marker-item" draggable="true" data-type="start-zone">
-                                    <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" />
+                                    <img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" />
+                                </div>
+                                <div class="marker-item" draggable="true" data-type="vehicle-position">
+                                    <img src="http://www.google.com/mapfiles/ms/icons/red-dot.png" />
                                 </div>
                             </div>
                         </div>
