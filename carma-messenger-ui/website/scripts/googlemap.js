@@ -25,6 +25,7 @@ let hostmarker;
 let tcr_polygon;
 let routePlanCoordinates;
 let mapInitialized = false;
+let placedMarkers = [];
 
 // Polygon types
 const g_polygon_type = {
@@ -168,9 +169,11 @@ function showNewMap() {
 
 function setupDragAndDrop(map) {
     const mapDiv = document.getElementById('load-map');
+    const placedMarkers = [];
+    let currentlyHighlighted = null;
 
     mapDiv.addEventListener('dragover', (e) => {
-        e.preventDefault(); // Necessary to allow drop
+        e.preventDefault();
     });
 
     mapDiv.addEventListener('drop', (e) => {
@@ -185,14 +188,32 @@ function setupDragAndDrop(map) {
         };
 
         const latLng = getLatLngFromPoint(point, map);
+        if (!latLng) return;
 
-        new google.maps.Marker({
+        const marker = new google.maps.Marker({
             position: latLng,
             map: map,
             draggable: true,
-            title: `Dropped: ${markerType}`,
+            title: markerType,
             icon: getMarkerIcon(markerType)
         });
+
+        marker.markerType = markerType;
+
+        marker.addListener('click', (e) => {
+            e.domEvent?.stopPropagation?.(); // optional: prevent event bubbling if needed
+            highlightMarker(marker);
+        });
+
+        placedMarkers.push(marker);
+    });
+
+    // Listen for clicks on the map itself to clear highlight
+    map.addListener('click', () => {
+        if (currentlyHighlighted) {
+            currentlyHighlighted.setIcon(getMarkerIcon(currentlyHighlighted.markerType));
+            currentlyHighlighted = null;
+        }
     });
 
     document.querySelectorAll('.marker-item').forEach((el) => {
@@ -200,6 +221,17 @@ function setupDragAndDrop(map) {
             e.dataTransfer.setData("text/plain", el.dataset.type);
         });
     });
+
+    function highlightMarker(marker) {
+        if (currentlyHighlighted === marker) return; // already highlighted
+
+        if (currentlyHighlighted) {
+            currentlyHighlighted.setIcon(getMarkerIcon(currentlyHighlighted.markerType));
+        }
+
+        marker.setIcon(getHighlightedIcon(marker.markerType));
+        currentlyHighlighted = marker;
+    }
 }
 
 function getLatLngFromPoint(point, map) {
@@ -248,6 +280,15 @@ function resizeMap() {
             map.setCenter(hostmarker.getPosition());
         }
     }
+}
+
+function getHighlightedIcon(type) {
+    const base = getMarkerIcon(type);
+    return {
+        url: base,
+        scaledSize: new google.maps.Size(50, 50),  // Highlighted = larger icon
+        anchor: new google.maps.Point(25, 50)
+    };
 }
 
 // Load API key from environment file
