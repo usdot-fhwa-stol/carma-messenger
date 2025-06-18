@@ -26,6 +26,7 @@ let tcr_polygon;
 let routePlanCoordinates;
 let mapInitialized = false;
 let placedMarkers = [];
+let closedLabelOverlay = null;
 
 // Polygon types
 const g_polygon_type = {
@@ -169,7 +170,14 @@ function showNewMap() {
 
 function setupDragAndDrop(map) {
     const mapDiv = document.getElementById('load-map');
-    const placedMarkers = [];
+    // const placedMarkers = [];
+    const markerTypesPlaced = {
+        'start-zone': null,
+        'end-zone': null,
+        'vehicle-position': null
+    };
+    
+    let rectangleOverlay = null; // store the rectangle
     let currentlyHighlighted = null;
 
     mapDiv.addEventListener('dragover', (e) => {
@@ -200,8 +208,29 @@ function setupDragAndDrop(map) {
 
         marker.markerType = markerType;
 
+        marker.markerType = markerType;
+
+        // Store marker by type
+        if (markerType in markerTypesPlaced) {
+            markerTypesPlaced[markerType] = marker;
+        }
+
+        // Check if all three types are placed
+        if (Object.values(markerTypesPlaced).every(m => m !== null)) {
+            drawRectangleFromStartToEnd(markerTypesPlaced['start-zone'], markerTypesPlaced['end-zone']);
+        }
+
+        marker.addListener('dragend', () => {
+            if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+                drawRectangleFromStartToEnd(
+                    markerTypesPlaced['start-zone'],
+                    markerTypesPlaced['end-zone']
+                );
+            }
+        });
+
         marker.addListener('click', (e) => {
-            e.domEvent?.stopPropagation?.(); // optional: prevent event bubbling if needed
+            e.domEvent?.stopPropagation?.();
             highlightMarker(marker);
         });
 
@@ -231,6 +260,132 @@ function setupDragAndDrop(map) {
 
         marker.setIcon(getHighlightedIcon(marker.markerType));
         currentlyHighlighted = marker;
+    }
+
+    let closedLabelOverlay = null;
+
+    class ClosedTextOverlay extends google.maps.OverlayView {
+        constructor(position, angle) {
+            super();
+            this.position = position;
+            this.angle = angle;
+            this.div = null;
+        }
+
+        onAdd() {
+            this.div = document.createElement('div');
+            this.div.className = 'closed-label';
+            this.div.innerText = 'CLOSED';
+
+            const panes = this.getPanes();
+            panes.overlayLayer.appendChild(this.div);
+        }
+
+        draw() {
+            const projection = this.getProjection();
+            const point = projection.fromLatLngToDivPixel(this.position);
+
+            if (point && this.div) {
+                this.div.style.left = point.x + 'px';
+                this.div.style.top = point.y + 'px';
+                this.div.style.position = 'absolute';
+                this.div.style.transform = `translate(-50%, -50%) rotate(${this.angle}deg)`;
+            }
+        }
+
+        onRemove() {
+            if (this.div) {
+                this.div.parentNode.removeChild(this.div);
+                this.div = null;
+            }
+        }
+    }
+
+    function drawRectangleFromStartToEnd(startMarker, endMarker) {
+        const R = 6378137; // Earth's radius in meters
+    
+        const toRadians = deg => deg * Math.PI / 180;
+        const toDegrees = rad => rad * 180 / Math.PI;
+    
+        const start = startMarker.getPosition();
+        const end = endMarker.getPosition();
+    
+        const lat1 = toRadians(start.lat());
+        const lng1 = toRadians(start.lng());
+        const lat2 = toRadians(end.lat());
+        const lng2 = toRadians(end.lng());
+    
+        // Convert start and end to Cartesian coordinates (meters)
+        const x1 = R * lng1 * Math.cos((lat1 + lat2) / 2);
+        const y1 = R * lat1;
+        const x2 = R * lng2 * Math.cos((lat1 + lat2) / 2);
+        const y2 = R * lat2;
+    
+        // Direction vector from start to end
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const length = Math.sqrt(dx * dx + dy * dy);
+    
+        // Perpendicular unit vector
+        const px = -dy / length;
+        const py = dx / length;
+    
+        // Half-width offset (2 meters)
+        const offsetX = px * 2;
+        const offsetY = py * 2;
+    
+        // Compute 4 corners
+        const corners = [
+            { x: x1 + offsetX, y: y1 + offsetY },
+            { x: x1 - offsetX, y: y1 - offsetY },
+            { x: x2 - offsetX, y: y2 - offsetY },
+            { x: x2 + offsetX, y: y2 + offsetY }
+        ];
+    
+        // Convert back to LatLng
+        const path = corners.map(({ x, y }) => {
+            const lat = toDegrees(y / R);
+            const lng = toDegrees(x / (R * Math.cos((lat1 + lat2) / 2)));
+            return { lat, lng };
+        });
+    
+        // Remove old rectangle if it exists
+        if (rectangleOverlay) {
+            rectangleOverlay.setMap(null);
+        }
+    
+        rectangleOverlay = new google.maps.Polygon({
+            paths: path,
+            map: map,
+            strokeColor: '#0000FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#0000FF',
+            fillOpacity: 0.1
+        });
+
+        // Remove old label if it exists
+        if (closedLabelOverlay) {
+            closedLabelOverlay.setMap(null);
+        }
+
+        // Midpoint
+        const midLat = (start.lat() + end.lat()) / 2;
+        const midLng = (start.lng() + end.lng()) / 2;
+        const midpoint = new google.maps.LatLng(midLat, midLng);
+
+        // Angle of line (in degrees)
+        // Get angle from start to end in degrees
+        let angleDeg = -Math.atan2(dy, dx) * 180 / Math.PI;
+
+        // Normalize angle to keep text upright
+        if (angleDeg < -90 || angleDeg > 90) {
+            angleDeg += 180;
+        }
+
+        // Create label overlay
+        closedLabelOverlay = new ClosedTextOverlay(midpoint, angleDeg);
+        closedLabelOverlay.setMap(map);
     }
 }
 

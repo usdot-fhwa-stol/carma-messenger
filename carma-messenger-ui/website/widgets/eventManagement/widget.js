@@ -497,14 +497,29 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             formContainer.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
 
             // Start zone (Up Track)
-            var divStartZone = this.createFormRow('🏁 Start zone', 'UpTrack', 'number', '(FT)', '300');
+            var divStartZone = this.createFormRow(
+                '<img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> Start Zone',
+                'UpTrack',
+                'number',
+                '(FT)',
+                '300'
+              );
 
             // End zone (Down Track)
-            var divEndZone = this.createFormRow('🏁 End zone', 'DownTrack', 'number', '(FT)', '300');
+            var divEndZone = this.createFormRow(
+                '<img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> End Zone',
+                'UpTrack',
+                'number',
+                '(FT)',
+                '300'
+              );
 
-            // Lanes blocked
-            var divLanesBlocked = this.createFormRow('Lanes blocked', 'LanesBlocked', 'number', '', '2');
-
+            // Lanes blocked left
+            var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', 'LanesBlockedLeft', 'number', '', '2');
+            
+            // Lanes blocked right
+            var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', 'LanesBlockedRight', 'number', '', '2');
+            
             // Advisory Speed
             var divAdvisorySpeed = this.createFormRow('Advisory Speed:', 'AdvisorySpeed', 'number', '(MPH)', '15');
 
@@ -526,7 +541,8 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             // Append all elements to form container
             formContainer.appendChild(divStartZone);
             formContainer.appendChild(divEndZone);
-            formContainer.appendChild(divLanesBlocked);
+            formContainer.appendChild(divLanesBlockedLeft);
+            formContainer.appendChild(divLanesBlockedRight);
             formContainer.appendChild(divAdvisorySpeed);
             formContainer.appendChild(divActionBtn);
             formContainer.appendChild(divCurrentPosition);
@@ -545,12 +561,13 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             row.style.fontSize = '14px';
 
             var label = document.createElement('label');
-            label.textContent = labelText;
+            label.innerHTML = labelText;
             label.style.width = '120px';
             label.style.marginRight = '10px';
             label.style.flexShrink = '0';
 
             var input = document.createElement('input');
+            input.min = '0';
             input.type = inputType;
             input.id = fieldId;
             input.value = defaultValue || '';
@@ -569,6 +586,11 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             row.appendChild(input);
             row.appendChild(unitLabel);
 
+            input.addEventListener('input', () => {
+                if (parseFloat(input.value) < 0) {
+                    input.value = '0';
+                }
+            });
             return row;
         },
 
