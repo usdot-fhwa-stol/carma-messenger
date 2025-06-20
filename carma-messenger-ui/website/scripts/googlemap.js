@@ -173,8 +173,7 @@ function setupDragAndDrop(map) {
     // const placedMarkers = [];
     const markerTypesPlaced = {
         'start-zone': null,
-        'end-zone': null,
-        'vehicle-position': null
+        'end-zone': null
     };
     
     let rectangleOverlay = null; // store the rectangle
@@ -183,6 +182,11 @@ function setupDragAndDrop(map) {
     mapDiv.addEventListener('dragover', (e) => {
         e.preventDefault();
     });
+
+    document.getElementById('StartLat').addEventListener('input', updateStartZoneMarkerFromForm);
+    document.getElementById('StartLon').addEventListener('input', updateStartZoneMarkerFromForm);
+    document.getElementById('EndLat').addEventListener('input', updateEndZoneMarkerFromForm);
+    document.getElementById('EndLon').addEventListener('input', updateEndZoneMarkerFromForm);
 
     mapDiv.addEventListener('drop', (e) => {
         e.preventDefault();
@@ -215,6 +219,16 @@ function setupDragAndDrop(map) {
             markerTypesPlaced[markerType] = marker;
         }
 
+        // Update the appropriate lat/lon fields
+        if (markerType === 'start-zone') {
+            document.getElementById('StartLat').value = latLng.lat().toFixed(6);
+            document.getElementById('StartLon').value = latLng.lng().toFixed(6);
+        }
+        else if (markerType === 'end-zone') {
+            document.getElementById('EndLat').value = latLng.lat().toFixed(6);
+            document.getElementById('EndLon').value = latLng.lng().toFixed(6);
+        }
+
         // Check if all three types are placed
         if (Object.values(markerTypesPlaced).every(m => m !== null)) {
             drawRectangleFromStartToEnd(markerTypesPlaced['start-zone'], markerTypesPlaced['end-zone']);
@@ -226,6 +240,14 @@ function setupDragAndDrop(map) {
                     markerTypesPlaced['start-zone'],
                     markerTypesPlaced['end-zone']
                 );
+            }
+            // Update the appropriate lat/lon fields
+            if (marker.markerType === 'start-zone') {
+                document.getElementById('StartLat').value = marker.getPosition().lat().toFixed(6);
+                document.getElementById('StartLon').value = marker.getPosition().lng().toFixed(6);
+            } else if (marker.markerType === 'end-zone') {
+                document.getElementById('EndLat').value = marker.getPosition().lat().toFixed(6);
+                document.getElementById('EndLon').value = marker.getPosition().lng().toFixed(6);
             }
         });
 
@@ -260,6 +282,36 @@ function setupDragAndDrop(map) {
 
         marker.setIcon(getHighlightedIcon(marker.markerType));
         currentlyHighlighted = marker;
+    }
+
+    function updateStartZoneMarkerFromForm() {
+        const lat = parseFloat(document.getElementById('StartLat').value);
+        const lng = parseFloat(document.getElementById('StartLon').value);
+        if (!isNaN(lat) && !isNaN(lng) && markerTypesPlaced['start-zone']) {
+            const newPos = new google.maps.LatLng(lat, lng);
+            markerTypesPlaced['start-zone'].setPosition(newPos);
+            if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+                drawRectangleFromStartToEnd(
+                    markerTypesPlaced['start-zone'],
+                    markerTypesPlaced['end-zone']
+                );
+            }
+        }
+    }
+    
+    function updateEndZoneMarkerFromForm() {
+        const lat = parseFloat(document.getElementById('EndLat').value);
+        const lng = parseFloat(document.getElementById('EndLon').value);
+        if (!isNaN(lat) && !isNaN(lng) && markerTypesPlaced['end-zone']) {
+            const newPos = new google.maps.LatLng(lat, lng);
+            markerTypesPlaced['end-zone'].setPosition(newPos);
+            if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+                drawRectangleFromStartToEnd(
+                    markerTypesPlaced['start-zone'],
+                    markerTypesPlaced['end-zone']
+                );
+            }
+        }
     }
 
     let closedLabelOverlay = null;
@@ -417,11 +469,9 @@ function getLatLngFromPoint(point, map) {
 function getMarkerIcon(type) {
     switch (type) {
         case 'end-zone':
-            return 'http://www.google.com/mapfiles/ms/icons/orange-dot.png';
+            return 'http://www.google.com/mapfiles/markerE.png';
         case 'start-zone':
-            return 'http://www.google.com/mapfiles/ms/icons/green-dot.png';
-        case 'vehicle-position':
-            return 'http://www.google.com/mapfiles/ms/icons/red-dot.png';
+            return 'http://www.google.com/mapfiles/markerS.png';
         default:
             return null;
     }
@@ -546,7 +596,7 @@ function setHostMarker() {
         id: 'mHostVehicle',
         position: { lat: 38.95647, lng: -77.15031 },
         map: map,
-        icon: 'http://www.google.com/mapfiles/markerH.png',
+        icon: 'http://www.google.com/mapfiles/ms/icons/blue-dot.png',
         title: 'Host Vehicle',
         zIndex: 1
     });

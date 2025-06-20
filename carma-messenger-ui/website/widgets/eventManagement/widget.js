@@ -116,13 +116,10 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                         <div id="load-map" style="height: 100%;"></div>
                         <div id="marker-overlay">
                             <div class="marker-item" draggable="true" data-type="end-zone">
-                                <img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" />
+                                <img src="http://www.google.com/mapfiles/markerE.png" />
                             </div>
                             <div class="marker-item" draggable="true" data-type="start-zone">
-                                <img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" />
-                            </div>
-                            <div class="marker-item" draggable="true" data-type="vehicle-position">
-                                <img src="http://www.google.com/mapfiles/ms/icons/red-dot.png" />
+                                <img src="http://www.google.com/mapfiles/markerS.png" />
                             </div>
                         </div>
                     </div>
@@ -150,13 +147,10 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                             <div id="load-map" style="height: 100%;"></div>
                             <div id="marker-overlay">
                                 <div class="marker-item" draggable="true" data-type="end-zone">
-                                    <img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" />
+                                    <img src="http://www.google.com/mapfiles/markerE.png" />
                                 </div>
                                 <div class="marker-item" draggable="true" data-type="start-zone">
-                                    <img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" />
-                                </div>
-                                <div class="marker-item" draggable="true" data-type="vehicle-position">
-                                    <img src="http://www.google.com/mapfiles/ms/icons/red-dot.png" />
+                                    <img src="http://www.google.com/mapfiles/markerS.png" />
                                 </div>
                             </div>
                         </div>
@@ -498,30 +492,30 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
 
             // Start zone (Up Track)
             var divStartZone = this.createFormRow(
-                '<img src="http://www.google.com/mapfiles/ms/icons/green-dot.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> Start Zone',
-                'UpTrack',
+                '<img src="http://www.google.com/mapfiles/markerS.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> Start Zone Lat/Lon',
+                ['StartLat', 'StartLon'],
                 'number',
-                '(FT)',
+                '(degrees)',
                 '300'
               );
 
             // End zone (Down Track)
             var divEndZone = this.createFormRow(
-                '<img src="http://www.google.com/mapfiles/ms/icons/orange-dot.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> End Zone',
-                'UpTrack',
+                '<img src="http://www.google.com/mapfiles/markerE.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> End Zone Lat/Lon',
+                ['EndLat', 'EndLon'],
                 'number',
-                '(FT)',
+                '(degrees)',
                 '300'
               );
 
             // Lanes blocked left
-            var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', 'LanesBlockedLeft', 'number', '', '2');
+            var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', ['LanesBlockedLeft'], 'number', '', '0');
             
             // Lanes blocked right
-            var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', 'LanesBlockedRight', 'number', '', '2');
+            var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', ['LanesBlockedRight'], 'number', '', '0');
             
             // Advisory Speed
-            var divAdvisorySpeed = this.createFormRow('Advisory Speed:', 'AdvisorySpeed', 'number', '(MPH)', '15');
+            var divAdvisorySpeed = this.createFormRow('Advisory Speed:', ['AdvisorySpeed'], 'number', '(MPH)', '15');
 
             // Action Button
             var divActionBtn = this.createActionButton();
@@ -553,44 +547,47 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             container.append(formContainer);
         },
 
-        createFormRow: function(labelText, fieldId, inputType, unit, defaultValue) {
+        createFormRow: function(labelText, fieldIds, inputType, unit, defaultValues) {
             var row = document.createElement('div');
             row.style.display = 'flex';
             row.style.alignItems = 'center';
             row.style.marginBottom = '15px';
             row.style.fontSize = '14px';
-
+        
             var label = document.createElement('label');
             label.innerHTML = labelText;
             label.style.width = '120px';
             label.style.marginRight = '10px';
             label.style.flexShrink = '0';
-
-            var input = document.createElement('input');
-            input.min = '0';
-            input.type = inputType;
-            input.id = fieldId;
-            input.value = defaultValue || '';
-            input.style.width = '80px';
-            input.style.padding = '5px';
-            input.style.border = '1px solid #ccc';
-            input.style.borderRadius = '4px';
-            input.style.marginRight = '5px';
-
+            row.appendChild(label);
+        
+            fieldIds.forEach((id, index) => {
+                var input = document.createElement('input');
+                input.type = inputType;
+                input.id = id;
+                input.value = defaultValues?.[index] || '';
+                input.min = '0';
+                input.style.width = '80px';
+                input.style.padding = '5px';
+                input.style.border = '1px solid #ccc';
+                input.style.borderRadius = '4px';
+                input.style.marginRight = '5px';
+        
+                input.addEventListener('input', () => {
+                    if (parseFloat(input.value) < 0) {
+                        input.value = '0';
+                    }
+                });
+        
+                row.appendChild(input);
+            });
+        
             var unitLabel = document.createElement('span');
             unitLabel.textContent = unit;
             unitLabel.style.color = '#666';
             unitLabel.style.fontSize = '12px';
-
-            row.appendChild(label);
-            row.appendChild(input);
             row.appendChild(unitLabel);
-
-            input.addEventListener('input', () => {
-                if (parseFloat(input.value) < 0) {
-                    input.value = '0';
-                }
-            });
+        
             return row;
         },
 
