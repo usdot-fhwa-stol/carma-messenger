@@ -1,4 +1,4 @@
-# Copyright (C) 2024 LEIDOS.
+# Copyright (C) 2024-2025 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,14 +31,14 @@ def generate_launch_description():
         'config',
         'CommandAPIParams.yaml'
         )
-    
+
     ui_group = GroupAction(
         actions=[
             SetRemap("system_alert", "/system_alert"),
             SetRemap("bsm", "incoming_bsm"),
             IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(os.path.join(get_package_share_directory("rosbridge_server"), 'launch', 'rosbridge_websocket_launch.xml')),
-                launch_arguments = { 
+                launch_arguments = {
                     'params_glob' : [params],
                 }.items()
             ),

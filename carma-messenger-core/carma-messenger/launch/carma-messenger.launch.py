@@ -1,4 +1,4 @@
-# Copyright (C) 2024 LEIDOS.
+# Copyright (C) 2024-2025 LEIDOS.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.actions import ExecuteProcess
+from launch.conditions import IfCondition
 
 import os
 
@@ -35,7 +37,14 @@ def generate_launch_description():
 
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
-        name ='configuration_delay', default_value='4.0')
+        name ='configuration_delay', default_value='2.0')
+
+    use_rosbag = LaunchConfiguration('use_rosbag')
+    declare_use_rosbag = DeclareLaunchArgument(
+        name = 'use_rosbag',
+        default_value = 'true',
+        description = "Record a ROS2 bag"
+    )
 
     # Declare the route file folder launch argument
     route_file_folder = LaunchConfiguration('route_file_folder')
@@ -45,20 +54,11 @@ def generate_launch_description():
         description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins'
     )
 
-    # Launch ROS2 rosbag logging
-    ros2_rosbag_launch = GroupAction(
-        actions=[
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ros2_rosbag.launch.py']),
-            )
-        ]
-    )
-
     transform_group = GroupAction(
         actions=[
             PushRosNamespace(EnvironmentVariable('CARMA_TF_NS', default_value='/')),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/transforms.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/transforms.launch.py']),
             ),
         ]
     )
@@ -66,7 +66,7 @@ def generate_launch_description():
     v2x_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/message.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch','/v2x-ros-conversion.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay]
                 }.items()
@@ -77,7 +77,7 @@ def generate_launch_description():
     plugins_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/plugins.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/plugins.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay],
                     'route_file_folder' : route_file_folder
@@ -89,8 +89,18 @@ def generate_launch_description():
     ui_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/ui.launch.py']),
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ui.launch.py']),
             ),
+        ]
+    )
+
+    # Launch ROS2 rosbag logging
+    ros2_rosbag_group = GroupAction(
+        condition = IfCondition(use_rosbag),
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/ros2_rosbag.launch.py']),
+            )
         ]
     )
 
@@ -103,14 +113,19 @@ def generate_launch_description():
     )
 
 
+    system_alert_publisher = ExecuteProcess(
+        cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
+    )
 
     return LaunchDescription([
         declare_configuration_delay_arg,
+        declare_use_rosbag,
         declare_route_file_folder,
-        ros2_rosbag_launch,
         transform_group,
         v2x_group,
         plugins_group,
         ui_group,
-        traffic_incident_group
+        ros2_rosbag_group,
+        traffic_incident_group,
+        system_alert_publisher
     ])
