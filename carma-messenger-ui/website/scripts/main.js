@@ -50,42 +50,48 @@ function LoadSessionVariables()
         Include: Up Track, Down Track, Minimum Gap, and Advisory Speed
     ***/
     var EventSessionFormFields = {
-        //Up Track
-        set upTrack(newUpTrack){
-            if (newUpTrack==null || newUpTrack=="undefined")
-                newUpTrack = "";
-            console.log("set up track");
-            sessionStorage.setItem("upTrack", newUpTrack);
+        // Start Latitude and Longitude
+        set startLatitude(newStartLatitude){
+            if (newStartLatitude==null || newStartLatitude=="undefined")
+                newStartLatitude = "";
+            console.log("set start latitude");
+            sessionStorage.setItem("startLat", newStartLatitude);
         },
-        get upTrack(){
-            console.log("get up track");
-             return sessionStorage.getItem("upTrack");
+        get startLatitude(){
+            console.log("get start latitude");
+             return sessionStorage.getItem("startLat");
         },
-
-        //Down Track
-        set downTrack(newDownTrack){
-            if (newDownTrack==null || newDownTrack=="undefined")
-                newDownTrack = "";
-            console.log("set down track");
-            sessionStorage.setItem("downTrack", newDownTrack);
+        set startLongitude(newStartLongitude){
+            if (newStartLongitude==null || newStartLongitude=="undefined")
+                newStartLongitude = "";
+            console.log("set start longitude");
+            sessionStorage.setItem("startLon", newStartLongitude);
         },
-        get downTrack(){
-            console.log("get down track");
-             return sessionStorage.getItem("downTrack");
+        get startLongitude(){
+            console.log("get start longitude");
+             return sessionStorage.getItem("startLon");
         },
-
-        //Minimum Gap
-        set minGap(newMinGap){
-            if (newMinGap==null || newMinGap=="undefined")
-                newMinGap = "";
-            console.log("set minimum gap");
-            sessionStorage.setItem("minGap", newMinGap);
+        // End Latitude and Longitude
+        set endLatitude(newEndLatitude){
+            if (newEndLatitude==null || newEndLatitude=="undefined")
+                newEndLatitude = "";
+            console.log("set end latitude");
+            sessionStorage.setItem("endLat", newEndLatitude);
         },
-        get minGap(){
-            console.log("get minimum gap");
-             return sessionStorage.getItem("minGap");
+        get endLatitude(){
+            console.log("get end latitude");
+             return sessionStorage.getItem("endLat");
         },
-
+        set endLongitude(newEndLongitude){
+            if (newEndLongitude==null || newEndLongitude=="undefined")
+                newEndLongitude = "";
+            console.log("set end longitude");
+            sessionStorage.setItem("endLon", newEndLongitude);
+        },
+        get endLongitude(){
+            console.log("get end longitude");
+             return sessionStorage.getItem("endLon");
+        },
         //Advisory Speed
         set advisorySpeed(newAdvisorySpeed){
             if (newAdvisorySpeed==null || newAdvisorySpeed=="undefined")
