@@ -205,6 +205,18 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         }
     }
 
+    var  deg2rad = function(deg) {
+        return deg * Math.PI / 180;
+      }
+      
+    var latLonToXY = function(lat, lon, originLat, originLon) {
+        // Convert using flat earth approximation
+        const R = 6371000; // Earth's radius in meters
+        const x = R * deg2rad(lon - originLon) * Math.cos(deg2rad((lat + originLat) / 2));
+        const y = R * deg2rad(lat - originLat);
+        return [x, y];
+    }
+
     var send_start_broadcasting_request = function (btn) {
         console.log("send start broadcasting request");
 
@@ -225,6 +237,8 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var StartLonValue = $('#StartLon').val();
         var EndLatValue = $('#EndLat').val();
         var EndLonValue = $('#EndLon').val();
+        var VehicleLatValue = $('#LatitudeSpan').val();
+        var VehicleLonValue = $('#LongitudeSpan').val();
         var AdvisorySpeedValue = $('#AdvisorySpeed').val();
 
         // Input validation (using default ranges if CarmaJS.Config not available)
@@ -258,17 +272,51 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             alert("End longitude is required, should be between " + LonRange.MIN + " and " + LonRange.MAX);
             return false;
         }
-
+        if(VehicleLatValue == "" || isNaN(VehicleLatValue) || VehicleLatValue > LatRange.MAX || VehicleLatValue < LatRange.MIN) {
+            alert("Vehicle latitude is required, should be between " + LatRange.MIN + " and " + LatRange.MAX);
+            return false;
+        }
+        if(VehicleLonValue == "" || isNaN(VehicleLonValue) || VehicleLonValue > LonRange.MAX || VehicleLonValue < LonRange.MIN) {
+            alert("Vehicle longitude is required, should be between " + LonRange.MIN + " and " + LonRange.MAX);
+            return false;
+        }
         if(AdvisorySpeedValue == "" || isNaN(AdvisorySpeedValue) || AdvisorySpeedValue > advisorySpeedRange.MAX || AdvisorySpeedValue < advisorySpeedRange.MIN) {
             alert("Advisory Speed value is required, should be between " + advisorySpeedRange.MIN + " and " + advisorySpeedRange.MAX);
             return false;
         }
-        // TODO: Calculate up track and down track values
+        // Project vehicle position onto the start and end line
+        var startLat = parseFloat(StartLatValue);
+        var startLon = parseFloat(StartLonValue);
+        var endLat = parseFloat(EndLatValue);
+        var endLon = parseFloat(EndLonValue);
+        var vehicleLat = parseFloat(VehicleLatValue);
+        var vehicleLon = parseFloat(VehicleLonValue);
+        // Calculate the up track and down track based on the start and end coordinates
+        const [startx, starty] = [0, 0];
+        const [endx, endy] = latLonToXY(endLat, endLon, startLat, startLon);
+        const [vehiclex, vehicley] = latLonToXY(vehicleLat, vehicleLon, startLat, startLon);
+        const dx = endx - startx;
+        const dy = endy - starty;
+        const lengthSq = dx * dx + dy * dy;
+
+        // Project point onto the line using the dot product
+        let t = ((vehiclex - startx) * dx + (vehicley - starty) * dy) / lengthSq;
+
+        // Compute projected point in XY
+        const xp = startx + t * dx;
+        const yp = starty + t * dy;
+
+        // Compute uptrack and downtrack
+        const upTrack = Math.sign(t) * Math.sqrt(xp * xp + yp * yp);
+        const downTrack = Math.sign(1 - t) * Math.sqrt((xp - endx) * (xp - endx) + (yp - starty) * (yp - starty));
+        
+        // Compute minimum gap
+        const minimumGap = 4.0;  // TODO: Get this using the closed lanes
 
         var request = new ROSLIB.ServiceRequest({
-            up_track: parseFloat(-50),  // Placeholder for up track value, can be calculated based on StartLat/StartLon
-            down_track: parseFloat(50), // Placeholder for down track value, can be calculated based on EndLat/EndLon
-            minimum_gap: parseFloat(4.0),
+            up_track: parseFloat(upTrack),
+            down_track: parseFloat(downTrack),
+            minimum_gap: parseFloat(minimumGap),
             advisory_speed: parseFloat(AdvisorySpeedValue)
         });
 
