@@ -30,17 +30,21 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 $('#BroadcastingFrequencySpan').addClass('show');
                 $('#BroadcastingFrequencyLabelTitle').addClass('show');
             }
-            if(EventSessionFormFields.upTrack != null) {
-                $('#UpTrack').val(EventSessionFormFields.upTrack);
-                $('#UpTrack').prop('disabled',true);
+            if(EventSessionFormFields.startLatitude != null) {
+                $('#StartLat').val(EventSessionFormFields.startLatitude);
+                $('#StartLat').prop('disabled',true);
             }
-            if(EventSessionFormFields.downTrack != null) {
-                $('#DownTrack').val(EventSessionFormFields.downTrack);
-                $('#DownTrack').prop('disabled',true);
+            if(EventSessionFormFields.startLongitude != null) {
+                $('#StartLon').val(EventSessionFormFields.startLongitude);
+                $('#StartLon').prop('disabled',true);
             }
-            if(EventSessionFormFields.minGap != null) {
-               $('#MinGap').val(EventSessionFormFields.minGap);
-               $('#MinGap').prop('disabled',true);
+            if(EventSessionFormFields.endLatitude != null) {
+                $('#EndLat').val(EventSessionFormFields.endLatitude);
+                $('#EndLat').prop('disabled',true);
+            }
+            if(EventSessionFormFields.endLongitude != null) {
+                $('#EndLon').val(EventSessionFormFields.endLongitude);
+                $('#EndLon').prop('disabled',true);
             }
             if(EventSessionFormFields.advisorySpeed != null) {
                $('#AdvisorySpeed').val(EventSessionFormFields.advisorySpeed);
@@ -166,20 +170,23 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
     }
 
     var changeFields = function(toDisable) {
-        var UpTrackValue = $('#UpTrack');
-        var DownTrackValue = $('#DownTrack');
-        var MinGapValue = $('#MinGap');
+        var StartLatValue = $('#StartLat');
+        var StartLonValue = $('#StartLon');
+        var EndLatValue = $('#EndLat');
+        var EndLonValue = $('#EndLon');
         var AdvisorySpeedValue = $('#AdvisorySpeed');
 
         if(toDisable == true) {
-            UpTrackValue.prop('disabled', true);
-            DownTrackValue.prop('disabled', true);
-            MinGapValue.prop('disabled', true);
+            StartLatValue.prop('disabled', true);
+            StartLonValue.prop('disabled', true);
+            EndLatValue.prop('disabled', true);
+            EndLonValue.prop('disabled', true);
             AdvisorySpeedValue.prop('disabled', true);
         } else {
-            UpTrackValue.prop('disabled', false);
-            DownTrackValue.prop('disabled', false);
-            MinGapValue.prop('disabled', false);
+            StartLatValue.prop('disabled', false);
+            StartLonValue.prop('disabled', false);
+            EndLatValue.prop('disabled', false);
+            EndLonValue.prop('disabled', false);
             AdvisorySpeedValue.prop('disabled', false);
         }
     }
@@ -214,40 +221,41 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         });
 
         // Validate form inputs
-        var UpTrackValue = $('#UpTrack').val();
-        var DownTrackValue = $('#DownTrack').val();
-        var MinGapValue = $('#MinGap').val();
+        var StartLatValue = $('#StartLat').val();
+        var StartLonValue = $('#StartLon').val();
+        var EndLatValue = $('#EndLat').val();
+        var EndLonValue = $('#EndLon').val();
         var AdvisorySpeedValue = $('#AdvisorySpeed').val();
 
         // Input validation (using default ranges if CarmaJS.Config not available)
-        var upTrackRange = { MIN: 0, MAX: 1000 };
-        var downTrackRange = { MIN: 0, MAX: 1000 };
-        var minGapRange = { MIN: 0, MAX: 100 };
+        var LatRange = { MIN: -90, MAX: 90 };
+        var LonRange = { MIN: -180, MAX: 180 };
         var advisorySpeedRange = { MIN: 0, MAX: 100 };
 
         if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
             try {
-                upTrackRange = CarmaJS.Config.getUpTrackRange();
-                downTrackRange = CarmaJS.Config.getDownTrackRange();
-                minGapRange = CarmaJS.Config.getMinGapRange();
+                LatRange = CarmaJS.Config.getLatitudeRange();
+                LonRange = CarmaJS.Config.getLongitudeRange();
                 advisorySpeedRange = CarmaJS.Config.getAdvisorySpeedRange();
             } catch (e) {
                 console.warn('Could not get config ranges, using defaults');
             }
         }
 
-        if(UpTrackValue == "" || isNaN(UpTrackValue) || UpTrackValue > upTrackRange.MAX || UpTrackValue < upTrackRange.MIN) {
-            alert("Up Track value is required, should be between " + upTrackRange.MIN + " and " + upTrackRange.MAX);
+        if(StartLatValue == "" || isNaN(StartLatValue) || StartLatValue > LatRange.MAX || StartLatValue < LatRange.MIN) {
+            alert("Start latitude is required, should be between " + LatRange.MIN + " and " + LatRange.MAX);
             return false;
         }
-
-        if(DownTrackValue == "" || isNaN(DownTrackValue) || DownTrackValue > downTrackRange.MAX || DownTrackValue < downTrackRange.MIN) {
-            alert("Down Track value is required, should be between " + downTrackRange.MIN + " and " + downTrackRange.MAX);
+        if(StartLonValue == "" || isNaN(StartLonValue) || StartLonValue > LonRange.MAX || StartLonValue < LonRange.MIN) {
+            alert("Start longitude is required, should be between " + LonRange.MIN + " and " + LonRange.MAX);
             return false;
         }
-
-        if(MinGapValue == "" || isNaN(MinGapValue) || MinGapValue > minGapRange.MAX || MinGapValue < minGapRange.MIN) {
-            alert("Minimum Gap value is required, should be between " + minGapRange.MIN + " and " + minGapRange.MAX);
+        if(EndLatValue == "" || isNaN(EndLatValue) || EndLatValue > LatRange.MAX || EndLatValue < LatRange.MIN) {
+            alert("End latitude is required, should be between " + LatRange.MIN + " and " + LatRange.MAX);
+            return false;
+        }
+        if(EndLonValue == "" || isNaN(EndLonValue) || EndLonValue > LonRange.MAX || EndLonValue < LonRange.MIN) {
+            alert("End longitude is required, should be between " + LonRange.MIN + " and " + LonRange.MAX);
             return false;
         }
 
@@ -255,11 +263,12 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             alert("Advisory Speed value is required, should be between " + advisorySpeedRange.MIN + " and " + advisorySpeedRange.MAX);
             return false;
         }
+        // TODO: Calculate up track and down track values
 
         var request = new ROSLIB.ServiceRequest({
-            up_track: parseFloat(UpTrackValue),
-            down_track: parseFloat(DownTrackValue),
-            minimum_gap: parseFloat(MinGapValue),
+            up_track: parseFloat(-50),  // Placeholder for up track value, can be calculated based on StartLat/StartLon
+            down_track: parseFloat(50), // Placeholder for down track value, can be calculated based on EndLat/EndLon
+            minimum_gap: parseFloat(4.0),
             advisory_speed: parseFloat(AdvisorySpeedValue)
         });
 
@@ -269,30 +278,8 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             });
             subscribe_outgoing_mobility_operation();
 
-            // Update map with geofence if map is available
-            updateMapWithGeofence(UpTrackValue, DownTrackValue);
         } catch(ex) {
             console.error("send start broadcasting request error: " + ex.message);
-        }
-    }
-
-    // Function to update map with geofence visualization
-    var updateMapWithGeofence = function(upTrack, downTrack) {
-        if (typeof window.drawPolygonsOnMap === 'function' && typeof window.map !== 'undefined' && window.map) {
-            // Example geofence coordinates - calculate based on vehicle position and track values
-            var geofenceCoords = [
-                { lat: 38.954377, lng: -77.147888 },
-                { lat: 38.955412, lng: -77.151418 },
-                { lat: 38.956947, lng: -77.150431 },
-                { lat: 38.955579, lng: -77.147448 }
-            ];
-
-            // Draw the geofence on the map
-            setTimeout(function() {
-                window.drawPolygonsOnMap(window.g_polygon_type.TCR, geofenceCoords);
-            }, 1000);
-        } else {
-            console.log('Map not ready for geofence drawing');
         }
     }
 
@@ -369,14 +356,17 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                         var value = keyValue[1].trim();
 
                         switch(key) {
-                            case 'downtrack':
-                                EventSessionFormFields.downTrack = value;
+                            case 'startlat':
+                                EventSessionFormFields.startLatitude = value;
                                 break;
-                            case 'uptrack':
-                                EventSessionFormFields.upTrack = value;
+                            case 'startlon':
+                                EventSessionFormFields.startLongitude = value;
                                 break;
-                            case 'min_gap':
-                                EventSessionFormFields.minGap = value;
+                            case 'endlat':
+                                EventSessionFormFields.endLatitude = value;
+                                break;
+                            case 'endlon':
+                                EventSessionFormFields.endLongitude = value;
                                 break;
                             case 'advisory_speed':
                                 EventSessionFormFields.advisorySpeed = value;
@@ -423,10 +413,11 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
 
                     // Clear session variables
                     sessionStorage.removeItem('advisorySpeed');
-                    sessionStorage.removeItem('upTrack');
-                    sessionStorage.removeItem('downTrack');
+                    sessionStorage.removeItem('startLatitude');
+                    sessionStorage.removeItem('startLongitude');
+                    sessionStorage.removeItem('endLatitude');
+                    sessionStorage.removeItem('endLongitude');
                     sessionStorage.removeItem('BCStatus');
-                    sessionStorage.removeItem('minGap');
 
                     if (typeof EventSessionFormFields !== 'undefined') {
                         EventSessionFormFields.BCStatus = 'false';

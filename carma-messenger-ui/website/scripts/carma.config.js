@@ -48,17 +48,13 @@ CarmaJS.Config = (function () {
         var ros_connect_wait = 10000; //miliseconds to wait for platform to launch and ros to connect.
         var ros_connect_retry = 3; //# of times to wait
         var valid_truck_vin_numbers = ["1FUJGBDV8CLBP8898","1FUJGHDV0CLBP8834","1FUJGHDV0CLBP8896","1FUJGHDV9CLBP8833"];
-        var UpTrackRange = {
-            "MAX": 1000,
-            "MIN": 1
+        var LatitudeRange = {
+            "MAX": 90,
+            "MIN": -90
         };
-        var DownTrackRange = {
-            "MAX": 1000,
-            "MIN": 1
-        };
-        var MinGapRange = {
-            "MAX": 250,
-            "MIN": 1
+        var LongitudeRange = {
+            "MAX": 180,
+            "MIN": -180
         };
         var AdvisorySpeedRange = {
             "MAX": 80,
@@ -82,15 +78,11 @@ CarmaJS.Config = (function () {
         var getValidTruckVINNumber = function() {
             return valid_truck_vin_numbers;
         }
-        var getUpTrackRange  = function()
-        {
-            return UpTrackRange;
+        var getLatitudeRange = function() {
+            return LatitudeRange;
         }
-        var getDownTrackRange = function(){
-            return DownTrackRange;
-        }
-        var getMinGapRange  = function(){
-            return MinGapRange;
+        var getLongitudeRange = function() {
+            return LongitudeRange;
         }
         var getAdvisorySpeedRange = function()
         {
@@ -103,9 +95,8 @@ CarmaJS.Config = (function () {
             getRosConnectionWaitTime:getRosConnectionWaitTime,
             getRosConnectionRetry:getRosConnectionRetry,
             getValidTruckVINNumber: getValidTruckVINNumber,
-            getUpTrackRange:getUpTrackRange,
-            getDownTrackRange:getDownTrackRange,
-            getMinGapRange:getMinGapRange,
+            getLatitudeRange:getLatitudeRange,
+            getLongitudeRange:getLongitudeRange,
             getAdvisorySpeedRange:getAdvisorySpeedRange
         };
 })();
