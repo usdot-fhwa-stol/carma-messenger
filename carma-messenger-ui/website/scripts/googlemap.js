@@ -197,6 +197,14 @@ function setupDragAndDrop(map) {
         const markerType = e.dataTransfer.getData("text/plain");
         const mapBounds = map.getDiv().getBoundingClientRect();
 
+        if (markerType in markerTypesPlaced === false) {
+            console.warn("Unknown marker type: ${markerType}");
+            return;
+        } else if (markerTypesPlaced[markerType]) {
+            console.warn("Marker of type ${markerType} already placed");
+            return;
+        }
+
         const point = {
             x: e.clientX - mapBounds.left,
             y: e.clientY - mapBounds.top
