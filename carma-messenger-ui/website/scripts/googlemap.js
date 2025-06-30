@@ -591,10 +591,25 @@ function setHostMarker() {
         return;
     }
 
+    var VehicleLatValue = $('#LatitudeSpan').text();
+    var VehicleLonValue = $('#LongitudeSpan').text();
+    var LatRange = { MIN: -90, MAX: 90 };
+    var LonRange = { MIN: -180, MAX: 180 };
+    if(VehicleLatValue == "" || isNaN(VehicleLatValue) || VehicleLatValue > LatRange.MAX || VehicleLatValue < LatRange.MIN) {
+        alert("Vehicle latitude is required, should be between " + LatRange.MIN + " and " + LatRange.MAX);
+        return false;
+    }
+    if(VehicleLonValue == "" || isNaN(VehicleLonValue) || VehicleLonValue > LonRange.MAX || VehicleLonValue < LonRange.MIN) {
+        alert("Vehicle longitude is required, should be between " + LonRange.MIN + " and " + LonRange.MAX);
+        return false;
+    }
+    var vehicleLat = parseFloat(VehicleLatValue);
+    var vehicleLon = parseFloat(VehicleLonValue);
+
     // Add host vehicle marker
     const marker = new google.maps.Marker({
         id: 'mHostVehicle',
-        position: { lat: 38.95647, lng: -77.15031 },
+        position: { lat: vehicleLat, lng: vehicleLon },
         map: map,
         icon: 'http://www.google.com/mapfiles/ms/icons/blue-dot.png',
         title: 'Host Vehicle',

@@ -205,9 +205,9 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         }
     }
 
-    var  deg2rad = function(deg) {
+    var deg2rad = function(deg) {
         return deg * Math.PI / 180;
-      }
+    }
       
     var latLonToXY = function(lat, lon, originLat, originLon) {
         // Convert using flat earth approximation
@@ -237,8 +237,8 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var StartLonValue = $('#StartLon').val();
         var EndLatValue = $('#EndLat').val();
         var EndLonValue = $('#EndLon').val();
-        var VehicleLatValue = $('#LatitudeSpan').val();
-        var VehicleLonValue = $('#LongitudeSpan').val();
+        var VehicleLatValue = $('#LatitudeSpan').text();
+        var VehicleLonValue = $('#LongitudeSpan').text();
         var AdvisorySpeedValue = $('#AdvisorySpeed').val();
 
         // Input validation (using default ranges if CarmaJS.Config not available)
@@ -292,24 +292,30 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         var vehicleLat = parseFloat(VehicleLatValue);
         var vehicleLon = parseFloat(VehicleLonValue);
         // Calculate the up track and down track based on the start and end coordinates
-        const [startx, starty] = [0, 0];
         const [endx, endy] = latLonToXY(endLat, endLon, startLat, startLon);
-        const [vehiclex, vehicley] = latLonToXY(vehicleLat, vehicleLon, startLat, startLon);
-        const dx = endx - startx;
-        const dy = endy - starty;
+        const [vehx, vehy] = latLonToXY(vehicleLat, vehicleLon, startLat, startLon);
+        console.log("End X: " + endx + ", End Y: " + endy);
+        console.log("Vehicle X: " + vehx + ", Vehicle Y: " + vehy);
+
+        const dx = endx;
+        const dy = endy;
         const lengthSq = dx * dx + dy * dy;
+        const segmentLength = Math.sqrt(lengthSq);
 
-        // Project point onto the line using the dot product
-        let t = ((vehiclex - startx) * dx + (vehicley - starty) * dy) / lengthSq;
+        // Project vehicle onto the segment
+        const t = ((vehx * dx) + (vehy * dy)) / lengthSq;
 
-        // Compute projected point in XY
-        const xp = startx + t * dx;
-        const yp = starty + t * dy;
+        const projx = t * dx;
+        const projy = t * dy;
+        console.log("Projected X: " + projx + ", Projected Y: " + projy);
 
-        // Compute uptrack and downtrack
-        const upTrack = Math.sign(t) * Math.sqrt(xp * xp + yp * yp);
-        const downTrack = Math.sign(1 - t) * Math.sqrt((xp - endx) * (xp - endx) + (yp - starty) * (yp - starty));
-        
+        const upTrack = t * segmentLength;
+
+        // Downtrack: from projection to end, projected along segment
+        const dx2 = projx - endx;
+        const dy2 = projy - endy;
+        const downTrack = -1 * (dx2 * dx + dy2 * dy) / segmentLength;
+
         // Compute minimum gap
         const minimumGap = 4.0;  // TODO: Get this using the closed lanes
 
