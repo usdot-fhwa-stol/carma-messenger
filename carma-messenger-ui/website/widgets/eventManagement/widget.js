@@ -524,6 +524,28 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 ensureMapIsVisible();
             }, 1000);
 
+            // Match form height to map height
+            setTimeout(() => {
+                const mapEl = document.getElementById('load-map');
+                const formEl = document.getElementById('eventManagementFormContainer');
+
+                if (mapEl && formEl) {
+                    const formHeight = formEl.offsetHeight;
+                    mapEl.style.height = `${formHeight}px`;
+
+                    // Force map resize so it renders correctly
+                    if (window.map) {
+                        google.maps.event.trigger(window.map, 'resize');
+                    }
+                } else if (mapEl) {
+                    console.warn('Could not match heights: form not found');
+                } else if (formEl) {
+                    console.warn('Could not match heights: map not found');
+                } else {
+                    console.warn('Could not match heights: map and form not found');
+                }
+            }, 5000);
+
             console.log("Event Management widget created");
         },
 
