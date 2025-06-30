@@ -187,6 +187,9 @@ function setupDragAndDrop(map) {
     document.getElementById('StartLon').addEventListener('input', updateStartZoneMarkerFromForm);
     document.getElementById('EndLat').addEventListener('input', updateEndZoneMarkerFromForm);
     document.getElementById('EndLon').addEventListener('input', updateEndZoneMarkerFromForm);
+    document.getElementById('LanesBlockedLeft').addEventListener('input', updateEndZoneMarkerFromForm);
+    document.getElementById('LanesBlockedRight').addEventListener('input', updateEndZoneMarkerFromForm);
+    document.getElementById('AdvisorySpeed').addEventListener('input', updateEndZoneMarkerFromForm);
 
     mapDiv.addEventListener('drop', (e) => {
         e.preventDefault();
@@ -353,6 +356,50 @@ function setupDragAndDrop(map) {
         }
     }
 
+    class SpeedAdvisoryTextOverlay extends google.maps.OverlayView {
+        constructor(position, angle) {
+            super();
+            this.position = position;
+            this.angle = angle;
+            this.div = null;
+        }
+
+        onAdd() {
+            this.div = document.createElement('div');
+            this.div.className = 'speed-advisory-label';
+            var advisorySpeed = document.getElementById('AdvisorySpeed').value;
+            this.div.innerText = advisorySpeed ? `${advisorySpeed} MPH` : 'N/A MPH';
+
+            const panes = this.getPanes();
+            panes.overlayLayer.appendChild(this.div);
+        }
+
+        draw() {
+            const projection = this.getProjection();
+            const point = projection.fromLatLngToDivPixel(this.position);
+
+            if (point && this.div) {
+                this.div.style.left = point.x + 'px';
+                this.div.style.top = point.y + 'px';
+                this.div.style.position = 'absolute';
+                this.div.style.transform = `translate(-50%, -50%) rotate(${this.angle}deg)`;
+            }
+        }
+
+        onRemove() {
+            if (this.div) {
+                this.div.parentNode.removeChild(this.div);
+                this.div = null;
+            }
+        }
+    }
+
+    function drawRectanglesFromMarkers() {
+        if (window.startMarker && window.endMarker) {
+            drawRectangleFromStartToEnd(window.startMarker, window.endMarker);
+        }
+    }
+
     function drawRectangleFromStartToEnd(startMarker, endMarker) {
         const R = 6378137; // Earth's radius in meters
     
@@ -367,77 +414,102 @@ function setupDragAndDrop(map) {
         const lat2 = toRadians(end.lat());
         const lng2 = toRadians(end.lng());
     
-        // Convert start and end to Cartesian coordinates (meters)
+        // Cartesian coordinates
         const x1 = R * lng1 * Math.cos((lat1 + lat2) / 2);
         const y1 = R * lat1;
         const x2 = R * lng2 * Math.cos((lat1 + lat2) / 2);
         const y2 = R * lat2;
     
-        // Direction vector from start to end
+        // Vector and unit perpendicular vector
         const dx = x2 - x1;
         const dy = y2 - y1;
         const length = Math.sqrt(dx * dx + dy * dy);
-    
-        // Perpendicular unit vector
         const px = -dy / length;
         const py = dx / length;
     
-        // Half-width offset (2 meters)
-        const offsetX = px * 2;
-        const offsetY = py * 2;
+        const laneWidth = 4; // meters
+        const lanesLeft = parseInt(document.getElementById('LanesBlockedLeft')?.value || '0', 10);
+        const lanesRight = parseInt(document.getElementById('LanesBlockedRight')?.value || '0', 10);
     
-        // Compute 4 corners
-        const corners = [
-            { x: x1 + offsetX, y: y1 + offsetY },
-            { x: x1 - offsetX, y: y1 - offsetY },
-            { x: x2 - offsetX, y: y2 - offsetY },
-            { x: x2 + offsetX, y: y2 + offsetY }
-        ];
-    
-        // Convert back to LatLng
-        const path = corners.map(({ x, y }) => {
-            const lat = toDegrees(y / R);
-            const lng = toDegrees(x / (R * Math.cos((lat1 + lat2) / 2)));
-            return { lat, lng };
-        });
-    
-        // Remove old rectangle if it exists
-        if (rectangleOverlay) {
-            rectangleOverlay.setMap(null);
+        // Clear previous overlays
+        if (window.rectangleOverlays) {
+            window.rectangleOverlays.forEach(p => p.setMap(null));
         }
-    
-        rectangleOverlay = new google.maps.Polygon({
-            paths: path,
-            map: map,
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.1
-        });
+        window.rectangleOverlays = [];
 
-        // Remove old label if it exists
-        if (closedLabelOverlay) {
-            closedLabelOverlay.setMap(null);
+        // Build list of lane indices: [-2, -1, 0, 1, 2] for example
+        const laneIndices = [];
+
+        for (let i = -lanesLeft - 1; i < 0; i++) laneIndices.push(i);  // left lanes
+        laneIndices.push(0);                                       // center closed lane
+        for (let i = 1; i <= lanesRight + 1; i++) laneIndices.push(i); // right lanes
+
+        if (window.labelOverlays) {
+            window.labelOverlays.forEach(o => o.setMap(null));
         }
+        window.labelOverlays = [];
+        for (let i of laneIndices) {
+            // Compute center offset for this lane
+            const offsetDistance = laneWidth * i;
+            const offsetX = -px * offsetDistance;
+            const offsetY = -py * offsetDistance;
 
-        // Midpoint
-        const midLat = (start.lat() + end.lat()) / 2;
-        const midLng = (start.lng() + end.lng()) / 2;
-        const midpoint = new google.maps.LatLng(midLat, midLng);
+            // Rectangle center offset from center line
+            const cx1 = x1 + offsetX;
+            const cy1 = y1 + offsetY;
+            const cx2 = x2 + offsetX;
+            const cy2 = y2 + offsetY;
 
-        // Angle of line (in degrees)
-        // Get angle from start to end in degrees
-        let angleDeg = -Math.atan2(dy, dx) * 180 / Math.PI;
+            // Compute corners
+            const halfWidthX = px * (laneWidth / 2);
+            const halfWidthY = py * (laneWidth / 2);
 
-        // Normalize angle to keep text upright
-        if (angleDeg < -90 || angleDeg > 90) {
-            angleDeg += 180;
+            const corners = [
+                { x: cx1 + halfWidthX, y: cy1 + halfWidthY },
+                { x: cx1 - halfWidthX, y: cy1 - halfWidthY },
+                { x: cx2 - halfWidthX, y: cy2 - halfWidthY },
+                { x: cx2 + halfWidthX, y: cy2 + halfWidthY }
+            ];
+
+            const path = corners.map(({ x, y }) => {
+                const lat = toDegrees(y / R);
+                const lng = toDegrees(x / (R * Math.cos((lat1 + lat2) / 2)));
+                return { lat, lng };
+            });
+
+            const polygon = new google.maps.Polygon({
+                paths: path,
+                map: map,
+                strokeColor: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1]  ? '#32302F' : '#0000FF',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1] ? '#32302F' : '#0000FF',
+                fillOpacity: 0.2,
+                zIndex: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1] ? 1 : 2 
+            });
+
+            window.rectangleOverlays.push(polygon);
+
+            let angleDeg = -Math.atan2(dy, dx) * 180 / Math.PI;
+            if (angleDeg < -90 || angleDeg > 90) angleDeg += 180;
+
+            const midX = (cx1 + cx2) / 2;
+            const midY = (cy1 + cy2) / 2;
+            const midLat = toDegrees(midY / R);
+            const midLng = toDegrees(midX / (R * Math.cos((lat1 + lat2) / 2)));
+            const midpoint = new google.maps.LatLng(midLat, midLng);
+
+            // Draw speed advisory on outermost lanes
+            if (i === laneIndices[0] || i === laneIndices[laneIndices.length - 1]) {
+                const advisoryOverlay = new SpeedAdvisoryTextOverlay(midpoint, angleDeg);
+                advisoryOverlay.setMap(map);
+                window.labelOverlays.push(advisoryOverlay);
+            } else {
+                const closedOverlay = new ClosedTextOverlay(midpoint, angleDeg);
+                closedOverlay.setMap(map);
+                window.labelOverlays.push(closedOverlay);
+            }
         }
-
-        // Create label overlay
-        closedLabelOverlay = new ClosedTextOverlay(midpoint, angleDeg);
-        closedLabelOverlay.setMap(map);
     }
 }
 
@@ -468,10 +540,10 @@ function getLatLngFromPoint(point, map) {
 
 function getMarkerIcon(type) {
     switch (type) {
-        case 'end-zone':
-            return 'http://www.google.com/mapfiles/markerE.png';
         case 'start-zone':
             return 'http://www.google.com/mapfiles/markerS.png';
+        case 'end-zone':
+            return 'http://www.google.com/mapfiles/markerE.png';
         default:
             return null;
     }

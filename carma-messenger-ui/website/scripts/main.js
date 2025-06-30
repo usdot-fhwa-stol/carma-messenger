@@ -92,10 +92,31 @@ function LoadSessionVariables()
             console.log("get end longitude");
              return sessionStorage.getItem("endLon");
         },
+        // Lanes Blocked Left and Right
+        set lanesBlockedLeft(newLanesBlockedLeft){
+            if (newLanesBlockedLeft==null || newLanesBlockedLeft=="undefined")
+                newLanesBlockedLeft = "";
+            console.log("set lanes blocked left");
+            sessionStorage.setItem("lanesBlockedLeft", newLanesBlockedLeft);
+        },
+        get lanesBlockedLeft(){
+            console.log("get lanes blocked left");
+             return sessionStorage.getItem("lanesBlockedLeft");
+        },
+        set lanesBlockedRight(newLanesBlockedRight){
+            if (newLanesBlockedRight==null || newLanesBlockedRight=="undefined")
+                newLanesBlockedRight = "";
+            console.log("set lanes blocked right");
+            sessionStorage.setItem("lanesBlockedRight", newLanesBlockedRight);
+        },
+        get lanesBlockedRight(){
+            console.log("get lanes blocked right");
+             return sessionStorage.getItem("lanesBlockedRight");
+        },
         //Advisory Speed
         set advisorySpeed(newAdvisorySpeed){
             if (newAdvisorySpeed==null || newAdvisorySpeed=="undefined")
-                newAdvisorySpeed = "";
+                newAdvisorySpeed = "15";
             console.log("set advisory speed");
             sessionStorage.setItem("advisorySpeed", newAdvisorySpeed);
         },

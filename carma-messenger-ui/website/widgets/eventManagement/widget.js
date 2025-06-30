@@ -46,6 +46,14 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 $('#EndLon').val(EventSessionFormFields.endLongitude);
                 $('#EndLon').prop('disabled',true);
             }
+            if(EventSessionFormFields.LanesBlockedLeft != null) {
+                $('#LanesBlockedLeft').val(EventSessionFormFields.LanesBlockedLeft);
+                $('#LanesBlockedLeft').prop('disabled',true);
+            }
+            if(EventSessionFormFields.LanesBlockedRight != null) {
+                $('#LanesBlockedRight').val(EventSessionFormFields.LanesBlockedRight);
+                $('#LanesBlockedRight').prop('disabled',true);
+            }
             if(EventSessionFormFields.advisorySpeed != null) {
                $('#AdvisorySpeed').val(EventSessionFormFields.advisorySpeed);
                $('#AdvisorySpeed').prop('disabled',true);
@@ -119,11 +127,11 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                     <div id="map-container" style="position: relative; height: 100%;">
                         <div id="load-map" style="height: 100%;"></div>
                         <div id="marker-overlay">
-                            <div class="marker-item" draggable="true" data-type="end-zone">
-                                <img src="http://www.google.com/mapfiles/markerE.png" />
-                            </div>
                             <div class="marker-item" draggable="true" data-type="start-zone">
                                 <img src="http://www.google.com/mapfiles/markerS.png" />
+                            </div>
+                            <div class="marker-item" draggable="true" data-type="end-zone">
+                                <img src="http://www.google.com/mapfiles/markerE.png" />
                             </div>
                         </div>
                     </div>
@@ -150,11 +158,11 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                         <div id="map-container" style="position: relative; height: 100%;">
                             <div id="load-map" style="height: 100%;"></div>
                             <div id="marker-overlay">
-                                <div class="marker-item" draggable="true" data-type="end-zone">
-                                    <img src="http://www.google.com/mapfiles/markerE.png" />
-                                </div>
                                 <div class="marker-item" draggable="true" data-type="start-zone">
                                     <img src="http://www.google.com/mapfiles/markerS.png" />
+                                </div>
+                                <div class="marker-item" draggable="true" data-type="end-zone">
+                                    <img src="http://www.google.com/mapfiles/markerE.png" />
                                 </div>
                             </div>
                         </div>
@@ -244,7 +252,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
         // Input validation (using default ranges if CarmaJS.Config not available)
         var LatRange = { MIN: -90, MAX: 90 };
         var LonRange = { MIN: -180, MAX: 180 };
-        var advisorySpeedRange = { MIN: 0, MAX: 100 };
+        var advisorySpeedRange = { MIN: 1, MAX: 80 };
 
         if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
             try {
@@ -537,30 +545,30 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
 
             // Start zone (Up Track)
             var divStartZone = this.createFormRow(
-                '<img src="http://www.google.com/mapfiles/markerS.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> Start Zone Lat/Lon',
+                '<img src="http://www.google.com/mapfiles/markerS.png" style="height: 24px; vertical-align: middle; margin-right: 4px;" /> Start Zone Lat/Lon',
                 ['StartLat', 'StartLon'],
                 'number',
                 '(degrees)',
-                '300'
+                ['0', '0']
               );
 
             // End zone (Down Track)
             var divEndZone = this.createFormRow(
-                '<img src="http://www.google.com/mapfiles/markerE.png" style="height: 16px; vertical-align: middle; margin-right: 4px;" /> End Zone Lat/Lon',
+                '<img src="http://www.google.com/mapfiles/markerE.png" style="height: 24px; vertical-align: middle; margin-right: 4px;" /> End Zone Lat/Lon',
                 ['EndLat', 'EndLon'],
                 'number',
                 '(degrees)',
-                '300'
+                ['0', '0']
               );
 
             // Lanes blocked left
-            var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', ['LanesBlockedLeft'], 'number', '', '0');
+            var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', ['LanesBlockedLeft'], 'number', '', ['0']);
             
             // Lanes blocked right
-            var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', ['LanesBlockedRight'], 'number', '', '0');
+            var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', ['LanesBlockedRight'], 'number', '', ['0']);
             
             // Advisory Speed
-            var divAdvisorySpeed = this.createFormRow('Advisory Speed:', ['AdvisorySpeed'], 'number', '(MPH)', '15');
+            var divAdvisorySpeed = this.createFormRow('Advisory Speed:', ['AdvisorySpeed'], 'number', '(MPH)', ['15']);
 
             // Action Button
             var divActionBtn = this.createActionButton();
@@ -596,15 +604,28 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             var row = document.createElement('div');
             row.style.display = 'flex';
             row.style.alignItems = 'center';
+            row.style.justifyContent = 'flex-start';
+            row.style.width = '100%';
+            row.style.maxWidth = '600px';
             row.style.marginBottom = '15px';
             row.style.fontSize = '14px';
         
             var label = document.createElement('label');
             label.innerHTML = labelText;
-            label.style.width = '120px';
+            label.style.width = '180px';
             label.style.marginRight = '10px';
+            label.style.fontSize = '14px';
             label.style.flexShrink = '0';
             row.appendChild(label);
+        
+            var inputsContainer = document.createElement('div');
+            inputsContainer.style.display = 'flex';
+            inputsContainer.style.flexDirection = 'row';
+            inputsContainer.style.justifyContent = 'center';
+            inputsContainer.style.alignItems = 'center';
+            inputsContainer.style.gap = '8px';
+            inputsContainer.style.width = '300px';
+            inputsContainer.style.gap = '8px';
         
             fieldIds.forEach((id, index) => {
                 var input = document.createElement('input');
@@ -612,11 +633,13 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 input.id = id;
                 input.value = defaultValues?.[index] || '';
                 input.min = '0';
-                input.style.width = '80px';
+                input.style.width = '120px';
+                input.style.height = '30px';
+                input.style.boxSizing = 'border-box';
                 input.style.padding = '5px';
+                input.style.fontSize = '14px';
                 input.style.border = '1px solid #ccc';
                 input.style.borderRadius = '4px';
-                input.style.marginRight = '5px';
         
                 input.addEventListener('input', () => {
                     if (parseFloat(input.value) < 0) {
@@ -624,13 +647,17 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                     }
                 });
         
-                row.appendChild(input);
+                inputsContainer.appendChild(input);
             });
+        
+            row.appendChild(inputsContainer);
         
             var unitLabel = document.createElement('span');
             unitLabel.textContent = unit;
             unitLabel.style.color = '#666';
             unitLabel.style.fontSize = '12px';
+            unitLabel.style.marginLeft = '10px';
+            unitLabel.style.alignSelf = 'center';  // vertically center beside inputs
             row.appendChild(unitLabel);
         
             return row;
@@ -666,39 +693,27 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             return buttonContainer;
         },
 
-        createCurrentPositionSection: function() {
+        createCurrentPositionSection: function () {
             var section = document.createElement('div');
             section.style.marginTop = '20px';
             section.style.marginBottom = '15px';
-
-            var title = document.createElement('h4');
-            title.textContent = 'Current Latitude:';
-            title.style.fontSize = '14px';
-            title.style.marginBottom = '5px';
-            title.style.color = '#333';
-
-            var latValue = document.createElement('div');
-            latValue.id = 'LatitudeSpan';
-            latValue.textContent = '38.955882';
-            latValue.style.fontSize = '14px';
-            latValue.style.marginBottom = '10px';
-
-            var longTitle = document.createElement('h4');
-            longTitle.textContent = 'Current Longitude:';
-            longTitle.style.fontSize = '14px';
-            longTitle.style.marginBottom = '5px';
-            longTitle.style.color = '#333';
-
-            var longValue = document.createElement('div');
-            longValue.id = 'LongitudeSpan';
-            longValue.textContent = '-77.147720';
-            longValue.style.fontSize = '14px';
-
-            section.appendChild(title);
-            section.appendChild(latValue);
-            section.appendChild(longTitle);
-            section.appendChild(longValue);
-
+        
+            const createLine = (labelText, spanId, valueText) => {
+                const line = document.createElement('div');
+                line.style.fontSize = '14px';
+                line.style.color = '#333';
+                line.style.marginBottom = '8px';
+        
+                line.innerHTML = `${labelText} <span id="${spanId}" style="font-weight: bold; margin-left: 4px;">${valueText}</span>`;
+                return line;
+            };
+        
+            const latLine = createLine('Current Latitude:', 'LatitudeSpan', '38.955882');
+            const lonLine = createLine('Current Longitude:', 'LongitudeSpan', '-77.147720');
+        
+            section.appendChild(latLine);
+            section.appendChild(lonLine);
+        
             return section;
         },
 
@@ -708,9 +723,12 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             section.style.alignItems = 'center';
             section.style.marginBottom = '15px';
 
-            var icon = document.createElement('span');
-            icon.textContent = '📍';
-            icon.style.marginRight = '5px';
+            var icon = document.createElement('img');
+            icon.src = 'http://www.google.com/mapfiles/ms/icons/blue-dot.png';
+            icon.style.marginRight = '8px';
+            icon.style.width = '20px';
+            icon.style.height = '20px';
+            icon.style.objectFit = 'contain';
 
             var label = document.createElement('span');
             label.textContent = 'GPS status:';
@@ -763,22 +781,15 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             section.style.lineHeight = '1.4';
             section.style.color = '#666';
 
-            var icon = document.createElement('div');
-            icon.textContent = '🏃‍♂️';
-            icon.style.fontSize = '24px';
-            icon.style.textAlign = 'center';
-            icon.style.marginBottom = '10px';
-
             var description = document.createElement('div');
             description.innerHTML = `
-                This screen creates a geo-fence around the selected GPS location. Geo-fence creates closed segment on the road from the start to end zones. Speed Advisory segment is automatically generated around the closed segment.<br><br>
+                <b>This screen creates a geofence using the selected GPS locations to identify a closed segment on the road. Speed Advisory segments are automatically generated around the closed segment.</b><br><br>
                 Start Zone: Distance between the selected GPS location and the beginning of the geofence<br><br>
                 End Zone: Distance between the end of the geofence and the selected GPS location<br><br>
                 Lanes Blocked: Number of lanes blocked to the left of the GPS location<br><br>
                 Advisory Speed: Recommended speed within geo-fence, around the closed segment
             `;
 
-            section.appendChild(icon);
             section.appendChild(description);
 
             return section;
