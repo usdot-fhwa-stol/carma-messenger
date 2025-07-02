@@ -16,7 +16,68 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <!-- END: favicon -->
+
+    <!-- Custom styles for Google Maps integration -->
+    <style>
+        #load-map {
+            width: 100%;
+            height: 400px;
+            min-height: 400px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+
+        .map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #6c757d;
+        }
+
+        .event-management-form {
+            padding: 15px;
+            align-items: center;
+            justify-content: flex-start;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        .info-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        .show {
+            display: block !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        @media (max-width: 768px) {
+            .event-management-container {
+                flex-direction: column;
+            }
+
+            #load-map {
+                height: 300px;
+                min-height: 300px;
+            }
+        }
+    </style>
 
    <!--START: Widget Framework and custom scripts-->
     <script src="scripts/carma.config.js"></script>
@@ -24,6 +85,8 @@
     <script src="scripts/carma.widgetfw.js"></script>
     <script src="scripts/control.js" defer></script>
     <script src="scripts/main.js" defer></script>
+    <!-- Updated Google Maps script -->
+    <script src="scripts/googlemap.js" defer></script>
     <!--END:  Widget Framework and custom scripts--->
 
     <!--START: Thirdparty-->
@@ -45,12 +108,53 @@
         $(document).ready(function () {
             $("#jqxLoader").jqxLoader({width: 150, height: 100, imagePosition: 'center', isModal: true});
             $('#btnModalButton2').on('click', function () {
-                $('#jqxLoader').jqxLoader('open');                    
+                $('#jqxLoader').jqxLoader('open');
             });
             $('#btnStop').on('click', function () {
-                    $('#jqxLoader').jqxLoader('open');               
+                $('#jqxLoader').jqxLoader('open');
             });
+
+            // Monitor for when the Event Management view becomes visible
+            var checkForEventManagementView = function() {
+                var eventView = document.getElementById('divCarmaMessengerView');
+                if (eventView && eventView.style.display !== 'none') {
+                    console.log('Event Management view is now visible, triggering map initialization...');
+
+                    // Trigger map initialization
+                    setTimeout(function() {
+                        if (typeof window.initializeMapWhenReady === 'function') {
+                            window.initializeMapWhenReady();
+                        }
+                    }, 500);
+
+                    // Also trigger from the widget if available
+                    setTimeout(function() {
+                        if (typeof CarmaJS !== 'undefined' &&
+                            CarmaJS.WidgetFramework &&
+                            CarmaJS.WidgetFramework.eventManagement &&
+                            typeof CarmaJS.WidgetFramework.eventManagement.ensureMapIsVisible === 'function') {
+                            CarmaJS.WidgetFramework.eventManagement.ensureMapIsVisible();
+                        }
+                    }, 1000);
+                } else {
+                    // Keep checking every second
+                    setTimeout(checkForEventManagementView, 1000);
+                }
+            };
+
+            // Start monitoring
+            checkForEventManagementView();
         });
+
+        // Function to manually trigger map initialization (can be called from console for debugging)
+        window.debugInitMap = function() {
+            console.log('Manual map initialization triggered...');
+            if (typeof window.initializeMapWhenReady === 'function') {
+                window.initializeMapWhenReady();
+            } else {
+                console.log('Map initialization function not available');
+            }
+        };
     </script>
     <!--END: CUSTOM scripts-->
 </head>
@@ -136,7 +240,9 @@
             </div>
 
             <!-- widget area for geofence management -->
-            <div id="divWidgetAreaEventManagement"></div>
+            <div id="divWidgetAreaEventManagement">
+                <!-- Event Management widget will create its own layout here -->
+            </div>
 
             <!-- widget area for Emergency Response -->
             <div id="divWidgetAreaEmergencyResponse"></div>
