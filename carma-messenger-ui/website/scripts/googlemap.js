@@ -15,7 +15,7 @@
  */
 
 /***
- This file shall contain Map related functions - Fixed version
+ This file shall contain Map related functions - Fixed version with Location Toggle and ROS Broadcasting
 ****/
 
 // Global variables
@@ -28,6 +28,11 @@ let mapInitialized = false;
 let placedMarkers = [];
 let closedLabelOverlay = null;
 
+// Location reference toggle variables
+let useStartMarkerLocation = false;
+let rosPublisher = null;
+let publishInterval = null;
+
 // Polygon types
 const g_polygon_type = {
     TCR: 'TCR'
@@ -36,7 +41,240 @@ const g_polygon_type = {
 $(document).ready(() => {
     // Don't initialize map immediately, wait for container to be ready
     console.log('Document ready, waiting for map container...');
+    initializeROS();
 });
+
+// Initialize ROS connection for GPS broadcasting
+function initializeROS() {
+    try {
+        // Initialize ROS connection (assumes rosbridge_websocket is available)
+        const ros = new ROSLIB.Ros({
+            url: 'ws://localhost:9090' // Adjust URL as needed
+        });
+
+        ros.on('connection', function() {
+            console.log('Connected to ROS websocket server.');
+        });
+
+        ros.on('error', function(error) {
+            console.log('Error connecting to ROS websocket server: ', error);
+        });
+
+        ros.on('close', function() {
+            console.log('Connection to ROS websocket server closed.');
+        });
+
+        // Create GPS Fix publisher
+        rosPublisher = new ROSLIB.Topic({
+            ros: ros,
+            name: '/gps_fix_fused',
+            messageType: 'sensor_msgs/NavSatFix'
+        });
+
+        console.log('ROS GPS publisher initialized');
+    } catch (error) {
+        console.error('Failed to initialize ROS connection:', error);
+        console.log('ROS functionality will be disabled');
+    }
+}
+
+// Function to create location reference toggle slider
+function createLocationToggleSlider() {
+    const toggleContainer = document.createElement('div');
+    toggleContainer.id = 'location-toggle-container';
+    toggleContainer.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+        min-width: 250px;
+    `;
+
+    const toggleLabel = document.createElement('label');
+    toggleLabel.style.cssText = `
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+    `;
+    toggleLabel.textContent = 'Reference Location Source:';
+
+    const sliderContainer = document.createElement('div');
+    sliderContainer.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    `;
+
+    const torcLabel = document.createElement('span');
+    torcLabel.textContent = 'TORC Pinpoint';
+    torcLabel.style.cssText = `
+        font-size: 12px;
+        color: #666;
+        min-width: 80px;
+    `;
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.id = 'location-toggle-slider';
+    slider.min = '0';
+    slider.max = '1';
+    slider.value = '0';
+    slider.step = '1';
+    slider.style.cssText = `
+        flex: 1;
+        margin: 0 10px;
+    `;
+
+    const startLabel = document.createElement('span');
+    startLabel.textContent = 'Start Marker';
+    startLabel.style.cssText = `
+        font-size: 12px;
+        color: #666;
+        min-width: 80px;
+    `;
+
+    const statusDiv = document.createElement('div');
+    statusDiv.id = 'location-status';
+    statusDiv.style.cssText = `
+        font-size: 12px;
+        color: #007bff;
+        margin-top: 5px;
+        font-weight: bold;
+    `;
+    statusDiv.textContent = 'Using: TORC Pinpoint Driver';
+
+    const rosStatusDiv = document.createElement('div');
+    rosStatusDiv.id = 'ros-status';
+    rosStatusDiv.style.cssText = `
+        font-size: 11px;
+        color: #28a745;
+        margin-top: 5px;
+    `;
+    rosStatusDiv.textContent = 'ROS: Ready';
+
+    sliderContainer.appendChild(torcLabel);
+    sliderContainer.appendChild(slider);
+    sliderContainer.appendChild(startLabel);
+
+    toggleContainer.appendChild(toggleLabel);
+    toggleContainer.appendChild(sliderContainer);
+    toggleContainer.appendChild(statusDiv);
+    toggleContainer.appendChild(rosStatusDiv);
+
+    // Add event listener for slider
+    slider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        useStartMarkerLocation = value === 1;
+        updateLocationStatus();
+        handleLocationToggle();
+    });
+
+    return toggleContainer;
+}
+
+// Update location status display
+function updateLocationStatus() {
+    const statusDiv = document.getElementById('location-status');
+    const rosStatusDiv = document.getElementById('ros-status');
+
+    if (statusDiv) {
+        if (useStartMarkerLocation) {
+            statusDiv.textContent = 'Using: Start Marker Location';
+            statusDiv.style.color = '#ff6b35';
+        } else {
+            statusDiv.textContent = 'Using: TORC Pinpoint Driver';
+            statusDiv.style.color = '#007bff';
+        }
+    }
+
+    if (rosStatusDiv) {
+        if (useStartMarkerLocation && rosPublisher) {
+            rosStatusDiv.textContent = 'ROS: Broadcasting GPS Fix';
+            rosStatusDiv.style.color = '#28a745';
+        } else if (useStartMarkerLocation && !rosPublisher) {
+            rosStatusDiv.textContent = 'ROS: Connection Error';
+            rosStatusDiv.style.color = '#dc3545';
+        } else {
+            rosStatusDiv.textContent = 'ROS: Standby';
+            rosStatusDiv.style.color = '#6c757d';
+        }
+    }
+}
+
+// Handle location toggle change
+function handleLocationToggle() {
+    if (useStartMarkerLocation) {
+        startGPSBroadcasting();
+    } else {
+        stopGPSBroadcasting();
+    }
+}
+
+// Start broadcasting GPS Fix messages
+function startGPSBroadcasting() {
+    if (!rosPublisher) {
+        console.error('ROS publisher not available');
+        return;
+    }
+
+    // Clear any existing interval
+    if (publishInterval) {
+        clearInterval(publishInterval);
+    }
+
+    // Start publishing GPS Fix messages at 10Hz
+    publishInterval = setInterval(() => {
+        const startLat = parseFloat(document.getElementById('StartLat')?.value || '0');
+        const startLon = parseFloat(document.getElementById('StartLon')?.value || '0');
+
+        if (startLat !== 0 && startLon !== 0) {
+            const gpsFixMessage = new ROSLIB.Message({
+                header: {
+                    stamp: {
+                        sec: Math.floor(Date.now() / 1000),
+                        nsec: (Date.now() % 1000) * 1000000
+                    },
+                    frame_id: 'gps'
+                },
+                status: {
+                    status: 0, // STATUS_FIX
+                    service: 1 // SERVICE_GPS
+                },
+                latitude: startLat,
+                longitude: startLon,
+                altitude: 0.0,
+                position_covariance: [
+                    1.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0,
+                    0.0, 0.0, 1.0
+                ],
+                position_covariance_type: 1 // COVARIANCE_TYPE_KNOWN
+            });
+
+            rosPublisher.publish(gpsFixMessage);
+            console.log('Published GPS Fix:', startLat, startLon);
+        }
+    }, 100); // 10Hz (100ms interval)
+
+    console.log('Started GPS broadcasting from Start marker location');
+}
+
+// Stop broadcasting GPS Fix messages
+function stopGPSBroadcasting() {
+    if (publishInterval) {
+        clearInterval(publishInterval);
+        publishInterval = null;
+    }
+    console.log('Stopped GPS broadcasting');
+}
 
 // Function to initialize map when container is ready and visible
 function initializeMapWhenReady() {
@@ -130,6 +368,10 @@ function showNewMap() {
             fullscreenControl: true
         });
 
+        // Add location toggle slider to map
+        const toggleSlider = createLocationToggleSlider();
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleSlider);
+
         google.maps.event.addListenerOnce(map, 'idle', function () {
             console.log('Google Maps fully loaded and ready');
             mapInitialized = true;
@@ -175,7 +417,7 @@ function setupDragAndDrop(map) {
         'start-zone': null,
         'end-zone': null
     };
-    
+
     let rectangleOverlay = null; // store the rectangle
     let currentlyHighlighted = null;
 
@@ -183,8 +425,22 @@ function setupDragAndDrop(map) {
         e.preventDefault();
     });
 
-    document.getElementById('StartLat').addEventListener('input', updateStartZoneMarkerFromForm);
-    document.getElementById('StartLon').addEventListener('input', updateStartZoneMarkerFromForm);
+    document.getElementById('StartLat').addEventListener('input', () => {
+        updateStartZoneMarkerFromForm();
+        // If using start marker location, update GPS broadcasting
+        if (useStartMarkerLocation) {
+            // GPS broadcasting will automatically use the updated coordinates
+        }
+    });
+
+    document.getElementById('StartLon').addEventListener('input', () => {
+        updateStartZoneMarkerFromForm();
+        // If using start marker location, update GPS broadcasting
+        if (useStartMarkerLocation) {
+            // GPS broadcasting will automatically use the updated coordinates
+        }
+    });
+
     document.getElementById('EndLat').addEventListener('input', updateEndZoneMarkerFromForm);
     document.getElementById('EndLon').addEventListener('input', updateEndZoneMarkerFromForm);
     document.getElementById('LanesBlockedLeft').addEventListener('input', updateEndZoneMarkerFromForm);
@@ -309,7 +565,7 @@ function setupDragAndDrop(map) {
             }
         }
     }
-    
+
     function updateEndZoneMarkerFromForm() {
         const lat = parseFloat(document.getElementById('EndLat').value);
         const lng = parseFloat(document.getElementById('EndLon').value);
@@ -410,35 +666,35 @@ function setupDragAndDrop(map) {
 
     function drawRectangleFromStartToEnd(startMarker, endMarker) {
         const R = 6378137; // Earth's radius in meters
-    
+
         const toRadians = deg => deg * Math.PI / 180;
         const toDegrees = rad => rad * 180 / Math.PI;
-    
+
         const start = startMarker.getPosition();
         const end = endMarker.getPosition();
-    
+
         const lat1 = toRadians(start.lat());
         const lng1 = toRadians(start.lng());
         const lat2 = toRadians(end.lat());
         const lng2 = toRadians(end.lng());
-    
+
         // Cartesian coordinates
         const x1 = R * lng1 * Math.cos((lat1 + lat2) / 2);
         const y1 = R * lat1;
         const x2 = R * lng2 * Math.cos((lat1 + lat2) / 2);
         const y2 = R * lat2;
-    
+
         // Vector and unit perpendicular vector
         const dx = x2 - x1;
         const dy = y2 - y1;
         const length = Math.sqrt(dx * dx + dy * dy);
         const px = -dy / length;
         const py = dx / length;
-    
+
         const laneWidth = 4; // meters
         const lanesLeft = parseInt(document.getElementById('LanesBlockedLeft')?.value || '0', 10);
         const lanesRight = parseInt(document.getElementById('LanesBlockedRight')?.value || '0', 10);
-    
+
         // Clear previous overlays
         if (window.rectangleOverlays) {
             window.rectangleOverlays.forEach(p => p.setMap(null));
@@ -493,7 +749,7 @@ function setupDragAndDrop(map) {
                 strokeWeight: 2,
                 fillColor: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1] ? '#32302F' : '#0000FF',
                 fillOpacity: 0.2,
-                zIndex: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1] ? 1 : 2 
+                zIndex: i === laneIndices[0] || i === laneIndices[laneIndices.length - 1] ? 1 : 2
             });
 
             window.rectangleOverlays.push(polygon);
@@ -750,8 +1006,10 @@ function moveMarkerWithTimeout(myMarker, newLat, newLong, timeout) {
             myMarker.setPosition(new google.maps.LatLng(newLat, newLong));
 
             if (myMarker.id === 'mHostVehicle') {
-                // Center map based on the host vehicle marker
-                map.setCenter(myMarker.getPosition());
+                // Center map based on the host vehicle marker only if not using start marker location
+                if (!useStartMarkerLocation) {
+                    map.setCenter(myMarker.getPosition());
+                }
             }
         }
     }, timeout);
@@ -864,6 +1122,11 @@ function deleteMarker(id) {
     window.markers = markers;
 }
 
+// Cleanup function to stop GPS broadcasting when page unloads
+window.addEventListener('beforeunload', function() {
+    stopGPSBroadcasting();
+});
+
 // Make functions globally available
 window.initializeMapWhenReady = initializeMapWhenReady;
 window.resizeMap = resizeMap;
@@ -872,3 +1135,6 @@ window.setOtherVehicleMarkers = setOtherVehicleMarkers;
 window.moveMarkerWithTimeout = moveMarkerWithTimeout;
 window.findMarker = findMarker;
 window.deleteMarker = deleteMarker;
+window.useStartMarkerLocation = () => useStartMarkerLocation;
+window.startGPSBroadcasting = startGPSBroadcasting;
+window.stopGPSBroadcasting = stopGPSBroadcasting;
