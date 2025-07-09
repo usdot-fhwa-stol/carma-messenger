@@ -26,4 +26,5 @@ services:
       - container:carma-config:ro
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock 
+      - /opt/carma/vehicle/calibration/ui/google_map_api_key.env:/var/www/html/google_map_api_key.env:ro
     restart: always
