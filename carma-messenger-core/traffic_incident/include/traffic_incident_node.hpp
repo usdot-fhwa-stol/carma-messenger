@@ -77,7 +77,7 @@ private:
   rclcpp::TimerBase::SharedPtr spin_timer_;
 
   // TrafficIncidentWorker class object
-  TrafficIncidentWorker traffic_worker_;
+  std::shared_ptr<TrafficIncidentWorker> traffic_worker_;
 
   // ROS Params
   std::string sender_id_;
@@ -86,6 +86,7 @@ private:
   double down_track_;
   double up_track_;
   double min_gap_;
+  double geofence_start_end_data_timeout_;
   static constexpr double epsilon_ = 1e-6;
 };
 
