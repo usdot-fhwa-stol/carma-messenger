@@ -15,3 +15,6 @@ event_reason: 'MOVE OVER LAW'
 
 # Event type in string
 event_type: 'CLOSED'
+
+# Start/End marker data timeout in seconds from the UI
+marker_data_timeout: 0.3

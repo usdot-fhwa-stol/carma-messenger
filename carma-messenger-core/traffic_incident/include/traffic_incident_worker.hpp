@@ -24,6 +24,7 @@
 #include <string>
 
 #include <rclcpp/rclcpp.hpp>
+#include <carma_ros2_utils/carma_ros2_utils.hpp>
 
 #include <carma_v2x_msgs/msg/mobility_operation.hpp>
 #include <gps_msgs/msg/gps_fix.hpp>
@@ -39,7 +40,8 @@ public:
   /*!
    * \brief Constructor
    */
-  TrafficIncidentWorker(PublishTrafficCallback traffic_pub);
+  TrafficIncidentWorker(std::shared_ptr<carma_ros2_utils::CarmaLifecycleNode> nh,
+    PublishTrafficCallback traffic_pub);
 
   /*! \fn pinpointDriverCallback(const gps_msgs::msg::GPSFix &pinpoint_msg)
     \brief pinpointDriverCallback populates lat lon heading from pinpoint driver.
@@ -70,7 +72,7 @@ public:
   void setMinGap(double min_gap);
   void setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg);
   void setAdvisorySpeed(double advisory_speed);
-
+  void setGeofenceStartEndDataTimeout(double geofence_start_end_data_timeout);
 
   // Getter for the prediction parameters
   std::string getSenderId();
@@ -80,6 +82,8 @@ public:
   double getUpTrack();
   double getMinGap();
   gps_msgs::msg::GPSFix getPinPoint();
+  std::optional<gps_msgs::msg::GPSFix> getGeofenceStartLoc();
+  std::optional<gps_msgs::msg::GPSFix> getGeofenceEndLoc();
   double getAdvisorySpeed();
 
   // Generate mobility message
@@ -93,7 +97,7 @@ private:
   // local copy of external object publihsers
 
   PublishTrafficCallback traffic_pub_;
-
+  std::shared_ptr<carma_ros2_utils::CarmaLifecycleNode> nh_;
   // Prediction parameters
   std::string sender_id_ = "USDOT-49096";
   std::string closed_lane_ = "[1]";
@@ -103,7 +107,10 @@ private:
   double up_track_ = 0;
   double min_gap_ = 0;
   double advisory_speed_ = 0;
+  double geofence_start_end_data_timeout_ = 0.3; // seconds
   gps_msgs::msg::GPSFix pinpoint_msg_;
+  std::optional<gps_msgs::msg::GPSFix> geo_start_loc_msg_;
+  std::optional<gps_msgs::msg::GPSFix> geo_end_loc_msg_;
 };
 
 }  // namespace traffic
