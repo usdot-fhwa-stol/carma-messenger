@@ -80,14 +80,8 @@ carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGen
   // Calculate distance to start zone (uptrack - behind the midpoint)
   double lat_diff_start = start_zone.latitude - midpoint.latitude;
   double lon_diff_start = start_zone.longitude - midpoint.longitude;
-  double uptrack_dist = sqrt(pow(lat_diff_start * DEGREES_TO_METERS_LAT, 2) +
+  double dist = sqrt(pow(lat_diff_start * DEGREES_TO_METERS_LAT, 2) +
                             pow(lon_diff_start * DEGREES_TO_METERS_LON, 2));
-
-  // Calculate distance to end zone (downtrack - ahead of the midpoint)
-  double lat_diff_end = end_zone.latitude - midpoint.latitude;
-  double lon_diff_end = end_zone.longitude - midpoint.longitude;
-  double downtrack_dist = sqrt(pow(lat_diff_end * DEGREES_TO_METERS_LAT, 2) +
-                              pow(lon_diff_end * DEGREES_TO_METERS_LON, 2));
 
   // Set the header information
   traffic_mobility_msg.m_header.timestamp = rclcpp::Time(midpoint.header.stamp).nanoseconds() / 1e6;
@@ -100,7 +94,7 @@ carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGen
   traffic_mobility_msg.strategy_params =
     "lat:" + doubleToString(midpoint.latitude) + "," +
     "lon:" + doubleToString(midpoint.longitude) + "," +
-    "downtrack:" + anytypeToString(downtrack_dist) + "," + "uptrack:" + anytypeToString(uptrack_dist) +
+    "downtrack:" + anytypeToString(dist) + "," + "uptrack:" + anytypeToString(dist) +
     "," + "min_gap:" + anytypeToString(min_gap_) + "," +
     "advisory_speed:" + anytypeToString(advisory_speed_) + "," + "event_reason:" + event_reason_ +
     "," + "event_type:" + event_type_;
