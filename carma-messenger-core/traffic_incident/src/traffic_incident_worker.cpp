@@ -28,6 +28,10 @@ void TrafficIncidentWorker::pinpointDriverCallback(gps_msgs::msg::GPSFix::Unique
   setPinPoint(*pinpoint_msg);
 }
 
+void TrafficIncidentWorker::setGeofenceStartEndDataTimeout(double geofence_start_end_data_timeout) {
+  geofence_start_end_data_timeout_ = geofence_start_end_data_timeout;
+}
+
 void TrafficIncidentWorker::geofenceStartLocCallback(gps_msgs::msg::GPSFix::UniquePtr start_loc_msg)
 {
   geo_start_loc_msg_ = *start_loc_msg;
