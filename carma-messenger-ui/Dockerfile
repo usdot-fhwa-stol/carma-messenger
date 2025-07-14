@@ -21,7 +21,7 @@
 # In order to enable the web-start functionality please run this image with
 # -v /var/run/docker.sock:/var/run/docker.sock
 
-FROM php:7.1-apache-buster
+FROM php:8.2-apache-bullseye
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
