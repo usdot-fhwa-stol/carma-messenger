@@ -18,7 +18,7 @@ set -ex
 
 # Configure apt with Docker repos
 apt-get update
-apt-get -y --allow install apt-transport-https \
+apt-get -y install apt-transport-https \
         ca-certificates \
         curl \
         gnupg2 \
