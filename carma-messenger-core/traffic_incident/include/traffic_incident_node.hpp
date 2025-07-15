@@ -64,6 +64,8 @@ private:
 
   // subscriber
   carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> pinpoint_driver_sub_;
+  carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> geofence_starting_location_sub_;
+  carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> geofence_ending_location_sub_;
 
   // publisher
   carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> traffic_mobility_operation_pub_;
