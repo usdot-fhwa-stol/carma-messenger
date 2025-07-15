@@ -15,15 +15,24 @@
  */
 
 #include <gtest/gtest.h>
+#include <memory>
 
 #include "traffic_incident_node.hpp"
 #include "traffic_incident_worker.hpp"
 
 namespace traffic
 {
+// Helper function to create a mock CarmaLifecycleNode for testing
+std::shared_ptr<carma_ros2_utils::CarmaLifecycleNode> createMockNode()
+{
+  rclcpp::NodeOptions options;
+  return std::make_shared<carma_ros2_utils::CarmaLifecycleNode>(options);
+}
+
 TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyParams)
 {
-  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  auto mock_node = createMockNode();
+  TrafficIncidentWorker traffic_worker(mock_node, [](auto msg) {});
 
   gps_msgs::msg::GPSFix msg;
 
@@ -60,7 +69,8 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategyPar
 
 TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastTimeStamp)
 {
-  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  auto mock_node = createMockNode();
+  TrafficIncidentWorker traffic_worker(mock_node, [](auto msg) {});
 
   gps_msgs::msg::GPSFix msg;
 
@@ -92,7 +102,8 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastTimeStamp)
 
 TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategy)
 {
-  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  auto mock_node = createMockNode();
+  TrafficIncidentWorker traffic_worker(mock_node, [](auto msg) {});
 
   gps_msgs::msg::GPSFix msg;
 
@@ -125,7 +136,8 @@ TEST(TrafficIncidentWorkerTest, testTrafficMobilityOperationBroadcastStrategy)
 
 TEST(TrafficIncidentWorkerTest, testAnyTypeToStringFunction)
 {
-  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  auto mock_node = createMockNode();
+  TrafficIncidentWorker traffic_worker(mock_node, [](auto msg) {});
 
   EXPECT_EQ(traffic_worker.anytypeToString(55.6712), "55.6712");
 }
@@ -133,7 +145,8 @@ TEST(TrafficIncidentWorkerTest, testAnyTypeToStringFunction)
 
 TEST(TrafficIncidentWorkerTest, testGettersSetters)
 {
-  TrafficIncidentWorker traffic_worker([](auto msg) {});
+  auto mock_node = createMockNode();
+  TrafficIncidentWorker traffic_worker(mock_node, [](auto msg) {});
   traffic_worker.setSenderId("USDOT-49096");
   traffic_worker.setMinGap(1.2);
   traffic_worker.setDownTrack(1.2);
@@ -143,7 +156,6 @@ TEST(TrafficIncidentWorkerTest, testGettersSetters)
   msg.latitude = 57.1;
   msg.longitude = 155.79;
   msg.header.stamp.sec = 25;
-
 
   traffic_worker.setPinPoint(msg);
   traffic_worker.setAdvisorySpeed(1.2);
