@@ -172,7 +172,7 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() 
   if (geo_end_loc_msg_.has_value()) {
     double age = nh_->now().seconds() - rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds();
 
-    if (age >= 0 && age < geofence_end_end_data_timeout_) {
+    if (age >= 0 && age < geofence_start_end_data_timeout_) {
       return geo_end_loc_msg_.value();
     }
   }
