@@ -107,11 +107,17 @@ def generate_launch_description():
     traffic_incident_group = GroupAction(
         actions=[
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([get_package_share_directory('traffic_incident'), '/launch', '/traffic_incident.launch.py']),
+                PythonLaunchDescriptionSource([
+                    get_package_share_directory('traffic_incident'),
+                    '/launch/traffic_incident.launch.py'
+                ]),
+                remappings=[
+                    ('gps_fix_start_zone', '/gps_fix_start_zone'),
+                    ('gps_fix_end_zone', '/gps_fix_end_zone'),
+                ]
             ),
         ]
     )
-
 
     system_alert_publisher = ExecuteProcess(
         cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
