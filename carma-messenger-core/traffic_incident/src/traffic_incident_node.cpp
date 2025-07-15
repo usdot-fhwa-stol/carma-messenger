@@ -167,7 +167,6 @@ void TrafficIncidentNode::spin_callback(void)
   // If start and end location are set, use that info to generate geofences
   if (traffic_worker_->getGeofenceStartLoc().has_value() &&
       traffic_worker_->getGeofenceEndLoc().has_value()) {
-
     // start constantly broadcasting using start/end geofence locations
     traffic_mobility_operation_pub_->publish(
       traffic_worker_->mobilityMessageGenerator(traffic_worker_->getGeofenceStartLoc().value(),

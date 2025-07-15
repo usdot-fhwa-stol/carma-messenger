@@ -160,13 +160,15 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceStartLoc(
   if (geo_start_loc_msg_.has_value() &&
       rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds() >
       nh_->now().seconds() - geofence_start_end_data_timeout_) {
+    RCLCPP_DEBUG(
+      rclcpp::get_logger("traffic_incident"),
+      "Geofence start location is valid and not expired: %f, %f",
+      geo_start_loc_msg_.value().latitude,
+      geo_start_loc_msg_.value().longitude);
     return geo_start_loc_msg_.value();
   }
   else {
-    RCLCPP_INFO(
-      rclcpp::get_logger("TrafficIncidentWorker"),
-      "Geofence start location is not set or has expired."
-    );
+    geo_start_loc_msg_.reset(); // Reset the value if it has expired
     return std::nullopt;
   }
 }
@@ -176,13 +178,15 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() 
   if (geo_end_loc_msg_.has_value() &&
       rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds() >
       nh_->now().seconds() - geofence_start_end_data_timeout_) {
+    RCLCPP_DEBUG(
+      rclcpp::get_logger("traffic_incident"),
+      "Geofence end location is valid and not expired: %f, %f",
+      geo_end_loc_msg_.value().latitude,
+      geo_end_loc_msg_.value().longitude);
     return geo_end_loc_msg_.value();
   }
   else {
-    RCLCPP_INFO(
-      rclcpp::get_logger("TrafficIncidentWorker"),
-      "Geofence end location is not set or has expired."
-    );
+    geo_end_loc_msg_.reset(); // Reset the value if it has expired
     return std::nullopt;
   }
 }

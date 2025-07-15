@@ -278,7 +278,6 @@ function startGPSBroadcasting() {
                 },
                 status: {
                     status: 0, // STATUS_FIX
-                    service: 1 // SERVICE_GPS
                 },
                 latitude: startLat,
                 longitude: startLon,
@@ -304,7 +303,6 @@ function startGPSBroadcasting() {
                 },
                 status: {
                     status: 0, // STATUS_FIX
-                    service: 1 // SERVICE_GPS
                 },
                 latitude: endLat,
                 longitude: endLon,
