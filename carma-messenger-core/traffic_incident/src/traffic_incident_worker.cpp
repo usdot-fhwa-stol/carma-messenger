@@ -156,39 +156,29 @@ double TrafficIncidentWorker::getMinGap() { return this->min_gap_; }
 gps_msgs::msg::GPSFix TrafficIncidentWorker::getPinPoint() { return this->pinpoint_msg_; }
 
 std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceStartLoc() {
-  // Check if the geofence start location is set and not expired
-  if (geo_start_loc_msg_.has_value() &&
-      rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds() >
-      nh_->now().seconds() - geofence_start_end_data_timeout_) {
-    RCLCPP_DEBUG(
-      rclcpp::get_logger("traffic_incident"),
-      "Geofence start location is valid and not expired: %f, %f",
-      geo_start_loc_msg_.value().latitude,
-      geo_start_loc_msg_.value().longitude);
-    return geo_start_loc_msg_.value();
+  if (geo_start_loc_msg_.has_value()) {
+    double age = nh_->now().seconds() - rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds();
+
+    if (age >= 0 && age < geofence_start_end_data_timeout_) {
+      return geo_start_loc_msg_.value();
+    }
   }
-  else {
-    geo_start_loc_msg_.reset(); // Reset the value if it has expired
-    return std::nullopt;
-  }
+  geo_start_loc_msg_.reset(); // Reset the value if it has expired
+  return std::nullopt;
 }
 
 std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() {
   // Check if the geofence end location is set and not expired
-  if (geo_end_loc_msg_.has_value() &&
-      rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds() >
-      nh_->now().seconds() - geofence_start_end_data_timeout_) {
-    RCLCPP_DEBUG(
-      rclcpp::get_logger("traffic_incident"),
-      "Geofence end location is valid and not expired: %f, %f",
-      geo_end_loc_msg_.value().latitude,
-      geo_end_loc_msg_.value().longitude);
-    return geo_end_loc_msg_.value();
+  if (geo_end_loc_msg_.has_value()) {
+    double age = nh_->now().seconds() - rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds();
+
+    if (age >= 0 && age < geofence_end_end_data_timeout_) {
+      return geo_end_loc_msg_.value();
+    }
   }
-  else {
-    geo_end_loc_msg_.reset(); // Reset the value if it has expired
-    return std::nullopt;
-  }
+
+  geo_end_loc_msg_.reset(); // Reset the value if it has expired
+  return std::nullopt;
 }
 
 double TrafficIncidentWorker::getAdvisorySpeed() { return this->advisory_speed_; }

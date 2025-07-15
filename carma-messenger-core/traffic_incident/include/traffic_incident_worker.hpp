@@ -122,7 +122,7 @@ private:
   double up_track_ = 0;
   double min_gap_ = 0;
   double advisory_speed_ = 0;
-  double geofence_start_end_data_timeout_ = 0.3; // seconds
+  double geofence_start_end_data_timeout_ = 1.0; // seconds
   gps_msgs::msg::GPSFix pinpoint_msg_;
   std::optional<gps_msgs::msg::GPSFix> geo_start_loc_msg_;
   std::optional<gps_msgs::msg::GPSFix> geo_end_loc_msg_;
