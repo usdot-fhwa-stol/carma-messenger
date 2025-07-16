@@ -20,7 +20,7 @@ services:
     image: ${DOCKER_ORG}/carma-messenger-ui:${DOCKER_TAG}
     # NOTE: Access the UI at http://localhost:8080
     ports:
-      -"8080:80"
+      - "8080:80"
     container_name: carma-messenger-ui
     volumes_from:
       - container:carma-config:ro
