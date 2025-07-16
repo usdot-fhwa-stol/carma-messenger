@@ -158,7 +158,7 @@ gps_msgs::msg::GPSFix TrafficIncidentWorker::getPinPoint() { return this->pinpoi
 std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceStartLoc() {
   if (geo_start_loc_msg_.has_value()) {
     double age = nh_->now().seconds() - rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds();
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
       << std::to_string(nh_->now().seconds()) << ", start_msg:"
       << std::to_string(rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds())
       << ", age" << std::to_string(age) << ", timeout: " << geofence_start_end_data_timeout_);
@@ -166,7 +166,7 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceStartLoc(
       return geo_start_loc_msg_.value();
     }
   }
-  RCLCPP_ERROR_STREAM(rclcpp::get_logger("traffic_incident"), "Geo start has no value");
+  RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Geo start has no value");
 
   geo_start_loc_msg_.reset(); // Reset the value if it has expired
   return std::nullopt;
@@ -176,7 +176,7 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() 
   // Check if the geofence end location is set and not expired
   if (geo_end_loc_msg_.has_value()) {
     double age = nh_->now().seconds() - rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds();
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
       << std::to_string(nh_->now().seconds()) << ", end_msg:"
       << std::to_string(rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds())
       << ", age" << std::to_string(age) << ", timeout: " << geofence_start_end_data_timeout_);
@@ -184,7 +184,7 @@ std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() 
       return geo_end_loc_msg_.value();
     }
   }
-  RCLCPP_ERROR_STREAM(rclcpp::get_logger("traffic_incident"), "Geo end has no value");
+  RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Geo end has no value");
 
   geo_end_loc_msg_.reset(); // Reset the value if it has expired
   return std::nullopt;
