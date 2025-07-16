@@ -42,7 +42,7 @@ CarmaJS.registerNamespace("CarmaJS.Config");
 CarmaJS.Config = (function () {
         //Private variables
         var ip = '127.0.0.1';//'192.168.88.10'; //'192.168.88.10'; 192.168.32.146;
-        var refresh_interval = 30; //30 seconds 
+        var refresh_interval = 30; //30 seconds
         var ros_connect_wait = 10000; //miliseconds to wait for platform to launch and ros to connect.
         var ros_connect_retry = 3; //# of times to wait
         var valid_truck_vin_numbers = ["1FUJGBDV8CLBP8898","1FUJGHDV0CLBP8834","1FUJGHDV0CLBP8896","1FUJGHDV9CLBP8833"];
@@ -62,13 +62,16 @@ CarmaJS.Config = (function () {
             "MAX": 80,
             "MIN": 1
         };
+        // Summit Point location:
+        var initialLatitude = 39.2385283;
+        var initialLongitude = -77.966232;
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {
             return ip;
         };
         var getRefreshInterval = function(){
-            return refresh_interval; 
+            return refresh_interval;
         };
         var getRosConnectionWaitTime = function() {
             return ros_connect_wait;
@@ -93,6 +96,12 @@ CarmaJS.Config = (function () {
         {
             return AdvisorySpeedRange;
         }
+        var getInitialLatitude = function() {
+            return initialLatitude;
+        }
+        var getInitialLongitude = function() {
+            return initialLongitude;
+        }
         //Public API
         return {
             getIP: getIP,
@@ -103,6 +112,8 @@ CarmaJS.Config = (function () {
             getUpTrackRange:getUpTrackRange,
             getDownTrackRange:getDownTrackRange,
             getMinGapRange:getMinGapRange,
-            getAdvisorySpeedRange:getAdvisorySpeedRange
+            getAdvisorySpeedRange:getAdvisorySpeedRange,
+            getInitialLatitude:getInitialLatitude,
+            getInitialLongitude:getInitialLongitude
         };
 })();

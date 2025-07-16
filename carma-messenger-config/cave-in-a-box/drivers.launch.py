@@ -69,6 +69,7 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     "log_level": GetLogLevel("v2x_ros_driver", env_log_levels),
+                    "param_overwrite_file_path": "/opt/carma/vehicle/config/v2x-param-overwrite.yaml"
                 }.items(),
             ),
         ],

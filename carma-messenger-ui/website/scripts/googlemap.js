@@ -717,9 +717,23 @@ function showNewMap() {
     }
 
     try {
+        // TFHRC Parking Lot Location
+        var initialLat = 39.2385283;
+        var InitialLng = -77.966232;
+
+        // Try to get coordinates from CarmaJS.Config
+        if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
+            try {
+                initialLat = CarmaJS.Config.getInitialLatitude();
+                InitialLng = CarmaJS.Config.getInitialLongitude();
+            } catch (e) {
+                console.warn('Could not get initial coordinates from config, using TFHRC defaults');
+            }
+        }
+
         map = new google.maps.Map(mapContainer, {
             zoom: 17,
-            center: { lat: 38.955097, lng: -77.147190 },
+            center: { lat: initialLat, lng: InitialLng },
             mapTypeId: 'hybrid',
             disableDefaultUI: true,
             zoomControl: true,
