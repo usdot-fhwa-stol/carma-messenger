@@ -732,8 +732,22 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 return line;
             };
 
-            const latLine = createLine('Current Latitude:', 'LatitudeSpan', '38.955882');
-            const lonLine = createLine('Current Longitude:', 'LongitudeSpan', '-77.147720');
+            // TFHRC default coordinates
+            var initialLat = 38.955882;
+            var InitialLng = -77.147720;
+
+            // Try to get coordinates from CarmaJS.Config
+            if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
+                try {
+                    initialLat = CarmaJS.Config.getInitialLatitude();
+                    InitialLng = CarmaJS.Config.getInitialLongitude();
+                } catch (e) {
+                    console.warn('Could not get initial coordinates from config, using TFHRC defaults');
+                }
+            }
+
+            const latLine = createLine('Current Latitude:', 'LatitudeSpan', initialLat.toString());
+            const lonLine = createLine('Current Longitude:', 'LongitudeSpan', InitialLng.toString());
 
             section.appendChild(latLine);
             section.appendChild(lonLine);

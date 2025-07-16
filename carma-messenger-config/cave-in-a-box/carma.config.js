@@ -64,7 +64,7 @@ CarmaJS.Config = (function () {
         };
         // Summit Point location:
         var initialLatitude = 39.2385283;
-        var initialLongitude = -77.966232;
+        var initialLongitude = -77.9662324;
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {

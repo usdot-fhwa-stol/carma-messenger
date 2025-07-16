@@ -718,8 +718,8 @@ function showNewMap() {
 
     try {
         // TFHRC Parking Lot Location
-        var initialLat = 39.2385283;
-        var InitialLng = -77.966232;
+        var initialLat = 38.955882;
+        var InitialLng = -77.147720;
 
         // Try to get coordinates from CarmaJS.Config
         if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
