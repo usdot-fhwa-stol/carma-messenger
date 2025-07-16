@@ -13,9 +13,11 @@
 #  the License.
 ARG DOCKER_ORG="usdotfhwastoldev"
 ARG DOCKER_TAG="develop-humble"
-FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
-FROM base_image as setup
+FROM 1b45d9815b40 as base_image
+FROM 1b45d9815b40 as setup
 ARG GIT_BRANCH="develop"
+ARG PACKAGES=""
+ENV PACKAGES=${PACKAGES}
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
@@ -23,7 +25,7 @@ RUN ~/src/docker/checkout.bash -b ${GIT_BRANCH}
 
 RUN ~/src/docker/install.sh
 
-FROM base_image
+FROM 1b45d9815b40
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
