@@ -84,6 +84,7 @@ public:
   void setPinPoint(gps_msgs::msg::GPSFix pinpoint_msg);
   void setAdvisorySpeed(double advisory_speed);
   void setGeofenceStartEndDataTimeout(double geofence_start_end_data_timeout);
+  void setShouldBroadcast(bool should_broadcast){should_broadcast_ = should_broadcast;}
 
   // Getter for the prediction parameters
   std::string getSenderId();
@@ -122,6 +123,7 @@ private:
   double up_track_ = 0;
   double min_gap_ = 0;
   double advisory_speed_ = 0;
+  bool should_broadcast_ = false;
   double geofence_start_end_data_timeout_ = 1.0; // seconds
   gps_msgs::msg::GPSFix pinpoint_msg_;
   std::optional<gps_msgs::msg::GPSFix> geo_start_loc_msg_;

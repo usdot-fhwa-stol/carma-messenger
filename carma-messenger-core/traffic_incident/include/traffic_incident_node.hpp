@@ -82,6 +82,7 @@ private:
   std::shared_ptr<TrafficIncidentWorker> traffic_worker_;
 
   // ROS Params
+  bool should_broadcast_ = false;
   std::string sender_id_;
   std::string event_reason_;
   std::string event_type_;

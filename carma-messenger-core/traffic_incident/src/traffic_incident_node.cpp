@@ -127,7 +127,7 @@ bool TrafficIncidentNode::startTrafficBroadcastCallback(
   traffic_worker_->setDownTrack(req->down_track);
   traffic_worker_->setUpTrack(req->up_track);
   traffic_worker_->setAdvisorySpeed(req->advisory_speed);
-
+  should_broadcast_ = true;
   // return service response true
   resp->success = true;
   return true;
@@ -148,10 +148,9 @@ bool TrafficIncidentNode::stopTrafficBroadcastCallback(
     traffic_worker_->setDownTrack(0);
     traffic_worker_->setUpTrack(0);
     traffic_worker_->setAdvisorySpeed(0);
-
     resp->success = true;
     resp->message = "stop broadcasting";
-
+    should_broadcast_ = false; // set the flag to false to stop broadcasting
     // return service response true
     return true;
 
@@ -164,6 +163,27 @@ bool TrafficIncidentNode::stopTrafficBroadcastCallback(
 
 void TrafficIncidentNode::spin_callback(void)
 {
+  if (!should_broadcast_)
+  {
+    // If not broadcasting, return
+    return;
+  }
+
+  // Publish traffic mobility operation message only if the worker has valid data
+  // which is also set to invalid (zeroes) if stop broadcast service is called
+  if (
+    std::fabs(traffic_worker_->getDownTrack()) < epsilon_ &&
+    std::fabs(traffic_worker_->getUpTrack()) < epsilon_ &&
+    std::fabs(traffic_worker_->getAdvisorySpeed()) < epsilon_)
+  {
+    RCLCPP_WARN_STREAM(
+      get_logger(), "Traffic Incident Worker has no valid data to publish. "
+      << "Downtrack: " << traffic_worker_->getDownTrack()
+      << ", Uptrack: " << traffic_worker_->getUpTrack()
+      << ", Advisory Speed: " << traffic_worker_->getAdvisorySpeed());
+    return;
+  }
+
   // If start and end location are set, use that info to generate geofences
   if (traffic_worker_->getGeofenceStartLoc().has_value() &&
       traffic_worker_->getGeofenceEndLoc().has_value()) {
@@ -174,15 +194,10 @@ void TrafficIncidentNode::spin_callback(void)
     return;
   }
 
-  if (
-    std::fabs(traffic_worker_->getDownTrack()) > epsilon_ ||
-    std::fabs(traffic_worker_->getUpTrack()) > epsilon_ ||
-    std::fabs(traffic_worker_->getAdvisorySpeed()) > epsilon_) {
+  // If else, use TORC Pinpoint to start constantly broadcasting mobilityOperation msg
+  traffic_mobility_operation_pub_->publish(
+    traffic_worker_->mobilityMessageGenerator(traffic_worker_->getPinPoint()));
 
-    // start constantly broadcasting mobilityOperation msg
-    traffic_mobility_operation_pub_->publish(
-      traffic_worker_->mobilityMessageGenerator(traffic_worker_->getPinPoint()));
-  }
 }
 
 
