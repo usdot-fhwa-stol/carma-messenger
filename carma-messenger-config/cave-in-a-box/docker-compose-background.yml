@@ -18,7 +18,9 @@ version: '2'
 services:
   carma-messenger-ui:
     image: ${DOCKER_ORG}/carma-messenger-ui:${DOCKER_TAG}
-    network_mode: host
+    # NOTE: Access the UI at http://localhost:8080
+    ports:
+      -"8080:80"
     container_name: carma-messenger-ui
     volumes_from:
       - container:carma-config:ro
