@@ -27,6 +27,7 @@ let routePlanCoordinates;
 let mapInitialized = false;
 let placedMarkers = [];
 let closedLabelOverlay = null;
+let currentLocationButton = null;
 
 // Location reference toggle variables
 let useStartMarkerLocation = false;
@@ -83,6 +84,226 @@ function initializeROS() {
         console.error('Failed to initialize ROS connection:', error);
         console.log('ROS functionality will be disabled');
     }
+}
+
+// Function to create current location button
+function createCurrentLocationButton() {
+    const locationButton = document.createElement('button');
+    locationButton.id = 'current-location-btn';
+    locationButton.innerHTML = 'H';
+    locationButton.title = 'Go to my current location';
+    locationButton.style.cssText = `
+        background: white;
+        border: 2px solid #dadce0;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+        height: 40px;
+        width: 40px;
+        margin: 10px;
+        padding: 0;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: all 0.2s ease;
+    `;
+
+    // Add hover effects
+    locationButton.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = '#f1f3f4';
+        this.style.borderColor = '#c1c7cd';
+    });
+
+    locationButton.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = 'white';
+        this.style.borderColor = '#dadce0';
+    });
+
+    locationButton.addEventListener('click', function() {
+        getCurrentLocationAndUpdateHost();
+    });
+
+    return locationButton;
+}
+
+// Function to get current location and update host marker
+function getCurrentLocationAndUpdateHost() {
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by this browser.');
+        return;
+    }
+
+    // Change button appearance while loading
+    const button = document.getElementById('current-location-btn');
+    if (button) {
+        button.innerHTML = '...';
+        button.disabled = true;
+        button.style.cursor = 'not-allowed';
+    }
+
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000 // Cache location for 1 minute
+    };
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const currentLat = position.coords.latitude;
+            const currentLng = position.coords.longitude;
+
+            console.log('Current location obtained:', currentLat, currentLng);
+
+            // Update the latitude and longitude span elements
+            $('#LatitudeSpan').text(currentLat.toFixed(6));
+            $('#LongitudeSpan').text(currentLng.toFixed(6));
+
+            // Update or create host marker
+            updateHostMarkerToCurrentLocation(currentLat, currentLng);
+
+            // Center map on current location
+            if (map) {
+                map.setCenter({ lat: currentLat, lng: currentLng });
+                map.setZoom(17); // Set appropriate zoom level
+            }
+
+            // Show success message
+            showLocationMessage('Location updated successfully!', 'success');
+
+            // Reset button appearance
+            if (button) {
+                button.innerHTML = 'H';
+                button.disabled = false;
+                button.style.cursor = 'pointer';
+            }
+        },
+        function(error) {
+            let errorMessage = 'Unable to get your location. ';
+
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Location access denied by user.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Location information unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'Location request timed out.';
+                    break;
+                default:
+                    errorMessage += 'An unknown error occurred.';
+                    break;
+            }
+
+            console.error('Geolocation error:', error);
+            showLocationMessage(errorMessage, 'error');
+
+            // Reset button appearance
+            if (button) {
+                button.innerHTML = 'H';
+                button.disabled = false;
+                button.style.cursor = 'pointer';
+            }
+        },
+        options
+    );
+}
+
+// Function to update host marker to current location
+function updateHostMarkerToCurrentLocation(lat, lng) {
+    if (!map) {
+        console.error('Map not initialized when trying to update host marker');
+        return;
+    }
+
+    // Remove existing host marker if it exists
+    if (hostmarker) {
+        hostmarker.setMap(null);
+    }
+
+    // Create new host marker at current location
+    hostmarker = new google.maps.Marker({
+        id: 'mHostVehicle',
+        position: { lat: lat, lng: lng },
+        map: map,
+        icon: 'http://www.google.com/mapfiles/ms/icons/blue-dot.png',
+        title: 'Host Vehicle (Current Location)',
+        zIndex: 1
+    });
+
+    window.hostmarker = hostmarker;
+
+    // Add a subtle animation to the marker
+    hostmarker.setAnimation(google.maps.Animation.DROP);
+
+    // Stop animation after a brief moment
+    setTimeout(() => {
+        if (hostmarker) {
+            hostmarker.setAnimation(null);
+        }
+    }, 1000);
+}
+
+// Function to show location status messages
+function showLocationMessage(message, type) {
+    // Remove existing message if any
+    const existingMessage = document.getElementById('location-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'location-message';
+    messageDiv.textContent = message;
+
+    const isError = type === 'error';
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${isError ? '#ff4444' : '#4CAF50'};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideInFromTop 0.3s ease;
+    `;
+
+    // Add CSS animation keyframes
+    if (!document.getElementById('location-message-styles')) {
+        const style = document.createElement('style');
+        style.id = 'location-message-styles';
+        style.textContent = `
+            @keyframes slideInFromTop {
+                0% {
+                    transform: translateX(-50%) translateY(-100%);
+                    opacity: 0;
+                }
+                100% {
+                    transform: translateX(-50%) translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(messageDiv);
+
+    // Auto-remove message after 3 seconds
+    setTimeout(() => {
+        if (messageDiv && messageDiv.parentNode) {
+            messageDiv.style.animation = 'slideInFromTop 0.3s ease reverse';
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 300);
+        }
+    }, 3000);
 }
 
 // Function to create location reference toggle slider
@@ -427,6 +648,10 @@ function showNewMap() {
         // Add location toggle slider to map
         const toggleSlider = createLocationToggleSlider();
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleSlider);
+
+        // Add current location button to map
+        currentLocationButton = createCurrentLocationButton();
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(currentLocationButton);
 
         google.maps.event.addListenerOnce(map, 'idle', function () {
             console.log('Google Maps fully loaded and ready');
@@ -1201,3 +1426,5 @@ window.deleteMarker = deleteMarker;
 window.useStartMarkerLocation = () => useStartMarkerLocation;
 window.startGPSBroadcasting = startGPSBroadcasting;
 window.stopGPSBroadcasting = stopGPSBroadcasting;
+window.getCurrentLocationAndUpdateHost = getCurrentLocationAndUpdateHost;
+window.updateHostMarkerToCurrentLocation = updateHostMarkerToCurrentLocation;
