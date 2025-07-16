@@ -17,6 +17,13 @@
 /***
  This file shall contain Map related functions - Fixed version with Location Toggle and ROS Broadcasting
 ****/
+// Load Material Icons font if not loaded already
+if (!document.querySelector('link[href*="material-icons"]')) {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+}
 
 // Global variables
 let map;
@@ -28,6 +35,8 @@ let mapInitialized = false;
 let placedMarkers = [];
 let closedLabelOverlay = null;
 let currentLocationButton = null;
+let searchBox = null;
+let searchInput = null;
 
 // Location reference toggle variables
 let useStartMarkerLocation = false;
@@ -90,7 +99,7 @@ function initializeROS() {
 function createCurrentLocationButton() {
     const locationButton = document.createElement('button');
     locationButton.id = 'current-location-btn';
-    locationButton.innerHTML = 'H';
+    locationButton.innerHTML = '<span class="material-icons" style="font-size: 18px; color: #333;">my_location</span>';
     locationButton.title = 'Go to my current location';
     locationButton.style.cssText = `
         background: white;
@@ -127,6 +136,86 @@ function createCurrentLocationButton() {
     return locationButton;
 }
 
+// Function to create location search bar
+function createLocationSearchBar() {
+    const searchContainer = document.createElement('div');
+    searchContainer.id = 'search-container';
+    searchContainer.style.cssText = `
+        background: white;
+        border: 2px solid #dadce0;
+        border-radius: 3px;
+        margin: 10px;
+        padding: 0;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        min-width: 250px;
+    `;
+
+    searchInput = document.createElement('input');
+    searchInput.id = 'location-search-input';
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search for a location...';
+    searchInput.style.cssText = `
+        border: none;
+        outline: none;
+        padding: 10px 15px;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
+    `;
+
+    searchContainer.appendChild(searchInput);
+    return searchContainer;
+}
+
+// Function to initialize search functionality
+function initializeLocationSearch() {
+    if (!searchInput || !map) return;
+
+    searchBox = new google.maps.places.SearchBox(searchInput);
+
+    // Bias the SearchBox results towards current map's viewport
+    map.addListener('bounds_changed', () => {
+        searchBox.setBounds(map.getBounds());
+    });
+
+    searchBox.addListener('places_changed', () => {
+        const places = searchBox.getPlaces();
+
+        if (places.length === 0) {
+            return;
+        }
+
+        const place = places[0];
+
+        if (!place.geometry || !place.geometry.location) {
+            console.log("No location data for: " + place.name);
+            return;
+        }
+
+        // Update host marker to searched location
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+
+        // Update the latitude and longitude span elements
+        $('#LatitudeSpan').text(lat.toFixed(6));
+        $('#LongitudeSpan').text(lng.toFixed(6));
+
+        // Update host marker
+        updateHostMarkerToCurrentLocation(lat, lng);
+
+        // Center map on searched location
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);
+
+        // Show success message
+        showLocationMessage(`Moved to: ${place.name}`, 'success');
+
+        // Clear search input
+        searchInput.value = '';
+    });
+}
+
 // Function to get current location and update host marker
 function getCurrentLocationAndUpdateHost() {
     if (!navigator.geolocation) {
@@ -137,7 +226,7 @@ function getCurrentLocationAndUpdateHost() {
     // Change button appearance while loading
     const button = document.getElementById('current-location-btn');
     if (button) {
-        button.innerHTML = '...';
+        button.innerHTML = '<span class="material-icons" style="font-size: 18px; color: #333;">my_location</span>';
         button.disabled = true;
         button.style.cursor = 'not-allowed';
     }
@@ -173,7 +262,7 @@ function getCurrentLocationAndUpdateHost() {
 
             // Reset button appearance
             if (button) {
-                button.innerHTML = 'H';
+                button.innerHTML = '<span class="material-icons" style="font-size: 18px; color: #333;">my_location</span>';
                 button.disabled = false;
                 button.style.cursor = 'pointer';
             }
@@ -201,7 +290,7 @@ function getCurrentLocationAndUpdateHost() {
 
             // Reset button appearance
             if (button) {
-                button.innerHTML = 'H';
+                button.innerHTML = '<span class="material-icons" style="font-size: 18px; color: #666; opacity: 0.5;">gps_not_fixed</span>';
                 button.disabled = false;
                 button.style.cursor = 'pointer';
             }
@@ -311,16 +400,13 @@ function createLocationToggleSlider() {
     const toggleContainer = document.createElement('div');
     toggleContainer.id = 'location-toggle-container';
     toggleContainer.style.cssText = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
         background: white;
         padding: 15px;
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        z-index: 1000;
         font-family: Arial, sans-serif;
         min-width: 280px;
+        margin: 10px;
     `;
 
     const toggleLabel = document.createElement('label');
@@ -592,7 +678,7 @@ async function initMap() {
 
         // Create script tag to load Google Maps API
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&callback=showNewMap`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&callback=showNewMap`;;
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);
@@ -647,11 +733,15 @@ function showNewMap() {
 
         // Add location toggle slider to map
         const toggleSlider = createLocationToggleSlider();
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleSlider);
+        map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(toggleSlider);
 
         // Add current location button to map
         currentLocationButton = createCurrentLocationButton();
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(currentLocationButton);
+
+        // Add location search bar to map
+        const searchBar = createLocationSearchBar();
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBar);
 
         google.maps.event.addListenerOnce(map, 'idle', function () {
             console.log('Google Maps fully loaded and ready');
@@ -669,6 +759,7 @@ function showNewMap() {
 
             setRouteMap(map);
             setHostMarker();
+            initializeLocationSearch();
 
             window.map = map;
             window.markers = markers;
@@ -734,6 +825,74 @@ function setupDragAndDrop(map) {
     document.getElementById('LanesBlockedLeft').addEventListener('input', updateEndZoneMarkerFromForm);
     document.getElementById('LanesBlockedRight').addEventListener('input', updateEndZoneMarkerFromForm);
     document.getElementById('AdvisorySpeed').addEventListener('input', updateEndZoneMarkerFromForm);
+    document.getElementById('StartLat').addEventListener('blur', updateMarkersFromInputs);
+    document.getElementById('StartLon').addEventListener('blur', updateMarkersFromInputs);
+    document.getElementById('EndLat').addEventListener('blur', updateMarkersFromInputs);
+    document.getElementById('EndLon').addEventListener('blur', updateMarkersFromInputs);
+
+    function updateMarkersFromInputs() {
+        const startLat = parseFloat(document.getElementById('StartLat').value);
+        const startLon = parseFloat(document.getElementById('StartLon').value);
+        const endLat = parseFloat(document.getElementById('EndLat').value);
+        const endLon = parseFloat(document.getElementById('EndLon').value);
+
+        // Create or update start marker
+        if (!isNaN(startLat) && !isNaN(startLon)) {
+            if (markerTypesPlaced['start-zone']) {
+                markerTypesPlaced['start-zone'].setPosition({lat: startLat, lng: startLon});
+            } else {
+                const startMarker = new google.maps.Marker({
+                    position: {lat: startLat, lng: startLon},
+                    map: map,
+                    draggable: true,
+                    title: 'start-zone',
+                    icon: getMarkerIcon('start-zone')
+                });
+                startMarker.markerType = 'start-zone';
+                markerTypesPlaced['start-zone'] = startMarker;
+                placedMarkers.push(startMarker);
+
+                startMarker.addListener('dragend', () => {
+                    document.getElementById('StartLat').value = startMarker.getPosition().lat().toFixed(6);
+                    document.getElementById('StartLon').value = startMarker.getPosition().lng().toFixed(6);
+                    if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+                        drawRectangleFromStartToEnd(markerTypesPlaced['start-zone'], markerTypesPlaced['end-zone']);
+                    }
+                });
+            }
+        }
+
+        // Create or update end marker
+        if (!isNaN(endLat) && !isNaN(endLon)) {
+            if (markerTypesPlaced['end-zone']) {
+                markerTypesPlaced['end-zone'].setPosition({lat: endLat, lng: endLon});
+            } else {
+                const endMarker = new google.maps.Marker({
+                    position: {lat: endLat, lng: endLon},
+                    map: map,
+                    draggable: true,
+                    title: 'end-zone',
+                    icon: getMarkerIcon('end-zone')
+                });
+                endMarker.markerType = 'end-zone';
+                markerTypesPlaced['end-zone'] = endMarker;
+                placedMarkers.push(endMarker);
+
+                endMarker.addListener('dragend', () => {
+                    document.getElementById('EndLat').value = endMarker.getPosition().lat().toFixed(6);
+                    document.getElementById('EndLon').value = endMarker.getPosition().lng().toFixed(6);
+                    if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+                        drawRectangleFromStartToEnd(markerTypesPlaced['start-zone'], markerTypesPlaced['end-zone']);
+                    }
+                });
+            }
+        }
+
+        // Draw rectangles if both markers exist
+        if (markerTypesPlaced['start-zone'] && markerTypesPlaced['end-zone']) {
+            drawRectangleFromStartToEnd(markerTypesPlaced['start-zone'], markerTypesPlaced['end-zone']);
+        }
+    }
 
     mapDiv.addEventListener('drop', (e) => {
         e.preventDefault();
