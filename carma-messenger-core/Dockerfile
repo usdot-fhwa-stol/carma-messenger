@@ -16,6 +16,8 @@ ARG DOCKER_TAG="develop-humble"
 FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
 FROM base_image as setup
 ARG GIT_BRANCH="develop"
+ARG PACKAGES=""
+ENV PACKAGES=${PACKAGES}
 
 RUN mkdir ~/src
 COPY --chown=carma . /home/carma/src/
