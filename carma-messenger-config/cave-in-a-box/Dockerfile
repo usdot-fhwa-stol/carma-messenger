@@ -1,4 +1,4 @@
-#  Copyright (C) 2018-2021 LEIDOS.
+#  Copyright (C) 2018-2024 LEIDOS.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #  use this file except in compliance with the License. You may obtain a copy of
@@ -12,25 +12,20 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
-# CARMA Web Interface Docker Configuration Script
-#
-# Performs all necessary tasks related to generation of a docker image set up
-# to serve the CARMA web-based user interface via Apache and interact with the
-# host's docker daemon as needed to start and stop the CARMA application itself
-#
-# In order to enable the web-start functionality please run this image with
-# -v /var/run/docker.sock:/var/run/docker.sock
 
+# GENERIC Template for CARMA Messenger Configuration Dockerfiles
+# Do not invoke directly, symlink into configuration folders below and invoke from there
 
-FROM php:8.2-apache-bullseye
+FROM busybox:latest
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
 ARG VCS_REF="NULL"
+ARG CONFIG_NAME="carma-messenger-config:unspecified"
 
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name="carma-messenger-ui"
-LABEL org.label-schema.description="Web user interface for the CARMA Messenger"
+LABEL org.label-schema.name=${CONFIG_NAME}
+LABEL org.label-schema.description="System configuration data for the CARMA Messenger"
 LABEL org.label-schema.vendor="Leidos"
 LABEL org.label-schema.version=${VERSION}
 LABEL org.label-schema.url="https://highways.dot.gov/research/research-programs/operations/CARMA"
@@ -38,6 +33,9 @@ LABEL org.label-schema.vcs-url="https://github.com/usdot-fhwa-stol/carma-messeng
 LABEL org.label-schema.vcs-ref=${VCS_REF}
 LABEL org.label-schema.build-date=${BUILD_DATE}
 
-COPY --chown=www-data website /var/www/html
-ADD docker/install.sh /
-RUN /install.sh
+ADD . /root/vehicle/config
+VOLUME /opt/carma/vehicle/config
+RUN mkdir -p /opt/carma/vehicle/config
+RUN cp -a /root/vehicle/config/.env /opt/carma/vehicle/config/
+
+CMD  cp /root/vehicle/config/* /opt/carma/vehicle/config

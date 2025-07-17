@@ -216,7 +216,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
     var deg2rad = function(deg) {
         return deg * Math.PI / 180;
     }
-      
+
     var latLonToXY = function(lat, lon, originLat, originLon) {
         // Convert using flat earth approximation
         const R = 6371000; // Earth's radius in meters
@@ -585,10 +585,10 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
 
             // Lanes blocked left
             var divLanesBlockedLeft = this.createFormRow('Lanes Blocked Left', ['LanesBlockedLeft'], 'number', '', ['0']);
-            
+
             // Lanes blocked right
             var divLanesBlockedRight = this.createFormRow('Lanes Blocked Right', ['LanesBlockedRight'], 'number', '', ['0']);
-            
+
             // Advisory Speed
             var divAdvisorySpeed = this.createFormRow('Advisory Speed:', ['AdvisorySpeed'], 'number', '(MPH)', ['15']);
 
@@ -631,7 +631,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             row.style.maxWidth = '600px';
             row.style.marginBottom = '15px';
             row.style.fontSize = '14px';
-        
+
             var label = document.createElement('label');
             label.innerHTML = labelText;
             label.style.width = '180px';
@@ -639,7 +639,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             label.style.fontSize = '14px';
             label.style.flexShrink = '0';
             row.appendChild(label);
-        
+
             var inputsContainer = document.createElement('div');
             inputsContainer.style.display = 'flex';
             inputsContainer.style.flexDirection = 'row';
@@ -648,13 +648,12 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             inputsContainer.style.gap = '8px';
             inputsContainer.style.width = '300px';
             inputsContainer.style.gap = '8px';
-        
+
             fieldIds.forEach((id, index) => {
                 var input = document.createElement('input');
                 input.type = inputType;
                 input.id = id;
                 input.value = defaultValues?.[index] || '';
-                input.min = '0';
                 input.style.width = '120px';
                 input.style.height = '30px';
                 input.style.boxSizing = 'border-box';
@@ -662,18 +661,21 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
                 input.style.fontSize = '14px';
                 input.style.border = '1px solid #ccc';
                 input.style.borderRadius = '4px';
-        
-                input.addEventListener('input', () => {
-                    if (parseFloat(input.value) < 0) {
-                        input.value = '0';
-                    }
-                });
-        
+
+                // Only add the negative number restriction for non-lat/lon fields
+                if (!['StartLat', 'StartLon', 'EndLat', 'EndLon'].includes(id)) {
+                    input.addEventListener('input', () => {
+                        if (parseFloat(input.value) < 0) {
+                            input.value = '0';
+                        }
+                    });
+                }
+
                 inputsContainer.appendChild(input);
             });
-        
+
             row.appendChild(inputsContainer);
-        
+
             var unitLabel = document.createElement('span');
             unitLabel.textContent = unit;
             unitLabel.style.color = '#666';
@@ -681,7 +683,7 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             unitLabel.style.marginLeft = '10px';
             unitLabel.style.alignSelf = 'center';  // vertically center beside inputs
             row.appendChild(unitLabel);
-        
+
             return row;
         },
 
@@ -719,23 +721,37 @@ CarmaJS.WidgetFramework.eventManagement = (function () {
             var section = document.createElement('div');
             section.style.marginTop = '20px';
             section.style.marginBottom = '15px';
-        
+
             const createLine = (labelText, spanId, valueText) => {
                 const line = document.createElement('div');
                 line.style.fontSize = '14px';
                 line.style.color = '#333';
                 line.style.marginBottom = '8px';
-        
+
                 line.innerHTML = `${labelText} <span id="${spanId}" style="font-weight: bold; margin-left: 4px;">${valueText}</span>`;
                 return line;
             };
-        
-            const latLine = createLine('Current Latitude:', 'LatitudeSpan', '38.955882');
-            const lonLine = createLine('Current Longitude:', 'LongitudeSpan', '-77.147720');
-        
+
+            // TFHRC default coordinates
+            var initialLat = 38.955882;
+            var InitialLng = -77.147720;
+
+            // Try to get coordinates from CarmaJS.Config
+            if (typeof CarmaJS !== 'undefined' && CarmaJS.Config) {
+                try {
+                    initialLat = CarmaJS.Config.getInitialLatitude();
+                    InitialLng = CarmaJS.Config.getInitialLongitude();
+                } catch (e) {
+                    console.warn('Could not get initial coordinates from config, using TFHRC defaults');
+                }
+            }
+
+            const latLine = createLine('Current Latitude:', 'LatitudeSpan', initialLat.toString());
+            const lonLine = createLine('Current Longitude:', 'LongitudeSpan', InitialLng.toString());
+
             section.appendChild(latLine);
             section.appendChild(lonLine);
-        
+
             return section;
         },
 

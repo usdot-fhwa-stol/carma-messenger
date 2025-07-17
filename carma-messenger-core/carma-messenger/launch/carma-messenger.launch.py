@@ -112,9 +112,9 @@ def generate_launch_description():
         ]
     )
 
-
     system_alert_publisher = ExecuteProcess(
-        cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert', '"{ type: 5, description: Simulated Drivers Ready }"']
+        cmd=['ros2', 'topic', 'pub', '/system_alert', 'carma_msgs/msg/SystemAlert',
+            '{type: 5, description: "Simulated Drivers Ready"}']
     )
 
     return LaunchDescription([

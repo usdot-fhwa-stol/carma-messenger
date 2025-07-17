@@ -21,9 +21,7 @@ namespace traffic
 namespace std_ph = std::placeholders;
 
 TrafficIncidentNode::TrafficIncidentNode(const rclcpp::NodeOptions & options)
-: carma_ros2_utils::CarmaLifecycleNode(options),
-  traffic_worker_(
-    std::bind(&TrafficIncidentNode::publishTrafficIncidentMobilityOperation, this, std_ph::_1))
+: carma_ros2_utils::CarmaLifecycleNode(options)
 {
   declare_parameter<std::string>("sender_id", sender_id_);
   declare_parameter<std::string>("event_reason", event_reason_);
@@ -31,32 +29,49 @@ TrafficIncidentNode::TrafficIncidentNode(const rclcpp::NodeOptions & options)
   declare_parameter<double>("down_track", down_track_);
   declare_parameter<double>("up_track", up_track_);
   declare_parameter<double>("min_gap", min_gap_);
+  declare_parameter<double>("geofence_start_end_data_timeout", geofence_start_end_data_timeout_);
 }
 
 carma_ros2_utils::CallbackReturn TrafficIncidentNode::handle_on_configure(
   const rclcpp_lifecycle::State &)
 {
+  traffic_worker_ = std::make_shared<TrafficIncidentWorker>(shared_from_this(),
+    std::bind(&TrafficIncidentNode::publishTrafficIncidentMobilityOperation, this, std_ph::_1));
+
   get_parameter<std::string>("sender_id", sender_id_);
   get_parameter<std::string>("event_reason", event_reason_);
   get_parameter<std::string>("event_type", event_type_);
   get_parameter<double>("down_track", down_track_);
   get_parameter<double>("up_track", up_track_);
   get_parameter<double>("min_gap", min_gap_);
+  get_parameter<double>("geofence_start_end_data_timeout", geofence_start_end_data_timeout_);
 
-  traffic_worker_.setSenderId(sender_id_);
-  traffic_worker_.setDownTrack(down_track_);
-  traffic_worker_.setUpTrack(up_track_);
-  traffic_worker_.setMinGap(min_gap_);
-  traffic_worker_.setEventReason(event_reason_);
-  traffic_worker_.setEventType(event_type_);
+  traffic_worker_->setSenderId(sender_id_);
+  traffic_worker_->setDownTrack(down_track_);
+  traffic_worker_->setUpTrack(up_track_);
+  traffic_worker_->setMinGap(min_gap_);
+  traffic_worker_->setEventReason(event_reason_);
+  traffic_worker_->setEventType(event_type_);
+  traffic_worker_->setGeofenceStartEndDataTimeout(geofence_start_end_data_timeout_);
 
   // Setup pub/sub
   pinpoint_driver_sub_ = create_subscription<gps_msgs::msg::GPSFix>(
     "gps_common_fix",
     10,
-    std::bind(&TrafficIncidentWorker::pinpointDriverCallback, &traffic_worker_, std_ph::_1));
+    std::bind(&TrafficIncidentWorker::pinpointDriverCallback, traffic_worker_.get(), std_ph::_1));
+
   traffic_mobility_operation_pub_ =
     create_publisher<carma_v2x_msgs::msg::MobilityOperation>("outgoing_mobility_operation", 10);
+
+  geofence_starting_location_sub_ = create_subscription<gps_msgs::msg::GPSFix>(
+    "gps_fix_start_zone",
+    10,
+    std::bind(&TrafficIncidentWorker::geofenceStartLocCallback, traffic_worker_.get(), std_ph::_1));
+
+  geofence_ending_location_sub_ = create_subscription<gps_msgs::msg::GPSFix>(
+    "gps_fix_end_zone",
+    10,
+    std::bind(&TrafficIncidentWorker::geofenceEndLocCallback, traffic_worker_.get(), std_ph::_1));
 
   // setup services
   start_broadcast_request_service_server = create_service<carma_msgs::srv::SetTrafficEvent>(
@@ -108,11 +123,11 @@ bool TrafficIncidentNode::startTrafficBroadcastCallback(
   carma_msgs::srv::SetTrafficEvent::Response::SharedPtr resp)
 {
   // update instance variables with incoming request params
-  traffic_worker_.setMinGap(req->minimum_gap);
-  traffic_worker_.setDownTrack(req->down_track);
-  traffic_worker_.setUpTrack(req->up_track);
-  traffic_worker_.setAdvisorySpeed(req->advisory_speed);
-
+  traffic_worker_->setMinGap(req->minimum_gap);
+  traffic_worker_->setDownTrack(req->down_track);
+  traffic_worker_->setUpTrack(req->up_track);
+  traffic_worker_->setAdvisorySpeed(req->advisory_speed);
+  should_broadcast_ = true;
   // return service response true
   resp->success = true;
   return true;
@@ -129,14 +144,13 @@ bool TrafficIncidentNode::stopTrafficBroadcastCallback(
 {
   try {
     // reset instance variables
-    traffic_worker_.setMinGap(0);
-    traffic_worker_.setDownTrack(0);
-    traffic_worker_.setUpTrack(0);
-    traffic_worker_.setAdvisorySpeed(0);
-
+    traffic_worker_->setMinGap(0);
+    traffic_worker_->setDownTrack(0);
+    traffic_worker_->setUpTrack(0);
+    traffic_worker_->setAdvisorySpeed(0);
     resp->success = true;
     resp->message = "stop broadcasting";
-
+    should_broadcast_ = false; // set the flag to false to stop broadcasting
     // return service response true
     return true;
 
@@ -149,15 +163,41 @@ bool TrafficIncidentNode::stopTrafficBroadcastCallback(
 
 void TrafficIncidentNode::spin_callback(void)
 {
-  if (
-    std::fabs(traffic_worker_.getDownTrack()) > epsilon_ || std::fabs(traffic_worker_.getUpTrack() > epsilon_) || std::fabs(traffic_worker_.getAdvisorySpeed() > epsilon_)) {
-    // construct local mobilityOperation msg
-    carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg =
-      traffic_worker_.mobilityMessageGenerator(traffic_worker_.getPinPoint());
-
-    // start constantly broadcasting mobilityOperation msg
-    traffic_mobility_operation_pub_->publish(traffic_mobility_msg);
+  if (!should_broadcast_)
+  {
+    // If not broadcasting, return
+    return;
   }
+
+  // Publish traffic mobility operation message only if the worker has valid data
+  // which is also set to invalid (zeroes) if stop broadcast service is called
+  if (
+    std::fabs(traffic_worker_->getDownTrack()) < epsilon_ &&
+    std::fabs(traffic_worker_->getUpTrack()) < epsilon_ &&
+    std::fabs(traffic_worker_->getAdvisorySpeed()) < epsilon_)
+  {
+    RCLCPP_WARN_STREAM(
+      get_logger(), "Traffic Incident Worker has no valid data to publish. "
+      << "Downtrack: " << traffic_worker_->getDownTrack()
+      << ", Uptrack: " << traffic_worker_->getUpTrack()
+      << ", Advisory Speed: " << traffic_worker_->getAdvisorySpeed());
+    return;
+  }
+
+  // If start and end location are set, use that info to generate geofences
+  if (traffic_worker_->getGeofenceStartLoc().has_value() &&
+      traffic_worker_->getGeofenceEndLoc().has_value()) {
+    // start constantly broadcasting using start/end geofence locations
+    traffic_mobility_operation_pub_->publish(
+      traffic_worker_->mobilityMessageGenerator(traffic_worker_->getGeofenceStartLoc().value(),
+                                                traffic_worker_->getGeofenceEndLoc().value()));
+    return;
+  }
+
+  // If else, use TORC Pinpoint to start constantly broadcasting mobilityOperation msg
+  traffic_mobility_operation_pub_->publish(
+    traffic_worker_->mobilityMessageGenerator(traffic_worker_->getPinPoint()));
+
 }
 
 

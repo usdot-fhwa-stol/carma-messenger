@@ -18,16 +18,28 @@
 
 namespace traffic
 {
-TrafficIncidentWorker::TrafficIncidentWorker(PublishTrafficCallback traffic_pub)
-: traffic_pub_(traffic_pub){};
+TrafficIncidentWorker::TrafficIncidentWorker(
+  std::shared_ptr<carma_ros2_utils::CarmaLifecycleNode> nh,
+  PublishTrafficCallback traffic_pub)
+: nh_(nh), traffic_pub_(traffic_pub){};
 
 void TrafficIncidentWorker::pinpointDriverCallback(gps_msgs::msg::GPSFix::UniquePtr pinpoint_msg)
 {
-  carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg =
-    mobilityMessageGenerator(*pinpoint_msg);
-  // comment out this for now since we are not broadcasting upon receiving GPS signal
-  // traffic_pub_(traffic_mobility_msg);
   setPinPoint(*pinpoint_msg);
+}
+
+void TrafficIncidentWorker::setGeofenceStartEndDataTimeout(double geofence_start_end_data_timeout) {
+  geofence_start_end_data_timeout_ = geofence_start_end_data_timeout;
+}
+
+void TrafficIncidentWorker::geofenceStartLocCallback(gps_msgs::msg::GPSFix::UniquePtr start_loc_msg)
+{
+  geo_start_loc_msg_ = *start_loc_msg;
+}
+
+void TrafficIncidentWorker::geofenceEndLocCallback(gps_msgs::msg::GPSFix::UniquePtr end_loc_msg)
+{
+  geo_end_loc_msg_ = *end_loc_msg;
 }
 
 carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(
@@ -44,6 +56,49 @@ carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGen
     "lat:" + doubleToString(pinpoint_msg.latitude) + "," +
     "lon:" + doubleToString(pinpoint_msg.longitude) + "," +
     "downtrack:" + anytypeToString(down_track_) + "," + "uptrack:" + anytypeToString(up_track_) +
+    "," + "min_gap:" + anytypeToString(min_gap_) + "," +
+    "advisory_speed:" + anytypeToString(advisory_speed_) + "," + "event_reason:" + event_reason_ +
+    "," + "event_type:" + event_type_;
+
+  return traffic_mobility_msg;
+}
+
+carma_v2x_msgs::msg::MobilityOperation TrafficIncidentWorker::mobilityMessageGenerator(
+  const gps_msgs::msg::GPSFix & start_zone, const gps_msgs::msg::GPSFix & end_zone)
+{
+  carma_v2x_msgs::msg::MobilityOperation traffic_mobility_msg;
+  // Overload the mobilityMessageGenerator function to use the start and end geofence locations
+  // to get the same message. Get the pinpoint location by getting the midpoint of start and end
+  // and approximate the downtrack and uptrack values using the midpoint.
+  gps_msgs::msg::GPSFix midpoint;
+  midpoint.latitude = (start_zone.latitude + end_zone.latitude) / 2.0;
+  midpoint.longitude = (start_zone.longitude + end_zone.longitude) / 2.0;
+  midpoint.altitude = (start_zone.altitude + end_zone.altitude) / 2.0;
+  midpoint.header.stamp = nh_->now();
+
+  // Calculate approximate distances from midpoint to start and end zones
+  // Using simple lat/lon to meters conversion (approximate for small distances)
+  const double DEGREES_TO_METERS_LAT = 111000.0; // ~111 km per degree latitude
+  const double DEGREES_TO_METERS_LON = 111000.0 * cos(midpoint.latitude * M_PI / 180.0); // Adjusted for longitude
+
+  // Calculate distance to start zone (uptrack - behind the midpoint)
+  double lat_diff_start = start_zone.latitude - midpoint.latitude;
+  double lon_diff_start = start_zone.longitude - midpoint.longitude;
+  double dist = sqrt(pow(lat_diff_start * DEGREES_TO_METERS_LAT, 2) +
+                            pow(lon_diff_start * DEGREES_TO_METERS_LON, 2));
+
+  // Set the header information
+  traffic_mobility_msg.m_header.timestamp = rclcpp::Time(midpoint.header.stamp).nanoseconds() / 1e6;
+  traffic_mobility_msg.m_header.sender_id = sender_id_;
+
+  // Set the strategy
+  traffic_mobility_msg.strategy = USE_CASE_NAME_;
+
+  // Build the strategy parameters string using the midpoint coordinates and calculated distances
+  traffic_mobility_msg.strategy_params =
+    "lat:" + doubleToString(midpoint.latitude) + "," +
+    "lon:" + doubleToString(midpoint.longitude) + "," +
+    "downtrack:" + anytypeToString(dist) + "," + "uptrack:" + anytypeToString(dist) +
     "," + "min_gap:" + anytypeToString(min_gap_) + "," +
     "advisory_speed:" + anytypeToString(advisory_speed_) + "," + "event_reason:" + event_reason_ +
     "," + "event_type:" + event_type_;
@@ -99,6 +154,41 @@ double TrafficIncidentWorker::getUpTrack() { return this->up_track_; }
 double TrafficIncidentWorker::getMinGap() { return this->min_gap_; }
 
 gps_msgs::msg::GPSFix TrafficIncidentWorker::getPinPoint() { return this->pinpoint_msg_; }
+
+std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceStartLoc() {
+  if (geo_start_loc_msg_.has_value()) {
+    double age = nh_->now().seconds() - rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds();
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
+      << std::to_string(nh_->now().seconds()) << ", start_msg:"
+      << std::to_string(rclcpp::Time(geo_start_loc_msg_.value().header.stamp).seconds())
+      << ", age" << std::to_string(age) << ", timeout: " << geofence_start_end_data_timeout_);
+    if (age < geofence_start_end_data_timeout_) {
+      return geo_start_loc_msg_.value();
+    }
+  }
+  RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Geo start has no value");
+
+  geo_start_loc_msg_.reset(); // Reset the value if it has expired
+  return std::nullopt;
+}
+
+std::optional<gps_msgs::msg::GPSFix> TrafficIncidentWorker::getGeofenceEndLoc() {
+  // Check if the geofence end location is set and not expired
+  if (geo_end_loc_msg_.has_value()) {
+    double age = nh_->now().seconds() - rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds();
+    RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Now:"
+      << std::to_string(nh_->now().seconds()) << ", end_msg:"
+      << std::to_string(rclcpp::Time(geo_end_loc_msg_.value().header.stamp).seconds())
+      << ", age" << std::to_string(age) << ", timeout: " << geofence_start_end_data_timeout_);
+    if (age < geofence_start_end_data_timeout_) {
+      return geo_end_loc_msg_.value();
+    }
+  }
+  RCLCPP_DEBUG_STREAM(rclcpp::get_logger("traffic_incident"), "Geo end has no value");
+
+  geo_end_loc_msg_.reset(); // Reset the value if it has expired
+  return std::nullopt;
+}
 
 double TrafficIncidentWorker::getAdvisorySpeed() { return this->advisory_speed_; }
 
