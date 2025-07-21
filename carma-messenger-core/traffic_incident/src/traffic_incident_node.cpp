@@ -100,7 +100,7 @@ carma_ros2_utils::CallbackReturn TrafficIncidentNode::handle_on_activate(
   // spin loop
   spin_timer_ = create_timer(
     get_clock(),
-    std::chrono::milliseconds(100),
+    std::chrono::milliseconds(1000),
     std::bind(&TrafficIncidentNode::spin_callback, this));
   RCLCPP_INFO_STREAM(get_logger(), "Traffic Incident node is initialized...");
   return CallbackReturn::SUCCESS;

@@ -17,5 +17,7 @@ event_reason: 'MOVE OVER LAW'
 event_type: 'CLOSED'
 
 # Start/End marker data timeout in seconds from the UI
-# ALso, this amount will to take to switch from using markers' data to using TORC Pinpoint data
-geofence_start_end_data_timeout: 5.0
+# Also, this amount will to take to switch from using markers' data to using TORC Pinpoint data
+# Note: It was found that the UI publishing of the start and end markers slows to ~ 1 Hz when the
+# user switches to a different tab in the browser, so this should at least be more than 1 second
+geofence_start_end_data_timeout: 2.0
