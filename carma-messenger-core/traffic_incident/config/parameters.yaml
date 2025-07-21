@@ -18,4 +18,4 @@ event_type: 'CLOSED'
 
 # Start/End marker data timeout in seconds from the UI
 # ALso, this amount will to take to switch from using markers' data to using TORC Pinpoint data
-geofence_start_end_data_timeout: 0.3
+geofence_start_end_data_timeout: 5.0
