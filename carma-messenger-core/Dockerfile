@@ -13,8 +13,8 @@
 #  the License.
 ARG DOCKER_ORG="usdotfhwastoldev"
 ARG DOCKER_TAG="develop-humble"
-FROM 3df3a11f53e3 as base_image
-FROM 3df3a11f53e3 as setup
+FROM 380dbc913a0b as base_image
+FROM 380dbc913a0b as setup
 ARG GIT_BRANCH="develop"
 ARG PACKAGES=""
 ENV PACKAGES=${PACKAGES}
@@ -25,7 +25,7 @@ RUN ~/src/docker/checkout.bash -b ${GIT_BRANCH}
 
 RUN ~/src/docker/install.sh
 
-FROM 3df3a11f53e3
+FROM 380dbc913a0b
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"

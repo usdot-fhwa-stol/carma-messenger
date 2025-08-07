@@ -39,6 +39,8 @@ namespace emergency_response_vehicle_plugin
 
   rcl_interfaces::msg::SetParametersResult EmergencyResponseVehiclePlugin::parameter_update_callback(const std::vector<rclcpp::Parameter> &parameters)
   {
+    auto previous_plugin_status = config_.enable_emergency_response_vehicle_plugin;
+
     auto error_1 = update_params<bool>({{"enable_emergency_response_vehicle_plugin", config_.enable_emergency_response_vehicle_plugin}}, parameters);
 
     auto error_2 = update_params<double>({
@@ -50,23 +52,69 @@ namespace emergency_response_vehicle_plugin
         {"emergency_route_file_name", config_.emergency_route_file_name},
         {"route_file_folder", config_.route_file_folder}
     }, parameters);
-    rcl_interfaces::msg::SetParametersResult result;
 
     auto error_4 = update_params<int>({
-      {"listening_port", config_.listening_port},
-      {"bsm_message_id", config_.bsm_message_id},
-      {"emergency_vehicle_class", config_.emergency_vehicle_class},
+        {"listening_port", config_.listening_port},
+        {"bsm_message_id", config_.bsm_message_id},
+        {"emergency_vehicle_class", config_.emergency_vehicle_class},
     }, parameters);
 
-
+    rcl_interfaces::msg::SetParametersResult result;
     result.successful = !error_1 && !error_2 && !error_3 && !error_4;
+
+    // Handle enable/disable state changes
+    if (result.successful) {
+
+        // Check if enable_emergency_response_vehicle_plugin parameter was changed
+        for (const auto& param : parameters) {
+          RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_),
+            "Parameter name: " << param.get_name());
+          if (param.get_name() == "enable_emergency_response_vehicle_plugin") {
+            bool new_enable_state = param.as_bool();
+
+            // Apply the state change if it's different from current state
+            if (new_enable_state != previous_plugin_status) {
+              RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_),
+                "ERV plugin " << (new_enable_state ? "enabling" : "disabling")
+                << " via parameter update");
+
+              if (new_enable_state) {
+                // Enable functionality
+                enableERVPlugin();
+              } else {
+                // Disable functionality
+                disableERVPlugin();
+              }
+            }
+            break;
+          }
+        }
+
+        // Log parameter updates for vehicle class changes
+        for (const auto& param : parameters) {
+            if (param.get_name() == "emergency_vehicle_class") {
+                int new_vehicle_class = param.as_int();
+                if (isValidEmergencyVehicleClass(new_vehicle_class)) {
+                    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_),
+                                     "Emergency vehicle class updated to: " << new_vehicle_class);
+                } else {
+                    RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_),
+                                     "Invalid emergency vehicle class: " << new_vehicle_class <<
+                                     ". Must be between 60 and 69.");
+                    result.successful = false;
+                }
+                break;
+            }
+        }
+    }
 
     return result;
   }
 
+
   carma_ros2_utils::CallbackReturn EmergencyResponseVehiclePlugin::handle_on_configure(const rclcpp_lifecycle::State &)
   {
-    RCLCPP_INFO_STREAM(rclcpp::get_logger(logger_name_), "EmergencyResponseVehiclePlugin trying to configure");
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "EmergencyResponseVehiclePlugin trying to configure");
 
     // Reset config
     config_ = Config();
@@ -81,7 +129,7 @@ namespace emergency_response_vehicle_plugin
     get_parameter<int>("bsm_message_id", config_.bsm_message_id);
     get_parameter<int>("emergency_vehicle_class", config_.emergency_vehicle_class);
 
-    RCLCPP_INFO_STREAM(rclcpp::get_logger(logger_name_), "Loaded params: " << config_);
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Loaded params: " << config_);
 
     // Register runtime parameter update callback
     add_on_set_parameters_callback(std::bind(&EmergencyResponseVehiclePlugin::parameter_update_callback, this, std_ph::_1));
@@ -115,26 +163,80 @@ namespace emergency_response_vehicle_plugin
   {
     // Enable BSM generation, UDP listener, etc. based on the setting of config_.enable_emergency_response_vehicle_plugin
     if(config_.enable_emergency_response_vehicle_plugin){
-      RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Plugin has been enabled by its configuration parameter settings.");
-
-      // Create timer for plugin to generate and publish a new BSM
-      int bsm_generation_period_ms = (1 / config_.bsm_generation_frequency) * 1000; // Conversion from frequency (Hz) to milliseconds time period
-      bsm_generation_timer_ = create_timer(get_clock(),
-                            std::chrono::milliseconds(bsm_generation_period_ms),
-                            std::bind(&EmergencyResponseVehiclePlugin::publishBSM, this));
-
-      // Load route destination points from file path provided by the configuration parameters
-      std::string emergency_route_file_path = config_.route_file_folder + config_.emergency_route_file_name;
-      loadRouteDestinationPointsFromFile(emergency_route_file_path);
-
-      // Connect udp_listener_ to process incoming UDP packets that provide the status of this ERV's emergency lights and sirens
-      connect(config_.listening_port);
+        RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Plugin has been enabled by its configuration parameter settings.");
+        enableERVPlugin();
     }
     else{
-      RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Plugin has been disabled by its configuration parameter settings.");
+        RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Plugin has been disabled by its configuration parameter settings.");
     }
 
     return CallbackReturn::SUCCESS;
+  }
+
+  bool EmergencyResponseVehiclePlugin::isValidEmergencyVehicleClass(int vehicle_class)
+  {
+    return (vehicle_class >= 60 && vehicle_class <= 69);
+  }
+
+  void EmergencyResponseVehiclePlugin::enableERVPlugin()
+  {
+    try {
+      // Create timer for plugin to generate and publish a new BSM (if not already created)
+      if (!bsm_generation_timer_) {
+          int bsm_generation_period_ms = (1 / config_.bsm_generation_frequency) * 1000;
+          bsm_generation_timer_ = create_timer(get_clock(),
+                                std::chrono::milliseconds(bsm_generation_period_ms),
+                                std::bind(&EmergencyResponseVehiclePlugin::publishBSM, this));
+
+          RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "BSM generation timer started");
+      }
+
+      // Load route destination points from file path provided by the configuration parameters
+      if (route_destination_points_.empty()) {
+          std::string emergency_route_file_path = config_.route_file_folder + config_.emergency_route_file_name;
+          loadRouteDestinationPointsFromFile(emergency_route_file_path);
+      }
+
+      // Connect UDP listener if not already connected
+      if (!udp_listener_) {
+          connect(config_.listening_port);
+          RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "UDP listener connected");
+      }
+      config_.enable_emergency_response_vehicle_plugin = true;
+
+      RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "ERV plugin enabled - BSM publishing started");
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Error enabling ERV plugin: " << e.what());
+    }
+  }
+
+  void EmergencyResponseVehiclePlugin::disableERVPlugin()
+  {
+    try {
+        // Stop BSM generation timer
+        if (bsm_generation_timer_) {
+            bsm_generation_timer_->cancel();
+            bsm_generation_timer_.reset();
+            RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "BSM generation timer stopped");
+        }
+
+        // Disconnect UDP listener
+        if (udp_listener_) {
+            work_.reset();
+            if (io_) {
+                io_->stop();
+            }
+            if (io_thread_ && io_thread_->joinable()) {
+                io_thread_->join();
+            }
+            udp_listener_.reset();
+            RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "UDP listener disconnected");
+        }
+        config_.enable_emergency_response_vehicle_plugin = false;
+        RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "ERV plugin disabled - BSM publishing stopped");
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Error disabling ERV plugin: " << e.what());
+    }
   }
 
   void EmergencyResponseVehiclePlugin::connect(unsigned short local_port)
@@ -222,7 +324,7 @@ namespace emergency_response_vehicle_plugin
       RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Route file located at " << route_file_path << " is not a .csv, destination points will not be loaded");
     }
     else{
-      RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Loading route destination points from " << route_file_path);
+      RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Loading route destination points from " << route_file_path);
       std::ifstream fs(route_file_path);
       std::string line;
 
@@ -248,7 +350,7 @@ namespace emergency_response_vehicle_plugin
         route_destination_points_.push_back(destination_point);
       }
 
-      RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "Number of route destination points loaded: " << route_destination_points_.size());
+      RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "Number of route destination points loaded: " << route_destination_points_.size());
 
       if(route_destination_points_.empty()){
         RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "No route destination points were loaded by plugin!");
@@ -366,7 +468,7 @@ namespace emergency_response_vehicle_plugin
     std_srvs::srv::Trigger::Request::SharedPtr req,
     std_srvs::srv::Trigger::Response::SharedPtr resp)
   {
-    RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "ERV has arrived destination. Removing " << route_destination_points_.size() << " route destination points from plugin.");
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "ERV has arrived destination. Removing " << route_destination_points_.size() << " route destination points from plugin.");
 
     // Clear plugin's route member objects
     route_destination_points_.clear();
@@ -437,7 +539,7 @@ namespace emergency_response_vehicle_plugin
 
       // Remove first destination point if ERV is within configurable distance of that point
       if(distance_to_next_destination_point <= config_.min_distance_to_next_destination_point){
-        RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "ERV is " << distance_to_next_destination_point << " meters from next destination point. Point will be removed.");
+        RCLCPP_ERROR_STREAM(rclcpp::get_logger(logger_name_), "ERV is " << distance_to_next_destination_point << " meters from next destination point. Point will be removed.");
         route_destination_points_.erase(route_destination_points_.begin());
       }
     }

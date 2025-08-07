@@ -60,6 +60,9 @@ namespace emergency_response_vehicle_plugin
   {
 
   private:
+    void enableERVPlugin();
+    void disableERVPlugin();
+    bool isValidEmergencyVehicleClass(int vehicle_class);
     // Subscribers
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> incoming_emergency_vehicle_response_sub_;
     carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> pose_sub_;
