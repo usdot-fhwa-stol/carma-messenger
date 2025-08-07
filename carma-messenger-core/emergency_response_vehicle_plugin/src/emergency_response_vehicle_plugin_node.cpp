@@ -424,6 +424,18 @@ namespace emergency_response_vehicle_plugin
       part_ii_special.supplemental_vehicle_extensions.classification.basic_vehicle_class
         = config_.emergency_vehicle_class;
 
+      // Set vehicle class details which also has the emergency vehicle class and role
+      part_ii_special.supplemental_vehicle_extensions.presence_vector
+         |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASS_DETAILS;
+      part_ii_special.supplemental_vehicle_extensions.class_details.presence_vector
+        |= j2735_v2x_msgs::msg::VehicleClassification::HAS_KEY_TYPE;
+      part_ii_special.supplemental_vehicle_extensions.class_details.presence_vector
+        |= j2735_v2x_msgs::msg::VehicleClassification::HAS_ROLE;
+      part_ii_special.supplemental_vehicle_extensions.class_details.key_type.basic_vehicle_class
+        = config_.emergency_vehicle_class;
+      part_ii_special.supplemental_vehicle_extensions.class_details.role.basic_vehicle_role
+        = j2735_v2x_msgs::msg::BasicVehicleRole::EMERGENCY;
+
       // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
       part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
 
