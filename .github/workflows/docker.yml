@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
-      docker_image_tag: tempest
+      docker_image_tag: tempest-humble
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
