@@ -5,7 +5,7 @@ CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
 var listenerAlert;
 var listenerBSM;
 //Initialize map object
-var map = null;
+var erv_map = null;
 const ERV_ROUTE_SOURCE = "erv-route-trace";
 //Initialize dataset
 var data = {
@@ -87,7 +87,7 @@ var subscribe_bsm = () => {
                     data.features.push(route_feature);
                 });
             }
-            map.getSource(ERV_ROUTE_SOURCE).setData(data);
+            erv_map.getSource(ERV_ROUTE_SOURCE).setData(data);
             if (data.features.length > 1) {
                 if (destination_pin == null) {
                     destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
@@ -149,20 +149,31 @@ var subscribe_bsm = () => {
     });
 }
 
-//Service call to update emergency vehicle class using ROS parameters
+//Service call to update emergency vehicle class using ROS service instead of parameters
 var service_update_vehicle_class = (vehicle_class) => {
-    var param_client = new ROSLIB.Param({
+    var setParamService = new ROSLIB.Service({
         ros: ros,
-        name: '/emergency_response_vehicle_plugin/emergency_vehicle_class'
+        name: '/emergency_response_vehicle_plugin_node/set_parameters',
+        serviceType: 'rcl_interfaces/srv/SetParameters'
     });
 
-    param_client.set(parseInt(vehicle_class), function(result) {
-        if (result === null) {
+    var request = new ROSLIB.ServiceRequest({
+        parameters: [{
+            name: 'emergency_vehicle_class',
+            value: {
+                type: 2, // PARAMETER_INTEGER
+                integer_value: parseInt(vehicle_class)
+            }
+        }]
+    });
+
+    setParamService.callService(request, function(result) {
+        if (result && result.results && result.results.length > 0 && result.results[0].successful) {
             console.log("Vehicle class parameter updated successfully to:", vehicle_class);
             current_vehicle_class = parseInt(vehicle_class);
             $("#vehicleClassValue").text(emergency_vehicle_classes[vehicle_class] || "Unknown");
         } else {
-            console.error("Failed to update vehicle class parameter");
+            console.error("Failed to update vehicle class parameter:", result);
             alert("Failed to update vehicle class parameter");
             // Revert dropdown to previous value
             $("#vehicleClassSelect").val(current_vehicle_class);
@@ -170,16 +181,26 @@ var service_update_vehicle_class = (vehicle_class) => {
     });
 }
 
-//Parameter call to toggle ERV plugin enable/disable
+//Service call to toggle ERV plugin enable/disable using ROS service instead of parameters
 var toggle_erv_plugin_parameter = (enable) => {
-    var param_client = new ROSLIB.Param({
+    var setParamService = new ROSLIB.Service({
         ros: ros,
-        name: '/emergency_response_vehicle_plugin/enable_emergency_response_vehicle_plugin'
+        name: '/emergency_response_vehicle_plugin_node/set_parameters',
+        serviceType: 'rcl_interfaces/srv/SetParameters'
     });
 
-    // Convert boolean to string for ROS API compatibility
-    param_client.set(enable.toString(), function(result) {
-        if (result === null) {
+    var request = new ROSLIB.ServiceRequest({
+        parameters: [{
+            name: 'enable_emergency_response_vehicle_plugin',
+            value: {
+                type: 1, // PARAMETER_BOOL
+                bool_value: enable
+            }
+        }]
+    });
+
+    setParamService.callService(request, function(result) {
+        if (result && result.results && result.results.length > 0 && result.results[0].successful) {
             erv_plugin_enabled = enable;
             updateERVPluginButtonState();
             console.log("ERV plugin parameter", enable ? "enabled" : "disabled");
@@ -196,31 +217,31 @@ var toggle_erv_plugin_parameter = (enable) => {
     });
 }
 
-//Get current ERV plugin status from parameter
 var get_erv_plugin_status = () => {
-    var param_client = new ROSLIB.Param({
+    var getParamService = new ROSLIB.Service({
         ros: ros,
-        name: '/emergency_response_vehicle_plugin/enable_emergency_response_vehicle_plugin'
+        name: '/emergency_response_vehicle_plugin_node/get_parameters',
+        serviceType: 'rcl_interfaces/srv/GetParameters'
     });
 
-    param_client.get(function(value) {
-        if (value !== null) {
-            // Handle both string and boolean values
-            let boolValue;
-            if (typeof value === 'string') {
-                boolValue = value.toLowerCase() === 'true';
-            } else if (typeof value === 'boolean') {
-                boolValue = value;
-            } else {
-                console.warn("Unexpected parameter value type:", typeof value, value);
-                boolValue = false; // Default to false
-            }
+    var request = new ROSLIB.ServiceRequest({
+        names: ['enable_emergency_response_vehicle_plugin']
+    });
 
-            erv_plugin_enabled = boolValue;
-            updateERVPluginButtonState();
-            console.log("Current ERV plugin status:", boolValue);
+    getParamService.callService(request, function(result) {
+        if (result && result.values && result.values.length > 0) {
+            let paramValue = result.values[0];
+            if (paramValue.type === 1) { // PARAMETER_BOOL
+                erv_plugin_enabled = paramValue.bool_value;
+                updateERVPluginButtonState();
+                console.log("Current ERV plugin status:", paramValue.bool_value);
+            } else {
+                console.warn("Unexpected parameter type for ERV plugin status:", paramValue.type);
+                erv_plugin_enabled = false;
+                updateERVPluginButtonState();
+            }
         } else {
-            console.warn("Failed to get ERV plugin status parameter");
+            console.warn("Failed to get ERV plugin status parameter or empty result");
             // Set default state
             erv_plugin_enabled = false;
             updateERVPluginButtonState();
@@ -228,7 +249,45 @@ var get_erv_plugin_status = () => {
     });
 }
 
-//Alternative approach using roslib Topic to monitor parameter changes
+//Get current vehicle class using ROS service
+var get_vehicle_class = () => {
+    var getParamService = new ROSLIB.Service({
+        ros: ros,
+        name: '/emergency_response_vehicle_plugin_node/get_parameters',
+        serviceType: 'rcl_interfaces/srv/GetParameters'
+    });
+
+    var request = new ROSLIB.ServiceRequest({
+        names: ['emergency_vehicle_class']
+    });
+
+    getParamService.callService(request, function(result) {
+        if (result && result.values && result.values.length > 0) {
+            let paramValue = result.values[0];
+            if (paramValue.type === 2) { // PARAMETER_INTEGER
+                current_vehicle_class = paramValue.integer_value;
+                $("#vehicleClassValue").text(emergency_vehicle_classes[current_vehicle_class] || "Unknown");
+                $("#vehicleClassSelect").val(current_vehicle_class);
+                console.log("Current vehicle class:", current_vehicle_class);
+            } else {
+                console.warn("Unexpected parameter type for vehicle class:", paramValue.type);
+            }
+        } else {
+            console.warn("Failed to get vehicle class parameter or empty result");
+        }
+    });
+}
+
+//Enhanced parameter monitoring using service calls (polling approach)
+var monitor_parameters_with_services = () => {
+    // Poll parameters every 5 seconds to detect changes
+    setInterval(() => {
+        get_erv_plugin_status();
+        get_vehicle_class();
+    }, 5000);
+}
+
+//Alternative: Enhanced parameter events subscription with better error handling
 var subscribe_to_parameter_events = () => {
     var param_events_listener = new ROSLIB.Topic({
         ros: ros,
@@ -238,34 +297,40 @@ var subscribe_to_parameter_events = () => {
 
     param_events_listener.subscribe(function(message) {
         // Check if this event is for our node and parameter
-        if (message.node === '/emergency_response_vehicle_plugin') {
-            message.new_parameters.forEach(function(param) {
-                if (param.name === 'enable_emergency_response_vehicle_plugin') {
-                    erv_plugin_enabled = param.value.bool_value;
-                    updateERVPluginButtonState();
-                    console.log("ERV plugin parameter changed to:", param.value.bool_value);
-                }
-                if (param.name === 'emergency_vehicle_class') {
-                    current_vehicle_class = param.value.integer_value;
-                    $("#vehicleClassValue").text(emergency_vehicle_classes[current_vehicle_class] || "Unknown");
-                    $("#vehicleClassSelect").val(current_vehicle_class);
-                    console.log("Vehicle class parameter changed to:", current_vehicle_class);
-                }
-            });
+        if (message.node === '/emergency_response_vehicle_plugin_node') {
+            // Handle new parameters
+            if (message.new_parameters && message.new_parameters.length > 0) {
+                message.new_parameters.forEach(function(param) {
+                    if (param.name === 'enable_emergency_response_vehicle_plugin' && param.value.type === 1) {
+                        erv_plugin_enabled = param.value.bool_value;
+                        updateERVPluginButtonState();
+                        console.log("ERV plugin parameter added/changed to:", param.value.bool_value);
+                    }
+                    if (param.name === 'emergency_vehicle_class' && param.value.type === 2) {
+                        current_vehicle_class = param.value.integer_value;
+                        $("#vehicleClassValue").text(emergency_vehicle_classes[current_vehicle_class] || "Unknown");
+                        $("#vehicleClassSelect").val(current_vehicle_class);
+                        console.log("Vehicle class parameter added/changed to:", current_vehicle_class);
+                    }
+                });
+            }
 
-            message.changed_parameters.forEach(function(param) {
-                if (param.name === 'enable_emergency_response_vehicle_plugin') {
-                    erv_plugin_enabled = param.value.bool_value;
-                    updateERVPluginButtonState();
-                    console.log("ERV plugin parameter changed to:", param.value.bool_value);
-                }
-                if (param.name === 'emergency_vehicle_class') {
-                    current_vehicle_class = param.value.integer_value;
-                    $("#vehicleClassValue").text(emergency_vehicle_classes[current_vehicle_class] || "Unknown");
-                    $("#vehicleClassSelect").val(current_vehicle_class);
-                    console.log("Vehicle class parameter changed to:", current_vehicle_class);
-                }
-            });
+            // Handle changed parameters
+            if (message.changed_parameters && message.changed_parameters.length > 0) {
+                message.changed_parameters.forEach(function(param) {
+                    if (param.name === 'enable_emergency_response_vehicle_plugin' && param.value.type === 1) {
+                        erv_plugin_enabled = param.value.bool_value;
+                        updateERVPluginButtonState();
+                        console.log("ERV plugin parameter changed to:", param.value.bool_value);
+                    }
+                    if (param.name === 'emergency_vehicle_class' && param.value.type === 2) {
+                        current_vehicle_class = param.value.integer_value;
+                        $("#vehicleClassValue").text(emergency_vehicle_classes[current_vehicle_class] || "Unknown");
+                        $("#vehicleClassSelect").val(current_vehicle_class);
+                        console.log("Vehicle class parameter changed to:", current_vehicle_class);
+                    }
+                });
+            }
         }
     });
 }
@@ -435,26 +500,26 @@ var loadMap = () => {
     mapboxgl.accessToken = "pk.eyJ1IjoiZGR1MjAyMCIsImEiOiJjbDJyeHJob2YwYnhwM2xtaG9zaDdnYTR4In0.Rh2bSS44c99BoDj2W7jjfw";
     //Default view is at TFHRC
     let default_center = [-77.150495, 38.955675];
-    map = new mapboxgl.Map({
+    erv_map = new mapboxgl.Map({
         container: 'erv-map',
         style: 'mapbox://styles/mapbox/satellite-v9',
         center: default_center,
         zoom: 17
     });
-    map.addControl(new mapboxgl.FullscreenControl());
+    erv_map.addControl(new mapboxgl.FullscreenControl());
 
     setInterval(() => {
         //Change View Point
-        map.jumpTo({ 'center': data.features[0].geometry.coordinates.length == 0 ? default_center : data.features[0].geometry.coordinates, 'zoom': 17 });
+        erv_map.jumpTo({ 'center': data.features[0].geometry.coordinates.length == 0 ? default_center : data.features[0].geometry.coordinates, 'zoom': 17 });
     }, 2000);
 
-    map.on('load', () => {
-        map.addSource(ERV_ROUTE_SOURCE, {
+    erv_map.on('load', () => {
+        erv_map.addSource(ERV_ROUTE_SOURCE, {
             'type': 'geojson',
             'data': data
         });
 
-        map.addLayer({
+        erv_map.addLayer({
             'id': ERV_ROUTE_SOURCE,
             'type': 'circle',
             'source': 'erv-route-trace',
@@ -564,13 +629,14 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             var statusLabel = document.createElement('Label');
             statusLabel.innerHTML = "Plugin Status";
             statusLabel.className = "erv-status-lbl";
+            statusLabel.style.display = "block"; // Add this line
             var statusValue = document.createElement('Label');
             statusValue.innerHTML = "INACTIVE";
             statusValue.id = "ervStatusValue";
             statusValue.className = "erv-status-value text-danger";
+            statusValue.style.display = "block"; // Add this line
             statusCol.appendChild(statusLabel);
             statusCol.appendChild(statusValue);
-            pluginControlRow.appendChild(statusCol);
 
             // Plugin toggle button
             let toggleCol = document.createElement('div');
@@ -578,11 +644,13 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             var toggleLabel = document.createElement('Label');
             toggleLabel.innerHTML = "ERV Plugin Control";
             toggleLabel.className = "erv-toggle-lbl";
+            toggleLabel.style.display = "block"; // Add this line
             var toggleButton = document.createElement('button');
             toggleButton.className = "btn btn-success erv-toggle-btn";
             toggleButton.id = "ervPluginToggle";
             toggleButton.innerHTML = "Enable ERV Plugin";
             toggleButton.setAttribute("title", "Click to start BSM publishing and activate ERV functionality");
+            toggleButton.style.marginTop = "5px"; // Add this line
 
             toggleButton.onclick = function() {
                 let newState = !erv_plugin_enabled;
@@ -592,6 +660,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             toggleCol.appendChild(toggleLabel);
             toggleCol.appendChild(toggleButton);
             pluginControlRow.appendChild(toggleCol);
+            pluginControlRow.appendChild(statusCol);
 
             /**
              * Vehicle Class Selection Row
@@ -703,6 +772,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         getERVStatus: function () {
             get_erv_plugin_status();
         },
+        getVehicleClass: function () {
+            get_vehicle_class();
+        },
         subscribeParameterEvents: function () {
             subscribe_to_parameter_events();
         },
@@ -720,6 +792,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse("subscribe_alert", null);
         container.emergencyResponse("loadMap", null);
         container.emergencyResponse("getERVStatus", null); // Get initial ERV status
+        container.emergencyResponse("getVehicleClass", null);
         container.emergencyResponse("subscribeParameterEvents", null); // Monitor parameter changes
     };
 
