@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       docker_organization: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
-      docker_image_tag: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+      docker_image_tag: tempest
     steps:
       - id: docker-org-and-tag
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
