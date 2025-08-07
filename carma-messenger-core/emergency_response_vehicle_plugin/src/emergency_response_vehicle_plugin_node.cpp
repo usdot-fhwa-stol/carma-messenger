@@ -33,6 +33,8 @@ namespace emergency_response_vehicle_plugin
     config_.route_file_folder = declare_parameter<std::string>("route_file_folder", config_.route_file_folder);
     config_.listening_port = declare_parameter<int>("listening_port", config_.listening_port);
     config_.bsm_message_id = declare_parameter<int>("bsm_message_id", config_.bsm_message_id);
+    config_.emergency_vehicle_class =
+      declare_parameter<int>("emergency_vehicle_class", config_.emergency_vehicle_class);
   }
 
   rcl_interfaces::msg::SetParametersResult EmergencyResponseVehiclePlugin::parameter_update_callback(const std::vector<rclcpp::Parameter> &parameters)
@@ -51,9 +53,11 @@ namespace emergency_response_vehicle_plugin
     rcl_interfaces::msg::SetParametersResult result;
 
     auto error_4 = update_params<int>({
-        {"listening_port", config_.listening_port},
-        {"bsm_message_id", config_.bsm_message_id},
+      {"listening_port", config_.listening_port},
+      {"bsm_message_id", config_.bsm_message_id},
+      {"emergency_vehicle_class", config_.emergency_vehicle_class},
     }, parameters);
+
 
     result.successful = !error_1 && !error_2 && !error_3 && !error_4;
 
@@ -75,6 +79,7 @@ namespace emergency_response_vehicle_plugin
     get_parameter<std::string>("route_file_folder", config_.route_file_folder);
     get_parameter<int>("listening_port", config_.listening_port);
     get_parameter<int>("bsm_message_id", config_.bsm_message_id);
+    get_parameter<int>("emergency_vehicle_class", config_.emergency_vehicle_class);
 
     RCLCPP_INFO_STREAM(rclcpp::get_logger(logger_name_), "Loaded params: " << config_);
 
@@ -211,7 +216,7 @@ namespace emergency_response_vehicle_plugin
   }
 
   void EmergencyResponseVehiclePlugin::loadRouteDestinationPointsFromFile(const std::string& route_file_path)
-  {   
+  {
     // Only load destination points if the file is a .csv; assumes file name ends with ".csv"
     if(route_file_path.find(".csv") == std::string::npos){
       RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Route file located at " << route_file_path << " is not a .csv, destination points will not be loaded");
@@ -311,6 +316,12 @@ namespace emergency_response_vehicle_plugin
       carma_v2x_msgs::msg::BSMPartIIExtension part_ii_special;
       part_ii_special.part_ii_id = carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT;
 
+      // Set vehicle classification based on configuration
+      part_ii_special.supplemental_vehicle_extensions.presence_vector
+         |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASSIFICATION;
+      part_ii_special.supplemental_vehicle_extensions.classification.basic_vehicle_class
+        = config_.emergency_vehicle_class;
+
       // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
       part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
 
@@ -351,8 +362,8 @@ namespace emergency_response_vehicle_plugin
   }
 
   void EmergencyResponseVehiclePlugin::arrivedAtEmergencyDestinationCallback(
-    std::shared_ptr<rmw_request_id_t>, 
-    std_srvs::srv::Trigger::Request::SharedPtr req, 
+    std::shared_ptr<rmw_request_id_t>,
+    std_srvs::srv::Trigger::Request::SharedPtr req,
     std_srvs::srv::Trigger::Response::SharedPtr resp)
   {
     RCLCPP_DEBUG_STREAM(rclcpp::get_logger(logger_name_), "ERV has arrived destination. Removing " << route_destination_points_.size() << " route destination points from plugin.");
@@ -392,7 +403,7 @@ namespace emergency_response_vehicle_plugin
     outgoing_emergency_vehicle_ack_pub_->publish(ack_msg);
   }
 
-  double EmergencyResponseVehiclePlugin::getDistanceBetween(const double& lat_1_deg, const double& lon_1_deg, 
+  double EmergencyResponseVehiclePlugin::getDistanceBetween(const double& lat_1_deg, const double& lon_1_deg,
                                     const double& lat_2_deg, const double& lon_2_deg)
   {
     // Convert latitude and longitude values from degrees to radians for point 1
