@@ -14,10 +14,62 @@
  * the License.
  */
 #include "emergency_response_vehicle_plugin/emergency_response_vehicle_plugin_node.hpp"
+#include <cmath>
+#include "rclcpp/clock.hpp" 
+#include <curl/curl.h>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <cstring>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <chrono>
+#include <iostream>
+#include <fstream>
+
+
+
 
 namespace emergency_response_vehicle_plugin
 {
   namespace std_ph = std::placeholders;
+
+  float readBSMHeadingFromFile() {
+    std::ifstream file("/opt/carma/vehicle/calibration/heading/bsm_heading.txt");
+
+    if (!file.is_open()) {
+        RCLCPP_ERROR(rclcpp::get_logger("bsm_plugin"), "File not found or unreadable: /opt/carma/vehicle/calibration/heading/bsm_heading.txt");
+        return 28800.0;  // fallback
+    }
+
+    std::string line;
+    std::getline(file, line);  // read entire line
+
+    RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "Raw file content: '%s'", line.c_str());
+
+    try {
+        int heading_int = std::stoi(line);  // parse as int
+        if (heading_int < 0 || heading_int > 28799) {
+            RCLCPP_WARN(rclcpp::get_logger("bsm_plugin"), "Heading value out of range: %d", heading_int);
+            return 28800.0;
+        }
+        return static_cast<float>(heading_int);
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR(rclcpp::get_logger("bsm_plugin"), "Error parsing heading: %s", e.what());
+        return 28800.0;
+    }
+  }
+
+
 
   EmergencyResponseVehiclePlugin::EmergencyResponseVehiclePlugin(const rclcpp::NodeOptions &options)
       : carma_ros2_utils::CarmaLifecycleNode(options)
@@ -400,15 +452,39 @@ namespace emergency_response_vehicle_plugin
     }
     bsm_id_string_ = ss.str();
 
-    // Set current latitude, longitude, and velocity
+    // set secMark in BSM based on system clock, ensure PC is on ntp server if time sync important
+    bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::SEC_MARK_AVAILABLE;
+
+    auto duration = now().nanoseconds();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                 std::chrono::nanoseconds(duration)
+             ) % std::chrono::minutes(1);    
+
+    bsm_msg.core_data.sec_mark = static_cast<uint16_t>(ms.count());
+
+    // Set lat/lon
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::LATITUDE_AVAILABLE;
     bsm_msg.core_data.latitude = current_latitude_;
 
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::LONGITUDE_AVAILABLE;
     bsm_msg.core_data.longitude = current_longitude_;
 
+    // Set speed
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE;
-    bsm_msg.core_data.speed = current_velocity_;
+    bsm_msg.core_data.speed = current_velocity_;  
+    
+
+    bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::HEADING_AVAILABLE;
+    float heading = readBSMHeadingFromFile();
+    int heading_int = static_cast<int>(heading);
+
+    if (heading_int < 0 || heading_int > 28799) {
+        bsm_msg.core_data.heading = 28800;
+    } else {
+      RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "heading_int to BSM: '%d'", heading_int);
+      bsm_msg.core_data.heading = static_cast<uint16_t>(heading_int);
+        RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "what the BSM sees: %u", bsm_msg.core_data.heading);
+    }
 
     // Set lights status, siren status, and emergency response type as necessary
     if(emergency_lights_active_ || emergency_sirens_active_){

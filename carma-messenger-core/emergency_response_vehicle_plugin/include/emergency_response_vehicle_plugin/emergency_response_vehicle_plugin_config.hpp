@@ -42,7 +42,7 @@ namespace emergency_response_vehicle_plugin
    */
   struct Config
   {
-    bool enable_emergency_response_vehicle_plugin = false;           //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
+    bool enable_emergency_response_vehicle_plugin = true;           //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
                                                                      //  the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
                                                                      //  in the 'listening_port' parameter.
     double bsm_generation_frequency = 10.0;                          // (Hz) The frequency at which BSMs will be generated and published by this plugin.

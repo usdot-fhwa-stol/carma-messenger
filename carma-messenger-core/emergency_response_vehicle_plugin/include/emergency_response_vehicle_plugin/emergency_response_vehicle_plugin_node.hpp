@@ -42,7 +42,7 @@
 
 namespace emergency_response_vehicle_plugin
 {
-
+    
   // Constant for approximating the earth's radius; used to estimate the distance between latitude/longitude coordinates
   constexpr double EARTH_RADIUS_METERS = 6371000.0;
 
@@ -95,6 +95,14 @@ namespace emergency_response_vehicle_plugin
     double current_latitude_;
     double current_longitude_;
     double current_velocity_;
+
+    // for heading calc in ERV plugin
+    bool has_prev_gps_ = false; 
+    double prev_latitude_ = 0.0;
+    double prev_longitude_ = 0.0;
+    double heading;
+    rclcpp::Time last_heading_update_time_;
+
 
     // Flags to indicate whether the Emergency Response Vehicle's lights and sirens are active
     bool emergency_lights_active_ = false;
@@ -161,7 +169,7 @@ namespace emergency_response_vehicle_plugin
      * \return The value to be used for the next generated BSM's 'msgcount' field.
      */
     uint8_t getNextMsgCount(uint8_t old_msg_count);
-
+    
     /**
      * \brief Function for generating a BSM for the Emergency Response Vehicle based on the latest status of this object's
      * member variables. This function also updates the value of prev_msg_count_.
