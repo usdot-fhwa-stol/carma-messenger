@@ -473,7 +473,6 @@ namespace emergency_response_vehicle_plugin
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE;
     bsm_msg.core_data.speed = current_velocity_;
 
-
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::HEADING_AVAILABLE;
     float heading = readBSMHeadingFromFile();
     int heading_int = static_cast<int>(heading);
@@ -486,56 +485,60 @@ namespace emergency_response_vehicle_plugin
         RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "what the BSM sees: %u", bsm_msg.core_data.heading);
     }
 
-    bsm_msg.presence_vector |= carma_v2x_msgs::msg::BSM::HAS_PART_II;
-
-    // BSMPartIIExtension.supplemental_vehicle_extensions
-    carma_v2x_msgs::msg::BSMPartIIExtension part_ii_supplemental;
-    part_ii_supplemental.part_ii_id = carma_v2x_msgs::msg::BSMPartIIExtension::SUPPLEMENTAL_VEHICLE_EXT;
-
-    // Set vehicle classification based on configuration
-    part_ii_supplemental.supplemental_vehicle_extensions.presence_vector
-        |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASSIFICATION;
-    part_ii_supplemental.supplemental_vehicle_extensions.classification.basic_vehicle_class
-      = config_.emergency_vehicle_class;
-
-    // Set vehicle class details which also has the emergency vehicle class and role
-    part_ii_supplemental.supplemental_vehicle_extensions.presence_vector
-        |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASS_DETAILS;
-    part_ii_supplemental.supplemental_vehicle_extensions.class_details.presence_vector
-      |= j2735_v2x_msgs::msg::VehicleClassification::HAS_KEY_TYPE;
-    part_ii_supplemental.supplemental_vehicle_extensions.class_details.presence_vector
-      |= j2735_v2x_msgs::msg::VehicleClassification::HAS_ROLE;
-    part_ii_supplemental.supplemental_vehicle_extensions.class_details.key_type.basic_vehicle_class
-      = config_.emergency_vehicle_class;
-    part_ii_supplemental.supplemental_vehicle_extensions.class_details.role.basic_vehicle_role
-      = j2735_v2x_msgs::msg::BasicVehicleRole::EMERGENCY;
-
-    bsm_msg.part_ii.push_back(part_ii_supplemental);
-
-     // BSMPartIIExtension.special_vehicle_extensions
-    carma_v2x_msgs::msg::BSMPartIIExtension part_ii_special;
-    part_ii_special.part_ii_id = carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT;
-
     // Set lights status, siren status, and emergency response type as necessary
+    if(emergency_lights_active_ || emergency_sirens_active_){
 
-    // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
-    part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
+      bsm_msg.presence_vector |= carma_v2x_msgs::msg::BSM::HAS_PART_II;
 
-    if(emergency_sirens_active_){
-      part_ii_special.special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use = j2735_v2x_msgs::msg::SirenInUse::IN_USE;
+      // BSMPartIIExtension.supplemental_vehicle_extensions
+      carma_v2x_msgs::msg::BSMPartIIExtension part_ii_supplemental;
+      part_ii_supplemental.part_ii_id = carma_v2x_msgs::msg::BSMPartIIExtension::SUPPLEMENTAL_VEHICLE_EXT;
+
+      // Set vehicle classification based on configuration
+      part_ii_supplemental.supplemental_vehicle_extensions.presence_vector
+          |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASSIFICATION;
+      part_ii_supplemental.supplemental_vehicle_extensions.classification.basic_vehicle_class
+        = config_.emergency_vehicle_class;
+
+      // Set vehicle class details which also has the emergency vehicle class and role
+      part_ii_supplemental.supplemental_vehicle_extensions.presence_vector
+          |= j2735_v2x_msgs::msg::SupplementalVehicleExtensions::HAS_CLASS_DETAILS;
+      part_ii_supplemental.supplemental_vehicle_extensions.class_details.presence_vector
+        |= j2735_v2x_msgs::msg::VehicleClassification::HAS_KEY_TYPE;
+      part_ii_supplemental.supplemental_vehicle_extensions.class_details.presence_vector
+        |= j2735_v2x_msgs::msg::VehicleClassification::HAS_ROLE;
+      part_ii_supplemental.supplemental_vehicle_extensions.class_details.key_type.basic_vehicle_class
+        = config_.emergency_vehicle_class;
+      part_ii_supplemental.supplemental_vehicle_extensions.class_details.role.basic_vehicle_role
+        = j2735_v2x_msgs::msg::BasicVehicleRole::EMERGENCY;
+
+      bsm_msg.part_ii.push_back(part_ii_supplemental);
+
+      // BSMPartIIExtension.special_vehicle_extensions
+      carma_v2x_msgs::msg::BSMPartIIExtension part_ii_special;
+      part_ii_special.part_ii_id = carma_v2x_msgs::msg::BSMPartIIExtension::SPECIAL_VEHICLE_EXT;
+
+      // Set lights status, siren status, and emergency response type as necessary
+
+      // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
+      part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
+
+      if(emergency_sirens_active_){
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use = j2735_v2x_msgs::msg::SirenInUse::IN_USE;
+      }
+
+      if(emergency_lights_active_){
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use = j2735_v2x_msgs::msg::LightbarInUse::IN_USE;
+      }
+
+      // Update BSM to indicate that ERV is actively responding to an emergency if sirens and lights are active and at least one future route destination point exists
+      if(emergency_sirens_active_ && emergency_lights_active_ && !route_destination_points_.empty()){
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.presence_vector |= j2735_v2x_msgs::msg::EmergencyDetails::HAS_RESPONSE_TYPE;
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.response_type.response_type = j2735_v2x_msgs::msg::ResponseType::EMERGENCY;
+      }
+
+      bsm_msg.part_ii.push_back(part_ii_special);
     }
-
-    if(emergency_lights_active_){
-      part_ii_special.special_vehicle_extensions.vehicle_alerts.lights_use.lightbar_in_use = j2735_v2x_msgs::msg::LightbarInUse::IN_USE;
-    }
-
-    // Update BSM to indicate that ERV is actively responding to an emergency if sirens and lights are active and at least one future route destination point exists
-    if(emergency_sirens_active_ && emergency_lights_active_ && !route_destination_points_.empty()){
-      part_ii_special.special_vehicle_extensions.vehicle_alerts.presence_vector |= j2735_v2x_msgs::msg::EmergencyDetails::HAS_RESPONSE_TYPE;
-      part_ii_special.special_vehicle_extensions.vehicle_alerts.response_type.response_type = j2735_v2x_msgs::msg::ResponseType::EMERGENCY;
-    }
-
-    bsm_msg.part_ii.push_back(part_ii_special);
 
     // Set route destination points
     if(!route_destination_points_.empty()){
