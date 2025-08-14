@@ -18,10 +18,14 @@ USERNAME=usdotfhwastol
 
 cd "$(dirname "$0")"
 IMAGE=$(./get-image-name.sh)
+export DOCKER_BUILDKIT=0
 
 echo ""
 echo "##### $IMAGE Docker Image Build Script #####"
 echo ""
+
+PACKAGES=""
+PACKAGES_COLLECT=false
 
 while [[ $# -gt 0 ]]; do
     arg="$1"
@@ -44,8 +48,53 @@ while [[ $# -gt 0 ]]; do
             COMPONENT_VERSION_STRING=develop
             shift
             ;;
+        --select-packages|--packages)
+            PACKAGES_COLLECT=true
+
+            shift
+            ;;
+        *)
+            # Var test based on Stack Overflow question: https://stackoverflow.com/questions/5406858/difference-between-unset-and-empty-variables-in-bash
+            # Asker: green69
+            # Answerer: geekosaur
+            if $PACKAGES_COLLECT; then
+                PACKAGES="$PACKAGES $arg"
+            else
+                echo "Unknown argument $arg..."
+                exit -1
+            fi
+            shift
+            ;;
     esac
 done
+
+if [[ ! -z "$PACKAGES" ]]; then
+    echo "Performing incremental build of image to rebuild packages: $PACKAGES..."
+
+    echo "Updating Dockerfile references to use most recent image as base image"
+    # Trim of docker image LS command sourced from
+    # https://stackoverflow.com/questions/50625619/why-doesnt-the-cut-command-work-for-a-docker-image-ls-command
+    # Question Asker: Chris F
+    # Question Answerer: Arount
+    MOST_RECENT_IMAGE_DATA=$(docker image ls | grep $IMAGE | tr -s ' ')
+
+    if [[ -z "$MOST_RECENT_IMAGE_DATA" ]]; then
+        echo No prior image exists to use as base, an initial image must be built first before attempting incremental build.
+        exit -1
+    fi
+
+    MOST_RECENT_IMAGE_HASH=$(echo $MOST_RECENT_IMAGE_DATA | cut -d " " -f 3)
+    MOST_RECENT_IMAGE_ORG=$(echo $MOST_RECENT_IMAGE_DATA | cut -d " " -f 1 | cut -d "/" -f 1)
+    MOST_RECENT_IMAGE_TAG=$(echo $MOST_RECENT_IMAGE_DATA | cut -d " " -f 2)
+    MOST_RECENT_IMAGE_DATE=$(echo $MOST_RECENT_IMAGE_DATA | cut -d " " -f 4,5,6)
+
+    echo Using $MOST_RECENT_IMAGE_TAG $MOST_RECENT_IMAGE_HASH $MOST_RECENT_IMAGE_DATE as base for partial build...
+
+    sed -i "s|^FROM[[:space:]]*[^[:space:]]*|FROM $MOST_RECENT_IMAGE_HASH|I" ../Dockerfile
+
+    COMPONENT_VERSION_STRING="SNAPSHOT"
+    USERNAME="local"
+fi
 
 if [[ -z "$COMPONENT_VERSION_STRING" ]]; then
     COMPONENT_VERSION_STRING=$("./get-component-version.sh")
@@ -58,6 +107,12 @@ cd ..
 if [[ $COMPONENT_VERSION_STRING = "develop" ]]; then
     sed "s|usdotfhwastoldev/|$USERNAME/|g; s|usdotfhwastolcandidate/|$USERNAME/|g; s|usdotfhwastol/|$USERNAME/|g; s|:[0-9]*\.[0-9]*\.[0-9]*|:$COMPONENT_VERSION_STRING|g; s|checkout.bash|checkout.bash -d|g" \
         Dockerfile | docker build -f - --no-cache -t $USERNAME/$IMAGE:$COMPONENT_VERSION_STRING \
+        --build-arg VERSION="$COMPONENT_VERSION_STRING" \
+        --build-arg VCS_REF=`git rev-parse --short HEAD` \
+        --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` .
+elif [[ $COMPONENT_VERSION_STRING = "SNAPSHOT" ]]; then
+    docker build --network=host -t $USERNAME/$IMAGE:$COMPONENT_VERSION_STRING \
+        --build-arg PACKAGES="$PACKAGES" \
         --build-arg VERSION="$COMPONENT_VERSION_STRING" \
         --build-arg VCS_REF=`git rev-parse --short HEAD` \
         --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` .

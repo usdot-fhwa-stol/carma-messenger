@@ -64,6 +64,8 @@ private:
 
   // subscriber
   carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> pinpoint_driver_sub_;
+  carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> geofence_starting_location_sub_;
+  carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> geofence_ending_location_sub_;
 
   // publisher
   carma_ros2_utils::PubPtr<carma_v2x_msgs::msg::MobilityOperation> traffic_mobility_operation_pub_;
@@ -77,15 +79,17 @@ private:
   rclcpp::TimerBase::SharedPtr spin_timer_;
 
   // TrafficIncidentWorker class object
-  TrafficIncidentWorker traffic_worker_;
+  std::shared_ptr<TrafficIncidentWorker> traffic_worker_;
 
   // ROS Params
+  bool should_broadcast_ = false;
   std::string sender_id_;
   std::string event_reason_;
   std::string event_type_;
   double down_track_;
   double up_track_;
   double min_gap_;
+  double geofence_start_end_data_timeout_;
   static constexpr double epsilon_ = 1e-6;
 };
 

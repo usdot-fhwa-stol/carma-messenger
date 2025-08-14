@@ -1,6 +1,5 @@
 /***
 * Source: https://www.kenneth-truyers.net/2013/04/27/javascript-namespaces-and-modules/
-
 ***/
 
 'use strict';
@@ -38,36 +37,41 @@ CarmaJS.registerNamespace = function (namespace) {
     return parent;
 };
 
-
 CarmaJS.registerNamespace("CarmaJS.Config");
 
 CarmaJS.Config = (function () {
         //Private variables
         var ip = '127.0.0.1';//'192.168.88.10'; //'192.168.88.10'; 192.168.32.146;
-        var refresh_interval = 30; //30 seconds 
+        var refresh_interval = 30; //30 seconds
         var ros_connect_wait = 10000; //miliseconds to wait for platform to launch and ros to connect.
         var ros_connect_retry = 3; //# of times to wait
         var valid_truck_vin_numbers = ["1FUJGBDV8CLBP8898","1FUJGHDV0CLBP8834","1FUJGHDV0CLBP8896","1FUJGHDV9CLBP8833"];
-        var LatitudeRange = {
-            "MAX": 90,
-            "MIN": -90
+        var UpTrackRange = {
+            "MAX": 1000,
+            "MIN": 1
         };
-        var LongitudeRange = {
-            "MAX": 180,
-            "MIN": -180
+        var DownTrackRange = {
+            "MAX": 1000,
+            "MIN": 1
+        };
+        var MinGapRange = {
+            "MAX": 250,
+            "MIN": 1
         };
         var AdvisorySpeedRange = {
             "MAX": 80,
             "MIN": 1
         };
-
+        // Summit Point location:
+        var initialLatitude = 39.2385283;
+        var initialLongitude = -77.9662324;
         //Private methods
         //Creating functions to prevent access by reference to private variables
         var getIP = function() {
             return ip;
         };
         var getRefreshInterval = function(){
-            return refresh_interval; 
+            return refresh_interval;
         };
         var getRosConnectionWaitTime = function() {
             return ros_connect_wait;
@@ -78,15 +82,25 @@ CarmaJS.Config = (function () {
         var getValidTruckVINNumber = function() {
             return valid_truck_vin_numbers;
         }
-        var getLatitudeRange = function() {
-            return LatitudeRange;
+        var getUpTrackRange  = function()
+        {
+            return UpTrackRange;
         }
-        var getLongitudeRange = function() {
-            return LongitudeRange;
+        var getDownTrackRange = function(){
+            return DownTrackRange;
+        }
+        var getMinGapRange  = function(){
+            return MinGapRange;
         }
         var getAdvisorySpeedRange = function()
         {
             return AdvisorySpeedRange;
+        }
+        var getInitialLatitude = function() {
+            return initialLatitude;
+        }
+        var getInitialLongitude = function() {
+            return initialLongitude;
         }
         //Public API
         return {
@@ -95,8 +109,11 @@ CarmaJS.Config = (function () {
             getRosConnectionWaitTime:getRosConnectionWaitTime,
             getRosConnectionRetry:getRosConnectionRetry,
             getValidTruckVINNumber: getValidTruckVINNumber,
-            getLatitudeRange:getLatitudeRange,
-            getLongitudeRange:getLongitudeRange,
-            getAdvisorySpeedRange:getAdvisorySpeedRange
+            getUpTrackRange:getUpTrackRange,
+            getDownTrackRange:getDownTrackRange,
+            getMinGapRange:getMinGapRange,
+            getAdvisorySpeedRange:getAdvisorySpeedRange,
+            getInitialLatitude:getInitialLatitude,
+            getInitialLongitude:getInitialLongitude
         };
 })();

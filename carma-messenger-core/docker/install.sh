@@ -14,7 +14,24 @@
 #  License for the specific language governing permissions and limitations under
 #  the License.
 
+set -e
+
 # Build ros2
 source /opt/ros/humble/setup.bash
+
+if [[ ! -z "$PACKAGES" ]]; then
+    echo "Sourcing previous build for incremental build start point..."
+    source /opt/carma/install/setup.bash
+fi
+
 cd ~/
-colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --install-base /opt/carma/install
+
+if [[ ! -z "$PACKAGES" ]]; then
+    echo "Incrementally building following packages and those dependent on them: $PACKAGES"
+    colcon build --install-base /opt/carma/install --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-above $PACKAGES
+else
+    echo "Building all CARMA Messenger components..."
+    colcon build  --install-base /opt/carma/install --build-base build --cmake-args -DCMAKE_BUILD_TYPE=Release
+fi
+
+echo "Build of CARMA Messenger Components Complete"

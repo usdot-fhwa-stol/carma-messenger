@@ -1,4 +1,4 @@
-#  Copyright (C) 2018-2025 LEIDOS.
+#  Copyright (C) 2018-2024 LEIDOS.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License"); you may not
 #  use this file except in compliance with the License. You may obtain a copy of
@@ -11,29 +11,21 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations under
 #  the License.
-ARG DOCKER_ORG="usdotfhwastoldev"
-ARG DOCKER_TAG="develop-humble"
-FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
-FROM base_image as setup
-ARG GIT_BRANCH="develop"
-ARG PACKAGES=""
-ENV PACKAGES=${PACKAGES}
 
-RUN mkdir ~/src
-COPY --chown=carma . /home/carma/src/
-RUN ~/src/docker/checkout.bash -b ${GIT_BRANCH}
 
-RUN ~/src/docker/install.sh
+# GENERIC Template for CARMA Messenger Configuration Dockerfiles
+# Do not invoke directly, symlink into configuration folders below and invoke from there
 
-FROM base_image
+FROM busybox:latest
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
 ARG VCS_REF="NULL"
+ARG CONFIG_NAME="carma-messenger-config:unspecified"
 
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.name="carma-messenger-core"
-LABEL org.label-schema.description="nForce CARMA Messenger docker image"
+LABEL org.label-schema.name=${CONFIG_NAME}
+LABEL org.label-schema.description="System configuration data for the CARMA Messenger"
 LABEL org.label-schema.vendor="Leidos"
 LABEL org.label-schema.version=${VERSION}
 LABEL org.label-schema.url="https://highways.dot.gov/research/research-programs/operations/CARMA"
@@ -41,8 +33,9 @@ LABEL org.label-schema.vcs-url="https://github.com/usdot-fhwa-stol/carma-messeng
 LABEL org.label-schema.vcs-ref=${VCS_REF}
 LABEL org.label-schema.build-date=${BUILD_DATE}
 
-COPY --from=setup /opt/carma /opt/carma
+ADD . /root/vehicle/config
+VOLUME /opt/carma/vehicle/config
+RUN mkdir -p /opt/carma/vehicle/config
+RUN cp -a /root/vehicle/config/.env /opt/carma/vehicle/config/
 
-RUN pip install future
-
-CMD  [ "source", "/opt/carma/install/setup.bash", "&&", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]
+CMD  cp /root/vehicle/config/* /opt/carma/vehicle/config
