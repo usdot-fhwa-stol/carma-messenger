@@ -32,6 +32,7 @@
 #include "carma_v2x_msgs/msg/emergency_vehicle_ack.hpp"
 #include "carma_v2x_msgs/msg/emergency_vehicle_response.hpp"
 #include "j2735_v2x_msgs/msg/special_vehicle_extensions.hpp"
+#include "j2735_v2x_msgs/msg/supplemental_vehicle_extensions.hpp"
 #include "carma_msgs/msg/ui_instructions.hpp"
 #include "gps_msgs/msg/gps_fix.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
@@ -41,7 +42,7 @@
 
 namespace emergency_response_vehicle_plugin
 {
-
+    
   // Constant for approximating the earth's radius; used to estimate the distance between latitude/longitude coordinates
   constexpr double EARTH_RADIUS_METERS = 6371000.0;
 
@@ -59,6 +60,9 @@ namespace emergency_response_vehicle_plugin
   {
 
   private:
+    void enableERVPlugin();
+    void disableERVPlugin();
+    bool isValidEmergencyVehicleClass(int vehicle_class);
     // Subscribers
     carma_ros2_utils::SubPtr<carma_v2x_msgs::msg::EmergencyVehicleResponse> incoming_emergency_vehicle_response_sub_;
     carma_ros2_utils::SubPtr<gps_msgs::msg::GPSFix> pose_sub_;
@@ -92,6 +96,14 @@ namespace emergency_response_vehicle_plugin
     double current_longitude_;
     double current_velocity_;
 
+    // for heading calc in ERV plugin
+    bool has_prev_gps_ = false; 
+    double prev_latitude_ = 0.0;
+    double prev_longitude_ = 0.0;
+    double heading;
+    rclcpp::Time last_heading_update_time_;
+
+
     // Flags to indicate whether the Emergency Response Vehicle's lights and sirens are active
     bool emergency_lights_active_ = false;
     bool emergency_sirens_active_ = false;
@@ -116,7 +128,7 @@ namespace emergency_response_vehicle_plugin
 
   public:
     /**
-     * \brief EmergencyResponseVehiclePlugin constructor 
+     * \brief EmergencyResponseVehiclePlugin constructor
      */
     explicit EmergencyResponseVehiclePlugin(const rclcpp::NodeOptions &);
 
@@ -134,8 +146,8 @@ namespace emergency_response_vehicle_plugin
     void connect(unsigned short local_port);
 
     /**
-     * \brief Function to process the incoming UDP packet binary data from the device that provides the activation status of the 
-     * Emergency Response Vehicle's emergency lights and emergency sirens. UDP packets are received by the udp_listener_ object and the 
+     * \brief Function to process the incoming UDP packet binary data from the device that provides the activation status of the
+     * Emergency Response Vehicle's emergency lights and emergency sirens. UDP packets are received by the udp_listener_ object and the
      * binary data is passed to this function.
      * \param data The binary data associated with the received UDP packet.
      */
@@ -151,15 +163,15 @@ namespace emergency_response_vehicle_plugin
     void loadRouteDestinationPointsFromFile(const std::string& route_file_path);
 
     /**
-     * \brief Helper function to get the next value associated with a generated BSM's 'msgcount' field based on the 
+     * \brief Helper function to get the next value associated with a generated BSM's 'msgcount' field based on the
      * provided msgcount of the previously generated BSM.
-     * \param old_msg_count The value of the previously generated BSM's 'msgcount' field. 
+     * \param old_msg_count The value of the previously generated BSM's 'msgcount' field.
      * \return The value to be used for the next generated BSM's 'msgcount' field.
      */
     uint8_t getNextMsgCount(uint8_t old_msg_count);
-
+    
     /**
-     * \brief Function for generating a BSM for the Emergency Response Vehicle based on the latest status of this object's 
+     * \brief Function for generating a BSM for the Emergency Response Vehicle based on the latest status of this object's
      * member variables. This function also updates the value of prev_msg_count_.
      * \return The generated carma_v2x_msgs::msg::BSM message.
      */
@@ -180,8 +192,8 @@ namespace emergency_response_vehicle_plugin
      * Emergency Resonse Vehicle's route.
      */
     void arrivedAtEmergencyDestinationCallback(
-      std::shared_ptr<rmw_request_id_t>, 
-      std_srvs::srv::Trigger::Request::SharedPtr req, 
+      std::shared_ptr<rmw_request_id_t>,
+      std_srvs::srv::Trigger::Request::SharedPtr req,
       std_srvs::srv::Trigger::Response::SharedPtr resp);
 
     /**
@@ -195,8 +207,8 @@ namespace emergency_response_vehicle_plugin
     void incomingEmergencyVehicleResponseCallback(carma_v2x_msgs::msg::EmergencyVehicleResponse::UniquePtr msg);
 
     /**
-     * \brief A function for publishing an outgoing EmergencyVehicleAck message in response to the CDA vehicle that broadcasted 
-     * an EmergencyVehicleResponse message to this Emergency Resposne Vehicle. 
+     * \brief A function for publishing an outgoing EmergencyVehicleAck message in response to the CDA vehicle that broadcasted
+     * an EmergencyVehicleResponse message to this Emergency Resposne Vehicle.
      * \param recipient_id The vehicle id of the CDA vehicle that this EmergencyVehicleAck message is intended for.
      */
     void broadcastEmergencyVehicleAck(const std::string& recipient_id);
@@ -210,7 +222,7 @@ namespace emergency_response_vehicle_plugin
      * \param lon_2_deg The longitude (in degrees) of the second coordinate pair.
      * \return The approximate distance (in meters) between the two provided latitude/longitude coordinate pairs.
      */
-    double getDistanceBetween(const double& lat_1_deg, const double& lon_1_deg, 
+    double getDistanceBetween(const double& lat_1_deg, const double& lon_1_deg,
                                       const double& lat_2_deg, const double& lon_2_deg);
 
     /**

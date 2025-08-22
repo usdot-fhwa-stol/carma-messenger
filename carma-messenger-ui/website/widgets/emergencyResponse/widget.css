@@ -17,28 +17,64 @@
     height: 50px;
 }
 
-.vehicle-status-row,.destination-row{
+.vehicle-status-row, .vehicle-class-row, .destination-row{
     margin-top: 20px;
 }
 
-.bsm-id-lbl,.position-lbl,.velocity-lbl, .siren-lbl,.light-lbl, .dest-lbl{
+.bsm-id-lbl, .position-lbl, .velocity-lbl, .siren-lbl, .light-lbl, .vehicle-class-lbl, .vehicle-class-select-lbl, .dest-lbl{
     font-weight: bold;
     color: rgb(80, 78, 78);
     display: block;
 }
+
+.vehicle-class-value {
+    font-weight: normal;
+    color: rgb(51, 122, 183);
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.vehicle-class-select {
+    margin-top: 5px;
+    border: 2px solid rgb(51, 122, 183);
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.vehicle-class-select:focus {
+    border-color: rgb(40, 96, 144);
+    box-shadow: 0 0 5px rgba(51, 122, 183, 0.3);
+    outline: none;
+}
+
+.vehicle-class-select:hover {
+    border-color: rgb(40, 96, 144);
+}
+
+.vehicle-class-row {
+    background-color: rgba(51, 122, 183, 0.05);
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid rgb(51, 122, 183);
+}
+
 .table th{
     color: rgb(80, 78, 78);
     font-size: 90%;
 }
-
 
 .dest-btn{
     display: block;
 }
 
 .map-col {
-    height: calc(100vh - 480px)
+    height: calc(100vh - 520px) /* Adjusted to account for new vehicle class row */
 }
+
 .alert-row{
     position: absolute;
     width: 100%;

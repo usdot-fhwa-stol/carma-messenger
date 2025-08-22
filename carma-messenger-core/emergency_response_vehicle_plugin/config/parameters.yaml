@@ -2,9 +2,9 @@
 #          the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
 #          in the 'listening_port' parameter.
 # Units: N/A
-enable_emergency_response_vehicle_plugin : false
+enable_emergency_response_vehicle_plugin : true
 
-# Double: The frequency at which BSMs will be generated and published by this plugin. 
+# Double: The frequency at which BSMs will be generated and published by this plugin.
 # Units: Hz
 bsm_generation_frequency : 10.0
 
@@ -17,10 +17,23 @@ min_distance_to_next_destination_point : 30.0
 # Units: N/A
 emergency_route_file_name : "DEFAULT-FILE-NAME.csv"
 
-# Int: The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
+# Int: The listening port that this node’s UDP socket will bind to in order to receive data related to the status
 #      of the ERV’s emergency sirens and lights.
 listening_port : 5005
 
 # Int: The BSM message ID for the Emergency Response Vehicle. The value will be converted to a 4 element array of uint8_t
 #      where each byte of the parameter becomes one element of the array.
 bsm_message_id: 8
+
+# Emergency Vehicle Class Options (Follows J2735 BasicVehicleClass exactly):
+# 60 - EMERGENCY_TYPE_UNKNOWN (default)
+# 61 - EMERGENCY_TYPE_OTHER (includes federal users)
+# 62 - EMERGENCY_FIRE_LIGHT_VEHICLE
+# 63 - EMERGENCY_FIRE_HEAVY_VEHICLE
+# 64 - EMERGENCY_FIRE_PARAMEDIC_VEHICLE
+# 65 - EMERGENCY_FIRE_AMBULANCE_VEHICLE
+# 66 - EMERGENCY_POLICE_LIGHT_VEHICLE
+# 67 - EMERGENCY_POLICE_HEAVY_VEHICLE
+# 68 - EMERGENCY_OTHER_RESPONDER
+# 69 - EMERGENCY_OTHER_AMBULANCE
+emergency_vehicle_class: 60  # Default to EMERGENCY_TYPE_UNKNOWN

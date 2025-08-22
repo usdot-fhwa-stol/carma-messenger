@@ -15,7 +15,7 @@
 # Docker Compose Spec Version
 services:
   messenger_ros2:
-    image: ${DOCKER_ORG}/carma-messenger-core:${DOCKER_TAG}
+    image: ${DOCKER_ORG}/carma-messenger-core:tempest-erv-demo
     network_mode: host
     container_name: messenger_ros2
     volumes_from:

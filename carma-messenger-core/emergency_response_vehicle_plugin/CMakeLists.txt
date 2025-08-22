@@ -25,6 +25,9 @@ carma_package()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
+# Add CURL for libcurl
+find_package(CURL REQUIRED)  
+
 # Name build targets
 set(node_exec emergency_response_vehicle_plugin_node_exec)
 set(node_lib emergency_response_vehicle_plugin_node)
@@ -55,6 +58,7 @@ rclcpp_components_register_nodes(${node_lib} "emergency_response_vehicle_plugin:
 # ament auto will handle linking of external dependencies
 target_link_libraries(${node_lib}
         ${udp_listener_lib}
+        CURL::libcurl  # <-- Added libcurl linkage
 )
 
 target_link_libraries(${node_exec}

@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  * Copyright (C) 2023 LEIDOS.
  *
@@ -15,36 +14,47 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 #include <iostream>
 #include <vector>
 
 namespace emergency_response_vehicle_plugin
 {
+  /**
+   * \brief Enum for Emergency Vehicle Class types that can be published in BSM messages
+   *        Follows the J2735 standard for emergency vehicle classification
+   */
+  enum class EmergencyVehicleClass : int
+  {
+    EMERGENCY_TYPE_UNKNOWN = 60,           // Default emergency vehicle type
+    EMERGENCY_TYPE_OTHER = 61,             // Includes federal users
+    EMERGENCY_FIRE_LIGHT_VEHICLE = 62,     // Light fire vehicle
+    EMERGENCY_FIRE_HEAVY_VEHICLE = 63,     // Heavy fire vehicle
+    EMERGENCY_FIRE_PARAMEDIC_VEHICLE = 64, // Fire paramedic vehicle
+    EMERGENCY_FIRE_AMBULANCE_VEHICLE = 65, // Fire ambulance vehicle
+    EMERGENCY_POLICE_LIGHT_VEHICLE = 66,   // Light police vehicle
+    EMERGENCY_POLICE_HEAVY_VEHICLE = 67,   // Heavy police vehicle
+    EMERGENCY_OTHER_RESPONDER = 68,        // Other emergency responder
+    EMERGENCY_OTHER_AMBULANCE = 69         // Other ambulance vehicle
+  };
 
   /**
    * \brief Struct containing the algorithm configuration values for emergency_response_vehicle_plugin
    */
   struct Config
   {
-    bool enable_emergency_response_vehicle_plugin = false;           //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
+    bool enable_emergency_response_vehicle_plugin = true;           //  A flag indicating whether this plugin shall be activated. If activated, this plugin will publish
                                                                      //  the Emergency Response Vehicle's BSMs and process incoming UDP packets on the local port provided
                                                                      //  in the 'listening_port' parameter.
-
-    double bsm_generation_frequency = 10.0;                          // (Hz) The frequency at which BSMs will be generated and published by this plugin. 
-
+    double bsm_generation_frequency = 10.0;                          // (Hz) The frequency at which BSMs will be generated and published by this plugin.
     double min_distance_to_next_destination_point = 30.0;            // (Meters) The distance that the ERV must be from its next route destination point before the point is removed from
                                                                      // the list of future route destination points.
-
     std::string emergency_route_file_name = "DEFAULT-FILE-NAME.csv"; // The name of the .csv file on the host PC that contains the pre-defined points existing along the ERV's route.
-
-    std::string route_file_folder = "DEFAULT-FOLDER-PATH";           // The path to the directoy on the host PC that contains the .csv file with the ERV's route destination points. 
-
-    int listening_port = 5005;                                       // The listening port that this node’s UDP socket will bind to in order to receive data related to the status 
-                                                                     // of the ERV’s emergency sirens and lights.
-
+    std::string route_file_folder = "DEFAULT-FOLDER-PATH";           // The path to the directoy on the host PC that contains the .csv file with the ERV's route destination points.
+    int listening_port = 5005;                                       // The listening port that this node's UDP socket will bind to in order to receive data related to the status
+                                                                     // of the ERV's emergency sirens and lights.
     int bsm_message_id = 8;                                          // The BSM message ID for the Emergency Response Vehicle. The value will be converted to a 4 element array of uint8_t
                                                                      // where each byte of the parameter becomes one element of the array.
+    int emergency_vehicle_class = static_cast<int>(EmergencyVehicleClass::EMERGENCY_TYPE_UNKNOWN); // The emergency vehicle class to be published in BSM messages
 
     // Stream operator for this config
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
@@ -57,9 +67,9 @@ namespace emergency_response_vehicle_plugin
            << "route_file_folder: " << c.route_file_folder << std::endl
            << "listening_port: " << c.listening_port << std::endl
            << "bsm_message_id: " << c.bsm_message_id << std::endl
+           << "emergency_vehicle_class: " << c.emergency_vehicle_class << std::endl
            << "}" << std::endl;
       return output;
     }
   };
-
 } // emergency_response_vehicle_plugin
