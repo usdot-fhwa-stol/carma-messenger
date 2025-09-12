@@ -78,7 +78,6 @@ def generate_launch_description():
                 PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch','/v2x-ros-conversion.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay],
-                    'global_params_override_file' : global_params_override_file
                 }.items()
             ),
         ]
