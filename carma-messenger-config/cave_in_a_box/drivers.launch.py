@@ -24,14 +24,8 @@ from launch.conditions import IfCondition
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
-
 import launch.actions
-import launch.events
-
-import launch_ros.actions
-import launch_ros.events
 import launch_ros.events.lifecycle
-import lifecycle_msgs.msg
 
 
 def generate_launch_description():
