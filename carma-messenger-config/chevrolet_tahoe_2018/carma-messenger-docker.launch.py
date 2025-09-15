@@ -32,15 +32,26 @@ def generate_launch_description():
         description = 'Path of folder on host PC containing route CSV file(s) that can be accessed by plugins; currently only used by emergency_response_vehicle_plugin'
     )
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     # Launch the core carma launch file
     core_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ get_package_share_directory('carma-messenger'), '/launch/carma-messenger.launch.py']),
         launch_arguments = {
-            'route_file_folder' : route_file_folder
+            'route_file_folder' : route_file_folder,
+            'global_params_override_file' : global_params_override_file,
         }.items()
     )
 
     return LaunchDescription([
         declare_route_file_folder,
+        declare_global_params_override_file_arg,
         core_launch
     ])

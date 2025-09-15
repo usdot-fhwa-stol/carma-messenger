@@ -6,40 +6,31 @@
 # Only the parameters that need to be overridden should be included in this file, rest will
 # use the default values in the respective package's yaml files
 # NOTE: Be sure to include the node name here, which may not be same as the package name
-# NOTE: SubsystemControllers has its own override file for easier organization
 
-/**:
-  ros__parameters:
-    v2x_radio_address: "192.168.0.40"
+hardware_interface:
+  v2x_ros_driver_node:
+    ros__parameters:
+      v2x_radio_address: "192.168.0.40"
 
-# localization:
-#   localization_manager:
-#     ros__parameters:
-#       localization_mode: 4
-#       x_offset: 0.0
-#       y_offset: 0.0
-
-# # Nested namespace example for guidance and plugins
-# guidance:
-#   plan_delegator:
-#     ros__parameters:
-#       max_traj_generation_reattempt: 50
-#   plugins:
-#     lci_strategic_plugin:
-#       ros__parameters:
-#         min_approach_distance: 20.0
-#         trajectory_smoothing_activation_distance: 40.0
-#         minimum_speed: 5.0
-#         algo_minimum_speed: 0.894
-#     inlanecruising_plugin:
-#       ros__parameters:
-#         default_downsample_ratio: 4
-#         turn_downsample_ratio: 4
-#         minimum_speed: 5.0
-
-# # System controller doesn't have a namespace like others
-# system_controller:
+# # Other general examples:
+# traffic_incident:
 #   ros__parameters:
-#     signal_configure_delay: 15.0
-#     service_timeout_ms: 500
-#     call_timeout_ms: 10000
+#     down_track: 50.0
+#     event_reason: 'MOVE OVER LAW'
+#     event_type: 'CLOSED'
+#     geofence_start_end_data_timeout: 
+#     min_gap: 4.0
+#     sender_id: 'USDOT-49096'
+#     up_track: 50.0
+#     use_sim_time: false
+# emergency_response_vehicle_plugin_node:
+#   ros__parameters: 
+#     bsm_generation_frequency: 10.0
+#     bsm_message_id: 8
+#     emergency_route_file_name: "DEFAULT-FILE-NAME.csv"
+#     enable_emergency_response_vehicle_plugin: false
+#     listening_port: 5005
+#     min_distance_to_next_destination_point: 30.0 
+#     route_file_folder: "/opt/carma/vehicle/routes"
+#     use_sim_time: false
+

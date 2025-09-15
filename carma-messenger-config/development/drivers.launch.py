@@ -60,8 +60,8 @@ def generate_launch_description():
     global_params_override_file = LaunchConfiguration('global_params_override_file')
     declare_global_params_override_file_arg = DeclareLaunchArgument(
         name = 'global_params_override_file',
-        default_value = ["/opt/carma/vehicle/GlobalParamsOverride.yaml"],
-        description = "Path to global file containing the parameters overwrite"
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
     )
 
     v2x_ros_driver_group = GroupAction(
