@@ -22,7 +22,7 @@ hardware_interface:
 #     min_gap: 4.0
 #     sender_id: 'USDOT-49096'
 #     up_track: 50.0
-#     use_sim_time: false
+
 # emergency_response_vehicle_plugin_node:
 #   ros__parameters: 
 #     bsm_generation_frequency: 10.0
@@ -32,5 +32,5 @@ hardware_interface:
 #     listening_port: 5005
 #     min_distance_to_next_destination_point: 30.0 
 #     route_file_folder: "/opt/carma/vehicle/routes"
-#     use_sim_time: false
+
 
