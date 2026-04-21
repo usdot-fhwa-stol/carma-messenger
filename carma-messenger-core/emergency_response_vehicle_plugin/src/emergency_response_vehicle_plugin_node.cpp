@@ -303,6 +303,9 @@ namespace emergency_response_vehicle_plugin
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::SPEED_AVAILABLE;
     bsm_msg.core_data.speed = current_velocity_;
 
+    bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::HEADING_AVAILABLE;
+    bsm_msg.core_data.heading = current_heading_;
+
     // Set lights status, siren status, and emergency response type as necessary
     if(emergency_lights_active_ || emergency_sirens_active_){
       bsm_msg.presence_vector |= carma_v2x_msgs::msg::BSM::HAS_PART_II;
@@ -419,6 +422,7 @@ namespace emergency_response_vehicle_plugin
   {
     current_latitude_ = msg->latitude;
     current_longitude_ = msg->longitude;
+    current_heading_ = msg->track;
 
     if(!route_destination_points_.empty()){
       // Get distance between current ERV location and first destination point

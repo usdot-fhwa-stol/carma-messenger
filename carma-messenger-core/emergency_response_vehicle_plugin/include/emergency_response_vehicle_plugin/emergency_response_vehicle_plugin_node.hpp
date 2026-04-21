@@ -91,6 +91,7 @@ namespace emergency_response_vehicle_plugin
     double current_latitude_;
     double current_longitude_;
     double current_velocity_;
+    double current_heading_;
 
     // Flags to indicate whether the Emergency Response Vehicle's lights and sirens are active
     bool emergency_lights_active_ = false;
