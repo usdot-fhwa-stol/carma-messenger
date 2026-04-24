@@ -43,33 +43,6 @@ namespace emergency_response_vehicle_plugin
 {
   namespace std_ph = std::placeholders;
 
-  float readBSMHeadingFromFile() {
-    std::ifstream file("/opt/carma/vehicle/calibration/heading/bsm_heading.txt");
-
-    if (!file.is_open()) {
-        RCLCPP_ERROR(rclcpp::get_logger("bsm_plugin"), "File not found or unreadable: /opt/carma/vehicle/calibration/heading/bsm_heading.txt");
-        return 28800.0;  // fallback
-    }
-
-    std::string line;
-    std::getline(file, line);  // read entire line
-
-    RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "Raw file content: '%s'", line.c_str());
-
-    try {
-        int heading_int = std::stoi(line);  // parse as int
-        if (heading_int < 0 || heading_int > 28799) {
-            RCLCPP_WARN(rclcpp::get_logger("bsm_plugin"), "Heading value out of range: %d", heading_int);
-            return 28800.0;
-        }
-        return static_cast<float>(heading_int);
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(rclcpp::get_logger("bsm_plugin"), "Error parsing heading: %s", e.what());
-        return 28800.0;
-    }
-  }
-
-
 
   EmergencyResponseVehiclePlugin::EmergencyResponseVehiclePlugin(const rclcpp::NodeOptions &options)
       : carma_ros2_utils::CarmaLifecycleNode(options)
@@ -474,8 +447,7 @@ namespace emergency_response_vehicle_plugin
     bsm_msg.core_data.speed = current_velocity_;
 
     bsm_msg.core_data.presence_vector |= carma_v2x_msgs::msg::BSMCoreData::HEADING_AVAILABLE;
-    float heading = readBSMHeadingFromFile();
-    int heading_int = static_cast<int>(heading);
+    int heading_int = static_cast<int>(current_heading_);
 
     if (heading_int < 0 || heading_int > 28799) {
         bsm_msg.core_data.heading = 28800;
@@ -628,6 +600,7 @@ namespace emergency_response_vehicle_plugin
   {
     current_latitude_ = msg->latitude;
     current_longitude_ = msg->longitude;
+    current_heading_ = msg->track;
 
     if(!route_destination_points_.empty()){
       // Get distance between current ERV location and first destination point
