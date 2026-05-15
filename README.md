@@ -1,20 +1,4 @@
-| CI Build Status | Sonar Code Quality |
-|----------------------|---------------------|
-[![CI](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml/badge.svg)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-fhwa-stol_carma-messenger&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot-fhwa-stol_carma-messenger) |
-# DockerHub Release Builds
-| Carma Messenger UI  & Carma Messenger Config & Carma Messenger Core |
-|-----|
-[![Docker Hub build](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml/badge.svg?branch=master)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml)
-# DockerHub Release Candidate Builds
-| Carma Messenger UI  & Carma Messenger Config & Carma Messenger Core |
-|-----|
-[![Docker Hub build](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml/badge.svg?branch=release%2Flavida)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml)
-# DockerHub Develop Builds
-| Carma Messenger UI  & Carma Messenger Config & Carma Messenger Core |
-|-----|
-[![Docker Hub build](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml/badge.svg?branch=develop)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/dockerhub.yml)
-
-
+![GitHub Release](https://img.shields.io/github/v/release/usdot-fhwa-stol/carma-messenger) [![Tests](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/usdot-fhwa-stol/carma-messenger/actions/workflows/ci.yml) ![Docker Pulls](https://img.shields.io/docker/pulls/usdotfhwastoldev/carma-messenger-ui?label=Docker%20Pulls%20-%20carma-messenger-ui) ![Docker Pulls](https://img.shields.io/docker/pulls/usdotfhwastoldev/carma-messenger-core?label=Docker%20Pulls%20-%20carma-messenger-core) ![Docker Pulls](https://img.shields.io/docker/pulls/usdotfhwastoldev/carma-messenger-config?label=Docker%20Pulls%20-%20carma-messenger-config) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-fhwa-stol_carma-messenger&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=usdot-fhwa-stol_carma-messenger) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/usdot-fhwa-stol/carma-platform/blob/develop/docs/License.md)
 
 # carma-messenger
 
