@@ -83,7 +83,7 @@ namespace emergency_response_vehicle_plugin
                                                                      // where each byte of the parameter becomes one element of the array.
     int emergency_vehicle_class = static_cast<int>(EmergencyVehicleClass::EMERGENCY_TYPE_UNKNOWN); // The emergency vehicle class to be published in BSM messages
 
-    int emergency_vehicle_role = BasicVehicleRole::NONE_UNKNOWN;  // default to unknown role
+    int emergency_vehicle_role =  static_cast<int>(BasicVehicleRole::NONE_UNKNOWN);  // default to unknown role
 
     // Stream operator for this config
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
