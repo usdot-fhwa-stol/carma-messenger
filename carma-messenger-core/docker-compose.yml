@@ -1,5 +1,6 @@
 services:
   dev:
+    image: carma-messenger-core:dev
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,3 +9,4 @@ services:
       - ./carma-messenger:/home/carma/src/carma-messenger:rw
       - ./emergency_response_vehicle_plugin:/home/carma/src/emergency_response_vehicle_plugin:rw
       - ./traffic_incident:/home/carma/src/traffic_incident:rw
+    command: ["sleep", "infinity"]
