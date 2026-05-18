@@ -37,6 +37,33 @@ namespace emergency_response_vehicle_plugin
     EMERGENCY_OTHER_AMBULANCE = 69         // Other ambulance vehicle
   };
 
+  enum class BasicVehicleRole : int
+  {
+    BASIC_VEHICLE = 0,      // Light duty passenger vehicle type
+    PUBLIC_TRANSPORT = 1,   // Used in EU for Transit us
+    SPECIAL_TRANSPORT = 2,  // Used in EU (e.g., heavy load)
+    DANGEROUS_GOODS = 3,    // Used in EU for any HAZMAT
+    ROAD_WORK = 4,          // Used in EU for State and Local DOT uses
+    ROAD_RESCUE = 5,        // Used in EU and in the US to include tow trucks.
+    EMERGENCY = 6,          // Used in EU for Police, Fire and Ambulance units
+    SAFETY_CAR = 7,         // Used in EU for Escort vehicles
+    NONE_UNKNOWN = 8,       // added to follow current SAE style guidelines
+    TRUCK = 9,              // Heavy trucks with additional BSM rights and obligations
+    MOTORCYCLE = 10, 
+    ROAD_SIDE_SOURCE = 11,  // For infrastructure generated calls such as
+    POLICE = 12,
+    FIRE = 13,
+    AMBULANCE = 14,         // (does not include private para-transit etc.)
+    DOT = 15,               // all roadwork vehicles
+    TRANSIT = 16,           // all transit vehicles
+    SLOW_MOVING = 17,       // to also include oversize etc.
+    STOP_NGO = 18,          // to include trash trucks, school buses and others
+    CYCLIST = 19,           // 
+    PEDESTRIAN = 20,        // also includes those with mobility limitations
+    NON_MOTORIZED = 21,     // other, horse drawn, etc.
+    MILITARY = 22,
+  }
+
   /**
    * \brief Struct containing the algorithm configuration values for emergency_response_vehicle_plugin
    */
@@ -56,6 +83,8 @@ namespace emergency_response_vehicle_plugin
                                                                      // where each byte of the parameter becomes one element of the array.
     int emergency_vehicle_class = static_cast<int>(EmergencyVehicleClass::EMERGENCY_TYPE_UNKNOWN); // The emergency vehicle class to be published in BSM messages
 
+    int emergency_vehicle_role = BasicVehicleRole::NONE_UNKNOWN;  // default to unknown role
+
     // Stream operator for this config
     friend std::ostream &operator<<(std::ostream &output, const Config &c)
     {
@@ -68,6 +97,7 @@ namespace emergency_response_vehicle_plugin
            << "listening_port: " << c.listening_port << std::endl
            << "bsm_message_id: " << c.bsm_message_id << std::endl
            << "emergency_vehicle_class: " << c.emergency_vehicle_class << std::endl
+           << "emergency_vehicle_role: " << c.emergency_vehicle_role << std::endl
            << "}" << std::endl;
       return output;
     }
