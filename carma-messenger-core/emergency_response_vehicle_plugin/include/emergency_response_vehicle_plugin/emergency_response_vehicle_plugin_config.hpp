@@ -62,7 +62,7 @@ namespace emergency_response_vehicle_plugin
     PEDESTRIAN = 20,        // also includes those with mobility limitations
     NON_MOTORIZED = 21,     // other, horse drawn, etc.
     MILITARY = 22,
-  }
+  };
 
   /**
    * \brief Struct containing the algorithm configuration values for emergency_response_vehicle_plugin
