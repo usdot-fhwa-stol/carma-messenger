@@ -488,6 +488,9 @@ namespace emergency_response_vehicle_plugin
       part_ii_supplemental.supplemental_vehicle_extensions.class_details.role.basic_vehicle_role
         = config_.emergency_vehicle_role;
 
+      RCLCPP_DEBUG(rclcpp::get_logger("bsm_plugin"), "setting vehicle class: '%d'", config_.emergency_vehicle_class);
+      RCLCPP_DEBUG(rclcpp::get_logger("bsm_plugin"), "setting vehicle role: '%d'", config_.emergency_vehicle_role);
+
       bsm_msg.part_ii.push_back(part_ii_supplemental);
 
       // BSMPartIIExtension.special_vehicle_extensions
