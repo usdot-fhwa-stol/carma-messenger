@@ -46,3 +46,9 @@ COPY --from=setup /opt/carma /opt/carma
 RUN pip install future
 
 CMD  [ "source", "/opt/carma/install/setup.bash", "&&", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]
+
+FROM setup AS dev
+
+RUN pip install future
+
+CMD ["sleep", "infinity"]
