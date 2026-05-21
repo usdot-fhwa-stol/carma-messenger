@@ -502,6 +502,10 @@ namespace emergency_response_vehicle_plugin
       // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
       part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
 
+      if (emergency_sirens_active_ || emergency_lights_active_){
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.presence_vector |= j2735_v2x_msgs::msg::EmergencyDetails::HAS_EVENTS;
+      }
+
       if(emergency_sirens_active_){
         part_ii_special.special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use = j2735_v2x_msgs::msg::SirenInUse::IN_USE;
       }
