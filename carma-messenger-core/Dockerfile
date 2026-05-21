@@ -13,8 +13,8 @@
 #  the License.
 ARG DOCKER_ORG="usdotfhwastoldev"
 ARG DOCKER_TAG="develop-humble"
-FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} AS base_image
-FROM base_image AS setup
+FROM ${DOCKER_ORG}/carma-base:${DOCKER_TAG} as base_image
+FROM base_image as setup
 ARG GIT_BRANCH="develop"
 ARG PACKAGES=""
 ENV PACKAGES=${PACKAGES}
@@ -46,9 +46,3 @@ COPY --from=setup /opt/carma /opt/carma
 RUN pip install future
 
 CMD  [ "source", "/opt/carma/install/setup.bash", "&&", "ros2", "launch", "carma-messenger", "carma-messenger.launch.py"]
-
-FROM setup AS dev
-
-RUN pip install future
-
-CMD ["sleep", "infinity"]
