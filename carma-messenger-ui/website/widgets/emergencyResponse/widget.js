@@ -851,6 +851,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
                 option.text = `${key} - ${basic_vehicle_roles[key]}`;
                 roleSelect.appendChild(option);
             });
+            roleSelect.value = current_vehicle_role;
 
             roleSelect.onchange = function() {
                 let selectedRole = this.value;
@@ -927,6 +928,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         getVehicleClass: function () {
             get_vehicle_class();
         },
+        getVehicleRole: function () {
+            get_vehicle_role();
+        },
         subscribeParameterEvents: function () {
             subscribe_to_parameter_events();
         },
@@ -945,6 +949,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse("loadMap", null);
         container.emergencyResponse("getERVStatus", null); // Get initial ERV status
         container.emergencyResponse("getVehicleClass", null);
+        container.emergencyResponse("getVehicleRole", null);
         container.emergencyResponse("subscribeParameterEvents", null); // Monitor parameter changes
     };
 
