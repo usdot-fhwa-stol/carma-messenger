@@ -40,25 +40,25 @@ namespace emergency_response_vehicle_plugin
   enum class BasicVehicleRole : int
   {
     BASIC_VEHICLE = 0,      // Light duty passenger vehicle type
-    PUBLIC_TRANSPORT = 1,   // Used in EU for Transit us
-    SPECIAL_TRANSPORT = 2,  // Used in EU (e.g., heavy load)
-    DANGEROUS_GOODS = 3,    // Used in EU for any HAZMAT
-    ROAD_WORK = 4,          // Used in EU for State and Local DOT uses
-    ROAD_RESCUE = 5,        // Used in EU and in the US to include tow trucks.
-    EMERGENCY = 6,          // Used in EU for Police, Fire and Ambulance units
-    SAFETY_CAR = 7,         // Used in EU for Escort vehicles
-    NONE_UNKNOWN = 8,       // added to follow current SAE style guidelines
+    PUBLIC_TRANSPORT = 1,
+    SPECIAL_TRANSPORT = 2,
+    DANGEROUS_GOODS = 3,
+    ROAD_WORK = 4,
+    ROAD_RESCUE = 5,
+    EMERGENCY = 6,
+    SAFETY_CAR = 7,
+    NONE_UNKNOWN = 8,
     TRUCK = 9,              // Heavy trucks with additional BSM rights and obligations
     MOTORCYCLE = 10, 
-    ROAD_SIDE_SOURCE = 11,  // For infrastructure generated calls such as
+    ROAD_SIDE_SOURCE = 11,  // For infrastructure generated calls such as fire house, rail infrastructure, roadwork site, etc.
     POLICE = 12,
     FIRE = 13,
     AMBULANCE = 14,         // (does not include private para-transit etc.)
     DOT = 15,               // all roadwork vehicles
     TRANSIT = 16,           // all transit vehicles
     SLOW_MOVING = 17,       // to also include oversize etc.
-    STOP_NGO = 18,          // to include trash trucks, school buses and others
-    CYCLIST = 19,           // 
+    STOP_NGO = 18,          // to include trash trucks, school buses and others that routinely disturb the free flow of traffic
+    CYCLIST = 19,
     PEDESTRIAN = 20,        // also includes those with mobility limitations
     NON_MOTORIZED = 21,     // other, horse drawn, etc.
     MILITARY = 22,
