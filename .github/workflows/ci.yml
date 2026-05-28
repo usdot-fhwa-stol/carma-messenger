@@ -34,7 +34,7 @@ jobs:
       options: "--user root"
     steps:
     - name: Checkout ${{ github.event.repository.name }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: src/${{ github.event.repository.name }}
         fetch-depth: 0
