@@ -37,3 +37,29 @@ bsm_message_id: 8
 # 68 - EMERGENCY_OTHER_RESPONDER
 # 69 - EMERGENCY_OTHER_AMBULANCE
 emergency_vehicle_class: 60  # Default to EMERGENCY_TYPE_UNKNOWN
+
+# Emergency Vehicle Role Options (Follows J2735 BasicVehicleRole):
+# 0 - BASIC_VEHICLE
+# 1 - PUBLIC_TRANSPORT
+# 2 - SPECIAL_TRANSPORT
+# 3 - DANGEROUS_GOODS
+# 4 - ROAD_WORK
+# 5 - ROAD_RESCUE
+# 6 - EMERGENCY
+# 7 - SAFETY_CAR
+# 8 - NONE_UNKNOWN (default)
+# 9 - TRUCK
+# 10 - MOTORCYCLE
+# 11 - ROAD_SIDE_SOURCE
+# 12 - POLICE
+# 13 - FIRE
+# 14 - AMBULANCE
+# 15 - DOT
+# 16 - TRANSIT
+# 17 - SLOW_MOVING
+# 18 - STOP_NGO
+# 19 - CYCLIST
+# 20 - PEDESTRIAN
+# 21 - NON_MOTORIZED
+# 22 - MILITARY
+emergency_vehicle_role: 8  # Default to NONE_UNKNOWN

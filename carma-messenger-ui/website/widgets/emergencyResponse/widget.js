@@ -59,7 +59,34 @@ const emergency_vehicle_classes = {
     69: "Other Ambulance Vehicle"
 }
 
+const basic_vehicle_roles = {
+    0: "Basic Vehicle",
+    1: "Public Transport",
+    2: "Special Transport",
+    3: "Dangerous Goods",
+    4: "Road Work",
+    5: "Road Rescue",
+    6: "Emergency",
+    7: "Safety Car",
+    8: "None/Unknown",
+    9: "Truck",
+    10: "Motorcycle",
+    11: "Road Side Source",
+    12: "Police",
+    13: "Fire",
+    14: "Ambulance",
+    15: "DOT",
+    16: "Transit",
+    17: "Slow Moving",
+    18: "Stop NGO",
+    19: "Cyclist",
+    20: "Pedestrian",
+    21: "Non-Motorized",
+    22: "Military"
+};
+
 var current_vehicle_class = 60; // Default to unknown
+var current_vehicle_role = 8; // Default to NONE_UNKNOWN
 var erv_plugin_enabled = false; // Track current plugin status
 
 //Display vehicle information
@@ -146,6 +173,19 @@ var subscribe_bsm = () => {
         } else {
             $("#vehicleClassValue").text("Not Set");
         }
+
+        // Display current vehicle role from BSM
+        if (message.part_ii != undefined && message.part_ii.length > 0 && message.part_ii[0].supplemental_vehicle_extensions != undefined
+            && message.part_ii[0].supplemental_vehicle_extensions.class_details != undefined
+            && message.part_ii[0].supplemental_vehicle_extensions.class_details.role != undefined
+            && message.part_ii[0].supplemental_vehicle_extensions.class_details.role.basic_vehicle_role != undefined) {
+            let vehicle_role = message.part_ii[0].supplemental_vehicle_extensions.class_details.role.basic_vehicle_role;
+            current_vehicle_role = vehicle_role;
+            $("#vehicleRoleValue").text(basic_vehicle_roles[vehicle_role] || "Unknown");
+            $("#vehicleRoleSelect").val(vehicle_role);
+        } else {
+            $("#vehicleRoleValue").text("Not Set");
+        }
     });
 }
 
@@ -177,6 +217,37 @@ var service_update_vehicle_class = (vehicle_class) => {
             alert("Failed to update vehicle class parameter");
             // Revert dropdown to previous value
             $("#vehicleClassSelect").val(current_vehicle_class);
+        }
+    });
+}
+
+//Service call to update emergency vehicle role using ROS service
+var service_update_vehicle_role = (vehicle_role) => {
+    var setParamService = new ROSLIB.Service({
+        ros: ros,
+        name: '/emergency_response_vehicle_plugin_node/set_parameters',
+        serviceType: 'rcl_interfaces/srv/SetParameters'
+    });
+
+    var request = new ROSLIB.ServiceRequest({
+        parameters: [{
+            name: 'emergency_vehicle_role',
+            value: {
+                type: 2, // PARAMETER_INTEGER
+                integer_value: parseInt(vehicle_role)
+            }
+        }]
+    });
+
+    setParamService.callService(request, function(result) {
+        if (result && result.results && result.results.length > 0 && result.results[0].successful) {
+            console.log("Vehicle role parameter updated successfully to:", vehicle_role);
+            current_vehicle_role = parseInt(vehicle_role);
+            $("#vehicleRoleValue").text(basic_vehicle_roles[vehicle_role] || "Unknown");
+        } else {
+            console.error("Failed to update vehicle role parameter:", result);
+            alert("Failed to update vehicle role parameter");
+            $("#vehicleRoleSelect").val(current_vehicle_role);
         }
     });
 }
@@ -278,12 +349,42 @@ var get_vehicle_class = () => {
     });
 }
 
+//Get current vehicle role using ROS service
+var get_vehicle_role = () => {
+    var getParamService = new ROSLIB.Service({
+        ros: ros,
+        name: '/emergency_response_vehicle_plugin_node/get_parameters',
+        serviceType: 'rcl_interfaces/srv/GetParameters'
+    });
+
+    var request = new ROSLIB.ServiceRequest({
+        names: ['emergency_vehicle_role']
+    });
+
+    getParamService.callService(request, function(result) {
+        if (result && result.values && result.values.length > 0) {
+            let paramValue = result.values[0];
+            if (paramValue.type === 2) { // PARAMETER_INTEGER
+                current_vehicle_role = paramValue.integer_value;
+                $("#vehicleRoleValue").text(basic_vehicle_roles[current_vehicle_role] || "Unknown");
+                $("#vehicleRoleSelect").val(current_vehicle_role);
+                console.log("Current vehicle role:", current_vehicle_role);
+            } else {
+                console.warn("Unexpected parameter type for vehicle role:", paramValue.type);
+            }
+        } else {
+            console.warn("Failed to get vehicle role parameter or empty result");
+        }
+    });
+}
+
 //Enhanced parameter monitoring using service calls (polling approach)
 var monitor_parameters_with_services = () => {
     // Poll parameters every 5 seconds to detect changes
     setInterval(() => {
         get_erv_plugin_status();
         get_vehicle_class();
+        get_vehicle_role();
     }, 5000);
 }
 
@@ -713,6 +814,57 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             vehicleClassRow.appendChild(classSelectCol);
 
             /**
+             * Vehicle Role Selection Row
+             */
+            let vehicleRoleRow = document.createElement('div');
+            vehicleRoleRow.className = "row vehicle-role-row";
+
+            // Current vehicle role display
+            let currentRoleCol = document.createElement('div');
+            currentRoleCol.className = "col-md-6";
+            var currentRoleLabel = document.createElement('Label');
+            currentRoleLabel.innerHTML = "Current Vehicle Role";
+            currentRoleLabel.className = "vehicle-role-lbl";
+            var currentRoleValue = document.createElement('Label');
+            currentRoleValue.innerHTML = "Not Set";
+            currentRoleValue.id = "vehicleRoleValue";
+            currentRoleValue.className = "vehicle-role-value";
+            currentRoleCol.appendChild(currentRoleLabel);
+            currentRoleCol.appendChild(currentRoleValue);
+            vehicleRoleRow.appendChild(currentRoleCol);
+
+            // Vehicle role selection dropdown
+            let roleSelectCol = document.createElement('div');
+            roleSelectCol.className = "col-md-6";
+            var roleSelectLabel = document.createElement('Label');
+            roleSelectLabel.innerHTML = "Select Vehicle Role";
+            roleSelectLabel.className = "vehicle-role-select-lbl";
+            roleSelectLabel.setAttribute("for", "vehicleRoleSelect");
+            var roleSelect = document.createElement('select');
+            roleSelect.className = "form-control vehicle-role-select";
+            roleSelect.id = "vehicleRoleSelect";
+
+            // Populate dropdown options
+            Object.keys(basic_vehicle_roles).forEach(key => {
+                let option = document.createElement('option');
+                option.value = key;
+                option.text = `${key} - ${basic_vehicle_roles[key]}`;
+                roleSelect.appendChild(option);
+            });
+            roleSelect.value = current_vehicle_role;
+
+            roleSelect.onchange = function() {
+                let selectedRole = this.value;
+                if (selectedRole && selectedRole != current_vehicle_role) {
+                    service_update_vehicle_role(selectedRole);
+                }
+            };
+
+            roleSelectCol.appendChild(roleSelectLabel);
+            roleSelectCol.appendChild(roleSelect);
+            vehicleRoleRow.appendChild(roleSelectCol);
+
+            /**
              * Route selction div and arrive at destination button
              */
             let destinationRow = document.createElement('div');
@@ -755,6 +907,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
             container.appendChild(vehicleStatusRow);
             container.appendChild(pluginControlRow); // Add the plugin control row
             container.appendChild(vehicleClassRow); // Add the vehicle class row
+            container.appendChild(vehicleRoleRow); // Add the vehicle role row
             container.appendChild(destinationRow);
             container.appendChild(alertRow);
             container.appendChild(mapRow);
@@ -775,6 +928,9 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         getVehicleClass: function () {
             get_vehicle_class();
         },
+        getVehicleRole: function () {
+            get_vehicle_role();
+        },
         subscribeParameterEvents: function () {
             subscribe_to_parameter_events();
         },
@@ -793,6 +949,7 @@ CarmaJS.WidgetFramework.emergencyResponse = (function () {
         container.emergencyResponse("loadMap", null);
         container.emergencyResponse("getERVStatus", null); // Get initial ERV status
         container.emergencyResponse("getVehicleClass", null);
+        container.emergencyResponse("getVehicleRole", null);
         container.emergencyResponse("subscribeParameterEvents", null); // Monitor parameter changes
     };
 

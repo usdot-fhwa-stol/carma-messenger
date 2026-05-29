@@ -60,6 +60,8 @@ namespace emergency_response_vehicle_plugin
     config_.bsm_message_id = declare_parameter<int>("bsm_message_id", config_.bsm_message_id);
     config_.emergency_vehicle_class =
       declare_parameter<int>("emergency_vehicle_class", config_.emergency_vehicle_class);
+    config_.emergency_vehicle_role = 
+      declare_parameter<int>("emergency_vehicle_role", config_.emergency_vehicle_role);
   }
 
   rcl_interfaces::msg::SetParametersResult EmergencyResponseVehiclePlugin::parameter_update_callback(const std::vector<rclcpp::Parameter> &parameters)
@@ -82,6 +84,7 @@ namespace emergency_response_vehicle_plugin
         {"listening_port", config_.listening_port},
         {"bsm_message_id", config_.bsm_message_id},
         {"emergency_vehicle_class", config_.emergency_vehicle_class},
+        {"emergency_vehicle_role", config_.emergency_vehicle_role}
     }, parameters);
 
     rcl_interfaces::msg::SetParametersResult result;
@@ -153,6 +156,7 @@ namespace emergency_response_vehicle_plugin
     get_parameter<int>("listening_port", config_.listening_port);
     get_parameter<int>("bsm_message_id", config_.bsm_message_id);
     get_parameter<int>("emergency_vehicle_class", config_.emergency_vehicle_class);
+    get_parameter<int>("emergency_vehicle_role", config_.emergency_vehicle_role);
 
     RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_), "Loaded params: " << config_);
 
@@ -482,7 +486,10 @@ namespace emergency_response_vehicle_plugin
       part_ii_supplemental.supplemental_vehicle_extensions.class_details.key_type.basic_vehicle_class
         = config_.emergency_vehicle_class;
       part_ii_supplemental.supplemental_vehicle_extensions.class_details.role.basic_vehicle_role
-        = j2735_v2x_msgs::msg::BasicVehicleRole::EMERGENCY;
+        = config_.emergency_vehicle_role;
+
+      RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "setting vehicle class: '%d'", config_.emergency_vehicle_class);
+      RCLCPP_INFO(rclcpp::get_logger("bsm_plugin"), "setting vehicle role: '%d'", config_.emergency_vehicle_role);
 
       bsm_msg.part_ii.push_back(part_ii_supplemental);
 
@@ -494,6 +501,10 @@ namespace emergency_response_vehicle_plugin
 
       // BSMPartIIExtension.special_vehicle_extensions.vehicle_alerts
       part_ii_special.special_vehicle_extensions.presence_vector |= j2735_v2x_msgs::msg::SpecialVehicleExtensions::HAS_VEHICLE_ALERTS;
+
+      if (emergency_sirens_active_ || emergency_lights_active_){
+        part_ii_special.special_vehicle_extensions.vehicle_alerts.presence_vector |= j2735_v2x_msgs::msg::EmergencyDetails::HAS_EVENTS;
+      }
 
       if(emergency_sirens_active_){
         part_ii_special.special_vehicle_extensions.vehicle_alerts.siren_use.siren_in_use = j2735_v2x_msgs::msg::SirenInUse::IN_USE;
