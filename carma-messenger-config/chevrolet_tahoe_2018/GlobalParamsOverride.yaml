@@ -13,24 +13,22 @@
 #     ros__parameters:
 #       v2x_radio_address: "192.168.0.40"
 
-# traffic_incident:
-#   ros__parameters:
-#     down_track: 50.0
-#     event_reason: 'MOVE OVER LAW'
-#     event_type: 'CLOSED'
-#     geofence_start_end_data_timeout: 
-#     min_gap: 4.0
-#     sender_id: 'USDOT-49096'
-#     up_track: 50.0
+traffic_incident:
+  ros__parameters:
+    down_track: 50.0
+    event_reason: 'MOVE OVER LAW'
+    event_type: 'CLOSED'
+    geofence_start_end_data_timeout: 2.0
+    min_gap: 4.0
+    sender_id: 'USDOT-49096'
+    up_track: 50.0
 
-# emergency_response_vehicle_plugin_node:
-#   ros__parameters: 
-#     bsm_generation_frequency: 10.0
-#     bsm_message_id: 8
-#     emergency_route_file_name: "DEFAULT-FILE-NAME.csv"
-#     enable_emergency_response_vehicle_plugin: false
-#     listening_port: 5005
-#     min_distance_to_next_destination_point: 30.0 
-#     route_file_folder: "/opt/carma/vehicle/routes"
-
-
+emergency_response_vehicle_plugin_node:
+  ros__parameters:
+    bsm_generation_frequency: 10.0
+    bsm_message_id: 8
+    emergency_route_file_name: "DEFAULT-FILE-NAME.csv"
+    enable_emergency_response_vehicle_plugin: false
+    listening_port: 5005
+    min_distance_to_next_destination_point: 30.0
+    route_file_folder: "/opt/carma/vehicle/routes"
