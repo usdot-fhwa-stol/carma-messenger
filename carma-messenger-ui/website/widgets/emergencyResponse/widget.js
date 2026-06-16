@@ -5,7 +5,7 @@ CarmaJS.registerNamespace("CarmaJS.WidgetFramework.emergencyResponse");
 var listenerAlert;
 var listenerBSM;
 //Initialize map object
-var ervMap = null;
+var erv_map = null;
 const ERV_ROUTE_SOURCE = "erv-route-trace";
 //Initialize dataset
 var data = {
@@ -71,7 +71,7 @@ var subscribe_bsm = () => {
                     data.features.push(route_feature);
                 });
             }
-            ervMap.getSource(ERV_ROUTE_SOURCE).setData(data);
+            erv_map.getSource(ERV_ROUTE_SOURCE).setData(data);
             if (data.features.length > 1) {
                 if (destination_pin == null) {
                     destination_pin = createMarker(data.features[data.features.length - 1].geometry.coordinates);
@@ -137,7 +137,7 @@ var createFeature = () => {
 var createMarker = ([longitude, latitude]) => {
     let marker = new mapboxgl.Marker({
         color: "#FF0000"
-    }).setLngLat([latitude, longitude]).addTo(ervMap);
+    }).setLngLat([latitude, longitude]).addTo(erv_map);
     return marker;
 }
 
@@ -239,26 +239,26 @@ var loadMap = () => {
     mapboxgl.accessToken = "pk.eyJ1IjoiZGR1MjAyMCIsImEiOiJjbDJyeHJob2YwYnhwM2xtaG9zaDdnYTR4In0.Rh2bSS44c99BoDj2W7jjfw";
     //Default view is at TFHRC
     let default_center = [-77.150495, 38.955675];
-    ervMap = new mapboxgl.Map({
+    erv_map = new mapboxgl.Map({
         container: 'erv-map',
         style: 'mapbox://styles/mapbox/satellite-v9',
         center: default_center,
         zoom: 17
     });
-    ervMap.addControl(new mapboxgl.FullscreenControl());
+    erv_map.addControl(new mapboxgl.FullscreenControl());
 
     setInterval(() => {
         //Change View Point
-        ervMap.jumpTo({ 'center': data.features[0].geometry.coordinates.length == 0 ? default_center : data.features[0].geometry.coordinates, 'zoom': 17 });
+        erv_map.jumpTo({ 'center': data.features[0].geometry.coordinates.length == 0 ? default_center : data.features[0].geometry.coordinates, 'zoom': 17 });
     }, 2000);
 
-    ervMap.on('load', () => {
-        ervMap.addSource(ERV_ROUTE_SOURCE, {
+    erv_map.on('load', () => {
+        erv_map.addSource(ERV_ROUTE_SOURCE, {
             'type': 'geojson',
             'data': data
         });
 
-        ervMap.addLayer({
+        erv_map.addLayer({
             'id': ERV_ROUTE_SOURCE,
             'type': 'circle',
             'source': 'erv-route-trace',
