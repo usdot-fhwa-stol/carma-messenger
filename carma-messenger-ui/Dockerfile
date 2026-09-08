@@ -22,7 +22,7 @@
 # -v /var/run/docker.sock:/var/run/docker.sock
 
 
-FROM php:8.2-apache-bullseye
+FROM php:8.2-apache-bookworm
 
 ARG BUILD_DATE="NULL"
 ARG VERSION="NULL"
