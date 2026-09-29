@@ -24,14 +24,8 @@ from launch.conditions import IfCondition
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 from carma_ros2_utils.launch.get_log_level import GetLogLevel
-
 import launch.actions
-import launch.events
-
-import launch_ros.actions
-import launch_ros.events
 import launch_ros.events.lifecycle
-import lifecycle_msgs.msg
 
 
 def generate_launch_description():
@@ -55,6 +49,15 @@ def generate_launch_description():
         description="Desired drivers to launch specified by package name.",
     )
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     v2x_ros_driver_group = GroupAction(
         condition=IfCondition(
             PythonExpression(["'v2x_ros_driver' in '", drivers, "'.split()"])
@@ -69,7 +72,7 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     "log_level": GetLogLevel("v2x_ros_driver", env_log_levels),
-                    "param_overwrite_file_path": "/opt/carma/vehicle/config/v2x-param-overwrite.yaml"
+                    "global_params_override_file": global_params_override_file,
                 }.items(),
             ),
         ],
@@ -89,6 +92,7 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     "log_level": GetLogLevel("pinpoint", env_log_levels),
+                    "global_params_override_file": global_params_override_file,
                 }.items(),
             ),
         ],
@@ -185,6 +189,7 @@ def generate_launch_description():
         [
             declare_configuration_delay_arg,
             declare_drivers_arg,
+            declare_global_params_override_file_arg,
             v2x_ros_driver_group,
             pinpoint_group,
             configuration_trigger,

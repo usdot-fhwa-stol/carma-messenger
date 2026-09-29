@@ -33,12 +33,12 @@ def generate_launch_description():
     log_level = LaunchConfiguration('log_level')
     declare_log_level_arg = DeclareLaunchArgument(
         name ='log_level', default_value='WARN')
-    
+
     # Get parameter file path
     param_file_path = os.path.join(
         get_package_share_directory('emergency_response_vehicle_plugin'), 'config/parameters.yaml')
 
-        
+
     # Launch node(s) in a carma container to allow logging to be configured
     container = ComposableNodeContainer(
         package='carma_ros2_utils',
@@ -46,7 +46,7 @@ def generate_launch_description():
         namespace=GetCurrentNamespace(),
         executable='carma_component_container_mt',
         composable_node_descriptions=[
-            
+
             # Launch the core node(s)
             ComposableNode(
                     package='emergency_response_vehicle_plugin',

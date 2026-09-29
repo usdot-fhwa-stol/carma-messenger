@@ -48,6 +48,15 @@ def generate_launch_description():
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='4.0')
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     emergency_response_vehicle_plugin_param_file = os.path.join(
         get_package_share_directory('emergency_response_vehicle_plugin'), 'config/parameters.yaml')
 
@@ -72,7 +81,8 @@ def generate_launch_description():
                 ],
                 parameters = [
                     {'route_file_folder': route_file_folder},
-                    emergency_response_vehicle_plugin_param_file
+                    emergency_response_vehicle_plugin_param_file,
+                    global_params_override_file
                 ]
             )
         ],
@@ -105,6 +115,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         declare_configuration_delay_arg,
+        declare_global_params_override_file_arg,
         carma_v2x_plugins_container,
         configuration_trigger,
         configured_event_handler_emergency_response_vehicle_plugin

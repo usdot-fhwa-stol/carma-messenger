@@ -31,6 +31,15 @@ def generate_launch_description():
         description = "Record a ROS2 bag"
     )
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     # Declare the route file folder launch argument
     route_file_folder = LaunchConfiguration('route_file_folder')
     declare_route_file_folder = DeclareLaunchArgument(
@@ -45,11 +54,13 @@ def generate_launch_description():
         launch_arguments = {
             'route_file_folder' : route_file_folder,
             'use_rosbag' : use_rosbag,
+            'global_params_override_file' : global_params_override_file,
         }.items()
     )
 
     return LaunchDescription([
         declare_use_rosbag,
         declare_route_file_folder,
+        declare_global_params_override_file_arg,
         core_launch
     ])

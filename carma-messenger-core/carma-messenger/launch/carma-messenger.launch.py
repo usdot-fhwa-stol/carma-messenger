@@ -39,6 +39,15 @@ def generate_launch_description():
     declare_configuration_delay_arg = DeclareLaunchArgument(
         name ='configuration_delay', default_value='2.0')
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     use_rosbag = LaunchConfiguration('use_rosbag')
     declare_use_rosbag = DeclareLaunchArgument(
         name = 'use_rosbag',
@@ -68,7 +77,7 @@ def generate_launch_description():
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([get_package_share_directory('v2x-ros-conversion'), '/launch','/v2x-ros-conversion.launch.py']),
                 launch_arguments = {
-                    'configuration_delay' : [configuration_delay]
+                    'configuration_delay' : [configuration_delay],
                 }.items()
             ),
         ]
@@ -80,7 +89,8 @@ def generate_launch_description():
                 PythonLaunchDescriptionSource([get_package_share_directory('carma-messenger'), '/launch', '/plugins.launch.py']),
                 launch_arguments = {
                     'configuration_delay' : [configuration_delay],
-                    'route_file_folder' : route_file_folder
+                    'route_file_folder' : route_file_folder,
+                    'global_params_override_file' : global_params_override_file
                 }.items()
             ),
         ]
@@ -108,6 +118,9 @@ def generate_launch_description():
         actions=[
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([get_package_share_directory('traffic_incident'), '/launch', '/traffic_incident.launch.py']),
+                launch_arguments = {
+                    'global_params_override_file' : global_params_override_file
+                }.items()
             ),
         ]
     )
@@ -121,6 +134,7 @@ def generate_launch_description():
         declare_configuration_delay_arg,
         declare_use_rosbag,
         declare_route_file_folder,
+        declare_global_params_override_file_arg,
         transform_group,
         v2x_group,
         plugins_group,

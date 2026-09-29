@@ -36,6 +36,15 @@ def generate_launch_description():
         name="log_level", default_value="WARN"
     )
 
+    # Declare the global_params_override_file launch argument
+    # Parameters in this file will override any parameters loaded in their respective packages
+    global_params_override_file = LaunchConfiguration('global_params_override_file')
+    declare_global_params_override_file_arg = DeclareLaunchArgument(
+        name = 'global_params_override_file',
+        default_value = "/opt/carma/vehicle/config/GlobalParamsOverride.yaml",
+        description = "Path to global file containing the parameters override"
+    )
+
     # Declare the configuration_delay launch argument
     configuration_delay = LaunchConfiguration('configuration_delay')
     declare_configuration_delay_arg = DeclareLaunchArgument(
@@ -63,6 +72,7 @@ def generate_launch_description():
                 ],
                 parameters=[
                     traffic_incident_param_file,
+                    global_params_override_file,
                 ],
                 remappings=[
                     ("gps_common_fix", "/hardware_interface/gps_common_fix"),
@@ -86,7 +96,7 @@ def generate_launch_description():
 
     configured_event_handler_traffic_incident = RegisterEventHandler(OnExecutionComplete(
             target_action=process_configure_traffic_incident,
-            on_completion=[ 
+            on_completion=[
                 ExecuteProcess(
                     cmd=[ros2_cmd, "lifecycle", "set", "/traffic_incident", "activate"],
                 )
@@ -98,6 +108,7 @@ def generate_launch_description():
         [
             declare_log_level_arg,
             declare_configuration_delay_arg,
+            declare_global_params_override_file_arg,
             container,
             configuration_trigger,
             configured_event_handler_traffic_incident
